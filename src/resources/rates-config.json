@@ -1,0 +1,19 @@
+{
+  "ratesConfig": {
+    "rates_request_timeout": 120000,
+    "rates_settings": {
+      "latestRates": {
+        "url": "https://min-api.cryptocompare.com/data/pricemultifull",
+        "method": "get",
+        "querys": {
+          "fiat": "fsyms",
+          "wallets": "tsyms"
+        }
+      },
+      "history": {
+        "url": "https://ob.atomicwallet.io/latestRates",
+        "method": "post"
+      }
+    }
+  }
+}

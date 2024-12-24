@@ -1,0 +1,38 @@
+export default [
+  {
+    'isMember': true,
+    'class': 'blue',
+    'text': 'Blue',
+    'percent': 0.0025,
+    'minAWC': 0,
+    'maxAWC': 300,
+    'limit': 150,
+  },
+  {
+    'isMember': true,
+    'class': 'silver',
+    'text': 'Silver',
+    'percent': 0.005,
+    'minAWC': 300,
+    'maxAWC': 600,
+    'limit': 300,
+  },
+  {
+    'isMember': true,
+    'class': 'gold',
+    'text': 'Gold',
+    'percent': 0.0075,
+    'minAWC': 600,
+    'maxAWC': 1000,
+    'limit': 450,
+  },
+  {
+    'isMember': true,
+    'class': 'platinum',
+    'text': 'Platinum',
+    'percent': 0.01,
+    'minAWC': 1000,
+    'maxAWC': 1000,
+    'limit': 900,
+  },
+]

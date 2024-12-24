@@ -1,0 +1,30 @@
+{
+  "AVAX-C": {
+    "network": "AVAX",
+    "ticker": "AVAX"
+  },
+  "AXS-ERC20": {
+    "contract": "47ce2dcfd80abaa35678d018e7a3cfa3",
+    "network": "ETH"
+  },
+  "BUSD-SC": {
+    "contract": "21adec905340e2ac17bd4f459c81c7ae",
+    "network": "BSC"
+  },
+  "MATIC": {
+    "ticker": "MATICMAINNET",
+    "network": "MATIC"
+  },
+  "MATIC-ERC20": {
+    "contract": "10ad2e640fc9f7ceb673384bbcddd4a1",
+    "network": "ETH"
+  },
+  "USDC-SC": {
+    "contract": "cd1fc7d839396202a609db1a19b727d7",
+    "network": "BSC"
+  },
+  "USDT-TRC20": {
+    "contract": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+    "network": "TRX"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "popular": [
+    {
+      "provider": "atomicRaki",
+      "ttlSec": 60
+    }
+  ],
+  "other": [
+    {
+      "provider": "atomicRaki",
+      "ttlSec": 60
+    }
+  ]
+}

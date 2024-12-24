@@ -1,0 +1,342 @@
+import BN from 'bn.js';
+
+import type {
+  Coin,
+  Token,
+  WalletDecimal,
+  CreateTxParams,
+  RawTxHash,
+  TxHash,
+  RawTxHex,
+  RawTxBinary,
+  RawTxObject,
+  WalletIdentifierType,
+  WalletTicker,
+  TokenCreationArgs,
+  CoinConfigType,
+} from '@/abstract';
+import type Explorer from '@/explorers/Explorer';
+import { Emitter } from '@/utils';
+import { toMinimal, toCurrency } from '@/utils/convert';
+import { WALLETS } from '@/utils/const';
+
+const SEND_TIMEOUT = 5000;
+const delayed = {};
+
+interface IGasPriceConfig {
+  [key: string]: unknown;
+}
+/**
+ * Base class for any asset presented to the user.
+ */
+export default abstract class AbstractWallet {
+  #name: string;
+  #ticker: string;
+  #decimal: number;
+
+  memoRegexp?: string;
+
+  alias: string;
+
+  indivisibleBalance: null | BN = null;
+  divisibleBalance: null | string = null;
+
+  abstract gasPriceConfig?: IGasPriceConfig;
+  abstract gasLimit?: string | number | BN;
+
+  abstract denom?: string;
+
+  abstract get id(): string;
+  abstract get address(): string;
+
+  abstract get deprecatedParent(): string;
+
+  abstract get contract(): string;
+
+  abstract get feeWallet(): Coin | Token;
+
+  abstract availableBalance(fees?: string): Promise<string>;
+  abstract createTransaction(
+    args: CreateTxParams,
+  ): Promise<RawTxHex | RawTxBinary | RawTxObject>;
+  abstract sendRawTransaction(
+    args: RawTxHex | RawTxBinary | RawTxObject,
+  ): Promise<RawTxHash>;
+
+  abstract getGasPrice(
+    withoutCoeff: boolean,
+    isToken?: boolean,
+  ): Promise<BN | number | string>;
+  abstract estimateGas(
+    amount: BN | string,
+    address: string,
+    contract: string,
+    defaultGas?: BN | string | number,
+  ): Promise<BN | number | string>;
+  abstract getFeePerByte(): BN;
+  abstract getUnspentOutputs(): Promise<unknown[]>;
+
+  constructor({
+    name,
+    ticker,
+    decimal,
+    memoRegexp,
+  }: CoinConfigType | TokenCreationArgs) {
+    this.#name = name;
+    this.#ticker = ticker;
+    this.#decimal = decimal;
+
+    this.alias = 'atomic';
+    this.memoRegexp = memoRegexp;
+  }
+
+  protected set ticker(ticker: string) {
+    this.#ticker = ticker;
+  }
+
+  get ticker() {
+    return this.#ticker;
+  }
+
+  protected set decimal(decimal: number) {
+    this.#decimal = decimal;
+  }
+
+  get decimal() {
+    return this.#decimal;
+  }
+
+  protected set name(name: string) {
+    this.#name = name;
+  }
+
+  get name() {
+    return this.#name;
+  }
+
+  get networkType() {
+    return '';
+  }
+
+  get explorer(): Explorer | undefined {
+    return undefined;
+  }
+
+  get eventEmitter() {
+    return Emitter;
+  }
+
+  isStakingSupported(): boolean {
+    return false;
+  }
+
+  toMinimalUnit(value: string | BN, decimal?: WalletDecimal): string {
+    return toMinimal(value || '0', decimal || this.decimal);
+  }
+
+  toCurrencyUnit(value: string | BN, decimal?: WalletDecimal): string {
+    return toCurrency(value, decimal || this.decimal);
+  }
+
+  /**
+   * Gets the actual balance
+   *
+   * @return {String} Balance in satoshis
+   */
+  get balance(): string | null {
+    return this.indivisibleBalance ? this.indivisibleBalance.toString() : null;
+  }
+
+  /**
+   * Sets currency value from satoshi when balance set.
+   *
+   * @param {String|BN} value The value
+   */
+  set balance(value: string | null) {
+    const isValidValue = value !== null && value !== '' && value !== undefined;
+
+    const oldBalance = this.divisibleBalance;
+
+    if (isValidValue) {
+      this.indivisibleBalance = new BN(String(value));
+      this.divisibleBalance = this.toCurrencyUnit(value);
+    }
+
+    if (this.eventEmitter) {
+      this.eventEmitter.emit(
+        `update::${this.deprecatedParent}::token`,
+        this.id,
+      );
+    }
+
+    if (
+      this.eventEmitter &&
+      this.divisibleBalance !== oldBalance &&
+      !!oldBalance
+    ) {
+      this.eventEmitter.emit(WALLETS.BALANCE_UPDATED, { wallet: this });
+    }
+  }
+
+  /**
+   * Get fee ticker
+   *
+   * @return {String} The fee ticker
+   */
+  get feeTicker() {
+    return this.ticker;
+  }
+
+  getFeeSettings() {
+    return {};
+  }
+
+  /*
+   * Wrappers for createTransaction, createTokenTransaction with double-send prevent check
+   *
+   */
+
+  canRun(funcName: string) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if ((delayed[funcName] ?? 0) + SEND_TIMEOUT <= Date.now()) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      delayed[funcName] = Date.now();
+      return true;
+    }
+    return false;
+  }
+
+  async sendTransaction(
+    rawtx: RawTxHex | RawTxBinary | RawTxObject,
+  ): Promise<unknown> {
+    return this.explorer && this.explorer.sendTransaction(rawtx);
+  }
+
+  createTransactionOnce(params: CreateTxParams) {
+    return this.canRun('createTransaction')
+      ? this.createTransaction(params)
+      : {};
+  }
+
+  sendTransactionOnce(params: RawTxHex | RawTxBinary | RawTxObject) {
+    return this.canRun('sendTransaction') ? this.sendTransaction(params) : {};
+  }
+
+  sendRawTransactionOnce(params: CreateTxParams) {
+    return this.canRun('sendRawTransaction')
+      ? this.sendRawTransaction(params)
+      : {};
+  }
+
+  /**
+   * Gets the transaction info.
+   *
+   * @param {String} txId The transaction identifier.
+   * @return {Promise<Object>} The transaction.
+   */
+  async getTransaction(txId: TxHash): Promise<object | undefined> {
+    return this.explorer && this.explorer.getTransaction(this.address, txId);
+  }
+
+  /**
+   * Determines if the amount is available for send.
+   *
+   * @param {String} amount The amount
+   * @return {Promise<Boolean>} True if available for send, False otherwise.
+   */
+  async isAvailableForSend(amount: string): Promise<boolean> {
+    const avaliableBalance = await this.availableBalance();
+
+    return new BN(this.toMinimalUnit(amount)).lte(
+      new BN(this.toMinimalUnit(avaliableBalance)),
+    );
+  }
+
+  /**
+   * Returns a ticker that a user should see in the interface
+   *
+   * @return {String}
+   */
+  getUserTicker(): WalletTicker {
+    return this.ticker;
+  }
+
+  validateMemo(memo: string): boolean {
+    if (this.memoRegexp) {
+      return new RegExp(this.memoRegexp).test(memo);
+    }
+    return false;
+  }
+
+  getTxLimit(): number | undefined {
+    return this.explorer && this.explorer.getTxLimit();
+  }
+
+  get canPaginate() {
+    return this.explorer && this.explorer.canPaginate;
+  }
+
+  /**
+   * Returns stub is NFT supported sign
+   *
+   * @deprecated - Use isFeatureSupported Coin method instead.
+   * @returns {false}
+   */
+  isNftSupported(): boolean {
+    return false;
+  }
+
+  /**
+   * Comparing instance values with given ones
+   * @param {string} ticker Required
+   * @param {string} [contract]
+   * @param {string} [address]
+   * @param {string} [network]
+   * @param {string | number} [chainId]
+   * @returns {boolean}
+   */
+  isMatch({
+    ticker,
+    contract,
+    parent,
+    address,
+    network,
+    chainId,
+  }: WalletIdentifierType): boolean {
+    const optional: Partial<WalletIdentifierType> = {
+      contract,
+      parent,
+      address,
+      network,
+      chainId,
+    };
+
+    if (!ticker) {
+      throw new Error('Parameter `ticker` or `id` is required');
+    }
+
+    const requiredEq = this.ticker.toLowerCase() === ticker.toLowerCase();
+
+    return Object.keys(optional).reduce((result, key) => {
+      if (key in this) {
+        const thisValue = this[key as keyof AbstractWallet];
+        const optionalValue = optional[key as keyof WalletIdentifierType];
+
+        if (
+          thisValue &&
+          typeof thisValue !== 'object' &&
+          typeof optionalValue !== 'object'
+        ) {
+          return (
+            result &&
+            thisValue.toString().toLowerCase() ===
+              optionalValue!.toString().toLowerCase()
+          );
+        }
+      }
+      return result;
+    }, requiredEq);
+  }
+}

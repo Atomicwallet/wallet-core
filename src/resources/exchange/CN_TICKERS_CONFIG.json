@@ -1,0 +1,40 @@
+{
+  "usdterc20": {
+      "ticker": "usdt"
+  },
+  "bandmainnet": {
+      "ticker": "band"
+  },
+  "bnbmainnet": {
+      "ticker": "bnb"
+  },
+  "usdttrc20": {
+      "ticker": "trx-usdt"
+  },
+  "bnbbsc": {
+      "ticker": "bsc"
+  },
+  "avaxc": {
+      "ticker": "avax"
+  },
+  "maticmainnet": {
+      "ticker": "matic",
+      "parentTicker": "matic"
+  },
+  "matic": {
+      "ticker": "matic",
+      "parentTicker": "eth"
+  },
+  "usdt": {
+      "ticker": "usdt",
+      "parentTicker": "eth"
+  },
+  "ftmmainnet": {
+    "ticker": "ftm",
+    "network": "ftm"
+  },
+  "eth": {
+      "ticker": "eth",
+      "parentTicker": "eth"
+  }
+}
