@@ -1,41 +1,47 @@
-import js from '@eslint/js';
-import tsParser from '@typescript-eslint/parser';
-import tsPlugin from '@typescript-eslint/eslint-plugin';
-import importPlugin from 'eslint-plugin-import';
-import nodePlugin from 'eslint-plugin-n';
-import unusedImportsPlugin from 'eslint-plugin-unused-imports';
-import prettierPlugin from 'eslint-plugin-prettier';
-import prettierConfig from 'eslint-config-prettier';
-import globals from 'globals';
+const jsConfig = require('@eslint/js').configs.recommended;
+const prettierConfig = require('eslint-config-prettier');
+const tsPlugin = require('@typescript-eslint/eslint-plugin');
+const globalsModule = require('globals');
 
-const settings = {
-  'import/resolver': {
-    typescript: {
-      alwaysTryTypes: true,
-      project: './tsconfig.json',
+const globalObjects = Object.assign(
+  {},
+  globalsModule.browser,
+  globalsModule.node,
+  globalsModule.jest,
+);
+
+module.exports = [
+  // Include the recommended JavaScript config
+  jsConfig,
+
+  // Include Prettier config
+  prettierConfig,
+
+  // Base settings and plugins
+  {
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: './tsconfig.json',
+        },
+      },
+    },
+    plugins: {
+      prettier: require('eslint-plugin-prettier'),
+      n: require('eslint-plugin-n'),
+      'unused-imports': require('eslint-plugin-unused-imports'),
+      import: require('eslint-plugin-import'),
+      '@typescript-eslint': require('@typescript-eslint/eslint-plugin'),
+    },
+    languageOptions: {
+      globals: globalObjects, // Use languageOptions.globals instead of globals
     },
   },
-};
 
-const plugins = {
-  prettier: prettierPlugin,
-  n: nodePlugin,
-  'unused-imports': unusedImportsPlugin,
-  import: importPlugin,
-};
-
-const globalObjects = {
-  ...globals.browser,
-  ...globals.node,
-  ...globals.jest,
-};
-
-export default [
-  js.configs.recommended,
+  // Overrides for JavaScript files
   {
     files: ['**/*.js'],
-    plugins,
-    settings,
     rules: {
       'no-unused-vars': 'error',
       'no-console': 'warn',
@@ -43,27 +49,17 @@ export default [
       'prettier/prettier': 'error',
       'n/no-missing-import': 'warn',
     },
-    languageOptions: {
-      globals: globalObjects,
-    },
   },
 
+  // Overrides for TypeScript files
   {
     files: ['**/*.ts'],
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        project: './tsconfig.json',
-      },
-      globals: globalObjects,
+    parser: require('@typescript-eslint/parser'),
+    parserOptions: {
+      project: './tsconfig.json',
     },
-    plugins: {
-      ...plugins,
-      '@typescript-eslint': tsPlugin,
-    },
-    settings,
     rules: {
-      ...tsPlugin.configs['recommended'].rules,
+      ...tsPlugin.configs.recommended.rules,
       ...tsPlugin.configs['recommended-requiring-type-checking'].rules,
 
       '@typescript-eslint/explicit-function-return-type': 'warn',
@@ -95,6 +91,4 @@ export default [
       'prettier/prettier': 'error',
     },
   },
-
-  prettierConfig,
 ];
