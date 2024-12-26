@@ -4,6 +4,7 @@ import { createWallets } from './coins';
 import { generateKeys } from './keys';
 import { initializeMnemonic } from './mnemonic';
 import type { IKeysObject } from './types';
+import { type RawTxBinary, RawTxHash, RawTxHex, RawTxObject } from '@/abstract';
 
 program.name('atomic-core-cli').description('atomic-core CLI').version('1.0.0');
 
@@ -97,6 +98,45 @@ program
       console.log(`Signed tx:\n${tx}`)
     }
 
+
+  });
+
+program
+  .command('submitTx')
+  .description('submit signed transaction')
+  .option('-p, --phrase <phrase>', 'Generate key-pairs from mnemonic')
+  .option('-w, --wallet <wallet>', 'wallet ticker, e.g. BTC')
+  .option('-t, --tx <tx>', 'signed tx hex')
+  .action(async (options: {phrase: string, wallet: string, tx: RawTxHex | RawTxBinary | RawTxObject}): Promise<void> => {
+    console.log('Init mnemonic...');
+    const mnemonic = await initializeMnemonic(options.phrase);
+
+    console.log('OK');
+
+    console.log(`Create ${options.wallet} wallet...`);
+    const wallets = await createWallets({id: options.wallet});
+    const wallet = wallets.find((wallet) => wallet.id.toLowerCase() === options.wallet.toLowerCase());
+
+    if(!wallet) {
+      throw new Error(`Failed to create ${options.wallet}, not supported`);
+    }
+    console.log('OK');
+
+    console.log('Generate key pairs...');
+    await Promise.allSettled(
+      wallets.map(async (wallet) => generateKeys(wallet, mnemonic)),
+    );
+    console.log('OK')
+
+    console.log('Submit transaction...')
+    const submit = await wallet.sendTransaction(options.tx)
+      .catch((err) => {
+        console.log('Faile to submit transaction...\n', err.message);
+      })
+
+    if(submit) {
+      console.log(`Submit OK:\n${submit}`)
+    }
 
   });
 
