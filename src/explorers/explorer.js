@@ -1,14 +1,11 @@
-import axios from 'axios'
-import io from 'socket.io-client'
+import axios from 'axios';
+import io from 'socket.io-client';
 // import history from './History'
 
-import { Emitter, TxNotifier } from '../utils'
-import Transaction from './Transaction'
-import { toCurrency } from '../utils/convert'
-import {
-  UndeclaredAbstractMethodError,
-  ExplorerRequestError,
-} from '../errors'
+import { Emitter, TxNotifier } from '../utils';
+import Transaction from './Transaction';
+import { toCurrency } from '../utils/convert';
+import { UndeclaredAbstractMethodError, ExplorerRequestError } from '../errors';
 import {
   ONE_MINUTE,
   GET_BLOCK_TYPE,
@@ -19,10 +16,10 @@ import {
   GET_TRANSACTION_TYPE,
   SEND_TRANSACTION_TYPE,
   UNDEFINED_OPERATION_ERROR,
-} from '../utils/const'
-import { TxTypes } from './enum'
+} from '../utils/const';
+import { TxTypes } from './enum';
 
-const DEFAULT_TX_LIMIT = 100
+const DEFAULT_TX_LIMIT = 100;
 
 /**
  * Class for explorer.
@@ -36,41 +33,41 @@ class Explorer {
    * @param {*} config
    * @memberof Explorer
    */
-  constructor ({ wallet, config }) {
-    this.config = config
+  constructor({ wallet, config }) {
+    this.config = config;
 
-    this.defaultTxLimit = config.txLimit ?? DEFAULT_TX_LIMIT
-    this.wallet = wallet
-    this.setAxiosClient()
-    this.socket = {}
+    this.defaultTxLimit = config.txLimit ?? DEFAULT_TX_LIMIT;
+    this.wallet = wallet;
+    this.setAxiosClient();
+    this.socket = {};
 
-    this.webUrl = config.webUrl
-    this.clients = {}
-    this.eventEmitter = Emitter
-    this.txNotifier = new TxNotifier(wallet)
-    this.canPaginate = false
+    this.webUrl = config.webUrl;
+    this.clients = {};
+    this.eventEmitter = Emitter;
+    this.txNotifier = new TxNotifier(wallet);
+    this.canPaginate = false;
 
-    this.lastGetInfoRequestTime = null
-    this.lastGetTxsRequestTime = null
-    this.defaultRequestTimeout = config.defaultRequestTimeout ?? null
+    this.lastGetInfoRequestTime = null;
+    this.lastGetTxsRequestTime = null;
+    this.defaultRequestTimeout = config.defaultRequestTimeout ?? null;
   }
 
-  get name () {
-    return this.constructor.name
+  get name() {
+    return this.constructor.name;
   }
 
-  updateParams (config) {
-    this.config = config
+  updateParams(config) {
+    this.config = config;
 
     if (config.defaultRequestTimeout) {
-      this.defaultRequestTimeout = config.defaultRequestTimeout
+      this.defaultRequestTimeout = config.defaultRequestTimeout;
     }
 
     if (config.baseUrl && this.config.baseUrl !== config.baseUrl) {
-      this.config.baseUrl = config.baseUrl
-      this.setAxiosClient()
+      this.config.baseUrl = config.baseUrl;
+      this.setAxiosClient();
     }
-    this.webUrl = config.webUrl
+    this.webUrl = config.webUrl;
   }
 
   /**
@@ -79,31 +76,33 @@ class Explorer {
    * @param {*} endpoint
    * @memberof Explorer
    */
-  setSocketClient (endpoint) {
-    this.socket[this.wallet.ticker] = io(endpoint, { transports: ['websocket'] })
+  setSocketClient(endpoint) {
+    this.socket[this.wallet.ticker] = io(endpoint, {
+      transports: ['websocket'],
+    });
   }
 
   /**
    * Sets axios request client.
    */
-  setAxiosClient () {
-    this.client = axios.create(this.getInitParams())
+  setAxiosClient() {
+    this.client = axios.create(this.getInitParams());
   }
 
   /**
    * @param curAmount { String | Number | BN }
    * @returns {*}
    */
-  toBNMinimalUnit (curAmount) {
-    return new this.wallet.BN(this.wallet.toMinimalUnit(curAmount ?? 0))
+  toBNMinimalUnit(curAmount) {
+    return new this.wallet.BN(this.wallet.toMinimalUnit(curAmount ?? 0));
   }
 
   /**
    * @param minAmount { String | Number | BN }
    * @returns {*}
    */
-  toBNCurrencyUnit (minAmount) {
-    return new this.wallet.BN(this.wallet.toCurrencyUnit(minAmount ?? 0))
+  toBNCurrencyUnit(minAmount) {
+    return new this.wallet.BN(this.wallet.toCurrencyUnit(minAmount ?? 0));
   }
 
   /**
@@ -111,8 +110,8 @@ class Explorer {
    *
    * @param {String} txid Transaction ID
    */
-  getWebTransactionUrl (txid) {
-    return `${this.webUrl}${txid}`
+  getWebTransactionUrl(txid) {
+    return `${this.webUrl}${txid}`;
   }
 
   /**
@@ -122,8 +121,8 @@ class Explorer {
    * @deprecated
    * @return {string[]} List of tickers.
    */
-  getAllowedTickers () {
-    return []
+  getAllowedTickers() {
+    return [];
   }
 
   /**
@@ -131,18 +130,23 @@ class Explorer {
    *
    * @return {Object} The initialize parameters.
    */
-  getInitParams () {
+  getInitParams() {
     if (!this.config.baseUrl) {
-      throw new Error(`${this.wallet.ticker} ${this.constructor.name}: explorer config have no baseUrl`)
+      throw new Error(
+        `${this.wallet.ticker} ${this.constructor.name}: explorer config have no baseUrl`,
+      );
     }
-    return { baseURL: this.config.baseUrl }
+    return { baseURL: this.config.baseUrl };
   }
 
-  getApiPrefix () {
-    return 'api'
+  getApiPrefix() {
+    return 'api';
   }
 
-  async checkTransaction (selfAddress, { coin, address, amount, memo, txid, nonce, fee, feeTicker }) {
+  async checkTransaction(
+    selfAddress,
+    { coin, address, amount, memo, txid, nonce, fee, feeTicker },
+  ) {
     const newTx = new Transaction({
       ticker: coin.ticker,
       walletid: coin.id,
@@ -159,11 +163,11 @@ class Explorer {
       confirmations: 0,
       fee,
       feeTicker: feeTicker ?? coin.feeTicker ?? this.getTxFeeTicker(),
-    })
+    });
 
     // await history.filterAndUpdateTransactions([newTx])
 
-    return newTx
+    return newTx;
   }
 
   /**
@@ -171,16 +175,24 @@ class Explorer {
    *
    * @return {Promise<Object>} The information data.
    */
-  async getInfo (address) {
+  async getInfo(address) {
     if (!address || typeof address !== 'string') {
-      throw this.createError('getInfo: address must be string with length > 0')
+      throw this.createError('getInfo: address must be string with length > 0');
     }
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) < this.lastGetInfoRequestTime) {
-      return this.modifyInfoResponse(undefined)
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE <
+        this.lastGetInfoRequestTime
+    ) {
+      return this.modifyInfoResponse(undefined);
     }
 
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) > this.lastGetInfoRequestTime) {
-      this.lastGetInfoRequestTime = Date.now()
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE >
+        this.lastGetInfoRequestTime
+    ) {
+      this.lastGetInfoRequestTime = Date.now();
     }
 
     const response = await this.request(
@@ -189,9 +201,9 @@ class Explorer {
       this.getInfoParams(address),
       GET_BALANCE_TYPE,
       this.getInfoOptions(),
-    )
+    );
 
-    return this.modifyInfoResponse(response)
+    return this.modifyInfoResponse(response);
   }
 
   /**
@@ -199,8 +211,8 @@ class Explorer {
    *
    * @return {String}
    */
-  getInfoUrl (address) {
-    throw new UndeclaredAbstractMethodError('getInfoUrl', this)
+  getInfoUrl(address) {
+    throw new UndeclaredAbstractMethodError('getInfoUrl', this);
   }
 
   /**
@@ -208,8 +220,8 @@ class Explorer {
    *
    * @return {String}
    */
-  getInfoMethod () {
-    return 'get'
+  getInfoMethod() {
+    return 'get';
   }
 
   /**
@@ -217,8 +229,8 @@ class Explorer {
    *
    * @return {Object}
    */
-  getInfoParams (address) {
-    return {}
+  getInfoParams(address) {
+    return {};
   }
 
   /**
@@ -226,12 +238,14 @@ class Explorer {
    *
    * @returns {Object}
    */
-  getInfoOptions () {
+  getInfoOptions() {
     return {
-      transformResponse: [(data) => {
-        return JSON.parse(data.replace(/:(\d+)([,}])/g, ':"$1"$2'))
-      }],
-    }
+      transformResponse: [
+        (data) => {
+          return JSON.parse(data.replace(/:(\d+)([,}])/g, ':"$1"$2'));
+        },
+      ],
+    };
   }
 
   /**
@@ -239,8 +253,8 @@ class Explorer {
    *
    * @returns {Object}
    */
-  getTransactionOptions () {
-    return {}
+  getTransactionOptions() {
+    return {};
   }
 
   /**
@@ -248,8 +262,8 @@ class Explorer {
    *
    * @returns {Object}
    */
-  getTransactionsOptions () {
-    return {}
+  getTransactionsOptions() {
+    return {};
   }
 
   /**
@@ -257,8 +271,8 @@ class Explorer {
    *
    * @returns {Object}
    */
-  getUtxoOptions () {
-    return {}
+  getUtxoOptions() {
+    return {};
   }
 
   /**
@@ -266,8 +280,8 @@ class Explorer {
    *
    * @returns {Object}
    */
-  getLatestBlockOptions () {
-    return {}
+  getLatestBlockOptions() {
+    return {};
   }
 
   /**
@@ -275,8 +289,8 @@ class Explorer {
    *
    * @returns {Object}
    */
-  getSendOptions () {
-    return {}
+  getSendOptions() {
+    return {};
   }
 
   /**
@@ -284,11 +298,11 @@ class Explorer {
    *
    * @param {Object} response
    */
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     // todo: set wallet balance here!!!
     // this.wallet.balance = ?????
 
-    return response
+    return response;
   }
 
   /**
@@ -297,26 +311,29 @@ class Explorer {
    * @param {String} txId The transaction identifier.
    * @return {Promise<Object>} The transaction.
    */
-  async getTransaction (selfAddress, txId, tokens = []) {
+  async getTransaction(selfAddress, txId, tokens = []) {
     const response = await this.request(
       this.getTransactionUrl(txId),
       this.getTransactionMethod(),
       this.getTransactionParams(txId),
       GET_TRANSACTION_TYPE,
-      this.getTransactionOptions()
-    )
+      this.getTransactionOptions(),
+    );
 
-    return this.modifyTransactionResponse(response, selfAddress, tokens)
+    return this.modifyTransactionResponse(response, selfAddress, tokens);
   }
 
-  getTransactionModifiedResponse (tx, selfAddress, asset = this.wallet.ticker) {
-    return Object.assign({
-      explorer: this.constructor.name,
-      locktime: tx && tx.lockTime,
-    }, this.getTransactionsModifiedResponse(tx, selfAddress, asset))
+  getTransactionModifiedResponse(tx, selfAddress, asset = this.wallet.ticker) {
+    return Object.assign(
+      {
+        explorer: this.constructor.name,
+        locktime: tx && tx.lockTime,
+      },
+      this.getTransactionsModifiedResponse(tx, selfAddress, asset),
+    );
   }
 
-  getTransactionsModifiedResponse (tx, selfAddress, asset = this.wallet.ticker) {
+  getTransactionsModifiedResponse(tx, selfAddress, asset = this.wallet.ticker) {
     return {
       ticker: asset,
       name: this.wallet.name,
@@ -333,7 +350,7 @@ class Explorer {
       fee: this.getTxFee(tx),
       feeTicker: this.getTxFeeTicker(),
       txType: this.getTxType(tx),
-    }
+    };
   }
 
   /**
@@ -343,8 +360,8 @@ class Explorer {
    * @abstract
    * @return {String}
    */
-  getTransactionUrl (txId) {
-    throw new UndeclaredAbstractMethodError('getTransactionUrl', this)
+  getTransactionUrl(txId) {
+    throw new UndeclaredAbstractMethodError('getTransactionUrl', this);
   }
 
   /**
@@ -352,8 +369,8 @@ class Explorer {
    *
    * @return {String}
    */
-  getTransactionMethod () {
-    return 'get'
+  getTransactionMethod() {
+    return 'get';
   }
 
   /**
@@ -362,8 +379,8 @@ class Explorer {
    * @param {String} txId
    * @return {Object}
    */
-  getTransactionParams (txId) {
-    return {}
+  getTransactionParams(txId) {
+    return {};
   }
 
   /**
@@ -372,8 +389,10 @@ class Explorer {
    * @param {Object} tx
    * @return {Transaction}
    */
-  modifyTransactionResponse (tx, selfAddress, asset = this.wallet.ticker) {
-    return new Transaction(this.getTransactionModifiedResponse(tx, selfAddress, asset))
+  modifyTransactionResponse(tx, selfAddress, asset = this.wallet.ticker) {
+    return new Transaction(
+      this.getTransactionModifiedResponse(tx, selfAddress, asset),
+    );
   }
 
   /**
@@ -381,24 +400,42 @@ class Explorer {
    *
    * @return {Promise<Object[]>}
    */
-  async getTransactions ({ address, offset, limit, pageNum }) {
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) < this.lastGetTxsRequestTime) {
-      return []
+  async getTransactions({ address, offset, limit, pageNum }) {
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE <
+        this.lastGetTxsRequestTime
+    ) {
+      return [];
     }
 
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) > this.lastGetTxsRequestTime) {
-      this.lastGetTxsRequestTime = Date.now()
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE >
+        this.lastGetTxsRequestTime
+    ) {
+      this.lastGetTxsRequestTime = Date.now();
     }
 
     const response = await this.request(
-      this.getTransactionsUrl(address, offset || 0, limit || this.defaultTxLimit, pageNum),
+      this.getTransactionsUrl(
+        address,
+        offset || 0,
+        limit || this.defaultTxLimit,
+        pageNum,
+      ),
       this.getTransactionsMethod(),
-      this.getTransactionsParams(address, offset || 0, limit || this.defaultTxLimit, pageNum),
+      this.getTransactionsParams(
+        address,
+        offset || 0,
+        limit || this.defaultTxLimit,
+        pageNum,
+      ),
       GET_TRANSACTIONS_TYPE,
-      this.getTransactionsOptions()
-    )
+      this.getTransactionsOptions(),
+    );
 
-    return this.modifyTransactionsResponse(response, address)
+    return this.modifyTransactionsResponse(response, address);
   }
 
   /**
@@ -407,8 +444,8 @@ class Explorer {
    * @abstract
    * @return {String}
    */
-  getTransactionsUrl (address, offset, limit, pageNum) {
-    throw new UndeclaredAbstractMethodError('getTransactionsUrl', this)
+  getTransactionsUrl(address, offset, limit, pageNum) {
+    throw new UndeclaredAbstractMethodError('getTransactionsUrl', this);
   }
 
   /**
@@ -416,8 +453,8 @@ class Explorer {
    *
    * @return {String}
    */
-  getTransactionsMethod () {
-    return 'get'
+  getTransactionsMethod() {
+    return 'get';
   }
 
   /**
@@ -425,8 +462,13 @@ class Explorer {
    *
    * @return {Object}
    */
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit, pageNum) {
-    return { from: offset, to: offset + limit }
+  getTransactionsParams(
+    address,
+    offset = 0,
+    limit = this.defaultTxLimit,
+    pageNum,
+  ) {
+    return { from: offset, to: offset + limit };
   }
 
   /**
@@ -434,12 +476,15 @@ class Explorer {
    *
    * @param {Object[]} txs
    */
-  modifyTransactionsResponse (txs, address) {
+  modifyTransactionsResponse(txs, address) {
     if (!Array.isArray(txs)) {
-      return []
+      return [];
     }
 
-    return txs.map((tx) => new Transaction(this.getTransactionsModifiedResponse(tx, address)))
+    return txs.map(
+      (tx) =>
+        new Transaction(this.getTransactionsModifiedResponse(tx, address)),
+    );
   }
 
   /**
@@ -447,16 +492,16 @@ class Explorer {
    *
    * @return {Promise<Object[]>} The utxos data.
    */
-  async getUnspentOutputs (address, scriptPubKey) {
+  async getUnspentOutputs(address, scriptPubKey) {
     const response = await this.request(
       this.getUnspentOutputsUrl(address),
       this.getUnspentOutputsMethod(),
       this.getUnspentOutputsParams(address),
       GET_UTXO_TYPE,
-      this.getUtxoOptions()
-    )
+      this.getUtxoOptions(),
+    );
 
-    return this.modifyUnspentOutputsResponse(address, response, scriptPubKey)
+    return this.modifyUnspentOutputsResponse(address, response, scriptPubKey);
   }
 
   /**
@@ -465,8 +510,8 @@ class Explorer {
    * @abstract
    * @return {String}
    */
-  getUnspentOutputsUrl (address) {
-    throw new UndeclaredAbstractMethodError('getUnspentOutputsUrl', this)
+  getUnspentOutputsUrl(address) {
+    throw new UndeclaredAbstractMethodError('getUnspentOutputsUrl', this);
   }
 
   /**
@@ -474,8 +519,8 @@ class Explorer {
    *
    * @return {String}
    */
-  getUnspentOutputsMethod () {
-    return 'get'
+  getUnspentOutputsMethod() {
+    return 'get';
   }
 
   /**
@@ -484,8 +529,8 @@ class Explorer {
    * @abstract
    * @return {Object}
    */
-  getUnspentOutputsParams (address) {
-    return {}
+  getUnspentOutputsParams(address) {
+    return {};
   }
 
   /**
@@ -493,8 +538,8 @@ class Explorer {
    *
    * @param {Object} response
    */
-  modifyUnspentOutputsResponse (address, response, scriptPubKey) {
-    return response
+  modifyUnspentOutputsResponse(address, response, scriptPubKey) {
+    return response;
   }
 
   /**
@@ -503,20 +548,20 @@ class Explorer {
    * @param {*} rawtx The rawtx
    * @return {Promise<Object>} The transaction data
    */
-  async sendTransaction (rawtx) {
+  async sendTransaction(rawtx) {
     const response = await this.request(
       this.getSendTransactionUrl(),
       this.getSendTransactionMethod(),
       this.getSendTransactionParams(rawtx),
       SEND_TRANSACTION_TYPE,
       this.getSendOptions(),
-    )
+    );
 
     // @TODO update balances should managed from coin
     // @FIXME
     // this.wallet.getInfo() // update balance
 
-    return this.modifySendTransactionResponse(response)
+    return this.modifySendTransactionResponse(response);
   }
 
   /**
@@ -525,8 +570,8 @@ class Explorer {
    * @abstract
    * @return {String}
    */
-  getSendTransactionUrl () {
-    throw new UndeclaredAbstractMethodError('getSendTransactionUrl', this)
+  getSendTransactionUrl() {
+    throw new UndeclaredAbstractMethodError('getSendTransactionUrl', this);
   }
 
   /**
@@ -534,8 +579,8 @@ class Explorer {
    *
    * @return {String}
    */
-  getSendTransactionMethod () {
-    return 'post'
+  getSendTransactionMethod() {
+    return 'post';
   }
 
   /**
@@ -544,8 +589,8 @@ class Explorer {
    * @abstract
    * @return {String}
    */
-  getSendTransactionParam () {
-    return 'txid'
+  getSendTransactionParam() {
+    return 'txid';
   }
 
   /**
@@ -554,8 +599,8 @@ class Explorer {
    * @abstract
    * @return {Object}
    */
-  getSendTransactionParams (rawtx) {
-    return { [this.getSendTransactionParam()]: rawtx }
+  getSendTransactionParams(rawtx) {
+    return { [this.getSendTransactionParam()]: rawtx };
   }
 
   /**
@@ -563,12 +608,12 @@ class Explorer {
    *
    * @param {Object} response
    */
-  modifySendTransactionResponse (response) {
-    return response
+  modifySendTransactionResponse(response) {
+    return response;
   }
 
-  getHeaders () {
-    return {}
+  getHeaders() {
+    return {};
   }
 
   /**
@@ -584,26 +629,42 @@ class Explorer {
    * @throws {ExplorerRequestError}
    * @returns {object}
    */
-  handleRequestError (error, { url, method, params, type, options }) {
+  handleRequestError(error, { url, method, params, type, options }) {
     const {
       headers: requestHeaders,
       method: requestMethod,
       baseURL,
       url: requestUrl,
       data: requestData,
-    } = error?.config || {}
+    } = error?.config || {};
 
     const errorData = {
-      request: { headers: requestHeaders, method: requestMethod, baseURL, url: requestUrl, data: requestData },
-    }
+      request: {
+        headers: requestHeaders,
+        method: requestMethod,
+        baseURL,
+        url: requestUrl,
+        data: requestData,
+      },
+    };
 
     if (error.response) {
-      const { data: responseData, status, statusText, headers: responseHeaders } = error.response
-      const responseObject = { data: responseData, status, statusText, headers: responseHeaders }
+      const {
+        data: responseData,
+        status,
+        statusText,
+        headers: responseHeaders,
+      } = error.response;
+      const responseObject = {
+        data: responseData,
+        status,
+        statusText,
+        headers: responseHeaders,
+      };
 
-      errorData.response = responseObject
+      errorData.response = responseObject;
     } else {
-      errorData.response = 'No response data available'
+      errorData.response = 'No response data available';
     }
 
     throw new ExplorerRequestError({
@@ -612,7 +673,7 @@ class Explorer {
       errorData,
       url: `${this.config.baseUrl}${url}`,
       instance: this,
-    })
+    });
   }
 
   /**
@@ -625,27 +686,44 @@ class Explorer {
    * @param {object} options Other request options
    * @return {Promise<object>}
    */
-  async request (url, method = 'get', params = {}, type = UNDEFINED_OPERATION_ERROR, options = {}) {
+  async request(
+    url,
+    method = 'get',
+    params = {},
+    type = UNDEFINED_OPERATION_ERROR,
+    options = {},
+  ) {
     // @FIXME for refactoring
     // should be  deleted after success
     if (url.search('undefined') !== -1) {
-      throw new Error(`corrupted url: ${url}`)
+      throw new Error(`corrupted url: ${url}`);
     }
 
     try {
       return this.modifyGeneralResponse(
-        await this.client.request({ url, method, [method === 'get' ? 'params' : 'data']: params, ...options })
-      )
+        await this.client.request({
+          url,
+          method,
+          [method === 'get' ? 'params' : 'data']: params,
+          ...options,
+        }),
+      );
     } catch (error) {
       if (error.isAxiosError) {
-        return this.handleRequestError(error, { url, method, params, type, options })
+        return this.handleRequestError(error, {
+          url,
+          method,
+          params,
+          type,
+          options,
+        });
       }
       throw new ExplorerRequestError({
         type,
         error,
         url: `${this.config.baseUrl}${url}`,
         instance: this,
-      })
+      });
     }
   }
 
@@ -654,8 +732,8 @@ class Explorer {
    *
    * @param {Object} response
    */
-  modifyGeneralResponse (response) {
-    return response.data
+  modifyGeneralResponse(response) {
+    return response.data;
   }
 
   /**
@@ -664,8 +742,8 @@ class Explorer {
    * @param tx
    * @return {string}
    */
-  getTxNonce (tx) {
-    return undefined
+  getTxNonce(tx) {
+    return undefined;
   }
 
   /**
@@ -674,8 +752,8 @@ class Explorer {
    * @param {Object} tx The transaction response.
    * @return {Number} The transaction fee.
    */
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit(tx.fee || this.wallet.feeDefault || 0)
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit(tx.fee || this.wallet.feeDefault || 0);
   }
 
   /**
@@ -684,8 +762,8 @@ class Explorer {
    * @param {Object} tx The transaction
    * @return {Number} The transaction amount.
    */
-  getTxValue (address, tx) {
-    throw new UndeclaredAbstractMethodError('getTxValue', this)
+  getTxValue(address, tx) {
+    throw new UndeclaredAbstractMethodError('getTxValue', this);
   }
 
   /**
@@ -694,8 +772,8 @@ class Explorer {
    * @param {Object} tx The transaction
    * @return {Boolean} The transaction direction.
    */
-  getTxDirection (selfAddress, tx) {
-    return tx.vin && !tx.vin.find(({ addr }) => addr === selfAddress) && true
+  getTxDirection(selfAddress, tx) {
+    return tx.vin && !tx.vin.find(({ addr }) => addr === selfAddress) && true;
   }
 
   /**
@@ -704,22 +782,22 @@ class Explorer {
    * @param {Object} tx The transaction response.
    * @return {(Boolean|String)} The transaction recipient.
    */
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     if (tx.vin) {
       if (this.getTxDirection(selfAddress, tx)) {
-        return tx.vin[0].addr
+        return tx.vin[0].addr;
       }
 
-      const vout = tx.vout.find(({ scriptPubKey: { addresses } }) => (
-        !addresses.includes(selfAddress)
-      ))
+      const vout = tx.vout.find(
+        ({ scriptPubKey: { addresses } }) => !addresses.includes(selfAddress),
+      );
 
       if (vout) {
-        return vout.scriptPubKey.addresses[0]
+        return vout.scriptPubKey.addresses[0];
       }
     }
 
-    return '...'
+    return '...';
   }
 
   /**
@@ -728,8 +806,8 @@ class Explorer {
    * @param {Object} tx The transaction response
    * @return {Date} The transaction datetime.
    */
-  getTxDateTime (tx) {
-    return new Date(Number(`${tx.time}000`))
+  getTxDateTime(tx) {
+    return new Date(Number(`${tx.time}000`));
   }
 
   /**
@@ -738,10 +816,8 @@ class Explorer {
    * @param {Object} tx The transaction response
    * @return {String} The transaction date.
    */
-  getTxDate (tx) {
-    return this.getTxDateTime(tx)
-      .toDateString()
-      .slice(4) // eslint-disable-line no-magic-numbers
+  getTxDate(tx) {
+    return this.getTxDateTime(tx).toDateString().slice(4);
   }
 
   /**
@@ -750,10 +826,8 @@ class Explorer {
    * @param {Object} tx The transaction response
    * @return {String} The transaction time.
    */
-  getTxTime (tx) {
-    return this.getTxDateTime(tx)
-      .toTimeString()
-      .slice(0, 5) // eslint-disable-line no-magic-numbers
+  getTxTime(tx) {
+    return this.getTxDateTime(tx).toTimeString().slice(0, 5);
   }
 
   /**
@@ -762,8 +836,8 @@ class Explorer {
    * @param {Object} tx The transaction response.
    * @return {Number} The transaction confirmations.
    */
-  getTxConfirmations (tx) {
-    return tx.confirmations || 0
+  getTxConfirmations(tx) {
+    return tx.confirmations || 0;
   }
 
   /**
@@ -772,8 +846,8 @@ class Explorer {
    * @param {Object} tx The transaction response.
    * @return {String} The transaction hash.
    */
-  getTxHash (tx) {
-    return tx.txid
+  getTxHash(tx) {
+    return tx.txid;
   }
 
   /**
@@ -781,12 +855,12 @@ class Explorer {
    *
    * @param {Object} tx The transaction response
    */
-  getTxMemo (tx) {
-    return ''
+  getTxMemo(tx) {
+    return '';
   }
 
-  getTxFeeTicker () {
-    return this.wallet.ticker
+  getTxFeeTicker() {
+    return this.wallet.ticker;
   }
 
   /**
@@ -795,8 +869,8 @@ class Explorer {
    * @param tx
    * @returns {*|string}
    */
-  getTxType (tx) {
-    return TxTypes[tx.type] || TxTypes.TRANSFER
+  getTxType(tx) {
+    return TxTypes[tx.type] || TxTypes.TRANSFER;
   }
 
   /**
@@ -804,108 +878,110 @@ class Explorer {
    *
    * @return {Promise<String>}
    */
-  async getBalance (address, useSatoshis = false) {
-    const info = await this.getInfo(address)
+  async getBalance(address, useSatoshis = false) {
+    const info = await this.getInfo(address);
 
     if (info && info.balance) {
       if (useSatoshis) {
-        return info.balance
+        return info.balance;
       }
-      return String(this.wallet.toCurrencyUnit(info.balance))
+      return String(this.wallet.toCurrencyUnit(info.balance));
     }
 
-    return null
+    return null;
   }
 
   /**
    * @return {String}
    */
-  getLatestBlockUrl () {
-    throw new UndeclaredAbstractMethodError('getLatestBlockUrl', this)
+  getLatestBlockUrl() {
+    throw new UndeclaredAbstractMethodError('getLatestBlockUrl', this);
   }
 
   /**
    * @return {String}
    */
-  getLatestBlockMethod () {
-    return 'get'
+  getLatestBlockMethod() {
+    return 'get';
   }
 
   /**
    * @return {Object}
    */
-  getLatestBlockParams () {
-    return {}
+  getLatestBlockParams() {
+    return {};
   }
 
   /**
    * @return {Object}
    */
-  modifyLatestBlockResponse (response) {
-    return response
+  modifyLatestBlockResponse(response) {
+    return response;
   }
 
   /**
    * @return {Promise<Object>}
    */
-  async getLatestBlock () {
+  async getLatestBlock() {
     const response = await this.request(
       this.getLatestBlockUrl(),
       this.getLatestBlockMethod(),
       this.getLatestBlockParams(),
       GET_LATEST_BLOCK_TYPE,
-      this.getLatestBlockOptions()
-    )
+      this.getLatestBlockOptions(),
+    );
 
-    return this.modifyLatestBlockResponse(response)
+    return this.modifyLatestBlockResponse(response);
   }
 
-  getBlockUrl () {
-    throw new UndeclaredAbstractMethodError('getBlockUrl', this)
+  getBlockUrl() {
+    throw new UndeclaredAbstractMethodError('getBlockUrl', this);
   }
 
-  getBlockMethod () {
-    throw new UndeclaredAbstractMethodError('getBlockMethod', this)
+  getBlockMethod() {
+    throw new UndeclaredAbstractMethodError('getBlockMethod', this);
   }
 
-  getBlockParams () {
-    throw new UndeclaredAbstractMethodError('getBlockParams', this)
+  getBlockParams() {
+    throw new UndeclaredAbstractMethodError('getBlockParams', this);
   }
 
-  getBlockOptions () {
-    throw new UndeclaredAbstractMethodError('getBlockParams', this)
+  getBlockOptions() {
+    throw new UndeclaredAbstractMethodError('getBlockParams', this);
   }
 
-  async getBlock (hash) {
+  async getBlock(hash) {
     const response = await this.request(
       this.getBlockUrl(hash),
       this.getBlockMethod(),
       this.getBlockParams(),
       GET_BLOCK_TYPE,
-      this.getBlockOptions()
-    )
+      this.getBlockOptions(),
+    );
 
-    return this.modifyGetBlockResponse(response)
+    return this.modifyGetBlockResponse(response);
   }
 
-  modifyGetBlockResponse (response) {
-    return response
+  modifyGetBlockResponse(response) {
+    return response;
   }
 
-  getTxLimit () {
-    return this.defaultTxLimit
+  getTxLimit() {
+    return this.defaultTxLimit;
   }
 
-  createError (msg) {
-    return new Error(`[${this.wallet.ticker}] ${this.constructor.name} Error: ${msg}`)
+  createError(msg) {
+    return new Error(
+      `[${this.wallet.ticker}] ${this.constructor.name} Error: ${msg}`,
+    );
   }
 
-  async getSocketTransaction ({ address, hash, tokens, type, scriptPubKey }) {
-    const newTx = await this.getTransaction(address, hash, tokens)
+  async getSocketTransaction({ address, hash, tokens, type, scriptPubKey }) {
+    const newTx = await this.getTransaction(address, hash, tokens);
 
     // await history.filterAndUpdateTransactions([newTx])
 
-    this.txNotifier.notify(type, newTx, newTx.walletid, newTx.ticker, hash)
+    this.txNotifier.notify(type, newTx, newTx.walletid, newTx.ticker, hash);
   }
 
   /**
@@ -916,8 +992,8 @@ class Explorer {
    * @returns {string} - NFT info url.
    * @throws {UndeclaredAbstractMethodError}
    */
-  makeNftInfoUrl (contractAddress, tokenId) {
-    throw new UndeclaredAbstractMethodError('makeNftInfoUrl', this)
+  makeNftInfoUrl(contractAddress, tokenId) {
+    throw new UndeclaredAbstractMethodError('makeNftInfoUrl', this);
   }
 
   /**
@@ -928,8 +1004,8 @@ class Explorer {
    * @returns {Promise<Object<NftToken>[]>}
    * @throws {UndeclaredAbstractMethodError}
    */
-  async fetchNftList (coin) {
-    throw new UndeclaredAbstractMethodError('fetchNftList', this)
+  async fetchNftList(coin) {
+    throw new UndeclaredAbstractMethodError('fetchNftList', this);
   }
 
   /**
@@ -945,9 +1021,16 @@ class Explorer {
    * @returns {Promise<{tx: string}>} - Transaction hash.
    * @throws {UndeclaredAbstractMethodError}
    */
-  async sendNft (coin, toAddress, contractAddress, tokenId, tokenStandard, options) {
-    throw new UndeclaredAbstractMethodError('fetchNftList', this)
+  async sendNft(
+    coin,
+    toAddress,
+    contractAddress,
+    tokenId,
+    tokenStandard,
+    options,
+  ) {
+    throw new UndeclaredAbstractMethodError('fetchNftList', this);
   }
 }
 
-export default Explorer
+export default Explorer;
