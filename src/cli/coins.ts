@@ -1,10 +1,15 @@
 import * as coins from '@/coins/collection';
 import { Coin } from '@/abstract';
 import createCoin from '@/coins/createCoin';
-import configs from '@/resources/wallets_fee.json'
+import walletsConfig from '@/resources/wallets_fee.json'
 
-const createWallets = async () => {
-  return configs.reduce((accum: Coin[], coinData: any) => {
+const createWallets = async (arg?: {id: string}) => {
+
+  const config = arg
+    ? walletsConfig.filter(({id: coinId}) => coinId === arg.id)
+    : walletsConfig
+
+  return config.reduce((accum: Coin[], coinData: any) => {
     const coinClass = coinData.className as keyof typeof coins
     if (coins[coinClass]) {
       const wallet = createCoin(
