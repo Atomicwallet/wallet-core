@@ -4,7 +4,7 @@ import { createWallets } from './coins';
 import { generateKeys } from './keys';
 import { initializeMnemonic } from './mnemonic';
 import type { IKeysObject } from './types';
-import { type RawTxBinary, RawTxHash, RawTxHex, RawTxObject } from '@/abstract';
+import { type RawTxBinary, RawTxHex, RawTxObject } from '@/abstract';
 
 program.name('atomic-core-cli').description('atomic-core CLI').version('1.0.0');
 
