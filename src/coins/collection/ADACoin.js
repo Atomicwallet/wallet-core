@@ -66,7 +66,7 @@ class ADACoin extends HasProviders(Coin) {
       submitUrl: submitUrl || DEFAULT_ADALITE_SUBMIT_URL,
       dustAmount: DUST_AMOUNT,
       dependencies: {
-        [ADA_LIB_API]: new LazyLoadedLib(() => import('./libs/AdaLibApi')),
+        [ADA_LIB_API]: new LazyLoadedLib(() => import('../libs/AdaLibApi')),
       },
     };
 
@@ -191,7 +191,7 @@ class ADACoin extends HasProviders(Coin) {
         console.error(error);
       })
       .finally(() => {
-        if(originalFetch && window) {
+        if (originalFetch && window) {
           window.fetch = originalFetch;
         }
       });

@@ -120,7 +120,8 @@ class EOSCoin extends HasProviders(Coin) {
           this.address = accountsInfo[0];
         }
       })
-      .catch((error) => {}
+      .catch(
+        (error) => {},
         // logger.error({
         //   instance: this,
         //   error,
