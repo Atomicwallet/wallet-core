@@ -1,10 +1,9 @@
 import { program } from 'commander';
 
-import { createWallets } from './coins';
-import { generateKeys } from './keys';
-import { initializeMnemonic } from './mnemonic';
-import type { IKeysObject } from './types';
-import { type RawTxBinary, RawTxHex, RawTxObject } from '@/abstract';
+import type { RawTxHex, RawTxObject } from '@/abstract';
+import { type RawTxBinary } from '@/abstract';
+import { createWallets, generateKeys } from '@/coins';
+import { initializeMnemonic, type IKeysObject } from '@/utils';
 
 program.name('atomic-core-cli').description('atomic-core CLI').version('1.0.0');
 
@@ -49,7 +48,7 @@ program
       .map((fulfilled) => fulfilled?.value)
       .filter(Boolean);
 
-    console.log('OK')
+    console.log('OK');
     console.log(keys);
   });
 
@@ -61,45 +60,60 @@ program
   .option('-a, --amount <amount>', 'Amount, e.g. 1.35')
   .option('-r, --recepient <recepient>', 'Recepient address')
   .option('-m, --memo <memo>', 'Memo info')
-  .action(async (options: { wallet: string, amount: string, recepient: string, phrase?: string, memo?: string }): Promise<void> => {
-    console.log('Init mnemonic...');
-    const mnemonic = await initializeMnemonic(options.phrase);
+  .action(
+    async (options: {
+      wallet: string;
+      amount: string;
+      recepient: string;
+      phrase?: string;
+      memo?: string;
+    }): Promise<void> => {
+      console.log('Init mnemonic...');
+      const mnemonic = await initializeMnemonic(options.phrase);
 
-    console.log('OK');
+      console.log('OK');
 
-    console.log(`Create ${options.wallet} wallet...`);
-    const wallets = await createWallets({id: options.wallet});
-    const wallet = wallets.find((wallet) => wallet.id.toLowerCase() === options.wallet.toLowerCase());
+      console.log(`Create ${options.wallet} wallet...`);
+      const wallets = await createWallets({ id: options.wallet });
+      const wallet = wallets.find(
+        (wallet) => wallet.id.toLowerCase() === options.wallet.toLowerCase(),
+      );
 
-    if(!wallet) {
-      throw new Error(`Failed to create ${options.wallet}, not supported`);
-    }
-    console.log('OK');
+      if (!wallet) {
+        throw new Error(`Failed to create ${options.wallet}, not supported`);
+      }
+      console.log('OK');
 
-    const validAddress = await wallet.validateAddress(options.recepient) as unknown as boolean;
+      const validAddress = (await wallet.validateAddress(
+        options.recepient,
+      )) as unknown as boolean;
 
-    if(!validAddress) {
-      throw new Error(`Invalid recepient address: ${options.recepient}`);
-    }
+      if (!validAddress) {
+        throw new Error(`Invalid recepient address: ${options.recepient}`);
+      }
 
-    console.log('Generate key pairs...');
-    await Promise.allSettled(
-      wallets.map(async (wallet) => generateKeys(wallet, mnemonic)),
-    );
-    console.log('OK')
+      console.log('Generate key pairs...');
+      await Promise.allSettled(
+        wallets.map(async (wallet) => generateKeys(wallet, mnemonic)),
+      );
+      console.log('OK');
 
-    console.log('Create transaction...')
-    const tx = await wallet.createTransaction({amount: wallet.toMinimalUnit(options.amount), address: options.recepient, memo: options.memo})
-      .catch((err) => {
-        console.log('Failed to create transaction...\n', err.message);
-      });
+      console.log('Create transaction...');
+      const tx = await wallet
+        .createTransaction({
+          amount: wallet.toMinimalUnit(options.amount),
+          address: options.recepient,
+          memo: options.memo,
+        })
+        .catch((err) => {
+          console.log('Failed to create transaction...\n', err.message);
+        });
 
-    if(tx) {
-      console.log(`Signed tx:\n${tx}`)
-    }
-
-
-  });
+      if (tx) {
+        console.log(`Signed tx:\n${tx}`);
+      }
+    },
+  );
 
 program
   .command('submitTx')
@@ -107,38 +121,44 @@ program
   .option('-p, --phrase <phrase>', 'Generate key-pairs from mnemonic')
   .option('-w, --wallet <wallet>', 'wallet ticker, e.g. BTC')
   .option('-t, --tx <tx>', 'signed tx hex')
-  .action(async (options: {phrase: string, wallet: string, tx: RawTxHex | RawTxBinary | RawTxObject}): Promise<void> => {
-    console.log('Init mnemonic...');
-    const mnemonic = await initializeMnemonic(options.phrase);
+  .action(
+    async (options: {
+      phrase: string;
+      wallet: string;
+      tx: RawTxHex | RawTxBinary | RawTxObject;
+    }): Promise<void> => {
+      console.log('Init mnemonic...');
+      const mnemonic = await initializeMnemonic(options.phrase);
 
-    console.log('OK');
+      console.log('OK');
 
-    console.log(`Create ${options.wallet} wallet...`);
-    const wallets = await createWallets({id: options.wallet});
-    const wallet = wallets.find((wallet) => wallet.id.toLowerCase() === options.wallet.toLowerCase());
+      console.log(`Create ${options.wallet} wallet...`);
+      const wallets = await createWallets({ id: options.wallet });
+      const wallet = wallets.find(
+        (wallet) => wallet.id.toLowerCase() === options.wallet.toLowerCase(),
+      );
 
-    if(!wallet) {
-      throw new Error(`Failed to create ${options.wallet}, not supported`);
-    }
-    console.log('OK');
+      if (!wallet) {
+        throw new Error(`Failed to create ${options.wallet}, not supported`);
+      }
+      console.log('OK');
 
-    console.log('Generate key pairs...');
-    await Promise.allSettled(
-      wallets.map(async (wallet) => generateKeys(wallet, mnemonic)),
-    );
-    console.log('OK')
+      console.log('Generate key pairs...');
+      await Promise.allSettled(
+        wallets.map(async (wallet) => generateKeys(wallet, mnemonic)),
+      );
+      console.log('OK');
 
-    console.log('Submit transaction...')
-    const submit = await wallet.sendTransaction(options.tx)
-      .catch((err) => {
+      console.log('Submit transaction...');
+      const submit = await wallet.sendTransaction(options.tx).catch((err) => {
         console.log('Faile to submit transaction...\n', err.message);
-      })
+      });
 
-    if(submit) {
-      console.log(`Submit OK:\n${submit}`)
-    }
-
-  });
+      if (submit) {
+        console.log(`Submit OK:\n${submit}`);
+      }
+    },
+  );
 
 program.parse(process.argv);
 
