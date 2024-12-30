@@ -3,7 +3,7 @@
 // * https://www.typescriptlang.org/ja/tsconfig
 
 {
-  "include": ["./src/**/*.ts", "./src/@types/**/*.ts"],
+  "include": ["./src/**/*.ts", "./src/@types/**/*.ts", "./src/__tests__/**/*.test.ts"],
   "exclude": [
     "./node_modules",
     "./tests/**/*.ts"
