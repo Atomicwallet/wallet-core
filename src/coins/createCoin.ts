@@ -1,6 +1,10 @@
-import type { CoinConfigType } from '@/abstract';
+import type { Coin, CoinConfigType } from '@/abstract';
 import { createEVMCoin } from '@/coins/collection/EVM';
 import type { EVMConfig, EVMUserConfig } from '@/coins/collection/EVM/types';
+
+export type CoinDataConfig = CoinConfigType &
+  Partial<EVMUserConfig> &
+  Partial<EVMConfig> & { walletType?: string };
 
 /**
  * Creates new coin instance
@@ -8,17 +12,14 @@ import type { EVMConfig, EVMUserConfig } from '@/coins/collection/EVM/types';
  * @param coinData
  * @return {Coin}
  */
-function createCoin(
-  CoinClass: unknown,
-  coinData: CoinConfigType &
-    Partial<EVMUserConfig> &
-    Partial<EVMConfig> & { walletType?: string },
-) {
+function createCoin(CoinClass: unknown, coinData: CoinDataConfig): Coin {
   if (coinData.walletType === 'EVM') {
-    return createEVMCoin(coinData);
+    // @todo define proper return type
+    return createEVMCoin(coinData) as unknown as Coin;
   }
 
-  // @ts-ignore
+  // @ts-expect-error define generic type
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return new CoinClass({
     id: coinData.id,
     ticker: coinData.ticker,
