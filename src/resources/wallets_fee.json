@@ -14,7 +14,7 @@
     "explorers": [
       {
         "className": "BlockbookV2Explorer",
-        "baseUrl": "https://bitcoin.atomicwallet.io/"
+        "baseUrl": "https://blockbook.btc.zelcore.io/"
       }
     ]
   },
