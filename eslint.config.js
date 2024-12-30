@@ -1,23 +1,32 @@
-const jsConfig = require('@eslint/js').configs.recommended;
+const js = require('@eslint/js');
 const prettierConfig = require('eslint-config-prettier');
 const tsPlugin = require('@typescript-eslint/eslint-plugin');
-const globalsModule = require('globals');
+const globals = require('globals');
+const prettierPlugin = require('eslint-plugin-prettier');
+const nPlugin = require('eslint-plugin-n');
+const unusedImportsPlugin = require('eslint-plugin-unused-imports');
+const importPlugin = require('eslint-plugin-import');
+const tsParser = require('@typescript-eslint/parser');
 
-const globalObjects = Object.assign(
-  {},
-  globalsModule.browser,
-  globalsModule.node,
-  globalsModule.jest,
-);
+// Helper function to clean up globals
+const cleanGlobals = (globalsObj) => {
+  const cleaned = {};
+  for (const key in globalsObj) {
+    cleaned[key.trim()] = globalsObj[key];
+  }
+  return cleaned;
+};
+
+// Clean and merge globals
+const globalObjects = {
+  ...cleanGlobals(globals.browser),
+  ...cleanGlobals(globals.node),
+  ...cleanGlobals(globals.jest),
+};
 
 module.exports = [
-  // Include the recommended JavaScript config
-  jsConfig,
-
-  // Include Prettier config
+  js.configs.recommended,
   prettierConfig,
-
-  // Base settings and plugins
   {
     settings: {
       'import/resolver': {
@@ -28,14 +37,14 @@ module.exports = [
       },
     },
     plugins: {
-      prettier: require('eslint-plugin-prettier'),
-      n: require('eslint-plugin-n'),
-      'unused-imports': require('eslint-plugin-unused-imports'),
-      import: require('eslint-plugin-import'),
-      '@typescript-eslint': require('@typescript-eslint/eslint-plugin'),
+      prettier: prettierPlugin,
+      n: nPlugin,
+      'unused-imports': unusedImportsPlugin,
+      import: importPlugin,
+      '@typescript-eslint': tsPlugin,
     },
     languageOptions: {
-      globals: globalObjects, // Use languageOptions.globals instead of globals
+      globals: globalObjects,
     },
   },
 
@@ -54,9 +63,11 @@ module.exports = [
   // Overrides for TypeScript files
   {
     files: ['**/*.ts'],
-    parser: require('@typescript-eslint/parser'),
-    parserOptions: {
-      project: './tsconfig.json',
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+      },
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
