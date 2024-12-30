@@ -13,6 +13,10 @@ if (!config) {
 
 const wallet = createCoin(ETHCoin, config as CoinDataConfig);
 
+if (!wallet) {
+  throw new Error(`Failed to initialize ${id} wallet`);
+}
+
 const test = () => generateWalletTests(wallet);
 
 if (require.main === module) {
