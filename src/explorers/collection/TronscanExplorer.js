@@ -1,6 +1,6 @@
 import TronscanClient from '@tronscan/client';
+import { ExplorerRequestError } from 'src/errors';
 
-import { ExplorerRequestError } from '../../errors/index.js';
 import { getTokenId } from '../../utils';
 import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';

@@ -1,7 +1,7 @@
 import { Api, JsonRpc } from 'eosjs';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
+import { ExplorerRequestError, WalletError } from 'src/errors';
 
-import { ExplorerRequestError, WalletError } from '../../errors/index.js';
 import {
   SEND_TRANSACTION_TYPE,
   LOAD_WALLET_ERROR,

@@ -1,6 +1,6 @@
 import nem from 'nem-sdk';
+import { ExplorerRequestError } from 'src/errors';
 
-import { ExplorerRequestError } from '../../errors/index.js';
 import { hex2a } from '../../utils';
 import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';

@@ -1,8 +1,9 @@
+import { UnknownConfigKeyError } from 'src/errors';
+
 import { Coin } from '../../abstract';
 // import configManager, { ConfigKey } from '../ConfigManager';
 // import AddrCacheDb from '../AddrCacheDb';
 import { NftMixin } from '../../coins/nfts/mixins';
-import { UnknownConfigKeyError } from '../../errors';
 import SolanaNodeExplorer from '../../explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from '../../explorers/collection/SolanaTritonExplorer';
 import { SOLToken } from '../../tokens';

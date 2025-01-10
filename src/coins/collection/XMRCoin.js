@@ -1,7 +1,7 @@
 import BN from 'bn.js';
+import { ExternalError } from 'src/errors';
 
 import { Coin } from '../../abstract';
-import { ExternalError } from '../../errors';
 import MyMoneroExplorer from '../../explorers/collection/MyMoneroExplorer';
 import { getAccount, validateAddress as isAddressValid } from '../libs/monero';
 import { HasProviders } from '../mixins';

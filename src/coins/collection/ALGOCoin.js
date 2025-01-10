@@ -1,5 +1,6 @@
+import { WalletError } from 'src/errors';
+
 import Coin from '../../abstract/coin';
-import { WalletError } from '../../errors';
 import { AlgoExplorer, AlgoNodeExplorer } from '../../explorers/collection';
 import { LazyLoadedLib } from '../../utils';
 import { WALLET_ERROR } from '../../utils/const';

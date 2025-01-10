@@ -1,10 +1,10 @@
 import BN from 'bn.js';
+import { ExternalError } from 'src/errors';
 
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 // import { ConfigKey } from '../ConfigManager/ConfigManager.const';
-import { ExternalError } from '../../errors';
 import BlockscoutExplorer from '../../explorers/collection/BlockscoutExplorer';
 import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import dropDates from '../../resources/flr/drop-dates.json';

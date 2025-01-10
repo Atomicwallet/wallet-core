@@ -1,7 +1,8 @@
 // import history from '../History';
 
+import { WalletError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { WalletError } from '../../errors';
 import RippleExplorer from '../../explorers/collection/RippleExplorer';
 import { LazyLoadedLib } from '../../utils';
 import { SEND_TRANSACTION_TYPE } from '../../utils/const';

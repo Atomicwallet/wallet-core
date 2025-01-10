@@ -1,3 +1,4 @@
+import { ExplorerRequestError } from 'src/errors';
 import {
   Server,
   Networks,
@@ -8,7 +9,6 @@ import {
   TransactionBuilder,
 } from 'stellar-sdk';
 
-import { ExplorerRequestError } from '../../errors/index.js';
 import {
   GET_BALANCE_TYPE,
   GET_TRANSACTIONS_TYPE,

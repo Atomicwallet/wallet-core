@@ -1,6 +1,7 @@
 // import configManager from '../ConfigManager';
 // import logger from '../Logger';
-import { UndeclaredAbstractMethodError } from '../../errors';
+import { UndeclaredAbstractMethodError } from 'src/errors';
+
 import defaultValidators from '../../resources/staking/validators.json';
 import { Amount } from '../../utils';
 import {

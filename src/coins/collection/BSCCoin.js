@@ -1,11 +1,11 @@
 import BN from 'bn.js';
+import { ExternalError } from 'src/errors';
 import Web3 from 'web3';
 
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager, { ConfigKey } from '../ConfigManager';
 import { NftMixin } from '../../coins/nfts/mixins';
-import { ExternalError } from '../../errors';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
 import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
 import MoralisExplorer from '../../explorers/collection/MoralisExplorer';

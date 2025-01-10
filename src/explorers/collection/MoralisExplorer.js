@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ExternalError, InternalError } from 'src/errors';
 
 import { ETHNftToken } from '../../coins/nfts';
 import {
@@ -10,7 +11,6 @@ import {
 } from '../../coins/nfts/ETHNftToken';
 import { getTransformedTokenUri } from '../../coins/nfts/utils';
 import { MORALIS_API_KEY, MORALIS_NATIVE_API } from '../../env';
-import { ExternalError, InternalError } from '../../errors/index.js';
 import {
   GET_TRANSACTIONS_TYPE,
   EXTERNAL_ERROR,

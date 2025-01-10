@@ -1,4 +1,5 @@
-import { ExplorerRequestError } from '../../errors/index.js';
+import { ExplorerRequestError } from 'src/errors';
+
 import validators from '../../resources/staking/validators.json';
 import { SEND_TRANSACTION_TYPE, EXTERNAL_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';

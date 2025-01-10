@@ -1,5 +1,6 @@
+import { WalletError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { WalletError } from '../../errors';
 import PolkadotNodeExplorer from '../../explorers/collection/PolkadotNodeExplorer';
 import PolkadotSidecarExplorer from '../../explorers/collection/PolkadotSidecarExplorer';
 import PolkaScanExplorer from '../../explorers/collection/PolkaScanExplorer';

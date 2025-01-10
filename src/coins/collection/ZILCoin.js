@@ -1,8 +1,8 @@
 import { bytes, Long, units } from '@zilliqa-js/util';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
+import { WalletError } from 'src/errors';
 
 import { Coin } from '../../abstract';
-import { WalletError } from '../../errors';
 import ViewblockExplorer from '../../explorers/collection//ViewblockExplorer';
 import ZilliqaAtomicExplorer from '../../explorers/collection//ZilliqaAtomicExplorer';
 import ZilliqaNodeExplorer from '../../explorers/collection//ZilliqaNodeExplorer';

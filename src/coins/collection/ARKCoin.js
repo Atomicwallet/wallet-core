@@ -1,5 +1,6 @@
+import { WalletError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { WalletError } from '../../errors';
 import ArkExplorer from '../../explorers/collection/ArkExplorer';
 import { LazyLoadedLib } from '../../utils';
 import { WALLET_ERROR } from '../../utils/const';

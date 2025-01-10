@@ -4,10 +4,10 @@ import { SigningStargateClient } from '@cosmjs/stargate';
 import bech32 from 'bech32';
 import * as BitcoinJS from 'bitcoinjs-lib';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { ExplorerRequestError, WalletError } from 'src/errors';
 import wif from 'wif';
 
 import { Coin } from '../../abstract';
-import { ExplorerRequestError, WalletError } from '../../errors';
 import CosmosNodeExplorerV2 from '../../explorers/collection/CosmosNodeExplorerV2';
 import { Amount } from '../../utils';
 import {

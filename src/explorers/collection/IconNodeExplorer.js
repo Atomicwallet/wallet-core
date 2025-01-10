@@ -1,6 +1,6 @@
 import IconService from 'icon-sdk-js';
+import { ExplorerRequestError } from 'src/errors';
 
-import { ExplorerRequestError } from '../../errors/index.js';
 import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 

@@ -1,5 +1,6 @@
+import { ExternalError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { ExternalError } from '../../errors';
 import AptExplorer from '../../explorers/collection/AptExplorer';
 import { LazyLoadedLib } from '../../utils';
 import { EXTERNAL_ERROR } from '../../utils/const';

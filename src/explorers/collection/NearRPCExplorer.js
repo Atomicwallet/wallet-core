@@ -4,7 +4,8 @@ import lodash from 'lodash';
 import * as nearAPI from 'near-api-js';
 
 // import logger from '../Logger'
-import { ExternalError } from '../../errors/index.js';
+import { ExternalError } from 'src/errors';
+
 import { Amount } from '../../utils';
 import { EXTERNAL_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';

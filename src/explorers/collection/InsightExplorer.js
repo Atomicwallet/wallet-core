@@ -1,7 +1,7 @@
 import axios from 'axios';
 import bitcoinCashAddressTools from 'bchaddrjs';
+import { ExplorerRequestError } from 'src/errors';
 
-import { ExplorerRequestError } from '../../errors/index.js';
 import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';

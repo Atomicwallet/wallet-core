@@ -1,4 +1,5 @@
-import { ExternalError, InternalError } from '../../../errors';
+import { ExternalError, InternalError } from 'src/errors';
+
 import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../../utils/const';
 // import nftHistory from '../../NftHistory';
 

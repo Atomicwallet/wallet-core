@@ -1,4 +1,5 @@
-import { ExplorerRequestError } from '../../errors/index.js';
+import { ExplorerRequestError } from 'src/errors';
+
 import {
   SEND_TRANSACTION_TYPE,
   GET_UTXO_TYPE,

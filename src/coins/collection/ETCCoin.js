@@ -1,5 +1,6 @@
+import { ExplorerRequestError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { ExplorerRequestError } from '../../errors';
 import BlockscoutExplorer from '../../explorers/collection/BlockscoutExplorer';
 import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import { LazyLoadedLib } from '../../utils';

@@ -1,4 +1,5 @@
-import { ExplorerRequestError } from '../../errors/index.js';
+import { ExplorerRequestError } from 'src/errors';
+
 import {
   GET_BALANCE_TYPE,
   GET_TRANSACTIONS_TYPE,

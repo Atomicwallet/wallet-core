@@ -1,4 +1,5 @@
-import { ExplorerRequestError } from '../../errors/index.js';
+import { ExplorerRequestError } from 'src/errors';
+
 import { EXPLORER_API_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 

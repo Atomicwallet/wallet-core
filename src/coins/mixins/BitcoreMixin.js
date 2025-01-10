@@ -1,6 +1,6 @@
 import coinSelect from 'coinselect';
+import { WalletError } from 'src/errors';
 
-import { WalletError } from '../../errors';
 import { LOAD_WALLET_ERROR, LIB_NAME_INDEX } from '../../utils/const';
 
 const { BITCORE } = LIB_NAME_INDEX;

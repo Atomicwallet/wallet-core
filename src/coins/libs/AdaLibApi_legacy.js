@@ -2,8 +2,8 @@ import bs58 from 'bs58check';
 import core from 'cardano-crypto-js';
 import cbor from 'cbor';
 import { pbkdf2Sync } from 'pbkdf2';
+import { WalletError } from 'src/errors';
 
-import { WalletError } from '../../errors';
 import { WALLET_ERROR } from '../../utils/const';
 
 const HARDENED_THRESHOLD = 0x80000000;

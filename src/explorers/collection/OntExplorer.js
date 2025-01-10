@@ -1,6 +1,6 @@
 import { CONST, RestClient } from 'ontology-ts-sdk';
+import { ExplorerRequestError } from 'src/errors';
 
-import { ExplorerRequestError } from '../../errors/index.js';
 import {
   GET_TRANSACTIONS_TYPE,
   SEND_TRANSACTION_TYPE,

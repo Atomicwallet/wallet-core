@@ -1,7 +1,7 @@
 import BN from 'bn.js';
+import { WalletError } from 'src/errors';
 
 import { Coin } from '../../abstract';
-import { WalletError } from '../../errors';
 import IconExplorer from '../../explorers/collection/IconExplorer';
 import IconNodeExplorer from '../../explorers/collection/IconNodeExplorer';
 import { Amount, LazyLoadedLib } from '../../utils';

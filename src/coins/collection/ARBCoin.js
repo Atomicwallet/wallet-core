@@ -1,6 +1,7 @@
+import { ExternalError } from 'src/errors';
+
 import { Coin } from '../../abstract';
 import { NftMixin } from '../../coins/nfts/mixins';
-import { ExternalError } from '../../errors';
 import CovalentHQExplorer from '../../explorers/collection//CovalentHQExplorer';
 import EtherscanExplorer from '../../explorers/collection//EtherscanExplorer';
 import ETHNftExplorer from '../../explorers/collection//ETHNftExplorer';

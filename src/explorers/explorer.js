@@ -2,10 +2,14 @@ import axios from 'axios';
 import io from 'socket.io-client';
 // import history from './History'
 
+import {
+  UndeclaredAbstractMethodError,
+  ExplorerRequestError,
+} from 'src/errors';
+
 import { Emitter, TxNotifier } from '../utils';
-import Transaction from './Transaction';
-import { UndeclaredAbstractMethodError, ExplorerRequestError } from '../errors';
 import { TxTypes } from './enum';
+import Transaction from './Transaction';
 import {
   ONE_MINUTE,
   GET_BLOCK_TYPE,

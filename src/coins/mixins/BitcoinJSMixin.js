@@ -1,4 +1,5 @@
-import { WalletError, InsufficientFundsError } from '../../errors';
+import { WalletError, InsufficientFundsError } from 'src/errors';
+
 import {
   SEND_TRANSACTION_TYPE,
   WALLET_ERROR,

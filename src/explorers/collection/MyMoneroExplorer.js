@@ -1,6 +1,6 @@
 import axios from 'axios';
+import { ExternalError } from 'src/errors';
 
-import { ExternalError } from '../../errors/index.js';
 import { LazyLoadedLib, Emitter as emitter } from '../../utils';
 import { WALLETS } from '../../utils/const';
 import { getStringWithEnsuredEndChar } from '../../utils/convert';

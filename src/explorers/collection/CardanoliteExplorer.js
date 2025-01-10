@@ -1,4 +1,5 @@
-import { ExplorerRequestError, WalletError } from '../../errors/index.js';
+import { ExplorerRequestError, WalletError } from 'src/errors';
+
 import { GET_UTXO_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 

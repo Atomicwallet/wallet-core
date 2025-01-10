@@ -1,3 +1,4 @@
+import { ExplorerRequestError } from 'src/errors';
 import TonWeb from 'tonweb';
 
 import {
@@ -5,7 +6,6 @@ import {
   TONWEB_FALLBACK_INDEX_URL,
   TONWEB_FALLBACK_V2_URL,
 } from '../../env';
-import { ExplorerRequestError } from '../../errors/index.js';
 import { getTokenId } from '../../utils';
 import {
   GET_BALANCE_TYPE,

@@ -1,10 +1,10 @@
 import { Transaction } from '@zilliqa-js/account';
 import { RPCMethod } from '@zilliqa-js/core';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
+import { ExplorerRequestError } from 'src/errors';
 
 import ZilliqaAbstractExplorer from './ZilliqaAbstractExplorer.js';
 import RewardCalculator from '../../coins/libs/ZilliqaRewardCalculator';
-import { ExplorerRequestError } from '../../errors/index.js';
 import { SEND_TRANSACTION_TYPE, GET_BALANCE_TYPE } from '../../utils/const';
 
 const STAKING_PENGING_RANGE = 30800; // 50 testnet, 30800 mainnet

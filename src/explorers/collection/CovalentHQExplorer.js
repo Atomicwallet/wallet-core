@@ -1,4 +1,5 @@
-import { ExplorerRequestError } from '../../errors/index.js';
+import { ExplorerRequestError } from 'src/errors';
+
 import { getTokenId } from '../../utils';
 import {
   GET_BALANCE_TYPE,

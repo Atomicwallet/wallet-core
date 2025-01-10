@@ -1,6 +1,7 @@
+import { WalletError } from 'src/errors';
+
 import { Coin } from '../../abstract';
 import { DEFAULT_BINANCE_NET_URL } from '../../env';
-import { WalletError } from '../../errors';
 import BinanceBCExplorer from '../../explorers/collection/BinanceBCExplorer';
 import BinanceDex from '../../explorers/collection/BinanceDex';
 import BinanceExplorer from '../../explorers/collection/BinanceExplorer';

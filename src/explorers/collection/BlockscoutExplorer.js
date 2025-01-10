@@ -1,5 +1,6 @@
 // import configManager from '../ConfigManager'
-import { ExplorerRequestError } from '../../errors/index.js';
+import { ExplorerRequestError } from 'src/errors';
+
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
 // import logger from '../Logger'
 import { getTokenId } from '../../utils';

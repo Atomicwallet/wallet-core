@@ -1,5 +1,6 @@
+import { ExplorerRequestError } from 'src/errors';
+
 import { ETHERSCAN_API_KEY } from '../../env';
-import { ExplorerRequestError } from '../../errors/index.js';
 import { getTokenId } from '../../utils';
 import {
   GET_BALANCE_TYPE,

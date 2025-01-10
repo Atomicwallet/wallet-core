@@ -1,10 +1,10 @@
+import { ExternalError, InternalError } from 'src/errors';
 import Web3 from 'web3';
 
 import {
   ERC721_TOKEN_STANDARD,
   ERC1155_TOKEN_STANDARD,
 } from '../../coins/nfts/ETHNftToken';
-import { ExternalError, InternalError } from '../../errors/index.js';
 import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/const';
 import { getStringWithEnsuredEndChar } from '../../utils/convert';
 import Explorer from '../Explorer';

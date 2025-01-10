@@ -1,9 +1,9 @@
 import BN from 'bn.js';
+import { ExternalError } from 'src/errors';
 
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
-import { ExternalError } from '../../errors';
 import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import { LazyLoadedLib } from '../../utils';
 import { EXTERNAL_ERROR } from '../../utils/const';

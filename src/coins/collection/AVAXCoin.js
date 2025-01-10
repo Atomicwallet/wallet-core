@@ -1,10 +1,10 @@
 import BN from 'bn.js';
+import { ExternalError } from 'src/errors';
 
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 import { NftMixin } from '../../coins/nfts/mixins';
-import { ExternalError } from '../../errors';
 import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
 import MoralisExplorer from '../../explorers/collection/MoralisExplorer';
 import SnowTraceExplorer from '../../explorers/collection/SnowTraceExplorer';

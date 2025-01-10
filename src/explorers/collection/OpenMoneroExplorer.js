@@ -1,4 +1,5 @@
-import { ExternalError } from '../../errors/index.js';
+import { ExternalError } from 'src/errors';
+
 import { EXTERNAL_ERROR, GET_UTXO_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 

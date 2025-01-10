@@ -1,4 +1,5 @@
-import { ExplorerRequestError, WalletError } from '../../errors';
+import { ExplorerRequestError, WalletError } from 'src/errors';
+
 import {
   LazyLoadedLib,
   SEND_TRANSACTION_TYPE,

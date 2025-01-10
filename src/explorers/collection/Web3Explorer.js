@@ -1,5 +1,6 @@
 // import configManager from '../ConfigManager'
-import { ExplorerRequestError, InternalError } from '../../errors/index.js';
+import { ExplorerRequestError, InternalError } from 'src/errors';
+
 import { GET_BALANCE_TYPE, INTERNAL_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';

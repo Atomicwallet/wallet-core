@@ -1,5 +1,6 @@
+import { ExternalError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { ExternalError } from '../../errors';
 import Web3Explorer from '../../explorers/collection//Web3Explorer';
 import CovalentHQExplorer from '../../explorers/collection/CovalentHQExplorer';
 import EtherscanExplorer from '../../explorers/collection/EtherscanExplorer';

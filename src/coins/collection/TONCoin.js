@@ -1,5 +1,6 @@
+import { ExternalError, UnknownConfigKeyError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { ExternalError, UnknownConfigKeyError } from '../../errors';
 import TonwebExplorer from '../../explorers/collection/TonwebExplorer';
 import { TONToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';

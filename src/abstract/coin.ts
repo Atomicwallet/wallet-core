@@ -4,12 +4,12 @@
 
 import BN from 'bn.js';
 import isEqual from 'lodash/isEqual';
-
 import {
   ExplorerRequestError,
   ExternalError,
   UndeclaredAbstractMethodError,
-} from '../errors';
+} from 'src/errors';
+
 import { AbstractWallet } from '@/abstract';
 import type {
   RawTxBinary,

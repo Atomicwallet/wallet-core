@@ -1,6 +1,7 @@
+import { WalletError } from 'src/errors';
+
 import Coin from '../../abstract/coin';
 import { DEFAULT_ADALITE_SUBMIT_URL } from '../../env';
-import { WalletError } from '../../errors';
 import { AdaAtomicExplorer, YoroExplorer } from '../../explorers/collection';
 import { LazyLoadedLib, preventConcurrent } from '../../utils';
 import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const';

@@ -1,8 +1,9 @@
+import { ExternalError } from 'src/errors';
+
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager, { ConfigKey } from '../ConfigManager';
 import NftMixin from '../../coins/nfts/mixins/NftMixin';
-import { ExternalError } from '../../errors';
 import CovalentHQExplorer from '../../explorers/collection//CovalentHQExplorer';
 import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
 import MoralisExplorer from '../../explorers/collection/MoralisExplorer';

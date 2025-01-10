@@ -1,8 +1,8 @@
 // import logger from '../../Logger';
+import { UndeclaredAbstractMethodError } from 'src/errors';
 import InternalError from 'src/errors/InternalError';
 
 import { Token } from '../../abstract';
-import { UndeclaredAbstractMethodError } from '../../errors';
 import { db, getTokenId } from '../../utils';
 import { INTERNAL_ERROR } from '../../utils/const';
 

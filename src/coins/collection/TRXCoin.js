@@ -1,7 +1,8 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 6, 8, 16, 256] }] */
 /* eslint no-bitwise: ["error", { "allow": ["&"] }] */
+import { WalletError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { WalletError } from '../../errors';
 // import configManager, { ConfigKey } from '../ConfigManager';
 // import logger from '../Logger';
 import TrongridExplorer from '../../explorers/collection/TrongridExplorer';

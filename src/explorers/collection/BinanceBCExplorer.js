@@ -1,6 +1,7 @@
 // https://docs.bnbchain.org/docs/beaconchain/develop/api-reference/dex-api/staking/
 
-import { ExplorerRequestError } from '../../errors/index.js';
+import { ExplorerRequestError } from 'src/errors';
+
 import { Amount } from '../../utils';
 import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';

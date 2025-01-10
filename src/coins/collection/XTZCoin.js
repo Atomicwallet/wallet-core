@@ -1,8 +1,8 @@
 import axios from 'axios';
+import { ExplorerRequestError, WalletError } from 'src/errors';
 
 import { Coin } from '../../abstract';
 // import configManager from '../ConfigManager';
-import { ExplorerRequestError, WalletError } from '../../errors';
 // import { coinStakings } from '../Stakings';
 // import logger from '../Logger';
 import TzktIoV1Explorer from '../../explorers/collection/TzktIoV1Explorer';

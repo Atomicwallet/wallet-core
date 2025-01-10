@@ -1,6 +1,6 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import { ExplorerRequestError } from 'src/errors';
 
-import { ExplorerRequestError } from '../../errors/index.js';
 import {
   SEND_TRANSACTION_TYPE,
   GET_TRANSACTIONS_TYPE,

@@ -1,8 +1,9 @@
+import { ExternalError, UnknownConfigKeyError } from 'src/errors';
+
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 import NftMixin from '../../coins/nfts/mixins/NftMixin';
-import { ExternalError, UnknownConfigKeyError } from '../../errors';
 import EtherscanExplorer from '../../explorers/collection/EtherscanExplorer';
 import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import Transaction from '../../explorers/Transaction';

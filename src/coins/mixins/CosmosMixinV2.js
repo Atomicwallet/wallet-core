@@ -1,5 +1,6 @@
+import { ExplorerRequestError, WalletError } from 'src/errors';
+
 import StakingMixin from './StakingMixin';
-import { ExplorerRequestError, WalletError } from '../../errors';
 import { LazyLoadedLib, Amount } from '../../utils';
 import {
   ATOM_MSG_TYPES,

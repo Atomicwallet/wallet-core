@@ -1,5 +1,6 @@
+import { WalletError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { WalletError } from '../../errors';
 import NanonodeExplorer from '../../explorers/collection/NanonodeExplorer';
 import { LazyLoadedLib } from '../../utils';
 import { WALLET_ERROR } from '../../utils/const';

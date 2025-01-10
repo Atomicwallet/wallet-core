@@ -2,10 +2,10 @@ import crypto from 'crypto';
 import util from 'util';
 
 import axios from 'axios';
+import { WalletError } from 'src/errors';
 
 import { Coin } from '../../abstract';
 import { ATOMIC_HEDERA_ACCOUNTS_SERVICE } from '../../env';
-import { WalletError } from '../../errors';
 import HashnodeExplorer from '../../explorers/collection//HashnodeExplorer';
 import HederaMirrorNodeExplorer from '../../explorers/collection//HederaMirrorNodeExplorer';
 import HederaStakingExplorer from '../../explorers/collection//HederaStakingExplorer';

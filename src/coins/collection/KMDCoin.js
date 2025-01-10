@@ -1,5 +1,6 @@
+import { WalletError } from 'src/errors';
+
 import { Coin } from '../../abstract';
-import { WalletError } from '../../errors';
 import AtomicExplorer from '../../explorers/collection/AtomicExplorer';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
 import { LazyLoadedLib } from '../../utils';

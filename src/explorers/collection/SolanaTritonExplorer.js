@@ -13,9 +13,9 @@ import {
 import axios from 'axios';
 import BN from 'bn.js';
 import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz';
+import { ExternalError } from 'src/errors';
 
 import { SOLNftToken } from '../../coins/nfts';
-import { ExternalError } from '../../errors/index.js';
 import { chunkArray, getTokenId } from '../../utils';
 import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/const';
 import {

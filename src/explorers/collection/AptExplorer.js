@@ -1,6 +1,6 @@
 import { AptosClient, CoinClient } from 'aptos';
+import { ExternalError } from 'src/errors';
 
-import { ExternalError } from '../../errors/index.js';
 import {
   EXTERNAL_ERROR,
   GET_TRANSACTIONS_TYPE,
