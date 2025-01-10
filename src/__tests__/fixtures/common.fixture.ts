@@ -1,7 +1,5 @@
 import { createHash } from 'crypto';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 import BitcoreMnemonic from 'bitcore-mnemonic';
 
 import mapping from './mnemonic_mapping.json';

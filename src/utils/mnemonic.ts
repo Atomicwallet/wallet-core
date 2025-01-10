@@ -1,7 +1,6 @@
 import type { IKeys } from './types';
 
 const getMnemonicLib = async (): Promise<any> => {
-  // @ts-expect-error no type declarations
   return (await import('bitcore-mnemonic')).default;
 };
 

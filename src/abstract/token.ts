@@ -351,14 +351,10 @@ abstract class Token extends AbstractWallet {
     }
     Object.entries(data.feeData).forEach(([key, value]) => {
       if (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
         typeof this[key] !== 'undefined' &&
         typeof value !== 'undefined' &&
         key !== '__proto__'
       ) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
         this[key] = value;
       }
     });
