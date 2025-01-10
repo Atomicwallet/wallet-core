@@ -192,12 +192,13 @@
   },
   "engines": {
     "yarn": ">= 1.22.0",
-    "node": ">= 18"
+    "node": "=18"
   },
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "jest --runInBand"
   },
   "author": "",
   "license": "ISC"
