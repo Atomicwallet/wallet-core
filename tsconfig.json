@@ -51,9 +51,6 @@
     "baseUrl": "./",
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "paths": {
-      "@/*": ["src/*"]
-    },
     "preserveSymlinks": false,
     "rootDir": "src",
     "typeRoots": ["node_modules/@types", "src/@types"],
