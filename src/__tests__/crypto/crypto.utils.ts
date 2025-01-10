@@ -33,6 +33,9 @@ export function generateWalletTests(wallet: Coin) {
         expect(address).toBeDefined();
         expect(wallet.address).toBeDefined();
         expect(wallet.address).toBe(address);
+      } else {
+        // @ts-expect-error eos specific keytype
+        keys.privateKey = JSON.parse(keys.privateKey);
       }
 
       // @ts-expect-error privateKey types can differs
