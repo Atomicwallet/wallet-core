@@ -20,14 +20,17 @@ if (!wallet) {
 // @ts-expect-error unimplemented in abstract class
 const originalSign = wallet.signTransaction.bind(wallet);
 // @ts-expect-error mixin overload
-jest.spyOn(wallet, 'signTransaction').mockImplementation((tx) => {
+jest.spyOn(wallet, 'signTransaction').mockImplementation(async (tx) => {
   tx.timestamp = 1736272374040;
   tx.id = '8Se9QJKXpcZEwLqN5d9VfAWB757rXcoBXZjpi46xpHn7';
 
-  // waves lib generates random sig proofs for each iteration
-  tx.proofs = [];
+  const signed = await originalSign(tx);
 
-  return originalSign(tx);
+  const modified = JSON.parse(signed);
+
+  modified.proofs = [];
+
+  return JSON.stringify(modified);
 });
 
 generateWalletTests(wallet);
