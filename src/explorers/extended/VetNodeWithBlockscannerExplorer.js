@@ -1,6 +1,8 @@
-import { HasBlockscannerMixin } from '../mixins'
-import VetNodeExplorer from '../collection/VetNodeExplorer.js'
+import VetNodeExplorer from '../collection/VetNodeExplorer.js';
+import { HasBlockscannerMixin } from '../mixins';
 
-class VetNodeWithBlockscannerExplorer extends HasBlockscannerMixin(VetNodeExplorer) {}
+class VetNodeWithBlockscannerExplorer extends HasBlockscannerMixin(
+  VetNodeExplorer,
+) {}
 
-export default VetNodeWithBlockscannerExplorer
+export default VetNodeWithBlockscannerExplorer;

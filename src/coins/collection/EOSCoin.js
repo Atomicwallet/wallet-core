@@ -1,9 +1,7 @@
 import { Coin } from '../../abstract';
-// import logger from '../Logger';
-
-import { LazyLoadedLib } from '../../utils';
-import EOSNodeExplorer from '../../explorers/collection/EOSNodeExplorer';
 import EOSApiExplorer from '../../explorers/collection/EOSApiExplorer';
+import EOSNodeExplorer from '../../explorers/collection/EOSNodeExplorer';
+import { LazyLoadedLib } from '../../utils';
 import { HasProviders } from '../mixins';
 
 const eccLazyLoaded = new LazyLoadedLib(() => import('eosjs-ecc'));
@@ -120,13 +118,7 @@ class EOSCoin extends HasProviders(Coin) {
           this.address = accountsInfo[0];
         }
       })
-      .catch(
-        (error) => {},
-        // logger.error({
-        //   instance: this,
-        //   error,
-        // }),
-      );
+      .catch(() => {});
   }
 
   /**

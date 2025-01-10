@@ -1,9 +1,9 @@
 // import logger from '../../Logger';
+import { Token } from '../../abstract';
 import { UndeclaredAbstractMethodError } from '../../errors';
 import InternalError from '../../errors/InternalError';
 import { db, getTokenId } from '../../utils';
 import { INTERNAL_ERROR } from '../../utils/const';
-import { Token } from '../../abstract';
 
 const MAX_TICKER_LENGTH = 9;
 const MAX_NAME_LENGTH = 30;
@@ -71,12 +71,7 @@ const HasTokensMixin = (superclass) =>
           uniqueField: token.uniqueField,
         })
         .first()
-        .catch((error) =>
-          logger.error({
-            instance: this,
-            error,
-          }),
-        );
+        .catch(() => {});
 
       if (tokenItem && tokenItem.id) {
         await db.tokens.update(tokenItem.id, token);
@@ -93,12 +88,7 @@ const HasTokensMixin = (superclass) =>
           uniqueField,
         })
         .first()
-        .catch((error) =>
-          logger.error({
-            instance: this,
-            error,
-          }),
-        );
+        .catch(() => {});
 
       if (tokenItem && tokenItem.id) {
         await db.tokens.delete(tokenItem.id);

@@ -1,23 +1,22 @@
 import { Coin } from '../../abstract';
+import { NftMixin } from '../../coins/nfts/mixins';
+import { ExternalError } from '../../errors';
+import CovalentHQExplorer from '../../explorers/collection//CovalentHQExplorer';
+import EtherscanExplorer from '../../explorers/collection//EtherscanExplorer';
+import ETHNftExplorer from '../../explorers/collection//ETHNftExplorer';
+import MoralisExplorer from '../../explorers/collection//MoralisExplorer';
+import PolyscanExplorer from '../../explorers/collection//PolyscanExplorer';
+import Web3Explorer from '../../explorers/collection//Web3Explorer';
+import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer';
+import Transaction from '../../explorers/Transaction';
 import { ARBToken } from '../../tokens';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 // import { ConfigKey } from '../ConfigManager/ConfigManager.const';
-import { ExternalError } from '../../errors';
+import { LazyLoadedLib } from '../../utils';
 import { EXTERNAL_ERROR } from '../../utils/const';
 import { toCurrency } from '../../utils/convert';
-import Transaction from '../../explorers/Transaction';
 // import history from '../History';
-import { LazyLoadedLib } from '../../utils';
-
-import Web3Explorer from '../../explorers/collection//Web3Explorer';
-import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer';
-import ETHNftExplorer from '../../explorers/collection//ETHNftExplorer';
-import PolyscanExplorer from '../../explorers/collection//PolyscanExplorer';
-import MoralisExplorer from '../../explorers/collection//MoralisExplorer';
-import CovalentHQExplorer from '../../explorers/collection//CovalentHQExplorer';
-import EtherscanExplorer from '../../explorers/collection//EtherscanExplorer';
-import { NftMixin } from '../../coins/nfts/mixins';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
@@ -876,7 +875,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     //   // logger.error({ instance: this, error });
     //   return configManager.getLocal(configKey);
     // }
-    return {}
+    return {};
   }
 
   /**
@@ -885,7 +884,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    return this.#getForcedConfigOrFallback() // TOKENS_CONFIG_KEY;
+    return this.#getForcedConfigOrFallback(); // TOKENS_CONFIG_KEY;
   }
 
   /**
@@ -894,7 +893,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<Array>}
    */
   getBannedTokenList() {
-    return this.#getForcedConfigOrFallback() // BANNED_TOKENS_CONFIG_KEY;
+    return this.#getForcedConfigOrFallback(); // BANNED_TOKENS_CONFIG_KEY;
   }
 
   /**

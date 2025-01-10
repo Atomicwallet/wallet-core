@@ -1,8 +1,8 @@
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
-import { THETAToken } from '../../tokens';
 import ThetaExplorer from '../../explorers/collection/ThetaExplorer';
 import ThetaJSExplorer from '../../explorers/collection/ThetaJSExplorer';
+import { THETAToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';
 import { HasProviders, HasTokensMixin } from '../mixins';
 

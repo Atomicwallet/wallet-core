@@ -1,6 +1,8 @@
-import { HasBlockscannerMixin } from '../mixins'
-import BlockbookV2Explorer from '../collection/BlockbookV2Explorer.js'
+import BlockbookV2Explorer from '../collection/BlockbookV2Explorer.js';
+import { HasBlockscannerMixin } from '../mixins';
 
-class BlockbookV2WithBlockscannerExplorer extends HasBlockscannerMixin(BlockbookV2Explorer) {}
+class BlockbookV2WithBlockscannerExplorer extends HasBlockscannerMixin(
+  BlockbookV2Explorer,
+) {}
 
-export default BlockbookV2WithBlockscannerExplorer
+export default BlockbookV2WithBlockscannerExplorer;

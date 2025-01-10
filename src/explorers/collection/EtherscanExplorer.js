@@ -1,10 +1,15 @@
-import Explorer from '../Explorer'
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE, SEND_TRANSACTION_TYPE } from '../../utils/const'
-import { ExplorerRequestError } from '../../errors/index.js'
-import { getTokenId } from '../../utils'
-import { ETHERSCAN_API_KEY } from '../../env'
+import { ETHERSCAN_API_KEY } from '../../env';
+import { ExplorerRequestError } from '../../errors/index.js';
+import { getTokenId } from '../../utils';
+import {
+  GET_BALANCE_TYPE,
+  GET_TRANSACTIONS_TYPE,
+  ONE_MINUTE,
+  SEND_TRANSACTION_TYPE,
+} from '../../utils/const';
+import Explorer from '../Explorer';
 
-const getApiKey = (walletId) => walletId === 'ETH' ? ETHERSCAN_API_KEY : null
+const getApiKey = (walletId) => (walletId === 'ETH' ? ETHERSCAN_API_KEY : null);
 
 /**
  * Class for explorer.
@@ -13,19 +18,23 @@ const getApiKey = (walletId) => walletId === 'ETH' ? ETHERSCAN_API_KEY : null
  * @class {EtherscanExplorer}
  */
 class EtherscanExplorer extends Explorer {
-  modifyGeneralResponse (response) {
+  modifyGeneralResponse(response) {
     if (response.data && response.data.status === '1') {
-      return response.data
+      return response.data;
     }
 
-    throw new ExplorerRequestError({ type: GET_BALANCE_TYPE, error: new Error(JSON.stringify(response)), instance: this })
+    throw new ExplorerRequestError({
+      type: GET_BALANCE_TYPE,
+      error: new Error(JSON.stringify(response)),
+      instance: this,
+    });
   }
 
-  getTransactionsUrl (address) {
-    return ''
+  getTransactionsUrl(address) {
+    return '';
   }
 
-  #getTransactionsParamsForAction (address, action) {
+  #getTransactionsParamsForAction(address, action) {
     const params = {
       module: 'account',
       action,
@@ -33,22 +42,25 @@ class EtherscanExplorer extends Explorer {
       startblock: 0,
       endblock: 99999999,
       sort: 'desc',
-    }
+    };
 
-    const apikey = getApiKey(this.wallet.id)
+    const apikey = getApiKey(this.wallet.id);
 
     if (apikey) {
-      params.apikey = apikey
+      params.apikey = apikey;
     }
-    return params
+    return params;
   }
 
-  getTransactionsParams (address) {
-    return this.#getTransactionsParamsForAction(address, 'txlist')
+  getTransactionsParams(address) {
+    return this.#getTransactionsParamsForAction(address, 'txlist');
   }
 
-  modifyTransactionsResponse (response, address) {
-    return super.modifyTransactionsResponse(response.result.filter(({ value }) => value > 0), address)
+  modifyTransactionsResponse(response, address) {
+    return super.modifyTransactionsResponse(
+      response.result.filter(({ value }) => value > 0),
+      address,
+    );
   }
 
   /**
@@ -57,26 +69,30 @@ class EtherscanExplorer extends Explorer {
    * @param {String} rawtx The rawtx
    * @return {Promise<Object>} The transaaction data
    */
-  async sendTransaction (rawtx) {
-    const response = await this.request('submit', null, { tx_blob: rawtx })
+  async sendTransaction(rawtx) {
+    const response = await this.request('submit', null, { tx_blob: rawtx });
 
     if (!response.engine_result === 'tesSUCCESS') {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error: new Error(response.engine_result), instance: this })
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error: new Error(response.engine_result),
+        instance: this,
+      });
     }
 
-    return { txid: response.tx_json.hash }
+    return { txid: response.tx_json.hash };
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
-  getTxDateTime (tx) {
-    return new Date(Number(`${tx.timeStamp}000`))
+  getTxDateTime(tx) {
+    return new Date(Number(`${tx.timeStamp}000`));
   }
 
-  getTxConfirmations (tx) {
-    return Number(tx.confirmations)
+  getTxConfirmations(tx) {
+    return Number(tx.confirmations);
   }
 
   /**
@@ -86,35 +102,35 @@ class EtherscanExplorer extends Explorer {
    * @param {object} tx - The transaction.
    * @return {boolean} The transaction direction.
    */
-  getTxDirection (selfAddress, tx) {
-    return selfAddress.toLowerCase() !== tx.from.toLowerCase()
+  getTxDirection(selfAddress, tx) {
+    return selfAddress.toLowerCase() !== tx.from.toLowerCase();
   }
 
   /**
    * @param tx
    * @return {string}
    */
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     return selfAddress.toLowerCase() === tx.from.toLowerCase()
       ? tx.to
-      : tx.from
+      : tx.from;
   }
 
   /**
    * @param tx
    * @return {string}
    */
-  getTxValue (selfAddress, tx) {
-    return this.wallet.toCurrencyUnit(tx.value)
+  getTxValue(selfAddress, tx) {
+    return this.wallet.toCurrencyUnit(tx.value);
   }
 
-  getTxFeeTicker () {
-    return this.wallet.feeTicker
+  getTxFeeTicker() {
+    return this.wallet.feeTicker;
   }
 
-  getTxFee (tx) {
+  getTxFee(tx) {
     // For the L2 network the fee will not be correct
-    return this.wallet.l2Name ? null : super.getTxFee(tx)
+    return this.wallet.l2Name ? null : super.getTxFee(tx);
   }
 
   /**
@@ -137,13 +153,21 @@ class EtherscanExplorer extends Explorer {
    *
    * @return {Promise<{tokenTransactions: TokenTransaction[]}>}
    */
-  async getTokensTransactions ({ address, offset, limit, pageNum }) {
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) < this.lastGetTxsRequestTime) {
-      return []
+  async getTokensTransactions({ address, offset, limit, pageNum }) {
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE <
+        this.lastGetTxsRequestTime
+    ) {
+      return [];
     }
 
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) > this.lastGetTxsRequestTime) {
-      this.lastGetTxsRequestTime = Date.now()
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE >
+        this.lastGetTxsRequestTime
+    ) {
+      this.lastGetTxsRequestTime = Date.now();
     }
 
     const response = await this.request(
@@ -151,14 +175,14 @@ class EtherscanExplorer extends Explorer {
       this.getTransactionsMethod(),
       this.getTokensTransactionsParams(address),
       GET_TRANSACTIONS_TYPE,
-      this.getTransactionsOptions()
-    )
+      this.getTransactionsOptions(),
+    );
 
-    return this.modifyTokenTransactionsResponse(response, address)
+    return this.modifyTokenTransactionsResponse(response, address);
   }
 
-  getTokensTransactionsParams (address) {
-    return this.#getTransactionsParamsForAction(address, 'tokentx')
+  getTokensTransactionsParams(address) {
+    return this.#getTransactionsParamsForAction(address, 'tokentx');
   }
 
   /**
@@ -168,13 +192,13 @@ class EtherscanExplorer extends Explorer {
    * @param {string} selfAddress - Wallet address.
    * @returns {{tokenTransactions: TokenTransaction[]}}
    */
-  modifyTokenTransactionsResponse (response, selfAddress) {
-    const { result: rawTxs } = response ?? { result: [] }
+  modifyTokenTransactionsResponse(response, selfAddress) {
+    const { result: rawTxs } = response ?? { result: [] };
 
     const tokenTransactions = rawTxs.reduce((txs, tx, index) => {
-      const direction = this.getTxDirection(selfAddress, tx)
-      const ticker = tx.tokenSymbol
-      const contract = tx.contractAddress
+      const direction = this.getTxDirection(selfAddress, tx);
+      const ticker = tx.tokenSymbol;
+      const contract = tx.contractAddress;
 
       txs.push({
         // Calculate some values in the coin because these not known here
@@ -191,13 +215,13 @@ class EtherscanExplorer extends Explorer {
         ticker,
         name: tx.tokenName,
         walletid: getTokenId({ ticker, contract, parent: this.wallet.id }),
-      })
+      });
 
-      return txs
-    }, [])
+      return txs;
+    }, []);
 
-    return { tokenTransactions }
+    return { tokenTransactions };
   }
 }
 
-export default EtherscanExplorer
+export default EtherscanExplorer;

@@ -1,17 +1,17 @@
-import { Token } from '../abstract'
+import { Token } from '../abstract';
 
-const DECIMAL = 6
-const MINIMAL_UNIT = 10 ** DECIMAL
-const FEE_LIMIT = 10 * MINIMAL_UNIT
-const DEFAULT_USTC_STABILITY_FEE = 0.012
+const DECIMAL = 6;
+const MINIMAL_UNIT = 10 ** DECIMAL;
+const FEE_LIMIT = 10 * MINIMAL_UNIT;
+const DEFAULT_USTC_STABILITY_FEE = 0.012;
 
 class LUNCToken extends Token {
-  constructor (args) {
-    super(args)
-    this.denom = args.denom
-    this.fields.paymentId = true
+  constructor(args) {
+    super(args);
+    this.denom = args.denom;
+    this.fields.paymentId = true;
 
-    this.stabilityFee = this.config?.stabilityFee || DEFAULT_USTC_STABILITY_FEE
+    this.stabilityFee = this.config?.stabilityFee || DEFAULT_USTC_STABILITY_FEE;
   }
 
   /* @TODO DEPRECATED
@@ -21,7 +21,7 @@ class LUNCToken extends Token {
    * @param {Object} txData transaction data
    * @return {Promise<Object>} Raw transaction
    */
-  async createTransaction ({
+  async createTransaction({
     address,
     amount,
     userGasPrice,
@@ -42,7 +42,7 @@ class LUNCToken extends Token {
       feeLimit,
       denom: this.denom,
       memo,
-    }
+    };
   }
 
   /**
@@ -50,24 +50,26 @@ class LUNCToken extends Token {
    *
    * @return {Promise<String>} Available balance for send
    */
-  async availableBalance () {
+  async availableBalance() {
     if (this.divisibleBalance) {
-      const maxStabilityFee = await this.getStabilityFee(this.indivisibleBalance)
-      const amount = this.indivisibleBalance.sub(new this.BN(maxStabilityFee))
+      const maxStabilityFee = await this.getStabilityFee(
+        this.indivisibleBalance,
+      );
+      const amount = this.indivisibleBalance.sub(new this.BN(maxStabilityFee));
 
-      return amount.gt(0) ? this.toCurrencyUnit(amount.toString()) : '0'
+      return amount.gt(0) ? this.toCurrencyUnit(amount.toString()) : '0';
     }
 
-    return '0'
+    return '0';
   }
 
   /**
    * @param {BN} amount Amount to send in minimal units
    * @return {String} Stability fee for a given ustc amount in minimal units
    */
-  getStabilityFee (amount) {
-    return (Number(amount) * this.stabilityFee + 1).toFixed(0)
+  getStabilityFee(amount) {
+    return (Number(amount) * this.stabilityFee + 1).toFixed(0);
   }
 }
 
-export default LUNCToken
+export default LUNCToken;

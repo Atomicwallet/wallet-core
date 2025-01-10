@@ -1,22 +1,22 @@
-import { Token } from '../abstract'
+import { Token } from '../abstract';
 
 class OPToken extends Token {
-  constructor (...args) {
-    super(...args)
+  constructor(...args) {
+    super(...args);
 
     // @TODO WTF feeData not included!
-    this.gasLimit = '150000'
-    this.coefficient = 1
+    this.gasLimit = '150000';
+    this.coefficient = 1;
   }
 
-  async getInfo () {
+  async getInfo() {
     return {
       balance: String(this.balance),
       transactions: this.transactions,
-    }
+    };
   }
 
-  async createTransaction ({
+  async createTransaction({
     address,
     amount,
     custom,
@@ -25,8 +25,17 @@ class OPToken extends Token {
     multiplier = this.multiplier,
     nonce,
   }) {
-    return { address, amount, custom, userGasPrice, gasLimit, contract: this.contract, multiplier, nonce }
+    return {
+      address,
+      amount,
+      custom,
+      userGasPrice,
+      gasLimit,
+      contract: this.contract,
+      multiplier,
+      nonce,
+    };
   }
 }
 
-export default OPToken
+export default OPToken;

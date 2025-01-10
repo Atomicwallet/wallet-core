@@ -1,68 +1,86 @@
-import IconService from 'icon-sdk-js'
+import IconService from 'icon-sdk-js';
 
-import Explorer from '../Explorer'
-import { ExplorerRequestError } from '../../errors/index.js'
-import { SEND_TRANSACTION_TYPE } from '../../utils/const'
+import { ExplorerRequestError } from '../../errors/index.js';
+import { SEND_TRANSACTION_TYPE } from '../../utils/const';
+import Explorer from '../Explorer';
 
 class IconNodeExplorer extends Explorer {
-  constructor (...args) {
-    super(...args)
-    const provider = new IconService.HttpProvider(`${this.config.baseUrl}${this.getApiPrefix()}`)
-    const iconService = new IconService(provider)
+  constructor(...args) {
+    super(...args);
+    const provider = new IconService.HttpProvider(
+      `${this.config.baseUrl}${this.getApiPrefix()}`,
+    );
+    const iconService = new IconService(provider);
 
-    this.service = iconService
-    this.sdk = IconService
+    this.service = iconService;
+    this.sdk = IconService;
   }
 
-  getAllowedTickers () {
-    return [ 'ICX' ]
+  getAllowedTickers() {
+    return ['ICX'];
   }
 
-  getApiPrefix () {
-    return 'api/v3/'
+  getApiPrefix() {
+    return 'api/v3/';
   }
 
-  async getInfo (address) {
-    const result = await this.service.getBalance(address).execute()
+  async getInfo(address) {
+    const result = await this.service.getBalance(address).execute();
 
-    return { balance: result.toString() }
+    return { balance: result.toString() };
   }
 
-  async sendTransaction (rawtx) {
+  async sendTransaction(rawtx) {
     try {
-      const thHash = await this.service.sendTransaction(rawtx).execute()
+      const thHash = await this.service.sendTransaction(rawtx).execute();
 
       return {
         txid: thHash,
-      }
+      };
     } catch (error) {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error, instance: this })
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error,
+        instance: this,
+      });
     }
   }
 
-  async call (params) {
+  async call(params) {
     try {
-      return this.service.call(params).execute()
+      return this.service.call(params).execute();
     } catch (error) {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error, instance: this })
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error,
+        instance: this,
+      });
     }
   }
 
-  getTransactionByHash (hash) {
+  getTransactionByHash(hash) {
     try {
-      return this.service.getTransaction(hash).execute()
+      return this.service.getTransaction(hash).execute();
     } catch (error) {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error, instance: this })
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error,
+        instance: this,
+      });
     }
   }
 
-  getTransactionResult (hash) {
+  getTransactionResult(hash) {
     try {
-      return this.service.getTransactionResult(hash).execute()
+      return this.service.getTransactionResult(hash).execute();
     } catch (error) {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error, instance: this })
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error,
+        instance: this,
+      });
     }
   }
 }
 
-export default IconNodeExplorer
+export default IconNodeExplorer;

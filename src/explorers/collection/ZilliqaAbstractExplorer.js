@@ -1,28 +1,30 @@
-/* eslint-disable camelcase */
+import {
+  fromBech32Address,
+  toBech32Address,
+  toChecksumAddress,
+} from '@zilliqa-js/crypto';
 
-import { fromBech32Address, toBech32Address, toChecksumAddress } from '@zilliqa-js/crypto'
-
-import Explorer from '../Explorer'
+import Explorer from '../Explorer';
 
 class ZilliqaAbstractExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['ZIL']
+  getAllowedTickers() {
+    return ['ZIL'];
   }
 
-  getBech32Address (checksumAddr) {
-    return toBech32Address(checksumAddr)
+  getBech32Address(checksumAddr) {
+    return toBech32Address(checksumAddr);
   }
 
-  getValidChecksumAddress (address) {
-    let checksumAddr = ''
+  getValidChecksumAddress(address) {
+    let checksumAddr = '';
 
     try {
-      checksumAddr = toChecksumAddress(address)
+      checksumAddr = toChecksumAddress(address);
     } catch (error) {
-      checksumAddr = toChecksumAddress(fromBech32Address(address))
+      checksumAddr = toChecksumAddress(fromBech32Address(address));
     }
 
-    return checksumAddr.toLowerCase()
+    return checksumAddr.toLowerCase();
   }
 
   /**
@@ -30,9 +32,9 @@ class ZilliqaAbstractExplorer extends Explorer {
    * @param address
    * @returns {string}
    */
-  toValidChecksumAddress (address) {
-    return this.getValidChecksumAddress(address).replace(/^0x/, '')
+  toValidChecksumAddress(address) {
+    return this.getValidChecksumAddress(address).replace(/^0x/, '');
   }
 }
 
-export default ZilliqaAbstractExplorer
+export default ZilliqaAbstractExplorer;

@@ -1,21 +1,20 @@
 import BN from 'bn.js';
-import { Coin } from '../../abstract';
-import { FLRToken } from '../../tokens';
-import WFLRAbi from '../../tokens/ABI/ERC-20/WFLR';
-import FTSORewardsABI from '../../tokens/ABI/ERC-20/FlareRewardsManagerContract';
-import FlareClaimContractABI from '../../tokens/ABI/ERC-20/FlareClaimContract';
-import dropDates from '../../resources/flr/drop-dates.json';
 
-import TOKENS_CACHE from '../../resources/flr/tokens.json';
+import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 // import { ConfigKey } from '../ConfigManager/ConfigManager.const';
 import { ExternalError } from '../../errors';
-import { EXTERNAL_ERROR } from '../../utils/const';
-import { Amount } from '../../utils';
 import BlockscoutExplorer from '../../explorers/collection/BlockscoutExplorer';
 import Web3Explorer from '../../explorers/collection/Web3Explorer';
-import { LazyLoadedLib } from '../../utils';
+import dropDates from '../../resources/flr/drop-dates.json';
+import TOKENS_CACHE from '../../resources/flr/tokens.json';
+import { FLRToken } from '../../tokens';
+import FlareClaimContractABI from '../../tokens/ABI/ERC-20/FlareClaimContract';
+import FTSORewardsABI from '../../tokens/ABI/ERC-20/FlareRewardsManagerContract';
+import WFLRAbi from '../../tokens/ABI/ERC-20/WFLR';
+import { Amount, LazyLoadedLib } from '../../utils';
+import { EXTERNAL_ERROR } from '../../utils/const';
 import {
   HasProviders,
   HasTokensMixin,
@@ -173,34 +172,32 @@ class FLRCoin extends StakingMixin(
    * @param { buffer } seed
    * @return {Promise<unknown>} The private key.
    */
-  loadWallet(seed) {
-    return new Promise(async (resolve, reject) => {
-      const [{ default: Web3 }, { hdkey }] = await Promise.all([
-        web3LazyLoaded.get(),
-        hdkeyLazyLoaded.get(),
-      ]);
+  async loadWallet(seed) {
+    const [{ default: Web3 }, { hdkey }] = await Promise.all([
+      web3LazyLoaded.get(),
+      hdkeyLazyLoaded.get(),
+    ]);
 
-      this.coreLibrary = new Web3(this.baseUrl);
-      const ethHDKey = hdkey.fromMasterSeed(seed);
-      const wallet = ethHDKey.getWallet();
-      const account = await this.coreLibrary.eth.accounts.privateKeyToAccount(
-        wallet.getPrivateKeyString(),
-      );
+    this.coreLibrary = new Web3(this.baseUrl);
+    const ethHDKey = hdkey.fromMasterSeed(seed);
+    const wallet = ethHDKey.getWallet();
+    const account = await this.coreLibrary.eth.accounts.privateKeyToAccount(
+      wallet.getPrivateKeyString(),
+    );
 
-      if (!account) {
-        reject(new Error(`${TICKER} cant get a wallet!`));
-      } else {
-        this.#privateKey = account.privateKey;
-        this.address = account.address;
-        this.getNonce();
+    if (!account) {
+      throw new Error(`${TICKER} cant get a wallet!`);
+    } else {
+      this.#privateKey = account.privateKey;
+      this.address = account.address;
+      this.getNonce();
 
-        resolve({
-          id: this.id,
-          privateKey: this.#privateKey,
-          address: this.address,
-        });
-      }
-    });
+      return {
+        id: this.id,
+        privateKey: this.#privateKey,
+        address: this.address,
+      };
+    }
   }
 
   /**
@@ -579,12 +576,7 @@ class FLRCoin extends StakingMixin(
         to: contract,
         data: tokenSendData,
       })
-      .catch((error) => {}
-        // logger.error({
-        //   instance: this,
-        //   error,
-        // }),
-      );
+      .catch(() => {});
 
     return estimateGas
       ? Math.round(estimateGas * this.gasLimitCoefficient).toString()
@@ -940,7 +932,7 @@ class FLRCoin extends StakingMixin(
     const claimContractAddress = await rewardsManagerInterface.methods
       .claimSetupManager()
       .call();
-    const executorsList = [] // await configManager.get(ConfigKey.FlareClaimExecutors);
+    const executorsList = []; // await configManager.get(ConfigKey.FlareClaimExecutors);
 
     const executorsAddresses = executorsList.map(({ address }) => address);
     const executorsFees = executorsList
@@ -1150,7 +1142,7 @@ class FLRCoin extends StakingMixin(
       delegatedVotes,
     });
     const rewards = new Amount(this.calculateRewards(unclaimedRewards), this);
-    const executorsList = [] // await configManager.get(ConfigKey.FlareClaimExecutors);
+    const executorsList = []; // await configManager.get(ConfigKey.FlareClaimExecutors);
     const executorsFees = executorsList.reduce((acc, { fee }) => {
       acc = acc.add(new this.BN(this.toMinimalUnit(fee)));
       return acc;

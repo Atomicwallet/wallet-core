@@ -1,21 +1,20 @@
-import Explorer from '../Explorer'
-import { GET_BALANCE_TYPE } from '../../utils/const'
-import Transaction from '../Transaction'
-
-import { toCurrency } from '../../utils/convert'
+import { GET_BALANCE_TYPE } from '../../utils/const';
+import { toCurrency } from '../../utils/convert';
+import Explorer from '../Explorer';
+import Transaction from '../Transaction';
 
 class KabutoExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['HBAR']
+  getAllowedTickers() {
+    return ['HBAR'];
   }
 
-  getApiPrefix () {
-    return ''
+  getApiPrefix() {
+    return '';
   }
 
-  async getInfo (address) {
+  async getInfo(address) {
     if (!address) {
-      throw new Error('[HBAR] KabutoExplorer: address is not defined')
+      throw new Error('[HBAR] KabutoExplorer: address is not defined');
     }
     const response = await this.request(
       this.getInfoUrl(address),
@@ -23,70 +22,72 @@ class KabutoExplorer extends Explorer {
       this.getInfoParams(),
       GET_BALANCE_TYPE,
       this.getInfoOptions(),
-    )
+    );
 
-    return this.modifyInfoResponse(response, address)
+    return this.modifyInfoResponse(response, address);
   }
 
-  getInfoUrl (address) {
-    return `account/${address}`
+  getInfoUrl(address) {
+    return `account/${address}`;
   }
 
-  getTxValue (selfAddress, tx) {
-    return toCurrency(tx.value, this.wallet.decimal)
+  getTxValue(selfAddress, tx) {
+    return toCurrency(tx.value, this.wallet.decimal);
   }
 
-  getTxDateTime (tx) {
-    return new Date(tx.consensusAt)
+  getTxDateTime(tx) {
+    return new Date(tx.consensusAt);
   }
 
-  getTxDirection (selfAddress, tx) {
+  getTxDirection(selfAddress, tx) {
     const transferTo = tx.transfers.find((transfer) => {
-      return (transfer.amount === tx.value)
-    })
+      return transfer.amount === tx.value;
+    });
 
-    return transferTo.account === selfAddress
+    return transferTo.account === selfAddress;
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
-  getTxMemo (tx) {
-    return tx.memo || ''
+  getTxMemo(tx) {
+    return tx.memo || '';
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     const transferTo = tx.transfers.find((transfer) => {
-      return (transfer.amount === tx.value)
-    })
+      return transfer.amount === tx.value;
+    });
 
-    return this.getTxDirection(selfAddress, tx) ? tx.operator : transferTo.account
+    return this.getTxDirection(selfAddress, tx)
+      ? tx.operator
+      : transferTo.account;
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       balance: response.balance.amount,
       transactions: [],
-    }
+    };
   }
 
-  async getTransaction (selfAddress, txid) {
-    const response = await this.request(`transaction/${txid}`)
+  async getTransaction(selfAddress, txid) {
+    const response = await this.request(`transaction/${txid}`);
 
-    return this.modifyTransactionResponse(response, selfAddress)
+    return this.modifyTransactionResponse(response, selfAddress);
   }
 
-  async getTransactions ({ address }) {
+  async getTransactions({ address }) {
     if (!address) {
-      throw new Error('KabutoExplorer: no address')
+      throw new Error('KabutoExplorer: no address');
     }
-    const response = await this.request(`account/${address}/transaction`)
+    const response = await this.request(`account/${address}/transaction`);
 
-    return this.modifyTransactionsResponse(response, address)
+    return this.modifyTransactionsResponse(response, address);
   }
 
-  modifyTransactionsResponse (response, selfAddress) {
+  modifyTransactionsResponse(response, selfAddress) {
     const txs = response.transactions
       .filter((tx) => tx.type === 'CRYPTO_TRANSFER')
       .map((tx) => {
@@ -105,16 +106,16 @@ class KabutoExplorer extends Explorer {
           datetime: this.getTxDateTime(tx),
           memo: this.getTxMemo(tx),
           confirmations: 1,
-        }
-      })
-    const modifiedTxs = txs.map((tx) => new Transaction(tx))
+        };
+      });
+    const modifiedTxs = txs.map((tx) => new Transaction(tx));
 
-    return modifiedTxs
+    return modifiedTxs;
   }
 
-  getTxFee (tx) {
-    return toCurrency((tx && tx.fee) || 0, this.wallet.decimal)
+  getTxFee(tx) {
+    return toCurrency((tx && tx.fee) || 0, this.wallet.decimal);
   }
 }
 
-export default KabutoExplorer
+export default KabutoExplorer;

@@ -1,21 +1,21 @@
-
-const BtcLikeNodeMixin = (superclass) => class extends superclass {
-  getSendTransactionUrl () {
-    return this.config.baseUrl
-  }
-
-  getSendTransactionParams (rawtx) {
-    return {
-      method: 'sendrawtransaction',
-      params: [rawtx],
+const BtcLikeNodeMixin = (superclass) =>
+  class extends superclass {
+    getSendTransactionUrl() {
+      return this.config.baseUrl;
     }
-  }
 
-  modifySendTransactionResponse (response) {
-    return {
-      txid: response.result,
+    getSendTransactionParams(rawtx) {
+      return {
+        method: 'sendrawtransaction',
+        params: [rawtx],
+      };
     }
-  }
-}
 
-export default BtcLikeNodeMixin
+    modifySendTransactionResponse(response) {
+      return {
+        txid: response.result,
+      };
+    }
+  };
+
+export default BtcLikeNodeMixin;

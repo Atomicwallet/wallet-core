@@ -1,7 +1,6 @@
-/* eslint-disable no-fallthrough */
+/* eslint-disable no-fallthrough, no-throw-literal */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
-const JSBigInt = require('./biginteger').JSBigInt;
+import { JSBigInt } from './biginteger';
 
 /**
 Copyright (c) 2017, moneroexamples

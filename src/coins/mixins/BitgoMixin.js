@@ -1,4 +1,4 @@
-import { WalletError, InsufficientFundsError } from '../../errors';
+import { InsufficientFundsError, WalletError } from '../../errors';
 import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils/const';
 
 const BitcoinJSMixin = (superclass) =>
@@ -14,32 +14,28 @@ const BitcoinJSMixin = (superclass) =>
     async loadWallet(seed) {
       const coreLibrary = await this.loadCoreLibrary();
 
-      return new Promise(async (resolve, reject) => {
-        const hdPrivateKey = coreLibrary.HDNode.fromSeedBuffer(
-          seed,
-          await this.getNetwork(),
-        );
-        const key = hdPrivateKey.derivePath(this.derivation);
+      const hdPrivateKey = coreLibrary.HDNode.fromSeedBuffer(
+        seed,
+        await this.getNetwork(),
+      );
+      const key = hdPrivateKey.derivePath(this.derivation);
 
-        if (!key.keyPair) {
-          reject(
-            new WalletError({
-              type: WALLET_ERROR,
-              error: new Error("can't get a privateKey!"),
-              instance: this,
-            }),
-          );
-        }
-
-        this.setPrivateKey(key.keyPair.toWIF());
-        this.address = key.keyPair.getAddress();
-
-        resolve({
-          id: this.id,
-          privateKey: this.#privateKey,
-          address: this.address,
+      if (!key.keyPair) {
+        throw new WalletError({
+          type: WALLET_ERROR,
+          error: new Error("can't get a privateKey!"),
+          instance: this,
         });
-      });
+      }
+
+      this.setPrivateKey(key.keyPair.toWIF());
+      this.address = key.keyPair.getAddress();
+
+      return {
+        id: this.id,
+        privateKey: this.#privateKey,
+        address: this.address,
+      };
     }
 
     async getNetwork() {
@@ -211,9 +207,7 @@ const BitcoinJSMixin = (superclass) =>
         });
       }
 
-      const tx = await this.buildTx(inputs, address, amount, change);
-
-      return tx;
+      return await this.buildTx(inputs, address, amount, change);
     }
 
     async buildTx(
@@ -226,37 +220,29 @@ const BitcoinJSMixin = (superclass) =>
     ) {
       const txBuilder = await this.getTransactionBuilder();
 
-      return new Promise(async (resolve, reject) => {
-        try {
-          inputs.forEach((input) => {
-            this.addInput(txBuilder, input);
-          });
-
-          txBuilder.addOutput(address, parseInt(amount.toString(), 10));
-
-          if (change.gt(new this.BN(0))) {
-            txBuilder.addOutput(
-              otherSideAddr || this.address,
-              parseInt(change.toString(), 10),
-            );
-          }
-
-          const keyForSign = await this.getKeyForSignFromPrivateKey(privateKey);
-
-          // sign transaction
-          await Promise.all(
-            inputs.map((input, index) =>
-              this.signInput(txBuilder, keyForSign, index, input),
-            ),
-          );
-
-          const tx = txBuilder.build().toHex();
-
-          resolve(tx);
-        } catch (error) {
-          reject(error);
-        }
+      inputs.forEach((input) => {
+        this.addInput(txBuilder, input);
       });
+
+      txBuilder.addOutput(address, parseInt(amount.toString(), 10));
+
+      if (change.gt(new this.BN(0))) {
+        txBuilder.addOutput(
+          otherSideAddr || this.address,
+          parseInt(change.toString(), 10),
+        );
+      }
+
+      const keyForSign = await this.getKeyForSignFromPrivateKey(privateKey);
+
+      // sign transaction
+      await Promise.all(
+        inputs.map((input, index) =>
+          this.signInput(txBuilder, keyForSign, index, input),
+        ),
+      );
+
+      return txBuilder.build().toHex();
     }
 
     async getKeyForSignFromPrivateKey(privateKey = this.#privateKey) {

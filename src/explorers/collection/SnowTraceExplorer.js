@@ -1,40 +1,40 @@
-import lodash from 'lodash'
+import lodash from 'lodash';
 
-import Explorer from '../Explorer'
+import { TxTypes } from '../enum/index.js';
+import Explorer from '../Explorer';
 // import logger from '../Logger'
-import { TxTypes } from '../enum/index.js'
-import { erc721Abi } from './ETHNftExplorer.js'
+import { erc721Abi } from './ETHNftExplorer.js';
 
-const GAS_PRICE_INTERVAL = 1000
-const GAS_PRICES_URL = 'https://gavax.blockscan.com/gasapi.ashx'
-const ERC_721_SAFE_TRANSFER_FROM_METHOD_NAME = 'safeTransferFrom'
-const NFT_FAKE_VALUE = 'NFT'
+const GAS_PRICE_INTERVAL = 1000;
+const GAS_PRICES_URL = 'https://gavax.blockscan.com/gasapi.ashx';
+const ERC_721_SAFE_TRANSFER_FROM_METHOD_NAME = 'safeTransferFrom';
+const NFT_FAKE_VALUE = 'NFT';
 
 class SnowTraceExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['AVAX']
+  getAllowedTickers() {
+    return ['AVAX'];
   }
 
-  async getTransactions (...args) {
+  async getTransactions(...args) {
     try {
-      return super.getTransactions(...args)
+      return super.getTransactions(...args);
     } catch (error) {
       // logger.error({ instance: this, error: `${this.wallet.ticker}: failed to load transactions` })
 
-      return []
+      return [];
     }
   }
 
-  getTransactionsUrl () {
-    return ''
+  getTransactionsUrl() {
+    return '';
   }
 
-  getTransactionsParams (address) {
+  getTransactionsParams(address) {
     return {
       module: 'account',
       action: 'txlist',
       address: address.toLowerCase(),
-    }
+    };
   }
 
   /**
@@ -43,18 +43,22 @@ class SnowTraceExplorer extends Explorer {
    * @param {object} tx
    * @returns {boolean}
    */
-  getIsNftTx (tx) {
-    return (tx.functionName ?? '').includes(ERC_721_SAFE_TRANSFER_FROM_METHOD_NAME)
+  getIsNftTx(tx) {
+    return (tx.functionName ?? '').includes(
+      ERC_721_SAFE_TRANSFER_FROM_METHOD_NAME,
+    );
   }
 
-  modifyTransactionsResponse (response, address) {
-    const filteredBySuccess = response.result.filter((rawTx) => rawTx.isError !== '1')
+  modifyTransactionsResponse(response, address) {
+    const filteredBySuccess = response.result.filter(
+      (rawTx) => rawTx.isError !== '1',
+    );
 
-    return super.modifyTransactionsResponse(filteredBySuccess, address)
+    return super.modifyTransactionsResponse(filteredBySuccess, address);
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
   /**
@@ -63,8 +67,8 @@ class SnowTraceExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {boolean} - True if we accept transaction.
    */
-  getTxDirection (selfAddress, tx) {
-    return selfAddress.toLowerCase() === tx.to
+  getTxDirection(selfAddress, tx) {
+    return selfAddress.toLowerCase() === tx.to;
   }
 
   /**
@@ -74,42 +78,46 @@ class SnowTraceExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @returns {string}
    */
-  getTxOtherSideAddress (selfAddress, tx) {
-    const isOutTx = !this.getTxDirection(selfAddress, tx)
+  getTxOtherSideAddress(selfAddress, tx) {
+    const isOutTx = !this.getTxDirection(selfAddress, tx);
 
     if (this.getIsNftTx(tx) && isOutTx) {
-      const { params: { to } } = this.decodeInput(tx.input) ?? { params: {} }
+      const {
+        params: { to },
+      } = this.decodeInput(tx.input) ?? { params: {} };
 
-      return to ? to.toLowerCase() : tx.to
+      return to ? to.toLowerCase() : tx.to;
     }
 
-    return isOutTx ? tx.to : tx.from
+    return isOutTx ? tx.to : tx.from;
   }
 
-  getTxValue (selfAddress, tx) {
-    return this.getIsNftTx(tx) ? NFT_FAKE_VALUE : this.wallet.toCurrencyUnit(tx.value)
+  getTxValue(selfAddress, tx) {
+    return this.getIsNftTx(tx)
+      ? NFT_FAKE_VALUE
+      : this.wallet.toCurrencyUnit(tx.value);
   }
 
-  getTxDateTime (tx) {
-    return new Date(Number(tx.timeStamp) * 1000)
+  getTxDateTime(tx) {
+    return new Date(Number(tx.timeStamp) * 1000);
   }
 
-  getTxMemo (tx) {
-    return tx.memo
+  getTxMemo(tx) {
+    return tx.memo;
   }
 
-  getTxNonce (tx) {
-    return tx.nonce
+  getTxNonce(tx) {
+    return tx.nonce;
   }
 
-  getTxFee (tx) {
+  getTxFee(tx) {
     return this.wallet.toCurrencyUnit(
-      new this.wallet.BN(tx.gasUsed).mul(new this.wallet.BN(tx.gasPrice))
-    )
+      new this.wallet.BN(tx.gasUsed).mul(new this.wallet.BN(tx.gasPrice)),
+    );
   }
 
-  getTxFeeTicker () {
-    return this.wallet.ticker
+  getTxFeeTicker() {
+    return this.wallet.ticker;
   }
 
   /**
@@ -118,11 +126,11 @@ class SnowTraceExplorer extends Explorer {
    * @param {object} tx
    * @returns {string}
    */
-  getTxType (tx) {
-    return this.getIsNftTx(tx) ? TxTypes.TRANSFERNFT : TxTypes.TRANSFER
+  getTxType(tx) {
+    return this.getIsNftTx(tx) ? TxTypes.TRANSFERNFT : TxTypes.TRANSFER;
   }
 
-  getTransactionsModifiedResponse (tx, selfAddress) {
+  getTransactionsModifiedResponse(tx, selfAddress) {
     return {
       ticker: this.wallet.ticker,
       name: this.wallet.name,
@@ -140,33 +148,29 @@ class SnowTraceExplorer extends Explorer {
       feeTicker: this.getTxFeeTicker(),
       txType: this.getTxType(tx),
       isNft: this.getIsNftTx(tx),
-    }
+    };
   }
 
-  async _getGasPrice () {
+  async _getGasPrice() {
     try {
-      const response = await this.request(
-        GAS_PRICES_URL,
-        'get',
-        {
-          method: 'gasoracle',
-          apikey: 'key',
-        },
-      )
+      const response = await this.request(GAS_PRICES_URL, 'get', {
+        method: 'gasoracle',
+        apikey: 'key',
+      });
 
       return {
         fastest: response.result.FastGasPrice,
         fast: response.result.ProposeGasPrice,
         safeLow: response.result.SafeGasPrice,
-      }
+      };
     } catch (error) {
       // logger.error({ instance: this, error: `${this.wallet.ticker}: failed to get gas prices` })
 
-      return {}
+      return {};
     }
   }
 
-  getGasPrice = lodash.throttle(this._getGasPrice, GAS_PRICE_INTERVAL)
+  getGasPrice = lodash.throttle(this._getGasPrice, GAS_PRICE_INTERVAL);
 
   /**
    * @typedef TransactionDecodedInput
@@ -184,52 +188,60 @@ class SnowTraceExplorer extends Explorer {
    * @param {string} input
    * @return {TransactionDecodedInput | null}
    */
-  decodeInput (input) {
+  decodeInput(input) {
     try {
       if (this.wallet.coreLibrary.utils.isHex(input)) {
         try {
-          return this.wallet.coreLibrary.utils.hexToString(input)
+          return this.wallet.coreLibrary.utils.hexToString(input);
         } catch (error) {
           // do nothing
         }
 
-        const prefixLen = 4
-        const dataBuf = Buffer.from(input.replace(/^0x/, ''), 'hex')
-        const inputMethod = `0x${dataBuf.slice(0, prefixLen).toString('hex')}`
-        const inputsBuf = dataBuf.slice(prefixLen)
-        const result = { method: null, params: {} }
+        const prefixLen = 4;
+        const dataBuf = Buffer.from(input.replace(/^0x/, ''), 'hex');
+        const inputMethod = `0x${dataBuf.slice(0, prefixLen).toString('hex')}`;
+        const inputsBuf = dataBuf.slice(prefixLen);
+        const result = { method: null, params: {} };
 
         // We use erc721 here, but for the first three parameters it will be the same as erc1155
         erc721Abi.forEach((object) => {
           try {
-            const abiMethod = this.wallet.coreLibrary.eth.abi.encodeFunctionSignature(object)
-            const abiTypes = object.inputs ? object.inputs.map((x) => x.type) : []
-            const attributes = object.inputs ? object.inputs.map((x) => x.name) : []
+            const abiMethod =
+              this.wallet.coreLibrary.eth.abi.encodeFunctionSignature(object);
+            const abiTypes = object.inputs
+              ? object.inputs.map((x) => x.type)
+              : [];
+            const attributes = object.inputs
+              ? object.inputs.map((x) => x.name)
+              : [];
 
             if (inputMethod === abiMethod) {
-              const inputs = this.wallet.coreLibrary.eth.abi.decodeParameters(abiTypes, `0x${inputsBuf.toString('hex')}`)
+              const inputs = this.wallet.coreLibrary.eth.abi.decodeParameters(
+                abiTypes,
+                `0x${inputsBuf.toString('hex')}`,
+              );
 
-              result.method = object.name
+              result.method = object.name;
 
               for (const index in inputs) {
                 if (typeof inputs[index] !== 'undefined') {
-                  result.params[attributes[index]] = inputs[index]
+                  result.params[attributes[index]] = inputs[index];
                 }
               }
             }
           } catch (error) {
-            return null
+            return null;
           }
-          return null
-        })
+          return null;
+        });
 
-        return result
+        return result;
       }
     } catch (error) {
       // Do nothing
     }
-    return null
+    return null;
   }
 }
 
-export default SnowTraceExplorer
+export default SnowTraceExplorer;

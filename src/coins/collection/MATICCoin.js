@@ -1,22 +1,20 @@
 import { Coin } from '../../abstract';
-import { MATICToken } from '../../tokens';
 // import logger from '../Logger';
 // import configManager, { ConfigKey } from '../ConfigManager';
-import applyCoefficient from '../../utils/applyCoefficient';
 import NftMixin from '../../coins/nfts/mixins/NftMixin';
 import { ExternalError } from '../../errors';
-import { EXTERNAL_ERROR } from '../../utils/const';
-
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
-
-import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
-import PolyscanExplorer from '../../explorers/collection/PolyscanExplorer';
-import MoralisExplorer from '../../explorers/collection/MoralisExplorer';
 import CovalentHQExplorer from '../../explorers/collection//CovalentHQExplorer';
+import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
+import MoralisExplorer from '../../explorers/collection/MoralisExplorer';
+import PolyscanExplorer from '../../explorers/collection/PolyscanExplorer';
+import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer';
+import { MATICToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';
-import HasTokensMixin from '../mixins/HasTokensMixin';
+import applyCoefficient from '../../utils/applyCoefficient';
+import { EXTERNAL_ERROR } from '../../utils/const';
 import HasProviders from '../mixins/HasProviders';
+import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
 
 const NAME = 'Polygon';
@@ -579,7 +577,7 @@ class MATICCoin extends Web3Mixin(
     //
     //   return {};
     // }
-    return {}
+    return {};
   }
 
   async estimateGas() {
@@ -710,7 +708,7 @@ class MATICCoin extends Web3Mixin(
     //   // logger.error({ instance: this, error });
     //   return [];
     // }
-    return []
+    return [];
   }
 
   /**

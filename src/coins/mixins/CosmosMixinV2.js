@@ -1,13 +1,12 @@
+import StakingMixin from './StakingMixin';
 import { ExplorerRequestError, WalletError } from '../../errors';
+import { LazyLoadedLib, Amount } from '../../utils';
 import {
   ATOM_MSG_TYPES,
   GET_TRANSACTIONS_TYPE,
   WALLET_ERROR,
 } from '../../utils/const';
 import { CosmosTxTypes } from '../libs';
-
-import { LazyLoadedLib, Amount } from '../../utils';
-import StakingMixin from './StakingMixin';
 
 const GAS_PRICE = '0.025';
 const ESTIMATED_GAS_COEFFICIENT = 2.0;

@@ -1,49 +1,51 @@
-import axios from 'axios'
+import axios from 'axios';
 
-import DgbInsightExplorer from './DgbInsightExplorer.js'
+import DgbInsightExplorer from './DgbInsightExplorer.js';
 
 class BtgInsightExplorer extends DgbInsightExplorer {
-  getAllowedTickers () {
-    return ['BTG']
+  getAllowedTickers() {
+    return ['BTG'];
   }
 
-  getInfoUrl (address) {
-    return `insight-api/addr/${address}`
+  getInfoUrl(address) {
+    return `insight-api/addr/${address}`;
   }
 
-  getTransactionUrl (txId) {
-    return `insight-api/tx/${txId}`
+  getTransactionUrl(txId) {
+    return `insight-api/tx/${txId}`;
   }
 
-  getTransactionsUrl (address) {
-    return `insight-api/addrs/${address}/txs`
+  getTransactionsUrl(address) {
+    return `insight-api/addrs/${address}/txs`;
   }
 
-  modifyTransactionsResponse (response, address) {
-    return super.modifyTransactionsResponse(response.items, address)
+  modifyTransactionsResponse(response, address) {
+    return super.modifyTransactionsResponse(response.items, address);
   }
 
-  getUnspentOutputsUrl (address) {
-    return `insight-api/addr/${address}/utxo`
+  getUnspentOutputsUrl(address) {
+    return `insight-api/addr/${address}/utxo`;
   }
 
-  getSendTransactionUrl () {
-    return 'insight-api/tx/send'
+  getSendTransactionUrl() {
+    return 'insight-api/tx/send';
   }
 
-  getSendTransactionParam () {
-    return 'rawtx'
+  getSendTransactionParam() {
+    return 'rawtx';
   }
 
-  async sendTransaction (rawtx) {
+  async sendTransaction(rawtx) {
     const response = await axios.post(
       `${this.config.baseUrl}${this.getSendTransactionUrl()}`,
       `${this.getSendTransactionParam()}=${rawtx}`,
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
-    )
+    );
 
-    return this.modifyGeneralResponse(this.modifySendTransactionResponse(response))
+    return this.modifyGeneralResponse(
+      this.modifySendTransactionResponse(response),
+    );
   }
 }
 
-export default BtgInsightExplorer
+export default BtgInsightExplorer;

@@ -17,8 +17,8 @@ import type {
 } from '@/abstract';
 import type Explorer from '@/explorers/Explorer';
 import { Emitter } from '@/utils';
-import { toMinimal, toCurrency } from '@/utils/convert';
 import { WALLETS } from '@/utils/const';
+import { toMinimal, toCurrency } from '@/utils/convert';
 
 const SEND_TIMEOUT = 5000;
 const delayed = {};
@@ -59,6 +59,7 @@ export default abstract class AbstractWallet {
   abstract createTransaction(
     args: CreateTxParams,
   ): Promise<RawTxHex | RawTxBinary | RawTxObject>;
+
   abstract sendRawTransaction(
     args: RawTxHex | RawTxBinary | RawTxObject,
   ): Promise<RawTxHash>;
@@ -67,12 +68,14 @@ export default abstract class AbstractWallet {
     withoutCoeff: boolean,
     isToken?: boolean,
   ): Promise<BN | number | string>;
+
   abstract estimateGas(
     amount: BN | string,
     address: string,
     contract: string,
     defaultGas?: BN | string | number,
   ): Promise<BN | number | string>;
+
   abstract getFeePerByte(): BN;
   abstract getUnspentOutputs(): Promise<unknown[]>;
 

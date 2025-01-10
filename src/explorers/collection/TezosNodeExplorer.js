@@ -1,16 +1,18 @@
-import Explorer from '../Explorer'
+import Explorer from '../Explorer';
 
 class TezosNodeExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['XTZ']
+  getAllowedTickers() {
+    return ['XTZ'];
   }
 
-  getInfoUrl (address) {
-    return `${this.config.baseUrl}/chains/main/blocks/head/context/contracts/${address}/balance`
+  getInfoUrl(address) {
+    return `${this.config.baseUrl}/chains/main/blocks/head/context/contracts/${address}/balance`;
   }
 
-  getDelegate (address) {
-    return this.request(`${this.config.baseUrl}/chains/main/blocks/head/context/contracts/${address}/delegate`)
+  getDelegate(address) {
+    return this.request(
+      `${this.config.baseUrl}/chains/main/blocks/head/context/contracts/${address}/delegate`,
+    );
   }
 
   /**
@@ -20,44 +22,47 @@ class TezosNodeExplorer extends Explorer {
    * @param tx Operation object
    * @returns {{}}
    */
-  getTransaction (selfAddress, tx) {
-    return super.modifyTransactionResponse(tx, selfAddress)
+  getTransaction(selfAddress, tx) {
+    return super.modifyTransactionResponse(tx, selfAddress);
   }
 
-  async isValidator (address) {
-    const response = await this.request(`${this.config.baseUrl}/chains/main/blocks/head/context/delegates/${address}`)
-      .catch((error) => console.warn(error))
+  async isValidator(address) {
+    const response = await this.request(
+      `${this.config.baseUrl}/chains/main/blocks/head/context/delegates/${address}`,
+    ).catch((error) => console.warn(error));
 
-    return !!response
+    return !!response;
   }
 
-  modifyInfoResponse (response) {
-    return { balance: response }
+  modifyInfoResponse(response) {
+    return { balance: response };
   }
 
-  getTxDirection (selfAddress, tx) {
-    return tx.contents[0].destination === selfAddress
+  getTxDirection(selfAddress, tx) {
+    return tx.contents[0].destination === selfAddress;
   }
 
-  getTxConfirmations (tx) {
-    return 1
+  getTxConfirmations(tx) {
+    return 1;
   }
 
-  getTxDateTime (tx) {
-    return new Date()
+  getTxDateTime(tx) {
+    return new Date();
   }
 
-  getTxValue (address, tx) {
-    return this.wallet.toCurrencyUnit(tx.contents[0].amount)
+  getTxValue(address, tx) {
+    return this.wallet.toCurrencyUnit(tx.contents[0].amount);
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx) ? tx.contents[0].source : tx.contents[0].destination
+  getTxOtherSideAddress(selfAddress, tx) {
+    return this.getTxDirection(selfAddress, tx)
+      ? tx.contents[0].source
+      : tx.contents[0].destination;
   }
 }
 
-export default TezosNodeExplorer
+export default TezosNodeExplorer;

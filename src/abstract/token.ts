@@ -1,10 +1,5 @@
 import BN from 'bn.js';
 
-// import history from '../History';
-import type Transaction from '@/explorers/Transaction';
-import { getTokenId } from '@/utils';
-import { HISTORY_WALLET_UPDATED } from '@/utils/eventTopics';
-import { AbstractWallet, type Coin } from '@/abstract';
 import type {
   CreateTxParams,
   RawTxBinary,
@@ -14,7 +9,11 @@ import type {
   TokenCreationArgs,
   TokenSource,
   CoinConfigType,
-} from '@/abstract';
+} from './index';
+import { AbstractWallet, type Coin } from '@/abstract';
+import type Transaction from '@/explorers/Transaction';
+import { getTokenId } from '@/utils';
+import { HISTORY_WALLET_UPDATED } from '@/utils/eventTopics';
 
 const tokensNetworks = new Set([
   'BNB',
@@ -304,7 +303,7 @@ abstract class Token extends AbstractWallet {
         );
 
         this.eventEmitter.emit(topic, payload);
-        this.transactions = tokenTransactions as Transaction[];
+        this.transactions = tokenTransactions;
       }
 
       return txs;
@@ -373,14 +372,15 @@ abstract class Token extends AbstractWallet {
       return;
     }
     Object.entries(data.feeData).forEach(([key, value]) => {
-      // @ts-ignore
       if (
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         typeof this[key] !== 'undefined' &&
         typeof value !== 'undefined' &&
         key !== '__proto__'
       ) {
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         this[key] = value;
       }
     });

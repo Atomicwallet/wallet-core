@@ -1,6 +1,6 @@
-import Explorer from '../Explorer'
+import Explorer from '../Explorer';
 
-const URL_TRANSACTIONS = 'v1/addr/{address}/transactions'
+const URL_TRANSACTIONS = 'v1/addr/{address}/transactions';
 
 /**
  * ETC Explorer
@@ -9,52 +9,51 @@ const URL_TRANSACTIONS = 'v1/addr/{address}/transactions'
  * @class {Explorer}
  */
 class GastrackerExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['ETC']
+  getAllowedTickers() {
+    return ['ETC'];
   }
 
-  async getTransactions (address) {
-    const requestUrl = `${this.config.baseUrl}${URL_TRANSACTIONS.replace('{address}', address)}`
-    const { items } = await this.request(requestUrl)
-      .catch((error) => {
-        throw error
-      })
+  async getTransactions(address) {
+    const requestUrl = `${this.config.baseUrl}${URL_TRANSACTIONS.replace('{address}', address)}`;
+    const { items } = await this.request(requestUrl).catch((error) => {
+      throw error;
+    });
 
-    return this.modifyTransactionsResponse(items, address)
+    return this.modifyTransactionsResponse(items, address);
   }
 
-  async getInfo (address) {
+  async getInfo(address) {
     // TODO throw error
-    const balance = await this.wallet.coreLibrary.eth.getBalance(address)
+    const balance = await this.wallet.coreLibrary.eth.getBalance(address);
 
     return {
       balance,
       transactions: [],
-    }
+    };
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
-  getTxDirection (selfAddress, tx) {
-    return tx.to === selfAddress
+  getTxDirection(selfAddress, tx) {
+    return tx.to === selfAddress;
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx) ? tx.from : tx.to
+  getTxOtherSideAddress(selfAddress, tx) {
+    return this.getTxDirection(selfAddress, tx) ? tx.from : tx.to;
   }
 
-  getTxValue (selfAddress, tx) {
-    return tx.value.ether
+  getTxValue(selfAddress, tx) {
+    return tx.value.ether;
   }
 
-  getTxDateTime (tx) {
-    return new Date(tx.timestamp)
+  getTxDateTime(tx) {
+    return new Date(tx.timestamp);
   }
 
-  getTxConfirmations (tx) {
-    return tx.confirmations
+  getTxConfirmations(tx) {
+    return tx.confirmations;
   }
 
   // async sendTransaction (rawtx) {
@@ -72,4 +71,4 @@ class GastrackerExplorer extends Explorer {
   // }
 }
 
-export default GastrackerExplorer
+export default GastrackerExplorer;

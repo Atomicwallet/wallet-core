@@ -1,6 +1,6 @@
-import Explorer from '../Explorer'
-import { GET_UTXO_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const'
-import { ExplorerRequestError, WalletError } from '../../errors/index.js'
+import { ExplorerRequestError, WalletError } from '../../errors/index.js';
+import { GET_UTXO_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const';
+import Explorer from '../Explorer';
 
 /**
  * @deprecated constructor signature is not supported
@@ -13,153 +13,155 @@ class CardanoliteExplorer extends Explorer {
    * @param {String} baseUrl The base url
    * @param {String} webUrl The web url
    */
-  constructor (wallet, baseUrl, webUrl, submitUrl) {
-    super(...arguments)
+  constructor(wallet, baseUrl, webUrl, submitUrl) {
+    super(...arguments);
 
-    this.submitUrl = submitUrl
+    this.submitUrl = submitUrl;
   }
 
-  getAllowedTickers () {
-    return ['ADA']
+  getAllowedTickers() {
+    return ['ADA'];
   }
 
-  getInfoUrl (address) {
-    return `/addresses/summary/${address}`
+  getInfoUrl(address) {
+    return `/addresses/summary/${address}`;
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       balance: response.Right.caBalance.getCoin,
       transactions: [],
-    }
+    };
   }
 
-  getUTXOUrl () {
-    return '/v2/txs/utxoForAddresses'
+  getUTXOUrl() {
+    return '/v2/txs/utxoForAddresses';
   }
 
-  getTransactionsUrl (address) {
-    return '/v2/txs/history'
+  getTransactionsUrl(address) {
+    return '/v2/txs/history';
   }
 
-  getTransactionsMethod () {
-    return 'post'
+  getTransactionsMethod() {
+    return 'post';
   }
 
-  getTransactionsParams (address, offset, limit) {
+  getTransactionsParams(address, offset, limit) {
     return {
       addresses: [address],
       dateFrom: 1483228800000, // from 2017
       txLimit: limit || this.defaultTxLimit,
-    }
+    };
   }
 
-  modifyTransactionsResponse (response, address) {
-    return super.modifyTransactionsResponse(response, address)
+  modifyTransactionsResponse(response, address) {
+    return super.modifyTransactionsResponse(response, address);
   }
 
-  getSendTransactionUrl () {
-    return '/v2/txs/signed'
+  getSendTransactionUrl() {
+    return '/v2/txs/signed';
   }
 
-  getSendTransactionMethod () {
-    return 'post'
+  getSendTransactionMethod() {
+    return 'post';
   }
 
-  getSendTransactionParams (rawtx) {
+  getSendTransactionParams(rawtx) {
     return {
       signedTx: Buffer.from(rawtx.txBody, 'hex').toString('base64'),
       txHash: rawtx.txHash,
-    }
+    };
   }
 
-  modifySendTransactionResponse (response, hash) {
-    let modifiedResponse
+  modifySendTransactionResponse(response, hash) {
+    let modifiedResponse;
 
     if (response === 'Transaction sent successfully!') {
       modifiedResponse = {
         txid: hash,
-      }
+      };
     } else {
       throw new WalletError({
         type: SEND_TRANSACTION_TYPE,
         error: new Error(`[ADA] ${response}`),
         instance: this,
-      })
+      });
     }
 
-    return modifiedResponse
+    return modifiedResponse;
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
-  getTxDirection (selfAddress, tx) {
-    return !tx.inputs_address.find((address) => selfAddress === address)
+  getTxDirection(selfAddress, tx) {
+    return !tx.inputs_address.find((address) => selfAddress === address);
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     return this.getTxDirection(selfAddress, tx)
       ? tx.inputs_address.find((address) => selfAddress !== address)
-      : tx.outputs_address.find((address) => selfAddress !== address) || selfAddress
+      : tx.outputs_address.find((address) => selfAddress !== address) ||
+          selfAddress;
   }
 
-  getTxDate (tx) {
-    return this.getTxDateTime(tx)
-      .toDateString()
-      .slice(4)
+  getTxDate(tx) {
+    return this.getTxDateTime(tx).toDateString().slice(4);
   }
 
-  getTxTime (tx) {
-    return this.getTxDateTime(tx)
-      .toTimeString()
-      .slice(0, 5)
+  getTxTime(tx) {
+    return this.getTxDateTime(tx).toTimeString().slice(0, 5);
   }
 
-  getTxValue (selfAddress, tx) {
-    const isIncoming = this.getTxDirection(selfAddress, tx)
-    const indexes = []
+  getTxValue(selfAddress, tx) {
+    const isIncoming = this.getTxDirection(selfAddress, tx);
+    const indexes = [];
 
     tx.outputs_address.forEach((address, idx) => {
       if (isIncoming && address === selfAddress) {
-        indexes.push(idx)
+        indexes.push(idx);
       } else if (!isIncoming && address !== selfAddress) {
-        indexes.push(idx)
+        indexes.push(idx);
       }
-    })
+    });
 
-    const sentToMyself = tx.inputs_address.concat(tx.outputs_address)
-      .every((address) => address === selfAddress)
+    const sentToMyself = tx.inputs_address
+      .concat(tx.outputs_address)
+      .every((address) => address === selfAddress);
 
-    let value
+    let value;
 
     if (sentToMyself) {
-      const outputsAmount = tx.outputs_amount
-        .reduce((prev, cur) => prev.add(new this.wallet.BN(cur)), new this.wallet.BN(0))
+      const outputsAmount = tx.outputs_amount.reduce(
+        (prev, cur) => prev.add(new this.wallet.BN(cur)),
+        new this.wallet.BN(0),
+      );
 
-      const inputsAmount = tx.inputs_amount
-        .reduce((prev, cur) => prev.add(new this.wallet.BN(cur)), new this.wallet.BN(0))
+      const inputsAmount = tx.inputs_amount.reduce(
+        (prev, cur) => prev.add(new this.wallet.BN(cur)),
+        new this.wallet.BN(0),
+      );
 
-      value = inputsAmount
-        .sub(outputsAmount)
-        .toString()
+      value = inputsAmount.sub(outputsAmount).toString();
     } else {
-      value = indexes.reduce(
-        (acc, cur) => acc.add(new this.wallet.BN(tx.outputs_amount[cur])),
-        new this.wallet.BN(0)
-      ).toString()
+      value = indexes
+        .reduce(
+          (acc, cur) => acc.add(new this.wallet.BN(tx.outputs_amount[cur])),
+          new this.wallet.BN(0),
+        )
+        .toString();
     }
 
-    return this.wallet.toCurrencyUnit(value)
+    return this.wallet.toCurrencyUnit(value);
   }
 
-  getTxDateTime (tx) {
-    return new Date(tx.time)
+  getTxDateTime(tx) {
+    return new Date(tx.time);
   }
 
-  getTxConfirmations (tx) {
-    return 1
+  getTxConfirmations(tx) {
+    return 1;
   }
 
   /**
@@ -167,22 +169,22 @@ class CardanoliteExplorer extends Explorer {
    *
    * @returns {Promise<BN>}
    */
-  async getBalance (address) {
-    const response = await this.getInfo(address)
+  async getBalance(address) {
+    const response = await this.getInfo(address);
 
-    return response && response.balance
+    return response && response.balance;
   }
 
-  async sendTransaction (rawtx) {
+  async sendTransaction(rawtx) {
     const response = await this.request(
       this.getSendTransactionUrl(),
       this.getSendTransactionMethod(),
       this.getSendTransactionParams(rawtx),
       SEND_TRANSACTION_TYPE,
       this.getSendOptions(),
-    )
+    );
 
-    return this.modifySendTransactionResponse(response, rawtx.txHash)
+    return this.modifySendTransactionResponse(response, rawtx.txHash);
   }
 
   /**
@@ -190,22 +192,20 @@ class CardanoliteExplorer extends Explorer {
    *
    * @return {Promise} The utxo.
    */
-  async getUnspentOutputs (address) {
-    const result = await this.request(
-      this.getUTXOUrl(),
-      'post',
-      { addresses: [address] }
-    ).catch((error) => {
+  async getUnspentOutputs(address) {
+    const result = await this.request(this.getUTXOUrl(), 'post', {
+      addresses: [address],
+    }).catch((error) => {
       throw new ExplorerRequestError({
         type: GET_UTXO_TYPE,
         error,
         url: this.getUTXOUrl(),
         instance: this,
-      })
-    })
+      });
+    });
 
-    return result
+    return result;
   }
 }
 
-export default CardanoliteExplorer
+export default CardanoliteExplorer;

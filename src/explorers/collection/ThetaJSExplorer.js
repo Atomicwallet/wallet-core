@@ -1,20 +1,21 @@
-import { providers, networks } from '@thetalabs/theta-js'
-import Explorer from '../Explorer'
+import { providers, networks } from '@thetalabs/theta-js';
+
+import Explorer from '../Explorer';
 // import logger from '../Logger'
 
-const INIT_PROVIDER_TIMEOUT = 10000
-const TICKER_FROM_PROVIDER = /(theta|tfuel)wei/i
-const ACCOUNT_NOT_FOUND_ERROR = -32000
+const INIT_PROVIDER_TIMEOUT = 10000;
+const TICKER_FROM_PROVIDER = /(theta|tfuel)wei/i;
+const ACCOUNT_NOT_FOUND_ERROR = -32000;
 
 export default class ThetaJSExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['THETA', 'TFUEL']
+  getAllowedTickers() {
+    return ['THETA', 'TFUEL'];
   }
 
-  constructor (...args) {
-    super(...args)
+  constructor(...args) {
+    super(...args);
 
-    this.initProvider()
+    this.initProvider();
   }
 
   /**
@@ -25,30 +26,31 @@ export default class ThetaJSExplorer extends Explorer {
    * @param {string} config.chainId - Chain ID (`mainnet` / `testnet`)
    * @param {string} config.baseUrl - Theta node JsonRPC url
    */
-  initProvider ({
-    chainId,
-    baseUrl,
-  } = this.config) {
+  initProvider({ chainId, baseUrl } = this.config) {
     try {
       this.provider = new providers.HttpProvider(
         chainId || networks.Mainnet.chainId,
-        baseUrl || networks.Mainnet.rpcUrl
-      )
+        baseUrl || networks.Mainnet.rpcUrl,
+      );
     } catch (error) {
       // logger.error({
       //   instance: this,
       //   error,
       // })
 
-      setTimeout(() => this.initProvider({
-        chainId,
-        baseUrl,
-      }), INIT_PROVIDER_TIMEOUT)
+      setTimeout(
+        () =>
+          this.initProvider({
+            chainId,
+            baseUrl,
+          }),
+        INIT_PROVIDER_TIMEOUT,
+      );
     }
   }
 
-  async getLatestBlockNumber () {
-    return this.provider.getBlockNumber()
+  async getLatestBlockNumber() {
+    return this.provider.getBlockNumber();
   }
 
   /**
@@ -65,25 +67,28 @@ export default class ThetaJSExplorer extends Explorer {
    * @param {string} address
    * @returns {Promise<ThetaAccount>}
    */
-  async getAccount (address) {
+  async getAccount(address) {
     try {
-      const account = await this.provider.getAccount(address)
+      const account = await this.provider.getAccount(address);
 
       return {
         ...account,
-        coins: Object.entries(account.coins).reduce((obj, [coin, amount]) => ({
-          ...obj,
-          [this.getTickerFromProvider(coin)]: amount,
-        }), {}),
+        coins: Object.entries(account.coins).reduce(
+          (obj, [coin, amount]) => ({
+            ...obj,
+            [this.getTickerFromProvider(coin)]: amount,
+          }),
+          {},
+        ),
         emptyAddress: false,
-      }
+      };
     } catch (error) {
       if (error.code === ACCOUNT_NOT_FOUND_ERROR) {
         return {
           sequence: 0,
           coins: {},
           emptyAddress: true,
-        }
+        };
       }
 
       // logger.error({
@@ -95,16 +100,16 @@ export default class ThetaJSExplorer extends Explorer {
         sequence: 0,
         coins: {},
         emptyAddress: true,
-      }
+      };
     }
   }
 
-  async sendTransaction (rawtx) {
-    const tx = await this.provider.sendTransaction(rawtx)
+  async sendTransaction(rawtx) {
+    const tx = await this.provider.sendTransaction(rawtx);
 
     return {
       txid: tx.hash,
-    }
+    };
   }
 
   /**
@@ -112,9 +117,9 @@ export default class ThetaJSExplorer extends Explorer {
    * @param {string} providerTicker - `thetawei` / `tfuelwei`
    * @returns {string} `THETA` / `TFUEL`
    */
-  getTickerFromProvider (providerTicker) {
+  getTickerFromProvider(providerTicker) {
     return (
       providerTicker.match(TICKER_FROM_PROVIDER)?.[1] || providerTicker
-    ).toUpperCase()
+    ).toUpperCase();
   }
 }

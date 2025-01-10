@@ -1,13 +1,12 @@
 // docs: https://near.github.io/near-api-js/
 import lodash from 'lodash';
-import sha256 from '../../utils/sha256';
+
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
-import { Amount } from '../../utils';
-// import configManager from '../ConfigManager';
-import { LazyLoadedLib } from '../../utils';
 import NearblocksExplorer from '../../explorers/collection/NearblocksExplorer';
 import NearRPCExplorer from '../../explorers/collection/NearRPCExplorer';
+import { Amount, LazyLoadedLib } from '../../utils';
+import sha256 from '../../utils/sha256';
 import { HasBlockScanner, HasProviders, StakingMixin } from '../mixins';
 
 const nearApiLib = new LazyLoadedLib(() => import('near-api-js'));
@@ -521,7 +520,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     const balances = await this.getProvider('node').fetchStakingInfo(
       this.address,
       {
-        activeValidators: [], //await configManager.get(this.getPredefineValidatorsConfigName(),),
+        activeValidators: [], // await configManager.get(this.getPredefineValidatorsConfigName(),),
       },
     );
 

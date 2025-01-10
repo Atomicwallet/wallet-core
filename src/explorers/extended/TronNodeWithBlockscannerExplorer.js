@@ -1,6 +1,8 @@
-import { HasBlockscannerMixin } from '../mixins'
-import TronNodeExplorer from '../collection/TronNodeExplorer.js'
+import TronNodeExplorer from '../collection/TronNodeExplorer.js';
+import { HasBlockscannerMixin } from '../mixins';
 
-class TronNodeWithBlockscannerExplorer extends HasBlockscannerMixin(TronNodeExplorer) {}
+class TronNodeWithBlockscannerExplorer extends HasBlockscannerMixin(
+  TronNodeExplorer,
+) {}
 
-export default TronNodeWithBlockscannerExplorer
+export default TronNodeWithBlockscannerExplorer;

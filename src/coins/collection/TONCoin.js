@@ -1,10 +1,11 @@
 import { Coin } from '../../abstract';
+import { ExternalError, UnknownConfigKeyError } from '../../errors';
 import TonwebExplorer from '../../explorers/collection/TonwebExplorer';
+import { TONToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';
 // import logger from '../Logger';
-import { TONToken } from '../../tokens';
 // import configManager, { ConfigKey } from '../ConfigManager';
-import { ExternalError, UnknownConfigKeyError } from '../../errors';
+import { EXTERNAL_ERROR } from '../../utils/const';
 import { HasProviders, HasTokensMixin } from '../mixins';
 import {
   BALANCE_PROVIDER_OPERATION,
@@ -12,7 +13,6 @@ import {
   TOKEN_PROVIDER_OPERATION,
   TONWEB_PROVIDER_OPERATION,
 } from '../mixins/HasProviders';
-import { EXTERNAL_ERROR } from '../../utils/const';
 
 const tonwebLib = new LazyLoadedLib(() => import('tonweb'));
 const tonwebMnemonicLib = new LazyLoadedLib(() => import('tonweb-mnemonic'));

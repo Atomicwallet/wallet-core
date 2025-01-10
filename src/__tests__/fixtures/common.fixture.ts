@@ -1,6 +1,8 @@
-// @ts-ignore no declared types
-import BitcoreMnemonic from 'bitcore-mnemonic';
 import { createHash } from 'crypto';
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+import BitcoreMnemonic from 'bitcore-mnemonic';
 
 import mapping from './mnemonic_mapping.json';
 
@@ -52,22 +54,22 @@ export const createCosmoMockSignedData = (address: string) => {
 export const generateMockUtxo = (address: string, value: string): Utxo[] => {
   return [
     {
-      address: address,
+      address,
       outputIndex: 1,
       satoshis: Number(value),
       txId: createHash64(address),
       txid: createHash64(address),
-      value: value,
+      value,
       script: '',
       vout: 1,
     },
     {
-      address: address,
+      address,
       outputIndex: 0,
       satoshis: Number(value),
       txId: createHash64('atomic'),
       txid: createHash64('atomic'),
-      value: value,
+      value,
       script: '',
       vout: 0,
     },

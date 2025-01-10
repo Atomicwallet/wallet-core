@@ -1,6 +1,6 @@
-import BN from 'bn.js';
-import axios from 'axios';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
+import axios from 'axios';
+import BN from 'bn.js';
 
 const KEY_LAST_REWARD_CYCLE = 'lastrewardcycle';
 const KEY_DIRECT_DEPOSIT_DELEG = 'direct_deposit_deleg';

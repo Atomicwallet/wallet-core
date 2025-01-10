@@ -1,23 +1,27 @@
-const DEFAULT_МАХ_STRING_LENGTH = 100
+const DEFAULT_МАХ_STRING_LENGTH = 100;
 
-const chunkString = (strWallets, maxStringLength = DEFAULT_МАХ_STRING_LENGTH) => {
-  const result = []
+const chunkString = (
+  strWallets,
+  maxStringLength = DEFAULT_МАХ_STRING_LENGTH,
+) => {
+  const result = [];
 
   while (strWallets.length > maxStringLength) {
-    const maxString = strWallets.slice(0, maxStringLength)
-    const maxLength = strWallets[maxStringLength] === ','
-      ? maxStringLength
-      : maxString.lastIndexOf(',')
+    const maxString = strWallets.slice(0, maxStringLength);
+    const maxLength =
+      strWallets[maxStringLength] === ','
+        ? maxStringLength
+        : maxString.lastIndexOf(',');
 
-    result.push(strWallets.slice(0, maxLength))
-    strWallets = strWallets.slice(maxLength + 1)
+    result.push(strWallets.slice(0, maxLength));
+    strWallets = strWallets.slice(maxLength + 1);
   }
 
   if (strWallets.length > 0) {
-    result.push(strWallets)
+    result.push(strWallets);
   }
 
-  return result
-}
+  return result;
+};
 
-export default chunkString
+export default chunkString;

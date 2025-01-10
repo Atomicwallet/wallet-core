@@ -1,20 +1,15 @@
 import { Coin } from '../../abstract';
-import { EVMToken } from '../../tokens';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 import NftMixin from '../../coins/nfts/mixins/NftMixin';
 import { ExternalError, UnknownConfigKeyError } from '../../errors';
-import { EXTERNAL_ERROR } from '../../utils/const';
-import { Amount } from '../../utils';
-
-// import { ConfigKey } from '../ConfigManager/ConfigManager.const';
-import Transaction from '../../explorers/Transaction';
-import { LazyLoadedLib } from '../../utils';
-
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import EtherscanExplorer from '../../explorers/collection/EtherscanExplorer';
+import Web3Explorer from '../../explorers/collection/Web3Explorer';
+import Transaction from '../../explorers/Transaction';
+import { EVMToken } from '../../tokens';
+import { Amount, LazyLoadedLib } from '../../utils';
+import { EXTERNAL_ERROR } from '../../utils/const';
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
-
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
@@ -892,7 +887,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     //   });
     //
     // return fast;
-    return null
+    return null;
   }
 
   /**
@@ -981,7 +976,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     //   return null;
     // }
 
-    return null
+    return null;
   }
 
   /**
@@ -1215,7 +1210,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     //   }
     //   return [];
     // });
-    return []
+    return [];
   }
 
   /**
@@ -1234,7 +1229,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     //   }
     //   return [];
     // });
-    return []
+    return [];
   }
 
   /**

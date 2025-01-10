@@ -1,21 +1,25 @@
-import { convertTimestampToDateTime, getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert'
-import Explorer from '../Explorer'
-import Transaction from '../Transaction'
+import {
+  convertTimestampToDateTime,
+  getStringWithEnsuredEndChar,
+  toCurrency,
+} from '../../utils/convert';
+import Explorer from '../Explorer';
+import Transaction from '../Transaction';
 
-const TX_TIMESTAMPS_IN_ONE_SECOND = 1
-const TX_MODULE_PARAM = 'account'
-const TX_ACTION_PARAM = 'txlist'
+const TX_TIMESTAMPS_IN_ONE_SECOND = 1;
+const TX_MODULE_PARAM = 'account';
+const TX_ACTION_PARAM = 'txlist';
 
 /**
  * Class FtmExplorer
  *
  */
 class FtmExplorer extends Explorer {
-  constructor ({ wallet, config }) {
-    super({ wallet, config })
+  constructor({ wallet, config }) {
+    super({ wallet, config });
 
-    this.baseUrl = getStringWithEnsuredEndChar(config.baseUrl, '/')
-    this.ticker = wallet.ticker
+    this.baseUrl = getStringWithEnsuredEndChar(config.baseUrl, '/');
+    this.ticker = wallet.ticker;
   }
 
   /**
@@ -23,8 +27,8 @@ class FtmExplorer extends Explorer {
    *
    * @returns {string[]}
    */
-  getAllowedTickers () {
-    return ['FTM']
+  getAllowedTickers() {
+    return ['FTM'];
   }
 
   /** @typedef GetTransactionParamsResponse
@@ -46,7 +50,12 @@ class FtmExplorer extends Explorer {
    * @param {number} [pageNum=1] - Page number.
    * @return {GetTransactionParamsResponse} - Here offset used as a limit.
    */
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit, pageNum = 1) {
+  getTransactionsParams(
+    address,
+    offset = 0,
+    limit = this.defaultTxLimit,
+    pageNum = 1,
+  ) {
     return {
       module: TX_MODULE_PARAM,
       action: TX_ACTION_PARAM,
@@ -54,7 +63,7 @@ class FtmExplorer extends Explorer {
       page: String(pageNum),
       offset: String(limit),
       sort: 'desc',
-    }
+    };
   }
 
   /**
@@ -63,8 +72,8 @@ class FtmExplorer extends Explorer {
    * @param {string} address  - Wallet address.
    * @returns {string}
    */
-  getTransactionsUrl (address) {
-    return ''
+  getTransactionsUrl(address) {
+    return '';
   }
 
   /**
@@ -92,38 +101,44 @@ class FtmExplorer extends Explorer {
    * @param {string} [asset='FTM'] - Basically it's a coin ticker.
    * @returns {Transaction[]}
    */
-  modifyTransactionsResponse (response, selfAddress, asset = this.wallet.ticker) {
-    const txs = Array.isArray(response?.result) ? response.result : []
+  modifyTransactionsResponse(
+    response,
+    selfAddress,
+    asset = this.wallet.ticker,
+  ) {
+    const txs = Array.isArray(response?.result) ? response.result : [];
 
     return txs.reduce((transactionList, tx, index) => {
       try {
-        const direction = this.getTxDirection(selfAddress, tx)
+        const direction = this.getTxDirection(selfAddress, tx);
 
-        transactionList.push(new Transaction({
-          ticker: asset,
-          name: this.wallet.name,
-          alias: this.wallet.alias,
-          walletid: this.wallet.id,
-          explorer: this.constructor.name,
-          txid: tx.hash,
-          direction,
-          otherSideAddress: direction ? tx.from : tx.to,
-          amount: toCurrency(tx.value, this.wallet.decimal),
-          datetime: this.getTxDateTime(tx),
-          memo: '',
-          confirmations: tx.confirmations,
-          fee: this.getTxFee(tx),
-          feeTicker: asset,
-        }))
+        transactionList.push(
+          new Transaction({
+            ticker: asset,
+            name: this.wallet.name,
+            alias: this.wallet.alias,
+            walletid: this.wallet.id,
+            explorer: this.constructor.name,
+            txid: tx.hash,
+            direction,
+            otherSideAddress: direction ? tx.from : tx.to,
+            amount: toCurrency(tx.value, this.wallet.decimal),
+            datetime: this.getTxDateTime(tx),
+            memo: '',
+            confirmations: tx.confirmations,
+            fee: this.getTxFee(tx),
+            feeTicker: asset,
+          }),
+        );
 
-        return transactionList
+        return transactionList;
       } catch (error) {
-        console.warn('[FTM] tx parse failed')
-        console.error(error)
+        console.warn('[FTM] tx parse failed');
+        console.error(error);
 
-        return transactionList
+        return transactionList;
       }
-    }, [])
+    }, []);
   }
 
   /**
@@ -132,8 +147,8 @@ class FtmExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {boolean} - True if we accept transaction.
    */
-  getTxDirection (selfAddress, tx) {
-    return tx.to.toLowerCase() === selfAddress.toLowerCase()
+  getTxDirection(selfAddress, tx) {
+    return tx.to.toLowerCase() === selfAddress.toLowerCase();
   }
 
   /**
@@ -142,8 +157,11 @@ class FtmExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {Date}
    */
-  getTxDateTime (tx) {
-    return convertTimestampToDateTime(Number(tx.timeStamp), TX_TIMESTAMPS_IN_ONE_SECOND)
+  getTxDateTime(tx) {
+    return convertTimestampToDateTime(
+      Number(tx.timeStamp),
+      TX_TIMESTAMPS_IN_ONE_SECOND,
+    );
   }
 
   /**
@@ -152,9 +170,9 @@ class FtmExplorer extends Explorer {
    * @param {ParsedRawTransactionObject} tx
    * @return {string}
    */
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit(BigInt(tx.gasUsed) * BigInt(tx.gasPrice))
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit(BigInt(tx.gasUsed) * BigInt(tx.gasPrice));
   }
 }
 
-export default FtmExplorer
+export default FtmExplorer;

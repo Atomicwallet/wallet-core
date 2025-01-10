@@ -1,26 +1,28 @@
-import axios from 'axios'
+import axios from 'axios';
 
-import { ExternalError } from '../../errors/index.js'
-import { getStringWithEnsuredEndChar } from '../../utils/convert'
-import { WALLETS } from '../../utils/const'
-import Explorer from '../Explorer'
+import { ExternalError } from '../../errors/index.js';
+import { LazyLoadedLib, Emitter as emitter } from '../../utils';
+import { WALLETS } from '../../utils/const';
+import { getStringWithEnsuredEndChar } from '../../utils/convert';
+import Explorer from '../Explorer';
 // import activeWalletsList from '../ActiveWalletsList'
-import { LazyLoadedLib, Emitter as emitter } from '../../utils'
 
-const MymoneroWalletManagerLazyLoaded = new LazyLoadedLib(() => import('@mymonero/mymonero-wallet-manager'))
+const MymoneroWalletManagerLazyLoaded = new LazyLoadedLib(
+  () => import('@mymonero/mymonero-wallet-manager'),
+);
 
-const ATOMIC_ALIAS = 'atomic'
-const MONERO_MAINNET = 'MAINNET'
-const INCOMING_TRANSACTION_SIGN = 'incoming'
+const ATOMIC_ALIAS = 'atomic';
+const MONERO_MAINNET = 'MAINNET';
+const INCOMING_TRANSACTION_SIGN = 'incoming';
 
 // The response status of our internal proxy (only for the "/activate_account" URL) means
 // that the account was not found, which means a new entry.
-const HTTP_STATUS_NOT_FOUND = 404
+const HTTP_STATUS_NOT_FOUND = 404;
 // Response status of our backend proxy server meaning that the account has been deactivated.
-const HTTP_STATUS_DEACTIVATED = 409
-const ATOMIC_ID_HEADER_NAME = 'x-atomic-id'
-const MY_MONERO_PROXY_REACTIVATE_URL = '/activate_account'
-const MY_MONERO_PROXY_REACTIVATE_URL_TEST_PATTERN = /^\/?activate_account$/
+const HTTP_STATUS_DEACTIVATED = 409;
+const ATOMIC_ID_HEADER_NAME = 'x-atomic-id';
+const MY_MONERO_PROXY_REACTIVATE_URL = '/activate_account';
+const MY_MONERO_PROXY_REACTIVATE_URL_TEST_PATTERN = /^\/?activate_account$/;
 
 /**
  * @typedef MyMoneroLocalAccount
@@ -36,7 +38,7 @@ const MY_MONERO_PROXY_REACTIVATE_URL_TEST_PATTERN = /^\/?activate_account$/
  */
 class MyMoneroExplorer extends Explorer {
   /** @type string | undefined */
-  #atomicId
+  #atomicId;
 
   /** @type MyMoneroLocalAccount */
   #myMoneroLocalAccount = {
@@ -44,14 +46,14 @@ class MyMoneroExplorer extends Explorer {
     keys: {},
     wallet: null,
     isLoggedIn: false,
-  }
+  };
 
-  constructor ({ wallet, config }) {
-    super({ wallet, config })
+  constructor({ wallet, config }) {
+    super({ wallet, config });
 
-    this.baseUrl = getStringWithEnsuredEndChar(config.baseUrl, '/')
-    this.ticker = wallet.ticker
-    this.#atomicId = wallet.atomicId
+    this.baseUrl = getStringWithEnsuredEndChar(config.baseUrl, '/');
+    this.ticker = wallet.ticker;
+    this.#atomicId = wallet.atomicId;
   }
 
   /**
@@ -61,71 +63,77 @@ class MyMoneroExplorer extends Explorer {
    * @param {string} privateKeyView - Private view Key.
    * @param {string} privateKeySpend - Private spend Key.
    */
-  setup (privateKeyView, privateKeySpend) {
-    this.#myMoneroLocalAccount.keys = { privateKeyView, privateKeySpend }
+  setup(privateKeyView, privateKeySpend) {
+    this.#myMoneroLocalAccount.keys = { privateKeyView, privateKeySpend };
   }
 
   /**
    * Instantiates inits and gets Mymonero WalletManager
    * @returns {Promise<WalletManager>}
    */
-  async #initAndGetMyMoneroWalletManager () {
+  async #initAndGetMyMoneroWalletManager() {
     if (this.#myMoneroLocalAccount.walletManager) {
-      return this.#myMoneroLocalAccount.walletManager
+      return this.#myMoneroLocalAccount.walletManager;
     }
 
-    const axiosInstance = axios.create({ baseURL: this.baseUrl })
+    const axiosInstance = axios.create({ baseURL: this.baseUrl });
 
     axiosInstance.interceptors.request.use((axiosRequestConfig) => {
-      axiosRequestConfig.headers.common[ATOMIC_ID_HEADER_NAME] = this.#atomicId
-      return axiosRequestConfig
-    })
+      axiosRequestConfig.headers.common[ATOMIC_ID_HEADER_NAME] = this.#atomicId;
+      return axiosRequestConfig;
+    });
 
     axiosInstance.interceptors.response.use(
       null,
 
       (axiosResponseError) => {
-        const { config: { url }, response: { status } } = axiosResponseError
+        const {
+          config: { url },
+          response: { status },
+        } = axiosResponseError;
 
-        if (status === HTTP_STATUS_NOT_FOUND && MY_MONERO_PROXY_REACTIVATE_URL_TEST_PATTERN.test(url)) {
+        if (
+          status === HTTP_STATUS_NOT_FOUND &&
+          MY_MONERO_PROXY_REACTIVATE_URL_TEST_PATTERN.test(url)
+        ) {
           // Do nothing, which means create a new my-monero account by our backend proxy server
-          return
+          return;
         }
 
         if (axiosResponseError.response?.status === HTTP_STATUS_DEACTIVATED) {
-          emitter.emit(WALLETS.DEACTIVATE_COIN, { id: this.wallet.id })
+          emitter.emit(WALLETS.DEACTIVATE_COIN, { id: this.wallet.id });
         }
 
+        return Promise.reject(axiosResponseError);
+      },
+    );
 
-        return Promise.reject(axiosResponseError)
-      }
-    )
+    const { default: WalletManager } =
+      await MymoneroWalletManagerLazyLoaded.get();
 
-    const { default: WalletManager } = await MymoneroWalletManagerLazyLoaded.get()
-
-    const walletManager = new WalletManager(MONERO_MAINNET, this.baseUrl)
+    const walletManager = new WalletManager(MONERO_MAINNET, this.baseUrl);
 
     // Replace my-monero httpClient with own axios instance to avoid using global axios
     // and to avoid using 'x-atomic-id' header in unrelated requests
-    walletManager.apiClient.httpClient = axiosInstance
+    walletManager.apiClient.httpClient = axiosInstance;
 
     try {
       await new Promise((resolve) => {
-        this.#ensureInitialization(walletManager, resolve)
-      })
+        this.#ensureInitialization(walletManager, resolve);
+      });
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
 
     this.#myMoneroLocalAccount.wallet = await walletManager.importWalletKeys(
       ATOMIC_ALIAS,
       this.wallet.address,
       this.#myMoneroLocalAccount.keys.privateKeyView,
-      this.#myMoneroLocalAccount.keys.privateKeySpend
-    )
+      this.#myMoneroLocalAccount.keys.privateKeySpend,
+    );
 
-    this.#myMoneroLocalAccount.walletManager = walletManager
-    return walletManager
+    this.#myMoneroLocalAccount.walletManager = walletManager;
+    return walletManager;
   }
 
   /**
@@ -134,23 +142,29 @@ class MyMoneroExplorer extends Explorer {
    * @returns {Promise<void>}
    * @throws {ExternalError}
    */
-  async reactivateMyMonero () {
-    const walletManager = await this.#initAndGetMyMoneroWalletManager()
+  async reactivateMyMonero() {
+    const walletManager = await this.#initAndGetMyMoneroWalletManager();
 
-    return walletManager.apiClient.httpClient.post(MY_MONERO_PROXY_REACTIVATE_URL, {
-      atomicId: this.#atomicId,
-    })
+    return walletManager.apiClient.httpClient.post(
+      MY_MONERO_PROXY_REACTIVATE_URL,
+      {
+        atomicId: this.#atomicId,
+      },
+    );
   }
 
-  async #ensureInitialization (walletManager, resolve, counter = 1) {
-    const MAX_COUNT = 10
+  async #ensureInitialization(walletManager, resolve, counter = 1) {
+    const MAX_COUNT = 10;
 
     if (!walletManager.bridgeClass?.isValidKeys && counter <= MAX_COUNT) {
-      await walletManager.init()
-      setTimeout(() => this.#ensureInitialization(walletManager, resolve, counter + 1), 10)
-      return
+      await walletManager.init();
+      setTimeout(
+        () => this.#ensureInitialization(walletManager, resolve, counter + 1),
+        10,
+      );
+      return;
     }
-    resolve()
+    resolve();
   }
 
   /**
@@ -160,21 +174,21 @@ class MyMoneroExplorer extends Explorer {
    * @throws {Error}
    * @throws {ExternalError}
    */
-  async #logInToOrSyncMyMonero () {
+  async #logInToOrSyncMyMonero() {
     // if (!activeWalletsList.isActive(this.wallet)) {
     //   throw new Error('Wallet is not active')
     // }
 
     try {
       if (!this.#myMoneroLocalAccount.isLoggedIn) {
-        await this.#initAndGetMyMoneroWalletManager()
-        await this.#myMoneroLocalAccount.wallet.login(true)
-        this.#myMoneroLocalAccount.isLoggedIn = true
+        await this.#initAndGetMyMoneroWalletManager();
+        await this.#myMoneroLocalAccount.wallet.login(true);
+        this.#myMoneroLocalAccount.isLoggedIn = true;
       }
 
-      await this.#myMoneroLocalAccount.wallet.sync()
+      await this.#myMoneroLocalAccount.wallet.sync();
     } catch (error) {
-      throw new ExternalError(error, this)
+      throw new ExternalError(error, this);
     }
   }
 
@@ -185,9 +199,9 @@ class MyMoneroExplorer extends Explorer {
    * @returns {Promise<{balance: string | BN}>} - The account balance
    * @throws {ExternalError}
    */
-  async getInfo (address) {
-    await this.#logInToOrSyncMyMonero()
-    return { balance: this.#myMoneroLocalAccount.wallet.balance.toString() }
+  async getInfo(address) {
+    await this.#logInToOrSyncMyMonero();
+    return { balance: this.#myMoneroLocalAccount.wallet.balance.toString() };
   }
 
   /**
@@ -196,14 +210,14 @@ class MyMoneroExplorer extends Explorer {
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async getFee () {
-    await this.#logInToOrSyncMyMonero()
+  async getFee() {
+    await this.#logInToOrSyncMyMonero();
     try {
-      const fee = await this.#myMoneroLocalAccount.wallet.estimateFee()
+      const fee = await this.#myMoneroLocalAccount.wallet.estimateFee();
 
-      return fee.toString()
+      return fee.toString();
     } catch (error) {
-      throw new ExternalError(error, this)
+      throw new ExternalError(error, this);
     }
   }
 
@@ -214,14 +228,14 @@ class MyMoneroExplorer extends Explorer {
    * @returns {Promise<{txid: string}>} - The transaction id.
    * @throws {ExternalError}
    */
-  async sendTransaction (options) {
-    await this.#logInToOrSyncMyMonero()
+  async sendTransaction(options) {
+    await this.#logInToOrSyncMyMonero();
     try {
-      const hash = await this.#myMoneroLocalAccount.wallet.transfer(options)
+      const hash = await this.#myMoneroLocalAccount.wallet.transfer(options);
 
-      return { txid: hash }
+      return { txid: hash };
     } catch (error) {
-      throw new ExternalError(error, this)
+      throw new ExternalError(error, this);
     }
   }
 
@@ -231,11 +245,11 @@ class MyMoneroExplorer extends Explorer {
    * @return {Promise<Object[]>}
    * @throws {ExternalError}
    */
-  async getTransactions ({ address } = {}) {
-    await this.#logInToOrSyncMyMonero()
-    const transactions = this.#myMoneroLocalAccount.wallet.transactions
+  async getTransactions({ address } = {}) {
+    await this.#logInToOrSyncMyMonero();
+    const transactions = this.#myMoneroLocalAccount.wallet.transactions;
 
-    return this.modifyTransactionsResponse(transactions, address)
+    return this.modifyTransactionsResponse(transactions, address);
   }
 
   /**
@@ -244,8 +258,8 @@ class MyMoneroExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {string}
    */
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
   /**
@@ -255,8 +269,8 @@ class MyMoneroExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {boolean} - True for incoming transaction.
    */
-  getTxDirection (selfAddress, tx) {
-    return tx.direction === INCOMING_TRANSACTION_SIGN
+  getTxDirection(selfAddress, tx) {
+    return tx.direction === INCOMING_TRANSACTION_SIGN;
   }
 
   /**
@@ -266,8 +280,8 @@ class MyMoneroExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {string | null}
    */
-  getTxOtherSideAddress (selfAddress, tx) {
-    return tx.destinationAddress
+  getTxOtherSideAddress(selfAddress, tx) {
+    return tx.destinationAddress;
   }
 
   /**
@@ -277,8 +291,8 @@ class MyMoneroExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {string}
    */
-  getTxValue (address, tx) {
-    return this.wallet.toCurrencyUnit(tx.amount.abs().toString())
+  getTxValue(address, tx) {
+    return this.wallet.toCurrencyUnit(tx.amount.abs().toString());
   }
 
   /**
@@ -287,8 +301,8 @@ class MyMoneroExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {Date}
    */
-  getTxDateTime (tx) {
-    return new Date(tx.timestamp)
+  getTxDateTime(tx) {
+    return new Date(tx.timestamp);
   }
 
   /**
@@ -297,9 +311,9 @@ class MyMoneroExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {string}
    */
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit(tx.fee.toString())
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit(tx.fee.toString());
   }
 }
 
-export default MyMoneroExplorer
+export default MyMoneroExplorer;

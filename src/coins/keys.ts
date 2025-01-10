@@ -1,41 +1,45 @@
-import { type Coin } from '@/abstract'
-import type { IKeys, IKeysObject } from '@/utils'
+import { type Coin } from '@/abstract';
+import type { IKeys, IKeysObject } from '@/utils';
 
-const generateKeys = async (wallet: Coin, { seed, phrase }: IKeys): Promise<IKeysObject> => {
-  const keysObject = await wallet.loadWallet(seed, phrase)
+const generateKeys = async (
+  wallet: Coin,
+  { seed, phrase }: IKeys,
+): Promise<IKeysObject> => {
+  const keysObject = await wallet.loadWallet(seed, phrase);
 
-  return keysObject as Promise<IKeysObject>
-}
+  return keysObject as Promise<IKeysObject>;
+};
 
-const loadKeys = async (wallet: Coin, keys: { address: string; privateKey: string }, { seed, phrase }: IKeys): Promise<unknown> => {
-  let isWalletLoadRequired = false
+const loadKeys = async (
+  wallet: Coin,
+  keys: { address: string; privateKey: string },
+  { seed, phrase }: IKeys,
+): Promise<unknown> => {
+  let isWalletLoadRequired = false;
 
   if (keys.address) {
-    wallet.setAddress(keys.address)
+    wallet.setAddress(keys.address);
   } else {
-    isWalletLoadRequired = true
+    isWalletLoadRequired = true;
   }
 
   if (keys.privateKey) {
     try {
-      wallet.setPrivateKey(keys.privateKey, phrase)
+      wallet.setPrivateKey(keys.privateKey, phrase);
     } catch (error) {
-      isWalletLoadRequired = true
+      isWalletLoadRequired = true;
     }
   } else {
-    isWalletLoadRequired = true
+    isWalletLoadRequired = true;
   }
 
   if (isWalletLoadRequired) {
-    const genKeys = await generateKeys(wallet, { seed, phrase })
+    const genKeys = await generateKeys(wallet, { seed, phrase });
 
-    return { ...genKeys, ...keys }
+    return { ...genKeys, ...keys };
   }
 
-  return keys
-}
+  return keys;
+};
 
-export {
-  generateKeys,
-  loadKeys,
-}
+export { generateKeys, loadKeys };

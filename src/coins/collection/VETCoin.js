@@ -1,7 +1,7 @@
 import { Coin } from '../../abstract';
-import { LazyLoadedLib } from '../../utils';
-import { VETToken } from '../../tokens';
 import VetNodeExplorer from '../../explorers/collection/VetNodeExplorer';
+import { VETToken } from '../../tokens';
+import { LazyLoadedLib } from '../../utils';
 import { HasProviders, HasTokensMixin } from '../mixins';
 
 const thorDevKitLib = new LazyLoadedLib(() => import('thor-devkit'));
@@ -136,32 +136,30 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @param {string} phrase mnemonic (12 words)
    * @return {Promise<Coin>} The private key.
    */
-  loadWallet(seed, phrase) {
-    return new Promise(async (resolve, reject) => {
-      const words = phrase.trim().split(/\s+/);
-      const { cry } = await thorDevKitLib.get();
+  async loadWallet(seed, phrase) {
+    const words = phrase.trim().split(/\s+/);
+    const { cry } = await thorDevKitLib.get();
 
-      if (!cry.mnemonic.validate(words)) {
-        reject(new Error('Error, fail words in VET mnemonic string'));
-      }
+    if (!cry.mnemonic.validate(words)) {
+      throw new Error('Error, fail words in VET mnemonic string');
+    }
 
-      const privateKey = cry.mnemonic.derivePrivateKey(words);
+    const privateKey = cry.mnemonic.derivePrivateKey(words);
 
-      if (!privateKey) {
-        reject(new Error(`${this.ticker} privateKey is empty`));
-      }
+    if (!privateKey) {
+      throw new Error(`${this.ticker} privateKey is empty`);
+    }
 
-      const publicKey = cry.secp256k1.derivePublicKey(privateKey);
+    const publicKey = cry.secp256k1.derivePublicKey(privateKey);
 
-      this.#privateKey = `0x${privateKey.toString('hex')}`;
-      this.address = `0x${cry.publicKeyToAddress(publicKey).toString('hex')}`;
+    this.#privateKey = `0x${privateKey.toString('hex')}`;
+    this.address = `0x${cry.publicKeyToAddress(publicKey).toString('hex')}`;
 
-      resolve({
-        id: this.id,
-        privateKey: this.#privateKey,
-        address: this.address,
-      });
-    });
+    return {
+      id: this.id,
+      privateKey: this.#privateKey,
+      address: this.address,
+    };
   }
 
   /**

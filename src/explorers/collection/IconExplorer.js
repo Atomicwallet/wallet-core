@@ -1,117 +1,120 @@
-import Explorer from '../Explorer'
-import { IcxTxTypes } from '../../utils/const'
+import { IcxTxTypes } from '../../utils/const';
+import Explorer from '../Explorer';
 
 class IconExplorer extends Explorer {
-  getAllowedTickers () {
-    return [ 'ICX' ]
+  getAllowedTickers() {
+    return ['ICX'];
   }
 
-  getApiPrefix () {
-    return 'v3/'
+  getApiPrefix() {
+    return 'v3/';
   }
 
-  getInfoUrl (address) {
-    return `${this.getApiPrefix()}address/info`
+  getInfoUrl(address) {
+    return `${this.getApiPrefix()}address/info`;
   }
 
-  getInfoParams (address) {
+  getInfoParams(address) {
     return {
       address,
-    }
+    };
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       balance: this.wallet.toMinimalUnit(response.data?.balance),
       transactions: [],
-    }
+    };
   }
 
-  getTransactionsUrl (address) {
-    return `${this.getApiPrefix()}address/txList`
+  getTransactionsUrl(address) {
+    return `${this.getApiPrefix()}address/txList`;
   }
 
-  getTransactionsParams (address, offset = 0) {
+  getTransactionsParams(address, offset = 0) {
     return {
       address,
-      page: offset > this.defaultTxLimit ? parseInt(offset / this.defaultTxLimit, 10) : 1,
+      page:
+        offset > this.defaultTxLimit
+          ? parseInt(offset / this.defaultTxLimit, 10)
+          : 1,
       count: this.defaultTxLimit,
-    }
+    };
   }
 
-  modifyTransactionsResponse (response, address) {
-    return super.modifyTransactionsResponse(response.data, address)
+  modifyTransactionsResponse(response, address) {
+    return super.modifyTransactionsResponse(response.data, address);
   }
 
-  async getTransactions ({ address, offset = 0, limit = this.defaultTxLimit }) {
-    this.latestBlock = await this.getLatestBlock()
+  async getTransactions({ address, offset = 0, limit = this.defaultTxLimit }) {
+    this.latestBlock = await this.getLatestBlock();
 
-    return super.getTransactions({ address, offset, limit })
+    return super.getTransactions({ address, offset, limit });
   }
 
-  getTxHash (tx) {
-    return tx.txHash
+  getTxHash(tx) {
+    return tx.txHash;
   }
 
-  getTxDirection (selfAddress, tx) {
+  getTxDirection(selfAddress, tx) {
     switch (tx.txType) {
       case IcxTxTypes.TXTYPE_CLAIM:
-        return true
+        return true;
       default:
-        break
+        break;
     }
-    return tx.toAddr === selfAddress
+    return tx.toAddr === selfAddress;
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     switch (tx.txType) {
       case IcxTxTypes.TXTYPE_STAKE:
-        return 'Stake'
+        return 'Stake';
       case IcxTxTypes.TXTYPE_DELEGATE:
-        return 'Delegate'
+        return 'Delegate';
       case IcxTxTypes.TXTYPE_CLAIM:
-        return 'Claim reward'
+        return 'Claim reward';
       default:
-        return this.getTxDirection(selfAddress, tx) ? tx.fromAddr : tx.toAddr
+        return this.getTxDirection(selfAddress, tx) ? tx.fromAddr : tx.toAddr;
     }
   }
 
-  getTxValue (selfAddress, tx) {
-    return tx.amount
+  getTxValue(selfAddress, tx) {
+    return tx.amount;
   }
 
-  getTxDateTime ({ createDate = '' }) {
-    return new Date(createDate)
+  getTxDateTime({ createDate = '' }) {
+    return new Date(createDate);
   }
 
-  getTxConfirmations (tx) {
+  getTxConfirmations(tx) {
     if (this.latestBlock) {
-      return this.latestBlock.height - tx.height
+      return this.latestBlock.height - tx.height;
     }
-    return 1
+    return 1;
   }
 
-  getLatestBlockUrl () {
-    return `${this.getApiPrefix()}block/list`
+  getLatestBlockUrl() {
+    return `${this.getApiPrefix()}block/list`;
   }
 
-  getLatestBlockParams () {
+  getLatestBlockParams() {
     return {
       count: 1,
-    }
+    };
   }
 
-  modifyLatestBlockResponse (response) {
-    return response.data[0]
+  modifyLatestBlockResponse(response) {
+    return response.data[0];
   }
 
-  getSendTransactionUrl () {
-    super.getSendTransactionUrl()
+  getSendTransactionUrl() {
+    super.getSendTransactionUrl();
   }
 
-  getTxFee (tx) {
-    return (tx && tx.fee) || 0
+  getTxFee(tx) {
+    return (tx && tx.fee) || 0;
   }
 }
 
-export default IconExplorer
+export default IconExplorer;

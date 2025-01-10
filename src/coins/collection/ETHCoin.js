@@ -1,8 +1,6 @@
 import BN from 'bn.js';
 
 import Coin from '../../abstract/coin';
-import ETHToken from '../../tokens/ETHToken';
-import { Amount } from '../../utils'
 import { ExternalError } from '../../errors';
 import {
   ETHNftExplorer,
@@ -10,19 +8,17 @@ import {
   Web3Explorer,
 } from '../../explorers/collection';
 import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer';
+import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
+import TOKENS_CACHE from '../../resources/eth/tokens.json';
+import ETHToken from '../../tokens/ETHToken';
+import StakableMaticETHToken from '../../tokens/StakableMaticETHToken';
+import { Amount } from '../../utils';
+import { EXTERNAL_ERROR } from '../../utils/const';
 import LazyLoadedLib from '../../utils/lazyLoadedLib.js';
 import { StakingMixin, NftMixin } from '../mixins';
-import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
-import StakableMaticETHToken from '../../tokens/StakableMaticETHToken';
-import { EXTERNAL_ERROR } from '../../utils/const';
-
-/* explorers */
-
-/* mixins */
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
-import TOKENS_CACHE from '../../resources/eth/tokens.json';
 
 const NAME = 'Ethereum';
 const TICKER = 'ETH';
@@ -696,12 +692,7 @@ class ETHCoin extends StakingMixin(
         to: contract,
         data: tokenSendData,
       })
-      .catch((error) => {}
-        // logger.error({
-        //   instance: this,
-        //   error,
-        // }),
-      );
+      .catch(() => {});
 
     return estimateGas
       ? Math.round(estimateGas * this.gasLimitCoefficient).toString()

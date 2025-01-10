@@ -1,15 +1,16 @@
 import BN from 'bn.js';
+
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 import { NftMixin } from '../../coins/nfts/mixins';
 import { ExternalError } from '../../errors';
-import { EXTERNAL_ERROR } from '../../utils/const';
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
 import MoralisExplorer from '../../explorers/collection/MoralisExplorer';
 import SnowTraceExplorer from '../../explorers/collection/SnowTraceExplorer';
+import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import { LazyLoadedLib } from '../../utils';
+import { EXTERNAL_ERROR } from '../../utils/const';
 import HasBlockScanner from '../mixins/HasBlockScanner';
 import HasProviders from '../mixins/HasProviders';
 import Web3Mixin from '../mixins/Web3Mixin';
@@ -270,9 +271,8 @@ class AVAXCoin extends Web3Mixin(
         return new this.BN(await coreLibrary.eth.getGasPrice());
       }
 
-      const { fastest } = (await this.getProvider('gas_price').getGasPrice());
-        // (await configManager.get('avax-c-gas-price')) ||
-
+      const { fastest } = await this.getProvider('gas_price').getGasPrice();
+      // (await configManager.get('avax-c-gas-price')) ||
 
       return new this.BN(fastest).mul(new this.BN(nAVAX));
     } catch (error) {

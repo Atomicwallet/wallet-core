@@ -4,8 +4,8 @@ import io from 'socket.io-client';
 
 import { Emitter, TxNotifier } from '../utils';
 import Transaction from './Transaction';
-import { toCurrency } from '../utils/convert';
 import { UndeclaredAbstractMethodError, ExplorerRequestError } from '../errors';
+import { TxTypes } from './enum';
 import {
   ONE_MINUTE,
   GET_BLOCK_TYPE,
@@ -17,7 +17,7 @@ import {
   SEND_TRANSACTION_TYPE,
   UNDEFINED_OPERATION_ERROR,
 } from '../utils/const';
-import { TxTypes } from './enum';
+import { toCurrency } from '../utils/convert';
 
 const DEFAULT_TX_LIMIT = 100;
 

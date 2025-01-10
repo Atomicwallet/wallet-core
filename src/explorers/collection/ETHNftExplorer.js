@@ -1,93 +1,96 @@
-import Web3 from 'web3'
+import Web3 from 'web3';
 
-import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/const'
-import { ExternalError, InternalError } from '../../errors/index.js'
-import { getStringWithEnsuredEndChar } from '../../utils/convert'
-import Explorer from '../Explorer'
-import { ERC721_TOKEN_STANDARD, ERC1155_TOKEN_STANDARD } from '../../coins/nfts/ETHNftToken'
+import {
+  ERC721_TOKEN_STANDARD,
+  ERC1155_TOKEN_STANDARD,
+} from '../../coins/nfts/ETHNftToken';
+import { ExternalError, InternalError } from '../../errors/index.js';
+import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/const';
+import { getStringWithEnsuredEndChar } from '../../utils/convert';
+import Explorer from '../Explorer';
 
-const TRANSACTION_RECEIPT = 'transactionHash'
-const HEX_ZERO = '0x0'
+const TRANSACTION_RECEIPT = 'transactionHash';
+const HEX_ZERO = '0x0';
 
 // @TODO Move to constants
 export const erc1155Abi = [
   {
-    'inputs': [
+    inputs: [
       {
-        'internalType': 'address',
-        'name': '_from',
-        'type': 'address',
+        internalType: 'address',
+        name: '_from',
+        type: 'address',
       },
       {
-        'internalType': 'address',
-        'name': '_to',
-        'type': 'address',
+        internalType: 'address',
+        name: '_to',
+        type: 'address',
       },
       {
-        'internalType': 'uint256',
-        'name': '_id',
-        'type': 'uint256',
+        internalType: 'uint256',
+        name: '_id',
+        type: 'uint256',
       },
       {
-        'internalType': 'uint256',
-        'name': '_amount',
-        'type': 'uint256',
+        internalType: 'uint256',
+        name: '_amount',
+        type: 'uint256',
       },
       {
-        'internalType': 'bytes',
-        'name': '_data',
-        'type': 'bytes',
+        internalType: 'bytes',
+        name: '_data',
+        type: 'bytes',
       },
     ],
-    'name': 'safeTransferFrom',
-    'outputs': [],
-    'stateMutability': 'nonpayable',
-    'type': 'function',
+    name: 'safeTransferFrom',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
-]
+];
 export const erc721Abi = [
   {
-    'constant': false,
-    'inputs': [
+    constant: false,
+    inputs: [
       {
-        'internalType': 'address',
-        'name': 'from',
-        'type': 'address',
+        internalType: 'address',
+        name: 'from',
+        type: 'address',
       },
       {
-        'internalType': 'address',
-        'name': 'to',
-        'type': 'address',
+        internalType: 'address',
+        name: 'to',
+        type: 'address',
       },
       {
-        'internalType': 'uint256',
-        'name': 'tokenId',
-        'type': 'uint256',
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
       },
     ],
-    'name': 'safeTransferFrom',
-    'outputs': [],
-    'payable': false,
-    'stateMutability': 'nonpayable',
-    'type': 'function',
+    name: 'safeTransferFrom',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
-]
+];
 
 /**
  * Class ETHNftExplorer.
  *
  */
 class ETHNftExplorer extends Explorer {
-  constructor ({ wallet, config }) {
-    super({ wallet, config })
+  constructor({ wallet, config }) {
+    super({ wallet, config });
 
-    this.baseUrl = getStringWithEnsuredEndChar(config.baseUrl, '/')
-    this.web3 = new Web3(config.baseUrl)
-    this.ticker = wallet.ticker
+    this.baseUrl = getStringWithEnsuredEndChar(config.baseUrl, '/');
+    this.web3 = new Web3(config.baseUrl);
+    this.ticker = wallet.ticker;
   }
 
-  getAllowedTickers () {
-    return ['ETH', 'BSC', 'MATIC', 'AVAX', 'FTM']
+  getAllowedTickers() {
+    return ['ETH', 'BSC', 'MATIC', 'AVAX', 'FTM'];
   }
 
   /**
@@ -97,8 +100,8 @@ class ETHNftExplorer extends Explorer {
    * @param {string} [tokenId] - Token id.
    * @returns {string} - NFT info url.
    */
-  makeNftInfoUrl (contractAddress, tokenId) {
-    return `${this.baseUrl}${contractAddress}?a=${tokenId}`
+  makeNftInfoUrl(contractAddress, tokenId) {
+    return `${this.baseUrl}${contractAddress}?a=${tokenId}`;
   }
 
   /**
@@ -106,8 +109,8 @@ class ETHNftExplorer extends Explorer {
    *
    * @returns {Promise<string>}
    */
-  async getGasPrice () {
-    return this.web3.eth.getGasPrice()
+  async getGasPrice() {
+    return this.web3.eth.getGasPrice();
   }
 
   /**
@@ -120,32 +123,33 @@ class ETHNftExplorer extends Explorer {
    * @param {string} data - Encoded token ABI data.
    * @returns {Promise<number>}
    */
-  estimateGas (from, to, nonce = null, data) {
+  estimateGas(from, to, nonce = null, data) {
     const transactionConfig = {
       from,
       to,
       data,
-    }
+    };
 
     if (nonce) {
       // @TODO Nonce is not part of the gas estimation call params.
       // @See telegram chanel Atomic<>Fantom 2023-02-17 15:49MSK
-      transactionConfig.nonce = nonce + 1
+      transactionConfig.nonce = nonce + 1;
     }
 
-    return this.web3.eth.estimateGas(transactionConfig)
+    return this.web3.eth.estimateGas(transactionConfig);
   }
 
-  sendTransaction (rawtx) {
+  sendTransaction(rawtx) {
     return new Promise((resolve, reject) => {
-      this.wallet.coreLibrary.eth.sendSignedTransaction(rawtx)
+      this.wallet.coreLibrary.eth
+        .sendSignedTransaction(rawtx)
         .on(TRANSACTION_RECEIPT, (hash) => {
           resolve({
             tx: hash,
-          })
+          });
         })
-        .catch((error) => reject(error))
-    })
+        .catch((error) => reject(error));
+    });
   }
 
   /**
@@ -158,12 +162,24 @@ class ETHNftExplorer extends Explorer {
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async getNftContractData (coin, toAddress, contractAddress, tokenId, tokenStandard) {
-    if (![ERC721_TOKEN_STANDARD, ERC1155_TOKEN_STANDARD].includes(tokenStandard)) {
-      throw new InternalError({ type: INTERNAL_ERROR, error: 'Unrecognized nft token standard', instance: this })
+  async getNftContractData(
+    coin,
+    toAddress,
+    contractAddress,
+    tokenId,
+    tokenStandard,
+  ) {
+    if (
+      ![ERC721_TOKEN_STANDARD, ERC1155_TOKEN_STANDARD].includes(tokenStandard)
+    ) {
+      throw new InternalError({
+        type: INTERNAL_ERROR,
+        error: 'Unrecognized nft token standard',
+        instance: this,
+      });
     }
 
-    const { address: fromAddress } = coin
+    const { address: fromAddress } = coin;
 
     /**
      * @typedef GetSafeTransferDataFunction
@@ -178,18 +194,25 @@ class ETHNftExplorer extends Explorer {
     /** @type {Object.<string, GetSafeTransferDataFunction>} */
     const ethTokenStandardSafeTransferFrom = {
       [ERC1155_TOKEN_STANDARD]: (from, to, contract, id) => {
-        const tokenContract = new this.web3.eth.Contract(erc1155Abi, contract)
+        const tokenContract = new this.web3.eth.Contract(erc1155Abi, contract);
 
-        return tokenContract.methods.safeTransferFrom(from, to, id, 1, HEX_ZERO).encodeABI()
+        return tokenContract.methods
+          .safeTransferFrom(from, to, id, 1, HEX_ZERO)
+          .encodeABI();
       },
       [ERC721_TOKEN_STANDARD]: (from, to, contract, id) => {
-        const tokenContract = new this.web3.eth.Contract(erc721Abi, contract)
+        const tokenContract = new this.web3.eth.Contract(erc721Abi, contract);
 
-        return tokenContract.methods.safeTransferFrom(from, to, id).encodeABI()
+        return tokenContract.methods.safeTransferFrom(from, to, id).encodeABI();
       },
-    }
+    };
 
-    return ethTokenStandardSafeTransferFrom[tokenStandard](fromAddress, toAddress, contractAddress, tokenId)
+    return ethTokenStandardSafeTransferFrom[tokenStandard](
+      fromAddress,
+      toAddress,
+      contractAddress,
+      tokenId,
+    );
   }
 
   /**
@@ -208,23 +231,36 @@ class ETHNftExplorer extends Explorer {
    * @throws {ExternalError}
    * @throws {InternalError}
    */
-  async sendNft (coin, toAddress, contractAddress, tokenId, tokenStandard, options) {
+  async sendNft(
+    coin,
+    toAddress,
+    contractAddress,
+    tokenId,
+    tokenStandard,
+    options,
+  ) {
     try {
-      const data = await this.getNftContractData(coin, toAddress, contractAddress, tokenId, tokenStandard)
+      const data = await this.getNftContractData(
+        coin,
+        toAddress,
+        contractAddress,
+        tokenId,
+        tokenStandard,
+      );
 
       const signedRawTransaction = await coin.createNftTransaction({
         toAddress,
         contractAddress,
         data,
         userOptions: options,
-      })
+      });
 
-      return await this.sendTransaction(signedRawTransaction)
+      return await this.sendTransaction(signedRawTransaction);
     } catch (error) {
-      console.warn(error)
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      console.warn(error);
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 }
 
-export default ETHNftExplorer
+export default ETHNftExplorer;

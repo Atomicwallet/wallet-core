@@ -1,6 +1,8 @@
-import { HasBlockscannerMixin } from '../mixins'
-import TezosNodeExplorer from '../collection/TezosNodeExplorer.js'
+import TezosNodeExplorer from '../collection/TezosNodeExplorer.js';
+import { HasBlockscannerMixin } from '../mixins';
 
-class TezosNodeWithBlockscannerExplorer extends HasBlockscannerMixin(TezosNodeExplorer) {}
+class TezosNodeWithBlockscannerExplorer extends HasBlockscannerMixin(
+  TezosNodeExplorer,
+) {}
 
-export default TezosNodeWithBlockscannerExplorer
+export default TezosNodeWithBlockscannerExplorer;

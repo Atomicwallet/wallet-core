@@ -1,9 +1,8 @@
 import axlsign from 'axlsign';
 
 import { Coin } from '../../abstract';
-import { LazyLoadedLib } from '../../utils';
-
 import WavesNodeExplorer from '../../explorers/collection/WavesNodeExplorer';
+import { LazyLoadedLib } from '../../utils';
 
 const wavesSignatureAdapterLib = new LazyLoadedLib(
   () => import('@waves/signature-adapter'),

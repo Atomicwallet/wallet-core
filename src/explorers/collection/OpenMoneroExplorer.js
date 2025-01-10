@@ -1,173 +1,185 @@
-import Explorer from '../Explorer'
-import { ExternalError } from '../../errors/index.js'
-import { EXTERNAL_ERROR, GET_UTXO_TYPE } from '../../utils/const'
+import { ExternalError } from '../../errors/index.js';
+import { EXTERNAL_ERROR, GET_UTXO_TYPE } from '../../utils/const';
+import Explorer from '../Explorer';
 
-const OPENMONERO_LOGIN_TYPE = 'OpenMoneroLogin'
-const OPENMONERO_IMPORT_TYPE = 'OpenMoneroImport'
-const OPENMONERO_RANDOM_TYPE = 'OpenMoneroRandom'
-const OPENMONERO_IMPORT_BLOCK_COUNT = 10000
+const OPENMONERO_LOGIN_TYPE = 'OpenMoneroLogin';
+const OPENMONERO_IMPORT_TYPE = 'OpenMoneroImport';
+const OPENMONERO_RANDOM_TYPE = 'OpenMoneroRandom';
+const OPENMONERO_IMPORT_BLOCK_COUNT = 10000;
 
 class OpenMoneroExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['XMR']
+  getAllowedTickers() {
+    return ['XMR'];
   }
 
-  modifyGeneralResponse (response) {
+  modifyGeneralResponse(response) {
     if (response.data && typeof response.data.status !== 'undefined') {
       if (response.data.status === 'error') {
         throw new ExternalError({
           type: EXTERNAL_ERROR,
           error: new Error(response.data.reason),
           instance: this,
-        })
+        });
       }
     }
-    return response.data
+    return response.data;
   }
 
-  getInfoUrl () {
-    return 'get_address_info'
+  getInfoUrl() {
+    return 'get_address_info';
   }
 
-  getInfoParams () {
+  getInfoParams() {
     return {
       address: this.wallet.address,
       view_key: this.wallet.privateKeyView,
-    }
+    };
   }
 
-  getInfoMethod () {
-    return 'POST'
+  getInfoMethod() {
+    return 'POST';
   }
 
   /**
    * Calculate balance from utxo
    */
-  async getInfo () {
-    const utxos = await this.getUnspentOutputs()
+  async getInfo() {
+    const utxos = await this.getUnspentOutputs();
 
-    this.wallet.balance = utxos.reduce((acc, { amount }) => new this.wallet.BN(amount).add(acc),
-      new this.wallet.BN('0')
-    )
+    this.wallet.balance = utxos.reduce(
+      (acc, { amount }) => new this.wallet.BN(amount).add(acc),
+      new this.wallet.BN('0'),
+    );
 
     return {
       balance: this.wallet.balance.toString(),
-    }
+    };
   }
 
-  async login () {
+  async login() {
     const loginParams = {
       address: this.wallet.address,
       view_key: this.wallet.privateKeyView,
       create_account: true,
       generated_locally: true,
-    }
+    };
 
     const response = await this.request(
       'login',
       'POST',
       loginParams,
       OPENMONERO_LOGIN_TYPE,
-    )
+    );
 
-    return response.status === 'success'
+    return response.status === 'success';
   }
 
-  async import () {
+  async import() {
     const importParams = {
       address: this.wallet.address,
       view_key: this.wallet.privateKeyView,
       no_blocks_to_import: String(OPENMONERO_IMPORT_BLOCK_COUNT),
-    }
+    };
 
     const response = await this.request(
       'import_recent_wallet_request ',
       'POST',
       importParams,
       OPENMONERO_IMPORT_TYPE,
-    )
+    );
 
-    return response.request_fulfilled
+    return response.request_fulfilled;
   }
 
-  getTransactionsUrl () {
-    return 'get_address_txs'
+  getTransactionsUrl() {
+    return 'get_address_txs';
   }
 
-  getTransactionsMethod () {
-    return 'POST'
+  getTransactionsMethod() {
+    return 'POST';
   }
 
-  getTransactionsParams (offset = 0, limit = this.defaultTxLimit) {
+  getTransactionsParams(offset = 0, limit = this.defaultTxLimit) {
     return {
       address: this.wallet.address,
       view_key: this.wallet.privateKeyView,
-    }
+    };
   }
 
-  getTransactionUrl (txId) {
-    return 'get_tx'
+  getTransactionUrl(txId) {
+    return 'get_tx';
   }
 
-  getTransactionParams (txId) {
+  getTransactionParams(txId) {
     return {
       tx_hash: txId,
-    }
+    };
   }
 
-  getTransactionMethod () {
-    return 'POST'
+  getTransactionMethod() {
+    return 'POST';
   }
 
-  modifyTransactionsResponse (response) {
-    this.lastHeight = response.blockchain_height
+  modifyTransactionsResponse(response) {
+    this.lastHeight = response.blockchain_height;
 
-    return super.modifyTransactionsResponse(response.transactions.filter((tx) => {
-      if (typeof tx.spent_outputs === 'undefined') {
-        // incoming transaction
-        return true
-      }
+    return super.modifyTransactionsResponse(
+      response.transactions.filter((tx) => {
+        if (typeof tx.spent_outputs === 'undefined') {
+          // incoming transaction
+          return true;
+        }
 
-      return !this.checkKeyImage(tx.spent_outputs[0].tx_pub_key, tx.spent_outputs[0].out_index, [tx.spent_outputs[0].key_image])
-    }))
+        return !this.checkKeyImage(
+          tx.spent_outputs[0].tx_pub_key,
+          tx.spent_outputs[0].out_index,
+          [tx.spent_outputs[0].key_image],
+        );
+      }),
+    );
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
-  getTxDirection (tx) {
-    return typeof tx.spent_outputs === 'undefined'
+  getTxDirection(tx) {
+    return typeof tx.spent_outputs === 'undefined';
   }
 
-  getTxOtherSideAddress (tx) {
-    return tx.tx_pub_key
+  getTxOtherSideAddress(tx) {
+    return tx.tx_pub_key;
   }
 
-  getTxValue (tx) {
-    return Number(this.wallet.toCurrencyUnit(this.getTxDirection(tx)
-      ? tx.total_received
-      : new this.wallet.BN(tx.total_sent).sub(new this.wallet.BN(tx.total_received))
-    ))
+  getTxValue(tx) {
+    return Number(
+      this.wallet.toCurrencyUnit(
+        this.getTxDirection(tx)
+          ? tx.total_received
+          : new this.wallet.BN(tx.total_sent).sub(
+              new this.wallet.BN(tx.total_received),
+            ),
+      ),
+    );
   }
 
-  getTxDateTime (tx) {
-    return new Date(Number(`${tx.timestamp}`))
+  getTxDateTime(tx) {
+    return new Date(Number(`${tx.timestamp}`));
   }
 
-  getTxConfirmations (tx) {
-    return this.lastHeight - tx.height
+  getTxConfirmations(tx) {
+    return this.lastHeight - tx.height;
   }
 
-  getUnspentOutputsUrl () {
-    return 'get_unspent_outs'
+  getUnspentOutputsUrl() {
+    return 'get_unspent_outs';
   }
 
-  getUnspentOutputsMethod () {
-    return 'POST'
+  getUnspentOutputsMethod() {
+    return 'POST';
   }
 
-  getUnspentOutputsParams () {
+  getUnspentOutputsParams() {
     return {
       address: this.wallet.address,
       view_key: this.wallet.privateKeyView,
@@ -175,85 +187,87 @@ class OpenMoneroExplorer extends Explorer {
       use_dust: false,
       mixin: this.wallet.defaultMixin,
       dust_threshold: String(this.wallet.dustThreshold),
-    }
+    };
   }
 
-  async getUnspentOutputs (addr = undefined) {
-    await this.login()
+  async getUnspentOutputs(addr = undefined) {
+    await this.login();
 
-    return super.getUnspentOutputs(addr)
+    return super.getUnspentOutputs(addr);
   }
 
-  modifyUnspentOutputsResponse (response) {
-    return response.outputs.filter((utxo) => this.checkKeyImage(utxo.tx_pub_key, utxo.index, utxo.spend_key_images))
+  modifyUnspentOutputsResponse(response) {
+    return response.outputs.filter((utxo) =>
+      this.checkKeyImage(utxo.tx_pub_key, utxo.index, utxo.spend_key_images),
+    );
   }
 
-  async getRawUnspentOutputs (addr = undefined) {
+  async getRawUnspentOutputs(addr = undefined) {
     const response = await this.request(
       this.getUnspentOutputsUrl(addr),
       this.getUnspentOutputsMethod(),
       this.getUnspentOutputsParams(),
       GET_UTXO_TYPE,
-      this.getUtxoOptions()
-    )
+      this.getUtxoOptions(),
+    );
 
-    return response
+    return response;
   }
 
-  async getRandomOuts () {
+  async getRandomOuts() {
     const randomParams = {
       amounts: '0',
       count: this.wallet.defaultMixin,
-    }
+    };
 
     const response = await this.request(
       'get_random_outs',
       'POST',
       randomParams,
       OPENMONERO_RANDOM_TYPE,
-    )
+    );
 
-    return response
+    return response;
   }
 
-  getSendTransactionUrl () {
-    return 'submit_raw_tx'
+  getSendTransactionUrl() {
+    return 'submit_raw_tx';
   }
 
-  getSendTransactionParam () {
-    return 'tx'
+  getSendTransactionParam() {
+    return 'tx';
   }
 
-  getSendTransactionParams (rawtx) {
-    this.lastHash = rawtx.hash
-    return super.getSendTransactionParams(rawtx.rawTx)
+  getSendTransactionParams(rawtx) {
+    this.lastHash = rawtx.hash;
+    return super.getSendTransactionParams(rawtx.rawTx);
   }
 
-  modifySendTransactionResponse (response) {
+  modifySendTransactionResponse(response) {
     return super.modifySendTransactionResponse({
       txid: this.lastHash,
-    })
+    });
   }
 
-  checkKeyImage (txPubKey, outIndex, spentOutputs) {
+  checkKeyImage(txPubKey, outIndex, spentOutputs) {
     const keyImage = this.wallet.moneroUtils.generate_key_image(
       txPubKey,
       this.wallet.privateKeyView,
       this.wallet.publicKeySpend,
       this.wallet.privateKeySpend,
-      outIndex
-    )
-    let isUnSpent = true
+      outIndex,
+    );
+    let isUnSpent = true;
 
     for (let index = 0; index < spentOutputs.length; index++) {
       if (spentOutputs[index] === keyImage) {
-        isUnSpent = false
-        break
+        isUnSpent = false;
+        break;
       }
     }
 
-    return isUnSpent
+    return isUnSpent;
   }
 }
 
-export default OpenMoneroExplorer
+export default OpenMoneroExplorer;

@@ -1,138 +1,150 @@
-import Explorer from '../Explorer'
-import { ExplorerRequestError } from '../../errors/index.js'
-import { SEND_TRANSACTION_TYPE } from '../../utils/const'
+import { ExplorerRequestError } from '../../errors/index.js';
+import { SEND_TRANSACTION_TYPE } from '../../utils/const';
+import Explorer from '../Explorer';
 
 /**
  * Api docs - https://github.com/qtumproject/qtuminfo-api
  */
 class QtumInfoExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['QTUM']
+  getAllowedTickers() {
+    return ['QTUM'];
   }
 
-  getInfoUrl (address) {
-    return `${this.getApiPrefix()}/address/${address}`
+  getInfoUrl(address) {
+    return `${this.getApiPrefix()}/address/${address}`;
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       balance: response.balance,
       transactions: [],
-    }
+    };
   }
 
-  getTransactionsUrl (address) {
-    return `${this.getApiPrefix()}/address/${address}/basic-txs`
+  getTransactionsUrl(address) {
+    return `${this.getApiPrefix()}/address/${address}/basic-txs`;
   }
 
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit) {
-    return { offset, limit, reversed: true }
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit) {
+    return { offset, limit, reversed: true };
   }
 
-  getTransactionUrl (txId) {
-    return `${this.getApiPrefix()}/tx/${txId}`
+  getTransactionUrl(txId) {
+    return `${this.getApiPrefix()}/tx/${txId}`;
   }
 
-  modifyTransactionsResponse (response) {
-    return Promise.all(response.transactions.map(async ({ id }) => this.getTransaction(id)))
+  modifyTransactionsResponse(response) {
+    return Promise.all(
+      response.transactions.map(async ({ id }) => this.getTransaction(id)),
+    );
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
-  getTxDirection (selfAddress, tx) {
-    return tx.inputs && !tx.inputs.find(({ address }) => address === selfAddress)
+  getTxDirection(selfAddress, tx) {
+    return (
+      tx.inputs && !tx.inputs.find(({ address }) => address === selfAddress)
+    );
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     if (!tx.inputs) {
-      return '...'
+      return '...';
     }
 
     if (this.getTxDirection(selfAddress, tx)) {
-      return tx.inputs[0].address
+      return tx.inputs[0].address;
     }
 
-    let valueOutPrev = new this.wallet.BN(0)
-    let addressTo = '...'
+    let valueOutPrev = new this.wallet.BN(0);
+    let addressTo = '...';
 
     tx.outputs.forEach((output) => {
       if (output.address !== selfAddress) {
         if (valueOutPrev.lt(new this.wallet.BN(output.value))) {
-          valueOutPrev = new this.wallet.BN(output.value)
-          addressTo = output.address
+          valueOutPrev = new this.wallet.BN(output.value);
+          addressTo = output.address;
         }
       }
-    })
+    });
 
-    return addressTo
+    return addressTo;
   }
 
-  getTxValue (selfAddress, tx) {
-    let valueIn = new this.wallet.BN(0)
-    let valueOut = new this.wallet.BN(0)
+  getTxValue(selfAddress, tx) {
+    let valueIn = new this.wallet.BN(0);
+    let valueOut = new this.wallet.BN(0);
 
     if (!tx.inputs || !tx.outputs) {
-      return 0
+      return 0;
     }
 
     tx.inputs.forEach((input) => {
       if (input.address === selfAddress) {
-        valueIn = valueIn.add(new this.wallet.BN(input.value))
+        valueIn = valueIn.add(new this.wallet.BN(input.value));
       }
-    })
+    });
 
     tx.outputs.forEach((output) => {
       if (output.address === selfAddress) {
-        valueOut = valueOut.add(new this.wallet.BN(output.value))
+        valueOut = valueOut.add(new this.wallet.BN(output.value));
       }
-    })
+    });
 
-    const valueDiff = valueIn.sub(valueOut)
-    const isInbound = valueDiff.lt(new this.wallet.BN(0))
-    const value = valueDiff.abs()
+    const valueDiff = valueIn.sub(valueOut);
+    const isInbound = valueDiff.lt(new this.wallet.BN(0));
+    const value = valueDiff.abs();
 
-    return Number(this.wallet.toCurrencyUnit(isInbound
-      ? value
-      : value.sub(new this.wallet.BN(tx.fees))))
+    return Number(
+      this.wallet.toCurrencyUnit(
+        isInbound ? value : value.sub(new this.wallet.BN(tx.fees)),
+      ),
+    );
   }
 
-  getTxDateTime (tx) {
-    return new Date(Number(`${tx.timestamp}000`))
+  getTxDateTime(tx) {
+    return new Date(Number(`${tx.timestamp}000`));
   }
 
-  getUnspentOutputsUrl (address) {
-    return `${this.getApiPrefix()}/address/${address}/utxo`
+  getUnspentOutputsUrl(address) {
+    return `${this.getApiPrefix()}/address/${address}/utxo`;
   }
 
-  modifyUnspentOutputsResponse (address, response) {
-    return response.map(({ transactionId, outputIndex, scriptPubKey, value }) => ({
-      txid: transactionId,
-      vout: outputIndex,
-      address,
-      script: scriptPubKey,
-      satoshis: value,
-      value,
-    }))
+  modifyUnspentOutputsResponse(address, response) {
+    return response.map(
+      ({ transactionId, outputIndex, scriptPubKey, value }) => ({
+        txid: transactionId,
+        vout: outputIndex,
+        address,
+        script: scriptPubKey,
+        satoshis: value,
+        value,
+      }),
+    );
   }
 
-  getSendTransactionUrl () {
-    return `${this.getApiPrefix()}/tx/send`
+  getSendTransactionUrl() {
+    return `${this.getApiPrefix()}/tx/send`;
   }
 
-  getSendTransactionParam () {
-    return 'rawtx'
+  getSendTransactionParam() {
+    return 'rawtx';
   }
 
-  modifySendTransactionResponse (response) {
+  modifySendTransactionResponse(response) {
     if (response.status === 1) {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error: new Error(response.message), instance: this })
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error: new Error(response.message),
+        instance: this,
+      });
     }
 
     return {
       txid: response.id,
-    }
+    };
   }
 
   /**
@@ -141,12 +153,12 @@ class QtumInfoExplorer extends Explorer {
    * @param {Object[]} utxos The utxos
    * @return {BN} The balance.
    */
-  calculateBalance (utxos = []) {
+  calculateBalance(utxos = []) {
     return utxos.reduce(
       (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0')
-    )
+      new this.wallet.BN('0'),
+    );
   }
 }
 
-export default QtumInfoExplorer
+export default QtumInfoExplorer;

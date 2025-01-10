@@ -20,9 +20,10 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
-// stx lib serialized amount as bigint
+// stx lib serialized amount as bigint,
 // so we need to cast it to string before stringify as JSON
-BigInt.prototype['toJSON'] = function () {
+// eslint-disable-next-line no-extend-native
+BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 

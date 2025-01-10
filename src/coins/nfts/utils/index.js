@@ -1,1 +1,1 @@
-export { default as getTransformedTokenUri } from './getTransformedTokenUri'
+export { default as getTransformedTokenUri } from './getTransformedTokenUri';

@@ -1,16 +1,11 @@
 import BigNumber from 'bignumber.js';
 
 import { Coin } from '../../abstract';
-import { Amount } from '../../utils';
-// import logger from '../Logger';
-import LUNCToken from '../../tokens/LUNCToken';
-// import configManager, { ConfigKey } from '../ConfigManager';
-
 import TerraClassicFCDExplorer from '../../explorers/collection/TerraClassicFCDExplorer';
 import TerraClassicLCDExplorer from '../../explorers/collection/TerraClassicLCDExplorer';
 import TerraMantleExplorer from '../../explorers/collection/TerraMantleExplorer';
-
-import { LazyLoadedLib } from '../../utils';
+import LUNCToken from '../../tokens/LUNCToken';
+import { Amount, LazyLoadedLib } from '../../utils';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 export const LUNC_SEND_TYPES = {

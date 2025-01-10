@@ -13,7 +13,7 @@ const createWallets = async (arg?: { id: string }) => {
     if (coins[coinClass]) {
       const wallet = createCoin(coins[coinClass], coinData);
 
-      accum.push(wallet as Coin);
+      accum.push(wallet);
     }
 
     return accum;

@@ -1,21 +1,20 @@
+import BN from 'bn.js';
 import Web3 from 'web3';
 
-import BN from 'bn.js';
 import { Coin } from '../../abstract';
-import { BSCToken } from '../../tokens';
-import TOKENS_CACHE from '../../resources/binance/bsc-tokens.json';
-import BANNED_TOKENS_CACHE from '../../resources/binance/bsc-tokens-banned.json';
 // import logger from '../Logger';
 // import configManager, { ConfigKey } from '../ConfigManager';
 import { NftMixin } from '../../coins/nfts/mixins';
 import { ExternalError } from '../../errors';
-import { EXTERNAL_ERROR } from '../../utils/const';
-
-import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
+import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
 import MoralisExplorer from '../../explorers/collection/MoralisExplorer';
+import Web3Explorer from '../../explorers/collection/Web3Explorer';
+import BANNED_TOKENS_CACHE from '../../resources/binance/bsc-tokens-banned.json';
+import TOKENS_CACHE from '../../resources/binance/bsc-tokens.json';
+import { BSCToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';
+import { EXTERNAL_ERROR } from '../../utils/const';
 import HasBlockScanner from '../mixins/HasBlockScanner';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
@@ -547,13 +546,7 @@ class BSCCoin extends Web3Mixin(
         to: contract,
         data: tokenSendData,
       })
-      .catch(
-        (error) => {},
-        // logger.error({
-        //   instance: this,
-        //   error,
-        // }),
-      );
+      .catch(() => {});
 
     return estimateGas
       ? Math.ceil(estimateGas * this.gasLimitCoefficient).toString()

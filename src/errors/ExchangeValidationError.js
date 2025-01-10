@@ -1,7 +1,9 @@
 class ExchangeValidationError extends Error {
-  constructor () {
-    super('Exchange Transaction validation failed, probably exchange tx has not been created properly')
+  constructor() {
+    super(
+      'Exchange Transaction validation failed, probably exchange tx has not been created properly',
+    );
   }
 }
 
-export default ExchangeValidationError
+export default ExchangeValidationError;

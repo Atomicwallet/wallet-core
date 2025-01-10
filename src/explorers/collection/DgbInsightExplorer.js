@@ -1,123 +1,141 @@
-import axios from 'axios'
+import axios from 'axios';
 
-import Explorer from '../Explorer'
+import Explorer from '../Explorer';
 
 class DgbInsightExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['BTC', 'LTC', 'ZEC', 'DGB', 'DASH', 'DOGE', 'BTG', 'QTUM']
+  getAllowedTickers() {
+    return ['BTC', 'LTC', 'ZEC', 'DGB', 'DASH', 'DOGE', 'BTG', 'QTUM'];
   }
 
-  getInfoUrl (address) {
-    return `addr/${address}`
+  getInfoUrl(address) {
+    return `addr/${address}`;
   }
 
-  getTransactionUrl (txId) {
-    return `tx/${txId}`
+  getTransactionUrl(txId) {
+    return `tx/${txId}`;
   }
 
-  getTransactionsUrl (address) {
-    return `addrs/${address}/txs`
+  getTransactionsUrl(address) {
+    return `addrs/${address}/txs`;
   }
 
-  modifyTransactionsResponse (response, address) {
-    return super.modifyTransactionsResponse(response.items, address)
+  modifyTransactionsResponse(response, address) {
+    return super.modifyTransactionsResponse(response.items, address);
   }
 
-  getUnspentOutputsUrl (address) {
-    return `addr/${address}/utxo`
+  getUnspentOutputsUrl(address) {
+    return `addr/${address}/utxo`;
   }
 
-  getSendTransactionUrl () {
-    return 'tx/send'
+  getSendTransactionUrl() {
+    return 'tx/send';
   }
 
-  getSendTransactionParam () {
-    return 'rawtx'
+  getSendTransactionParam() {
+    return 'rawtx';
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       balance: response.balanceSat,
       transactions: [],
-    }
+    };
   }
 
-  modifyUnspentOutputsResponse (response) {
-    return response.map(({ address, txid, vout, scriptPubKey: script, satoshis: value }) => ({
-      txid,
-      vout,
-      script,
-      value,
-      address,
-    }))
+  modifyUnspentOutputsResponse(response) {
+    return response.map(
+      ({ address, txid, vout, scriptPubKey: script, satoshis: value }) => ({
+        txid,
+        vout,
+        script,
+        value,
+        address,
+      }),
+    );
   }
 
-  async sendTransaction (rawtx) {
+  async sendTransaction(rawtx) {
     const response = await axios.post(
       `${this.config.baseUrl}${this.getSendTransactionUrl()}`,
       { [this.getSendTransactionParam()]: rawtx },
-    )
+    );
 
-    return this.modifyGeneralResponse(this.modifySendTransactionResponse(response))
+    return this.modifyGeneralResponse(
+      this.modifySendTransactionResponse(response),
+    );
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     if (!tx.vin) {
-      return '...'
+      return '...';
     }
 
     if (this.getTxDirection(selfAddress, tx)) {
-      return tx.vin[0].addr
+      return tx.vin[0].addr;
     }
 
-    let valueOutPrev = new this.wallet.BN(0)
-    let addressTo = '...'
+    let valueOutPrev = new this.wallet.BN(0);
+    let addressTo = '...';
 
     tx.vout.forEach((output) => {
       if (output.scriptPubKey.addresses.length > 0) {
         if (output.scriptPubKey.addresses[0] !== selfAddress) {
-          if (valueOutPrev.lt(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)))) {
-            valueOutPrev = new this.wallet.BN(this.wallet.toMinimalUnit(output.value))
-            addressTo = output.scriptPubKey.addresses[0]
+          if (
+            valueOutPrev.lt(
+              new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
+            )
+          ) {
+            valueOutPrev = new this.wallet.BN(
+              this.wallet.toMinimalUnit(output.value),
+            );
+            addressTo = output.scriptPubKey.addresses[0];
           }
         }
       }
-    })
+    });
 
-    return addressTo
+    return addressTo;
   }
 
-  getTxValue (selfAddress, tx) {
-    let valueIn = new this.wallet.BN(0)
-    let valueOut = new this.wallet.BN(0)
+  getTxValue(selfAddress, tx) {
+    let valueIn = new this.wallet.BN(0);
+    let valueOut = new this.wallet.BN(0);
 
     tx.vin.forEach((input) => {
       if (input.addr === selfAddress) {
-        valueIn = valueIn.add(new this.wallet.BN(input.valueSat))
+        valueIn = valueIn.add(new this.wallet.BN(input.valueSat));
       }
-    })
+    });
 
     tx.vout.forEach((output) => {
       if (output.scriptPubKey.addresses) {
         if (output.scriptPubKey.addresses[0] === selfAddress) {
-          valueOut = valueOut.add(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)))
+          valueOut = valueOut.add(
+            new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
+          );
         }
       }
-    })
+    });
 
-    const valueDiff = valueIn.sub(valueOut)
-    const isInbound = valueDiff.lt(new this.wallet.BN(0))
-    const value = valueDiff.abs()
+    const valueDiff = valueIn.sub(valueOut);
+    const isInbound = valueDiff.lt(new this.wallet.BN(0));
+    const value = valueDiff.abs();
 
-    return Number(this.wallet.toCurrencyUnit(isInbound ? value : value.sub(new this.wallet.BN(this.wallet.toMinimalUnit(tx.fees)))))
+    return Number(
+      this.wallet.toCurrencyUnit(
+        isInbound
+          ? value
+          : value.sub(new this.wallet.BN(this.wallet.toMinimalUnit(tx.fees))),
+      ),
+    );
   }
 
-  calculateBalance (utxos = []) {
+  calculateBalance(utxos = []) {
     return utxos.reduce(
       (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0')
-    )
+      new this.wallet.BN('0'),
+    );
   }
 }
 
-export default DgbInsightExplorer
+export default DgbInsightExplorer;

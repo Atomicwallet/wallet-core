@@ -1,20 +1,19 @@
-import keccak256 from 'keccak256';
-import { eddsa as EdDSA, utils } from 'elliptic';
 import BN from 'bn.js';
+import { eddsa as EdDSA, utils } from 'elliptic';
+import keccak256 from 'keccak256';
+
 import cnBase58 from './cnBase58';
 
 const L =
   7237005577332262213973186563042994240857116359379907606001950938285454250989n;
 const MONERO_NETWORK = '12';
-const STANDARD_ADDRESS_REG_TEST = new RegExp(
-  '^[4][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{94}$',
-);
-const SUBADDRESS_REG_TEST = new RegExp(
-  '^[8][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{94}$',
-);
-const INTEGRATED_ADDRESS_REG_TEST = new RegExp(
-  '^[4][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{105}$',
-);
+const STANDARD_ADDRESS_REG_TEST =
+  /^[4][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{94}$/;
+const SUBADDRESS_REG_TEST =
+  /^[8][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{94}$/;
+const INTEGRATED_ADDRESS_REG_TEST =
+  /^[4][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{105}$/;
+
 const ADDRESS_TYPE_STANDARD = 'standard';
 const ADDRESS_TYPE_SUBADDRESS = 'subaddress';
 const ADDRESS_TYPE_INTEGRATED = 'integrated';

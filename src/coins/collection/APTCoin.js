@@ -1,8 +1,8 @@
 import { Coin } from '../../abstract';
 import { ExternalError } from '../../errors';
-import { EXTERNAL_ERROR } from '../../utils/const';
-import { LazyLoadedLib } from '../../utils';
 import AptExplorer from '../../explorers/collection/AptExplorer';
+import { LazyLoadedLib } from '../../utils';
+import { EXTERNAL_ERROR } from '../../utils/const';
 import HasProviders from '../mixins/HasProviders';
 
 const NAME = 'Aptos';

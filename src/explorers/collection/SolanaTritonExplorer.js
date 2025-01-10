@@ -1,32 +1,46 @@
-import { Connection, Keypair, PublicKey, StakeProgram, Transaction as SolanaTransaction } from '@solana/web3.js'
-import { TOKEN_PROGRAM_ID, getOrCreateAssociatedTokenAccount, createTransferCheckedInstruction } from '@solana/spl-token'
-import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz'
-import BN from 'bn.js'
-import axios from 'axios'
+import {
+  TOKEN_PROGRAM_ID,
+  getOrCreateAssociatedTokenAccount,
+  createTransferCheckedInstruction,
+} from '@solana/spl-token';
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  StakeProgram,
+  Transaction as SolanaTransaction,
+} from '@solana/web3.js';
+import axios from 'axios';
+import BN from 'bn.js';
+import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz';
 
-import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/const'
-import { ExternalError } from '../../errors/index.js'
-import { chunkArray, getTokenId } from '../../utils'
-import Explorer from '../Explorer'
+import { SOLNftToken } from '../../coins/nfts';
+import { ExternalError } from '../../errors/index.js';
+import { chunkArray, getTokenId } from '../../utils';
+import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/const';
+import {
+  convertSecondsToDateTime,
+  getStringWithEnsuredEndChar,
+  toCurrency,
+} from '../../utils/convert';
+import Explorer from '../Explorer';
 // import history from '../History'
 // import AddrCacheDb from '../AddrCacheDb'
-import Transaction from '../Transaction'
-import { convertSecondsToDateTime, getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert'
-import { SOLNftToken } from '../../coins/nfts'
+import Transaction from '../Transaction';
 
-const STAKE_DATA_LENGTH = 200
+const STAKE_DATA_LENGTH = 200;
 
-const ATOMIC_HISTORY_SIGNATURES_CHUNK_SIZE = 500
-const BACKEND_TOKEN = 'ff2c5556-29f4-4ec0-8f4a-58a85f366aaf'
-const ALLOWED_ORIGIN = 'atomicwallet.io'
-const FINALIZED_COMMITMENT = 'finalized'
+const ATOMIC_HISTORY_SIGNATURES_CHUNK_SIZE = 500;
+const BACKEND_TOKEN = 'ff2c5556-29f4-4ec0-8f4a-58a85f366aaf';
+const ALLOWED_ORIGIN = 'atomicwallet.io';
+const FINALIZED_COMMITMENT = 'finalized';
 
-const SYSTEM_PROGRAM = 'system'
-const TRANSFER_TYPE = 'transfer'
+const SYSTEM_PROGRAM = 'system';
+const TRANSFER_TYPE = 'transfer';
 
-const TRANSFER_COIN = 'TRANSFER_COIN'
-const TRANSFER_NFT = 'TRANSFER_NFT'
-const TRANSFER_TOKEN = 'TRANSFER_TOKEN'
+const TRANSFER_COIN = 'TRANSFER_COIN';
+const TRANSFER_NFT = 'TRANSFER_NFT';
+const TRANSFER_TOKEN = 'TRANSFER_TOKEN';
 
 /**
  * @typedef DetectFunction
@@ -39,35 +53,32 @@ const TRANSFER_TOKEN = 'TRANSFER_TOKEN'
 const getIsCoinTx = (tx) => {
   const {
     transaction: {
-      message: {
-        instructions: [{
-          program,
-          parsed: { type } = {},
-        }] = [{}],
-      },
+      message: { instructions: [{ program, parsed: { type } = {} }] = [{}] },
     } = {},
-  } = tx || {}
+  } = tx || {};
 
-  return program === SYSTEM_PROGRAM && type === TRANSFER_TYPE
-}
+  return program === SYSTEM_PROGRAM && type === TRANSFER_TYPE;
+};
 
 /** @type {DetectFunction} */
 const getIsNftTx = (tx) => {
-  const {
-    meta: { postTokenBalances = [] } = {},
-  } = tx || {}
+  const { meta: { postTokenBalances = [] } = {} } = tx || {};
 
-  return postTokenBalances.length > 0 && postTokenBalances[0]?.uiTokenAmount?.decimals === 0
-}
+  return (
+    postTokenBalances.length > 0 &&
+    postTokenBalances[0]?.uiTokenAmount?.decimals === 0
+  );
+};
 
 /** @type {DetectFunction} */
 const getIsTokenTx = (tx) => {
-  const {
-    meta: { postTokenBalances = [] } = {},
-  } = tx || {}
+  const { meta: { postTokenBalances = [] } = {} } = tx || {};
 
-  return postTokenBalances.length > 0 && postTokenBalances[0]?.uiTokenAmount?.decimals > 0
-}
+  return (
+    postTokenBalances.length > 0 &&
+    postTokenBalances[0]?.uiTokenAmount?.decimals > 0
+  );
+};
 
 /**
  * @typedef ParseFunction
@@ -82,68 +93,91 @@ const parseCoinTx = (tx) => {
   const {
     transaction: {
       message: {
-        instructions: [{
-          parsed: {
-            info: { source, destination, lamports: amount = 0 },
+        instructions: [
+          {
+            parsed: {
+              info: { source, destination, lamports: amount = 0 },
+            },
           },
-        }],
+        ],
       },
     },
-  } = tx
+  } = tx;
 
-  return { source, destination, isNft: false, amount }
-}
+  return { source, destination, isNft: false, amount };
+};
 
 /** @type {ParseFunction} */
 const parseNftTx = (tx) => {
   const {
     meta: { postTokenBalances },
-  } = tx
+  } = tx;
 
-  const defaultInstruction = { source: '', destination: '', isNft: true, isToken: false, amount: '1', decimal: 0 }
+  const defaultInstruction = {
+    source: '',
+    destination: '',
+    isNft: true,
+    isToken: false,
+    amount: '1',
+    decimal: 0,
+  };
 
   return postTokenBalances.reduce((instruction, tokenBalance) => {
-    const { owner, uiTokenAmount: { amount } } = tokenBalance
+    const {
+      owner,
+      uiTokenAmount: { amount },
+    } = tokenBalance;
 
     switch (amount) {
       case '1':
-        instruction.destination = owner
-        break
+        instruction.destination = owner;
+        break;
       case '0':
-        instruction.source = owner
-        break
+        instruction.source = owner;
+        break;
       default:
     }
-    return instruction
-  }, defaultInstruction)
-}
+    return instruction;
+  }, defaultInstruction);
+};
 
 /** @type {ParseFunction} */
 const parseTokenTx = (tx, tokensFromDb) => {
-  const transferInstruction = tx.transaction?.message?.instructions.find((instruction) => {
-    return instruction.program === 'spl-token' && instruction.parsed.type === 'transferChecked'
-  })
+  const transferInstruction = tx.transaction?.message?.instructions.find(
+    (instruction) => {
+      return (
+        instruction.program === 'spl-token' &&
+        instruction.parsed.type === 'transferChecked'
+      );
+    },
+  );
 
-  const info = transferInstruction.parsed.info
+  const info = transferInstruction.parsed.info;
 
   if (!info) {
-    throw new Error('Could not parse token tx')
+    throw new Error('Could not parse token tx');
   }
 
   const {
-    tokenAmount: {
-      amount,
-      decimals: decimal,
-    } = {},
+    tokenAmount: { amount, decimals: decimal } = {},
     destination = '',
     source,
     mint,
-  } = info ?? { tokenAmount: {} }
+  } = info ?? { tokenAmount: {} };
 
-  const symbol = tokensFromDb[mint.toLowerCase()]?.ticker
+  const symbol = tokensFromDb[mint.toLowerCase()]?.ticker;
 
-  return { source, destination, isNft: false, isToken: true, amount, decimal, symbol, mint }
-}
+  return {
+    source,
+    destination,
+    isNft: false,
+    isToken: true,
+    amount,
+    decimal,
+    symbol,
+    mint,
+  };
+};
 
 /**
  * @type {Object.<string, {isMatch: DetectFunction, parse: ParseFunction}>}
@@ -161,7 +195,7 @@ const TX_INSTRUCTION_PARSERS = {
     isMatch: getIsTokenTx,
     parse: parseTokenTx,
   },
-}
+};
 
 /**
  * Solana Triton JSON-RCP explorer
@@ -171,8 +205,8 @@ const TX_INSTRUCTION_PARSERS = {
  *
  */
 class SolanaTritonExplorer extends Explorer {
-  #finalizedSocketListenerId
-  #confirmedSocketListenerId
+  #finalizedSocketListenerId;
+  #confirmedSocketListenerId;
 
   /**
    * Creates SolanaTritonExplorer
@@ -180,15 +214,15 @@ class SolanaTritonExplorer extends Explorer {
    * @param {Coin} param.wallet - Initialised Coin instance.
    * @param {{baseUrl: string}} param.config - Explorer config.
    */
-  constructor ({ wallet, config }) {
-    super({ wallet, config })
-    const actualBaseUrl = `${getStringWithEnsuredEndChar(config.baseUrl, '/')}${BACKEND_TOKEN}`
+  constructor({ wallet, config }) {
+    super({ wallet, config });
+    const actualBaseUrl = `${getStringWithEnsuredEndChar(config.baseUrl, '/')}${BACKEND_TOKEN}`;
 
     this.connection = new Connection(actualBaseUrl, {
       httpHeaders: {
         'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
       },
-    })
+    });
   }
 
   /**
@@ -196,8 +230,8 @@ class SolanaTritonExplorer extends Explorer {
    *
    * @returns {string[]}
    */
-  getAllowedTickers () {
-    return ['SOL']
+  getAllowedTickers() {
+    return ['SOL'];
   }
 
   /**
@@ -206,8 +240,8 @@ class SolanaTritonExplorer extends Explorer {
    * @param {string} endpoint
    * @memberof Explorer
    */
-  setSocketClient (endpoint) {
-    this.socket = new Connection(endpoint)
+  setSocketClient(endpoint) {
+    this.socket = new Connection(endpoint);
   }
 
   /**
@@ -217,12 +251,12 @@ class SolanaTritonExplorer extends Explorer {
    * @returns {Promise<{balance: string}>} - The account balance
    * @throws {ExternalError}
    */
-  async getInfo (address) {
-    const pubKey = new PublicKey(address)
+  async getInfo(address) {
+    const pubKey = new PublicKey(address);
 
-    const response = await this.connection.getBalance(pubKey, 'finalized')
+    const response = await this.connection.getBalance(pubKey, 'finalized');
 
-    return { balance: String(response) }
+    return { balance: String(response) };
   }
 
   /**
@@ -231,8 +265,8 @@ class SolanaTritonExplorer extends Explorer {
    * @async
    * @returns {Promise<{blockhash: Blockhash, feeCalculator: FeeCalculator}>}
    */
-  getLatestBlock () {
-    return this.connection.getLatestBlockhash()
+  getLatestBlock() {
+    return this.connection.getLatestBlockhash();
   }
 
   /**
@@ -243,13 +277,13 @@ class SolanaTritonExplorer extends Explorer {
    * @returns {Promise<{txid: string}>} - The transaction id.
    * @throws {ExternalError}
    */
-  async sendTransaction ({ rawtx, signer }) {
+  async sendTransaction({ rawtx, signer }) {
     try {
-      const txid = await this.connection.sendTransaction(rawtx, [signer])
+      const txid = await this.connection.sendTransaction(rawtx, [signer]);
 
-      return { txid }
+      return { txid };
     } catch (error) {
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -260,13 +294,13 @@ class SolanaTritonExplorer extends Explorer {
    * @returns {Promise<{txid: string}>} - The transaction id.
    * @throws {ExternalError}
    */
-  async sendRawTransaction (rawtx) {
+  async sendRawTransaction(rawtx) {
     try {
-      const txid = await this.connection.sendRawTransaction(rawtx)
+      const txid = await this.connection.sendRawTransaction(rawtx);
 
-      return { txid }
+      return { txid };
     } catch (error) {
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -276,52 +310,58 @@ class SolanaTritonExplorer extends Explorer {
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async getFee () {
+  async getFee() {
     try {
-      const transaction = new SolanaTransaction()
+      const transaction = new SolanaTransaction();
 
-      transaction.feePayer = this.wallet.address
-      const { blockhash } = await this.getLatestBlock()
+      transaction.feePayer = this.wallet.address;
+      const { blockhash } = await this.getLatestBlock();
 
-      transaction.recentBlockhash = blockhash
+      transaction.recentBlockhash = blockhash;
 
       // Assume that there are no operations, only a transaction structure to estimate the fee
-      const message = transaction.compileMessage()
-      const { value: fee } = await this.connection.getFeeForMessage(message)
+      const message = transaction.compileMessage();
+      const { value: fee } = await this.connection.getFeeForMessage(message);
 
-      return String(fee)
+      return String(fee);
     } catch (error) {
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
-  async getCurrentSigs (pubkey, commitment = 'finalize') {
-    const sigs = await this.connection.getConfirmedSignaturesForAddress2(pubkey, {}, commitment)
+  async getCurrentSigs(pubkey, commitment = 'finalize') {
+    const sigs = await this.connection.getConfirmedSignaturesForAddress2(
+      pubkey,
+      {},
+      commitment,
+    );
 
-    return sigs.map(({ confirmationStatus, signature }) => {
-      if (confirmationStatus === commitment) {
-        return signature
-      }
+    return sigs
+      .map(({ confirmationStatus, signature }) => {
+        if (confirmationStatus === commitment) {
+          return signature;
+        }
 
-      return undefined
-    }).filter(Boolean)
+        return undefined;
+      })
+      .filter(Boolean);
   }
 
-  getAccountInfo (pubKey) {
-    const info = this.connection.getParsedAccountInfo(pubKey)
+  getAccountInfo(pubKey) {
+    const info = this.connection.getParsedAccountInfo(pubKey);
 
-    return info
+    return info;
   }
 
-  getEpochInfo () {
-    return this.connection.getEpochInfo('finalized')
+  getEpochInfo() {
+    return this.connection.getEpochInfo('finalized');
   }
 
-  getStakeProgramInfo (address) {
+  getStakeProgramInfo(address) {
     return this.connection.getParsedProgramAccounts(StakeProgram.programId, {
       commitment: 'finalize',
       filters: [{ memcmp: { bytes: address, offset: 12 } }],
-    })
+    });
   }
 
   /**
@@ -332,21 +372,24 @@ class SolanaTritonExplorer extends Explorer {
    * @param address
    * @returns {Promise<{account: *, pubkey: *}>}
    */
-  async getStakeAccountInfo (address) {
-    const accountInfo = await this.connection.getParsedAccountInfo(new PublicKey(address), 'processed')
+  async getStakeAccountInfo(address) {
+    const accountInfo = await this.connection.getParsedAccountInfo(
+      new PublicKey(address),
+      'processed',
+    );
 
-    return this.modifyStakeAccountInfo(accountInfo, address)
+    return this.modifyStakeAccountInfo(accountInfo, address);
   }
 
-  modifyStakeAccountInfo (response, address) {
-    return { account: response.value, pubkey: new PublicKey(address) }
+  modifyStakeAccountInfo(response, address) {
+    return { account: response.value, pubkey: new PublicKey(address) };
   }
 
-  async getStakingBalance (props) {
+  async getStakingBalance(props) {
     // fetch cached stake addresses from db
     // const cachedAddrRows = await AddrCacheDb.getAddrCache(this.wallet.ticker, STAKE_ADDR_TYPE)
 
-    let addresses = []
+    let addresses = [];
 
     // map addresses if cache exists
     // if (cachedAddrRows) {
@@ -355,62 +398,80 @@ class SolanaTritonExplorer extends Explorer {
 
     // If cached addresses exists then get account info for each cached address
     // else fetch huge `getStakeProgramInfo` request to get all existing stake account for specified address
-    const stakeAccounts = addresses.length > 0
-      ? await Promise.all(addresses.map((address) => this.getStakeAccountInfo(address)))
-      : await this.getStakeProgramInfo(props.address)
+    const stakeAccounts =
+      addresses.length > 0
+        ? await Promise.all(
+            addresses.map((address) => this.getStakeAccountInfo(address)),
+          )
+        : await this.getStakeProgramInfo(props.address);
 
     // re-map addresses from `getStakeProgramInfo` if no cache exists
     if ((addresses.length === 0 && stakeAccounts) || props.ignoreCache) {
       addresses = stakeAccounts.map(({ pubkey }) => {
         try {
-          return pubkey.toBase58()
+          return pubkey.toBase58();
         } catch {
-          return pubkey
+          return pubkey;
         }
-      })
+      });
 
       // Insert addresses to DB, adding only new addresses
       // AddrCacheDb.setAddrCache({ ticker: this.wallet.ticker, type: STAKE_ADDR_TYPE, addresses })
     }
 
-    const { epoch } = await this.getEpochInfo()
+    const { epoch } = await this.getEpochInfo();
 
-    const accounts = stakeAccounts.map((info) => {
-      // for empty addresses
-      // rm saved address if not exists on B/C
-      if (!info.account) {
-        // AddrCacheDb._removeItem(info.pubkey.toBase58())
-        return undefined
-      }
+    const accounts = stakeAccounts
+      .map((info) => {
+        // for empty addresses
+        // rm saved address if not exists on B/C
+        if (!info.account) {
+          // AddrCacheDb._removeItem(info.pubkey.toBase58())
+          return undefined;
+        }
 
-      /**
-       * @TODO only returns delegation for now, need to implement `deactivate` and `withdrawals`
-       */
-      if (info.account.data.parsed.type !== 'delegated') {
-        return undefined
-      }
+        /**
+         * @TODO only returns delegation for now, need to implement `deactivate` and `withdrawals`
+         */
+        if (info.account.data.parsed.type !== 'delegated') {
+          return undefined;
+        }
 
-      const accountAddress = info.pubkey.toBase58()
-      const staked = info.account.lamports
-      const validator = info.account.data.parsed.info.stake.delegation.voter
-      const isDeactivated = Number.isSafeInteger(Number(info.account.data.parsed.info.stake.delegation.deactivationEpoch))
-      const isAvailableForWithdraw = isDeactivated &&
-        Number(info.account.data.parsed.info.stake.delegation.deactivationEpoch) < epoch
+        const accountAddress = info.pubkey.toBase58();
+        const staked = info.account.lamports;
+        const validator = info.account.data.parsed.info.stake.delegation.voter;
+        const isDeactivated = Number.isSafeInteger(
+          Number(
+            info.account.data.parsed.info.stake.delegation.deactivationEpoch,
+          ),
+        );
+        const isAvailableForWithdraw =
+          isDeactivated &&
+          Number(
+            info.account.data.parsed.info.stake.delegation.deactivationEpoch,
+          ) < epoch;
 
-      return { accountAddress, staked, validator, isDeactivated, isAvailableForWithdraw }
-    }).filter(Boolean)
+        return {
+          accountAddress,
+          staked,
+          validator,
+          isDeactivated,
+          isAvailableForWithdraw,
+        };
+      })
+      .filter(Boolean);
 
     const staked = accounts.reduce((prev, cur) => {
-      return prev.add(new this.wallet.BN(cur.staked))
-    }, new this.wallet.BN(0))
+      return prev.add(new this.wallet.BN(cur.staked));
+    }, new this.wallet.BN(0));
 
     return {
       staking: accounts,
       staked,
       total: accounts.reduce((acc, next) => {
-        return acc.add(new BN(next.staked))
+        return acc.add(new BN(next.staked));
       }, new BN(0)),
-    }
+    };
   }
 
   /**
@@ -418,63 +479,80 @@ class SolanaTritonExplorer extends Explorer {
    * @param length
    * @returns {Promise<number>}
    */
-  getMinRent (length = STAKE_DATA_LENGTH) {
-    return this.connection.getMinimumBalanceForRentExemption(length)
+  getMinRent(length = STAKE_DATA_LENGTH) {
+    return this.connection.getMinimumBalanceForRentExemption(length);
   }
 
-  async connectSocket (address) {
-    const { baseUrl, websocketUrl } = this.config
+  async connectSocket(address) {
+    const { baseUrl, websocketUrl } = this.config;
 
     if (this.#finalizedSocketListenerId) {
-      this.socket.removeAccountChangeListener(this.#finalizedSocketListenerId)
-      this.#finalizedSocketListenerId = null
+      this.socket.removeAccountChangeListener(this.#finalizedSocketListenerId);
+      this.#finalizedSocketListenerId = null;
     }
     if (this.#confirmedSocketListenerId) {
-      this.socket.removeAccountChangeListener(this.#confirmedSocketListenerId)
-      this.#confirmedSocketListenerId = null
+      this.socket.removeAccountChangeListener(this.#confirmedSocketListenerId);
+      this.#confirmedSocketListenerId = null;
     }
 
-    this.setSocketClient(websocketUrl || baseUrl)
+    this.setSocketClient(websocketUrl || baseUrl);
 
-    const pubkey = new PublicKey(address)
+    const pubkey = new PublicKey(address);
 
     if (this.socket) {
-      this.#finalizedSocketListenerId = this.socket.onAccountChange(pubkey, (event) => this.processBalanceChangeEvent(event, pubkey), 'finalized')
-      this.#confirmedSocketListenerId = this.socket.onAccountChange(pubkey, (event) => this.processTxsChangeEvent(event, pubkey), 'confirmed')
+      this.#finalizedSocketListenerId = this.socket.onAccountChange(
+        pubkey,
+        (event) => this.processBalanceChangeEvent(event, pubkey),
+        'finalized',
+      );
+      this.#confirmedSocketListenerId = this.socket.onAccountChange(
+        pubkey,
+        (event) => this.processTxsChangeEvent(event, pubkey),
+        'confirmed',
+      );
     }
   }
 
-  updateParams (params) {
-    super.updateParams(params)
+  updateParams(params) {
+    super.updateParams(params);
 
-    if (params.websocketUrl && this.config.websocketUrl !== params.websocketUrl) {
-      this.config.websocketUrl = params.websocketUrl
-      this.connectSocket(this.wallet.address)
+    if (
+      params.websocketUrl &&
+      this.config.websocketUrl !== params.websocketUrl
+    ) {
+      this.config.websocketUrl = params.websocketUrl;
+      this.connectSocket(this.wallet.address);
     }
   }
 
-  async processTxsChangeEvent (event, pubkey) {
-    const sigs = await this.getCurrentSigs(pubkey, 'confirmed')
+  async processTxsChangeEvent(event, pubkey) {
+    const sigs = await this.getCurrentSigs(pubkey, 'confirmed');
 
-    const txs = await this.getSpecifiedTransactions(sigs, pubkey.toBase58())
+    const txs = await this.getSpecifiedTransactions(sigs, pubkey.toBase58());
 
     // await history.filterAndUpdateTransactions(txs)
 
     txs.forEach((tx) => {
       if (tx.direction) {
-        this.eventEmitter.emit(`${this.wallet.parent}-${this.wallet.id}::new-socket-tx`, {
-          unconfirmedTx: tx,
-        })
+        this.eventEmitter.emit(
+          `${this.wallet.parent}-${this.wallet.id}::new-socket-tx`,
+          {
+            unconfirmedTx: tx,
+          },
+        );
       }
-    })
+    });
   }
 
-  processBalanceChangeEvent (event, pubkey) {
-    this.eventEmitter.emit(`update::${this.wallet.id}::balance`, event.lamports)
+  processBalanceChangeEvent(event, pubkey) {
+    this.eventEmitter.emit(
+      `update::${this.wallet.id}::balance`,
+      event.lamports,
+    );
   }
 
-  getTxConfirmations () {
-    return 1
+  getTxConfirmations() {
+    return 1;
   }
 
   /**
@@ -484,14 +562,22 @@ class SolanaTritonExplorer extends Explorer {
    * @param {number} limit - Search until this transaction signature is reached, if found before limit.
    * @returns {Promise<string[]>}
    */
-  async fetchTxSignaturesForChunk (pubKey, limit = ATOMIC_HISTORY_SIGNATURES_CHUNK_SIZE) {
+  async fetchTxSignaturesForChunk(
+    pubKey,
+    limit = ATOMIC_HISTORY_SIGNATURES_CHUNK_SIZE,
+  ) {
     try {
-      return (await this.connection.getSignaturesForAddress(pubKey, { limit }, FINALIZED_COMMITMENT))
-        .map(({ signature }) => signature)
+      return (
+        await this.connection.getSignaturesForAddress(
+          pubKey,
+          { limit },
+          FINALIZED_COMMITMENT,
+        )
+      ).map(({ signature }) => signature);
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
 
-      return []
+      return [];
     }
   }
 
@@ -515,36 +601,42 @@ class SolanaTritonExplorer extends Explorer {
    * @param {object}[] tokensFromDb
    * @returns {ParsedInstruction}
    */
-  getTxInstruction (tx, tokensFromDb) {
-    const defaultInstruction = { destination: '', source: '', isNft: false, isToken: false, amount: '0', decimal: 0, symbol: '', mint: '' }
+  getTxInstruction(tx, tokensFromDb) {
+    const defaultInstruction = {
+      destination: '',
+      source: '',
+      isNft: false,
+      isToken: false,
+      amount: '0',
+      decimal: 0,
+      symbol: '',
+      mint: '',
+    };
 
-    return Object.entries(TX_INSTRUCTION_PARSERS).reduce((instruction,
-      [,
-        {
-          isMatch,
-          parse,
-        },
-      ]) => {
-      const parsed = isMatch(tx) ? parse(tx, tokensFromDb) : {}
+    return Object.entries(TX_INSTRUCTION_PARSERS).reduce(
+      (instruction, [, { isMatch, parse }]) => {
+        const parsed = isMatch(tx) ? parse(tx, tokensFromDb) : {};
 
-      return { ...instruction, ...parsed }
-    }, defaultInstruction)
+        return { ...instruction, ...parsed };
+      },
+      defaultInstruction,
+    );
   }
 
-  getTxHash (tx) {
-    return tx.transaction.signatures[0]
+  getTxHash(tx) {
+    return tx.transaction.signatures[0];
   }
 
-  getTxDateTime (tx) {
-    return convertSecondsToDateTime(tx.blockTime)
+  getTxDateTime(tx) {
+    return convertSecondsToDateTime(tx.blockTime);
   }
 
-  getTxMemo (tx) {
-    return tx.memo || ''
+  getTxMemo(tx) {
+    return tx.memo || '';
   }
 
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit(tx.meta?.fee || 0)
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit(tx.meta?.fee || 0);
   }
 
   /**
@@ -553,16 +645,16 @@ class SolanaTritonExplorer extends Explorer {
    * @param {string[]} signatures - Tx signatures array.
    * @returns {Promise<ParsedConfirmedTransaction[]>}
    */
-  async fetchTxsForChunk (signatures) {
+  async fetchTxsForChunk(signatures) {
     try {
       return this.connection.getParsedTransactions(signatures, {
         commitment: FINALIZED_COMMITMENT,
         maxSupportedTransactionVersion: 0,
-      })
+      });
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
 
-      return []
+      return [];
     }
   }
 
@@ -575,12 +667,17 @@ class SolanaTritonExplorer extends Explorer {
    * @param {number} [param.pageNum=0] - Page number.
    * @returns {Promise<Transaction[]>}
    */
-  async getTransactions ({ address, limit = this.defaultTxLimit, pageNum = 0 }) {
-    const signatures = await this.fetchTxSignaturesForChunk(new PublicKey(address), limit * (pageNum + 1))
+  async getTransactions({ address, limit = this.defaultTxLimit, pageNum = 0 }) {
+    const signatures = await this.fetchTxSignaturesForChunk(
+      new PublicKey(address),
+      limit * (pageNum + 1),
+    );
 
-    const txs = await this.fetchTxsForChunk(chunkArray(signatures, limit)[pageNum] || [])
+    const txs = await this.fetchTxsForChunk(
+      chunkArray(signatures, limit)[pageNum] || [],
+    );
 
-    return this.modifyTransactionsResponse(txs, address)
+    return this.modifyTransactionsResponse(txs, address);
   }
 
   /**
@@ -589,8 +686,10 @@ class SolanaTritonExplorer extends Explorer {
    * @param {string} selfAddress - Coin Address.
    * @returns {Transaction[]}
    */
-  modifyTransactionsResponse (txs, selfAddress) {
-    const tokensFromDb = Object.fromEntries(Object.entries(this.wallet.tokens()))
+  modifyTransactionsResponse(txs, selfAddress) {
+    const tokensFromDb = Object.fromEntries(
+      Object.entries(this.wallet.tokens()),
+    );
 
     return txs.reduce((list, tx, index) => {
       try {
@@ -603,51 +702,58 @@ class SolanaTritonExplorer extends Explorer {
           decimal,
           symbol,
           mint,
-        } = this.getTxInstruction(tx, tokensFromDb)
+        } = this.getTxInstruction(tx, tokensFromDb);
 
-        let amount
-        let walletid
+        let amount;
+        let walletid;
 
         if (isNft) {
-          amount = 'NFT'
-          walletid = this.wallet.id
+          amount = 'NFT';
+          walletid = this.wallet.id;
         } else if (isToken) {
-          amount = `${toCurrency(txAmount, decimal)}`
-          walletid = getTokenId({ contract: mint.toLowerCase(), parent: 'SOL', ticker: symbol })
+          amount = `${toCurrency(txAmount, decimal)}`;
+          walletid = getTokenId({
+            contract: mint.toLowerCase(),
+            parent: 'SOL',
+            ticker: symbol,
+          });
         } else {
-          amount = `${toCurrency(txAmount, this.wallet.decimal)}`
-          walletid = this.wallet.id
+          amount = `${toCurrency(txAmount, this.wallet.decimal)}`;
+          walletid = this.wallet.id;
         }
 
-        list.push(new Transaction({
-          ticker: symbol || this.wallet.ticker,
-          name: this.wallet.name,
-          alias: this.wallet.alias,
-          explorer: this.constructor.name,
-          txid: this.getTxHash(tx),
-          direction: destination === selfAddress,
-          otherSideAddress: destination === selfAddress ? source : destination,
-          amount,
-          datetime: this.getTxDateTime(tx),
-          memo: this.getTxMemo(tx),
-          confirmations: this.getTxConfirmations(tx),
-          fee: this.getTxFee(tx),
-          feeTicker: this.getTxFeeTicker(),
-          isNft,
-          isToken,
-          symbol,
-          walletid,
-          walletId: walletid,
-        }))
+        list.push(
+          new Transaction({
+            ticker: symbol || this.wallet.ticker,
+            name: this.wallet.name,
+            alias: this.wallet.alias,
+            explorer: this.constructor.name,
+            txid: this.getTxHash(tx),
+            direction: destination === selfAddress,
+            otherSideAddress:
+              destination === selfAddress ? source : destination,
+            amount,
+            datetime: this.getTxDateTime(tx),
+            memo: this.getTxMemo(tx),
+            confirmations: this.getTxConfirmations(tx),
+            fee: this.getTxFee(tx),
+            feeTicker: this.getTxFeeTicker(),
+            isNft,
+            isToken,
+            symbol,
+            walletid,
+            walletId: walletid,
+          }),
+        );
 
-        return list
+        return list;
       } catch (error) {
-        console.warn('[SOL] tx parse failed')
-        console.error(error)
+        console.warn('[SOL] tx parse failed');
+        console.error(error);
 
-        return list
+        return list;
       }
-    }, [])
+    }, []);
   }
 
   /**
@@ -665,49 +771,58 @@ class SolanaTritonExplorer extends Explorer {
    * @returns {Promise<{FetchRawListResponse}[]>} - NFTs fetched metadata list.
    * @throws {ExternalError} - Throws error receiving NFT list
    */
-  async fetchRawList (address) {
+  async fetchRawList(address) {
     try {
       const publicAddress = await resolveToWalletAddress({
         text: address,
         connection: this.connection,
-      })
+      });
 
-      const rawList = await getParsedNftAccountsByOwner({ publicAddress, connection: this.connection })
-      const urls = []
+      const rawList = await getParsedNftAccountsByOwner({
+        publicAddress,
+        connection: this.connection,
+      });
+      const urls = [];
 
-      const rawTokens = rawList.map(({
-        mint,
-        // @TODO Research this
-        // tokenStandard,
-        data: { name, uri },
-      }) => {
-        urls.push(uri)
-        return {
-          tokenId: mint,
-          name,
-        }
-      })
-      const additionalPropertyResults = await Promise.allSettled(urls.map((url) => axios.get(url)))
+      const rawTokens = rawList.map(
+        ({
+          mint,
+          // @TODO Research this
+          // tokenStandard,
+          data: { name, uri },
+        }) => {
+          urls.push(uri);
+          return {
+            tokenId: mint,
+            name,
+          };
+        },
+      );
+      const additionalPropertyResults = await Promise.allSettled(
+        urls.map((url) => axios.get(url)),
+      );
 
       for (let index = 0; index < rawTokens.length; index++) {
-        const token = rawTokens[index]
-        const { status, value, reason } = additionalPropertyResults[index]
+        const token = rawTokens[index];
+        const { status, value, reason } = additionalPropertyResults[index];
 
         if (status === 'fulfilled') {
-          const { data: { description, image } } = value
+          const {
+            data: { description, image },
+          } = value;
 
-          token.description = description
-          token.imageUrl = image
+          token.description = description;
+          token.imageUrl = image;
         } else {
           // @TODO token.description = 'Error getting token description'
           // @TODO token.imageUrl = '<Some error url>'
-          console.warn(reason)
+          console.warn(reason);
         }
       }
-      return rawTokens
+      return rawTokens;
     } catch (error) {
-      console.warn(error)
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      console.warn(error);
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -719,21 +834,19 @@ class SolanaTritonExplorer extends Explorer {
    * @returns {Promise<SOLNftToken[]>}
    * @throws {ExternalError} - Throws error receiving NFT list
    */
-  async fetchNftList (coin) {
-    const { address, ticker } = coin
+  async fetchNftList(coin) {
+    const { address, ticker } = coin;
 
     try {
-      const rawList = await this.fetchRawList(address)
+      const rawList = await this.fetchRawList(address);
 
-      return rawList.map(({
-        tokenId,
-        name,
-        description,
-        imageUrl,
-      }) => new SOLNftToken(tokenId, ticker, name, description, imageUrl))
+      return rawList.map(
+        ({ tokenId, name, description, imageUrl }) =>
+          new SOLNftToken(tokenId, ticker, name, description, imageUrl),
+      );
     } catch (error) {
-      console.warn(error)
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      console.warn(error);
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -750,26 +863,34 @@ class SolanaTritonExplorer extends Explorer {
    * @returns {Promise<{tx: string}>} - Transaction hash.
    * @throws {ExternalError} - Throws transfer NFT error.
    */
-  async sendNft (coin, toAddress, contractAddress, tokenId, tokenStandard, options) {
-    const fromKeypair = Keypair.fromSecretKey(coin.getPrivateKey())
+  async sendNft(
+    coin,
+    toAddress,
+    contractAddress,
+    tokenId,
+    tokenStandard,
+    options,
+  ) {
+    const fromKeypair = Keypair.fromSecretKey(coin.getPrivateKey());
 
     // Mint is the Mint address found in the NFT metadata
-    const mintPublicKey = new PublicKey(tokenId)
-    const destPublicKey = new PublicKey(toAddress)
+    const mintPublicKey = new PublicKey(tokenId);
+    const destPublicKey = new PublicKey(toAddress);
 
     try {
       const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
         this.connection,
         fromKeypair,
         mintPublicKey,
-        fromKeypair.publicKey
-      )
+        fromKeypair.publicKey,
+      );
 
       const toTokenAccount = await getOrCreateAssociatedTokenAccount(
         this.connection,
         fromKeypair,
         mintPublicKey,
-        destPublicKey)
+        destPublicKey,
+      );
 
       const transaction = new SolanaTransaction().add(
         createTransferCheckedInstruction(
@@ -780,16 +901,18 @@ class SolanaTritonExplorer extends Explorer {
           1,
           0,
           [],
-          TOKEN_PROGRAM_ID
-        )
-      )
+          TOKEN_PROGRAM_ID,
+        ),
+      );
 
-      const tx = await this.connection.sendTransaction(transaction, [fromKeypair])
+      const tx = await this.connection.sendTransaction(transaction, [
+        fromKeypair,
+      ]);
 
-      return { tx }
+      return { tx };
     } catch (error) {
-      console.warn(error)
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      console.warn(error);
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -800,8 +923,8 @@ class SolanaTritonExplorer extends Explorer {
    * @param {string} tokenId - Token id.
    * @returns {string} - NFT info url.
    */
-  makeNftInfoUrl (contractAddress, tokenId) {
-    return `${getStringWithEnsuredEndChar(this.config.baseUrl, '/')}${tokenId}`
+  makeNftInfoUrl(contractAddress, tokenId) {
+    return `${getStringWithEnsuredEndChar(this.config.baseUrl, '/')}${tokenId}`;
   }
 
   /** @typedef TokenType
@@ -809,20 +932,27 @@ class SolanaTritonExplorer extends Explorer {
    * @property {}
    */
 
-  async getUserTokenList () {
-    const { value: splAccounts } = await this.connection.getParsedTokenAccountsByOwner(new PublicKey(this.wallet.address), {
-      programId: new PublicKey(TOKEN_PROGRAM_ID),
-    })
+  async getUserTokenList() {
+    const { value: splAccounts } =
+      await this.connection.getParsedTokenAccountsByOwner(
+        new PublicKey(this.wallet.address),
+        {
+          programId: new PublicKey(TOKEN_PROGRAM_ID),
+        },
+      );
 
-    const rawTokensList = []
+    const rawTokensList = [];
 
     splAccounts.forEach((acc) => {
-      if (acc.account.data.program === 'spl-token' && acc.account.data.parsed.type === 'account') {
-        rawTokensList.push(acc.account.data.parsed.info)
+      if (
+        acc.account.data.program === 'spl-token' &&
+        acc.account.data.parsed.type === 'account'
+      ) {
+        rawTokensList.push(acc.account.data.parsed.info);
       }
-    })
+    });
 
-    return rawTokensList
+    return rawTokensList;
   }
 
   /**
@@ -837,26 +967,27 @@ class SolanaTritonExplorer extends Explorer {
    * @param {number} decimals - The decimals of the used coin.
    * @return {Promise<{ txid: string }>} - A Promise that resolves to the transaction ID.
    */
-  async sendTokenTransaction (coin, mint, toAddress, amount, decimals) {
-    const fromKeypair = Keypair.fromSecretKey(coin.getPrivateKey())
+  async sendTokenTransaction(coin, mint, toAddress, amount, decimals) {
+    const fromKeypair = Keypair.fromSecretKey(coin.getPrivateKey());
 
     // Mint is the Mint address found in the NFT metadata
-    const mintPublicKey = new PublicKey(mint)
-    const destPublicKey = new PublicKey(toAddress)
+    const mintPublicKey = new PublicKey(mint);
+    const destPublicKey = new PublicKey(toAddress);
 
     try {
       const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
         this.connection,
         fromKeypair,
         mintPublicKey,
-        fromKeypair.publicKey
-      )
+        fromKeypair.publicKey,
+      );
 
       const toTokenAccount = await getOrCreateAssociatedTokenAccount(
         this.connection,
         fromKeypair,
         mintPublicKey,
-        destPublicKey)
+        destPublicKey,
+      );
 
       const transaction = new SolanaTransaction().add(
         createTransferCheckedInstruction(
@@ -867,16 +998,18 @@ class SolanaTritonExplorer extends Explorer {
           BigInt(amount),
           decimals,
           [],
-          TOKEN_PROGRAM_ID
-        )
-      )
+          TOKEN_PROGRAM_ID,
+        ),
+      );
 
-      const txid = await this.connection.sendTransaction(transaction, [fromKeypair])
+      const txid = await this.connection.sendTransaction(transaction, [
+        fromKeypair,
+      ]);
 
-      return { txid }
+      return { txid };
     } catch (error) {
-      console.warn(error)
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      console.warn(error);
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -885,29 +1018,36 @@ class SolanaTritonExplorer extends Explorer {
    * @param {string} mint
    * @returns {Promise<string|null>}
    */
-  async getTokenBalance ({ mint }) {
+  async getTokenBalance({ mint }) {
     try {
-      const { value: splAccounts } = await this.connection.getParsedTokenAccountsByOwner(new PublicKey(this.wallet.address), {
-        programId: new PublicKey(TOKEN_PROGRAM_ID),
-      })
+      const { value: splAccounts } =
+        await this.connection.getParsedTokenAccountsByOwner(
+          new PublicKey(this.wallet.address),
+          {
+            programId: new PublicKey(TOKEN_PROGRAM_ID),
+          },
+        );
 
       splAccounts.forEach((acc) => {
-        if (acc.account.data.program === 'spl-token' && acc.account.data.parsed.type === 'account') {
-          const parsedInfo = acc.account.data.parsed.info
+        if (
+          acc.account.data.program === 'spl-token' &&
+          acc.account.data.parsed.type === 'account'
+        ) {
+          const parsedInfo = acc.account.data.parsed.info;
 
           if (parsedInfo.mint === mint) {
-            return parsedInfo.tokenAmount.amount
+            return parsedInfo.tokenAmount.amount;
           }
         }
-        return null
-      })
+        return null;
+      });
 
-      return null
+      return null;
     } catch (error) {
-      console.warn(error)
-      return null
+      console.warn(error);
+      return null;
     }
   }
 }
 
-export default SolanaTritonExplorer
+export default SolanaTritonExplorer;

@@ -1,7 +1,7 @@
-import * as BitcoinJS from 'bitcoinjs-lib';
 import bech32 from 'bech32';
-import wif from 'wif';
+import * as BitcoinJS from 'bitcoinjs-lib';
 import { createSignedTx, sign } from 'js-cosmos-wallet';
+import wif from 'wif';
 
 import { ExplorerRequestError, WalletError } from '../../errors';
 import {

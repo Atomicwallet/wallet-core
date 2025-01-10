@@ -1,11 +1,11 @@
-import standard from './standard'
-import stETH from './stETH'
-import WFLR from './WFLR'
-import FlareRewardsManager from './FlareRewardsManagerContract'
-import MaticValidatorsShare from './MaticValidatorsShare'
+import FlareRewardsManager from './FlareRewardsManagerContract';
+import MaticValidatorsShare from './MaticValidatorsShare';
+import standard from './standard';
+import stETH from './stETH';
+import WFLR from './WFLR';
 
 export default {
-  'standard': {
+  standard: {
     methods: {
       approve: {
         name: 'approve',
@@ -76,4 +76,4 @@ export default {
     },
     abi: stETH,
   },
-}
+};

@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
+
 import { Coin } from '../../abstract';
-import { Amount } from '../../utils';
 // import logger from '../Logger';
 import TerraFCDExplorer from '../../explorers/collection/TerraFCDExplorer';
 import TerraLCDExplorer from '../../explorers/collection/TerraLCDExplorer';
-import { LazyLoadedLib } from '../../utils';
+import { Amount, LazyLoadedLib } from '../../utils';
 import { HasProviders, StakingMixin } from '../mixins';
 
 export const LUNA_SEND_TYPES = {
@@ -258,7 +258,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
       }),
       this.getProvider('gas_price')
         .getGasPrices()
-        .catch((error) => {
+        .catch(() => {
           console.warn('Could not get gasPrices');
           // logger.error({ instance: this, error });
           return this.gasPrices;

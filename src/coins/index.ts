@@ -1,3 +1,3 @@
-export { default as createCoin } from './createCoin'
-export * from './coins'
-export * from './keys'
+export { default as createCoin } from './createCoin';
+export * from './coins';
+export * from './keys';

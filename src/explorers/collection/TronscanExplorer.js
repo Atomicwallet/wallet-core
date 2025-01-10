@@ -1,10 +1,10 @@
-import TronscanClient from '@tronscan/client'
+import TronscanClient from '@tronscan/client';
 
-import Explorer from '../Explorer'
-import Transaction from '../Transaction'
-import { ExplorerRequestError } from '../../errors/index.js'
-import { getTokenId } from '../../utils'
-import { SEND_TRANSACTION_TYPE } from '../../utils/const'
+import { ExplorerRequestError } from '../../errors/index.js';
+import { getTokenId } from '../../utils';
+import { SEND_TRANSACTION_TYPE } from '../../utils/const';
+import Explorer from '../Explorer';
+import Transaction from '../Transaction';
 
 const TRON_CONTRACT_TYPES = {
   AccountCreateContract: 0,
@@ -45,31 +45,33 @@ const TRON_CONTRACT_TYPES = {
   PermissionDeleteKeyContract: 49,
   FreezeBalanceV2Contract: 54,
   UnfreezeBalanceV2Contract: 55,
-}
+};
 
-const TX_LIMIT = 50
+const TX_LIMIT = 50;
 
 /**
  * Class for tronscan explorer.
  *
  */
 class TronscanExplorer extends Explorer {
-  constructor (...args) {
-    super(...args)
-    this.httpclient = new TronscanClient.Client(this.config.baseUrl.replace('/api/', ''))
-    this.helper = TronscanClient
-    this.defaultTxLimit = TX_LIMIT
+  constructor(...args) {
+    super(...args);
+    this.httpclient = new TronscanClient.Client(
+      this.config.baseUrl.replace('/api/', ''),
+    );
+    this.helper = TronscanClient;
+    this.defaultTxLimit = TX_LIMIT;
 
     // global timeouts for Tronscan requests
     this.client.interceptors.request.use((config) => {
-      config.timeout = 10000 // 10 second
+      config.timeout = 10000; // 10 second
 
-      return config
-    })
+      return config;
+    });
   }
 
-  getAllowedTickers () {
-    return ['TRX', 'BTT', 'WIN', 'USDC', 'BTTOLD']
+  getAllowedTickers() {
+    return ['TRX', 'BTT', 'WIN', 'USDC', 'BTTOLD'];
   }
 
   /**
@@ -77,8 +79,8 @@ class TronscanExplorer extends Explorer {
    *
    * @return {<type>} The information url.
    */
-  getInfoUrl (address) {
-    return `account?address=${address}`
+  getInfoUrl(address) {
+    return `account?address=${address}`;
   }
 
   /**
@@ -86,8 +88,8 @@ class TronscanExplorer extends Explorer {
    *
    * @return {Object}
    */
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit) {
-    return { start: offset, limit }
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit) {
+    return { start: offset, limit };
   }
 
   /**
@@ -95,19 +97,19 @@ class TronscanExplorer extends Explorer {
    *
    * @return {Object} { description_of_the_return_value }
    */
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       balance: String(response.balance),
       assets: response.trc20token_balances,
-    }
+    };
   }
 
-  getAccount (address) {
-    return this.request(`account?address=${address}`)
+  getAccount(address) {
+    return this.request(`account?address=${address}`);
   }
 
-  getVotes (address) {
-    return this.request(`vote?voter=${address}`)
+  getVotes(address) {
+    return this.request(`vote?voter=${address}`);
   }
 
   /**
@@ -116,15 +118,15 @@ class TronscanExplorer extends Explorer {
    * @param  {<type>} txId The transmit identifier
    * @return {<type>} The transaction url.
    */
-  getTransactionUrl (txId) {
-    return `transaction-info?hash=${txId}`
+  getTransactionUrl(txId) {
+    return `transaction-info?hash=${txId}`;
   }
 
   /**
    * Gets the latest block url.
    */
-  getLatestBlockUrl () {
-    return 'block/latest'
+  getLatestBlockUrl() {
+    return 'block/latest';
   }
 
   /**
@@ -134,10 +136,10 @@ class TronscanExplorer extends Explorer {
    * @param  {<type>} limit The limit (default: this.defaultTxLimit)
    * @return {Promise} The transactions.
    */
-  async getTransactions ({ address, offset = 0, limit = this.defaultTxLimit }) {
-    this.latestBlock = await this.getLatestBlock()
+  async getTransactions({ address, offset = 0, limit = this.defaultTxLimit }) {
+    this.latestBlock = await this.getLatestBlock();
 
-    return super.getTransactions({ address, offset, limit })
+    return super.getTransactions({ address, offset, limit });
   }
 
   /**
@@ -145,8 +147,8 @@ class TronscanExplorer extends Explorer {
    *
    * @return {<type>} The transactions url.
    */
-  getTransactionsUrl (address) {
-    return `transaction?sort=-timestamp&address=${address}`
+  getTransactionsUrl(address) {
+    return `transaction?sort=-timestamp&address=${address}`;
   }
 
   /**
@@ -154,43 +156,70 @@ class TronscanExplorer extends Explorer {
    *
    * @return {<type>} { description_of_the_return_value }
    */
-  modifyTransactionsResponse (response, address, asset = this.wallet.ticker) {
-    const transfers = response.data.filter((tx) => tx.tokenInfo?.tokenAbbr !== 'trx')
+  modifyTransactionsResponse(response, address, asset = this.wallet.ticker) {
+    const transfers = response.data.filter(
+      (tx) => tx.tokenInfo?.tokenAbbr !== 'trx',
+    );
 
     const transactions = response.data
-      .filter((tx) => (tx.tokenInfo?.tokenAbbr === 'trx' && [tx.ownerAddress, tx.toAddress].includes(address)) ||
-        this.getTransactionType(tx) === 'vote' ||
-        (this.getTransactionType(tx) === 'regular' && tx.amount === '0'))
+      .filter(
+        (tx) =>
+          (tx.tokenInfo?.tokenAbbr === 'trx' &&
+            [tx.ownerAddress, tx.toAddress].includes(address)) ||
+          this.getTransactionType(tx) === 'vote' ||
+          (this.getTransactionType(tx) === 'regular' && tx.amount === '0'),
+      )
       .map((tx) => {
-        return this.getTransaction(address, tx, this.getBatchTxValue(address, tx), asset,
-          this.wallet.id, this.wallet.name)
-      })
+        return this.getTransaction(
+          address,
+          tx,
+          this.getBatchTxValue(address, tx),
+          asset,
+          this.wallet.id,
+          this.wallet.name,
+        );
+      });
 
-    return { transactions, transfers }
+    return { transactions, transfers };
   }
 
-  modifyTransactionResponse (tx, address, asset = this.wallet.ticker) {
-    return this.getTransaction(address, tx, this.getTxValue(address, tx), this.wallet.ticker,
-      this.wallet.id, this.wallet.name)
+  modifyTransactionResponse(tx, address, asset = this.wallet.ticker) {
+    return this.getTransaction(
+      address,
+      tx,
+      this.getTxValue(address, tx),
+      this.wallet.ticker,
+      this.wallet.id,
+      this.wallet.name,
+    );
   }
 
-  modifyTokenTransactionResponse (tx, address, asset, decimal) {
-    return this.getTransaction(address, tx, this.getTxValue(address, tx, decimal), asset,
-      getTokenId({ ticker: asset, contract: tx.tokenName, parent: this.wallet.parent }))
+  modifyTokenTransactionResponse(tx, address, asset, decimal) {
+    return this.getTransaction(
+      address,
+      tx,
+      this.getTxValue(address, tx, decimal),
+      asset,
+      getTokenId({
+        ticker: asset,
+        contract: tx.tokenName,
+        parent: this.wallet.parent,
+      }),
+    );
   }
 
   /**
    * Gets the send transaction url.
    */
-  getSendTransactionUrl () {
-    return 'broadcast'
+  getSendTransactionUrl() {
+    return 'broadcast';
   }
 
   /**
    * Gets the send transaction parameter.
    */
-  getSendTransactionParam () {
-    return 'transaction'
+  getSendTransactionParam() {
+    return 'transaction';
   }
 
   /**
@@ -198,14 +227,18 @@ class TronscanExplorer extends Explorer {
    *
    * @return {Object} { description_of_the_return_value }
    */
-  modifySendTransactionResponse (response) {
+  modifySendTransactionResponse(response) {
     if (response.data.code !== 'SUCCESS') {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error: response.data.message, instance: this })
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error: response.data.message,
+        instance: this,
+      });
     }
 
     return {
       txid: this.lastSendingTransactionHash,
-    }
+    };
   }
 
   /**
@@ -214,16 +247,20 @@ class TronscanExplorer extends Explorer {
    * @param  {<type>} rawtx The rawtx
    * @return {Promise} { description_of_the_return_value }
    */
-  async sendTransaction (rawtx, pk) {
+  async sendTransaction(rawtx, pk) {
     try {
-      this.httpclient.apiUrl = this.config.baseUrl.replace('/api/', '')
-      await this.httpclient.sendTransaction(pk, rawtx)
+      this.httpclient.apiUrl = this.config.baseUrl.replace('/api/', '');
+      await this.httpclient.sendTransaction(pk, rawtx);
 
       return {
         txid: this.SHA256(rawtx.getRawData().serializeBinary()),
-      }
+      };
     } catch (error) {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error, instance: this })
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error,
+        instance: this,
+      });
     }
   }
 
@@ -232,10 +269,10 @@ class TronscanExplorer extends Explorer {
    *
    * @return {Promise<String>} The balance.
    */
-  async getBalance () {
-    const info = await this.getInfo()
+  async getBalance() {
+    const info = await this.getInfo();
 
-    return this.wallet.toCurrencyUnit(info.balance)
+    return this.wallet.toCurrencyUnit(info.balance);
   }
 
   /**
@@ -244,8 +281,8 @@ class TronscanExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {<type>} The transmit hash.
    */
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
   /**
@@ -254,12 +291,18 @@ class TronscanExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {<Boolean>} The transmit direction.
    */
-  getTxDirection (selfAddress, tx) {
-    if (tx.contractType === TRON_CONTRACT_TYPES.FreezeBalanceContract && tx.ownerAddress.toLowerCase() === selfAddress.toLowerCase()) {
-      return false
+  getTxDirection(selfAddress, tx) {
+    if (
+      tx.contractType === TRON_CONTRACT_TYPES.FreezeBalanceContract &&
+      tx.ownerAddress.toLowerCase() === selfAddress.toLowerCase()
+    ) {
+      return false;
     }
-    return (tx.toAddress.toLowerCase() === selfAddress.toLowerCase()) ||
-      (tx.toAddress === '' && tx.ownerAddress.toLowerCase() === selfAddress.toLowerCase())
+    return (
+      tx.toAddress.toLowerCase() === selfAddress.toLowerCase() ||
+      (tx.toAddress === '' &&
+        tx.ownerAddress.toLowerCase() === selfAddress.toLowerCase())
+    );
   }
 
   /**
@@ -269,21 +312,22 @@ class TronscanExplorer extends Explorer {
    * @param tx <Object> The transmit
    * @return <String> The transmit recipient.
    */
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     switch (tx.contractType) {
       case TRON_CONTRACT_TYPES.FreezeBalanceContract:
-        return 'Freeze 1.0'
+        return 'Freeze 1.0';
       case TRON_CONTRACT_TYPES.FreezeBalanceV2Contract:
-        return 'Freeze 2.0'
+        return 'Freeze 2.0';
       case TRON_CONTRACT_TYPES.UnfreezeBalanceContract:
       case TRON_CONTRACT_TYPES.UnfreezeAssetContract:
-        return 'Unfreeze 1.0'
+        return 'Unfreeze 1.0';
       case TRON_CONTRACT_TYPES.WithdrawBalanceContract:
-        return 'Reward'
+        return 'Reward';
       case TRON_CONTRACT_TYPES.TransferContract:
       default:
         return tx.toAddress.toLowerCase() === selfAddress.toLowerCase()
-          ? tx.ownerAddress : tx.toAddress
+          ? tx.ownerAddress
+          : tx.toAddress;
     }
   }
 
@@ -293,23 +337,25 @@ class TronscanExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {<type>} The transmit value.
    */
-  getBatchTxValue (selfAddress, tx, decimal = this.wallet.decimal) {
-    return this.getTransactionType(tx) === 'vote' ? tx.amount : this.wallet.toCurrencyUnit(tx.amount, decimal)
+  getBatchTxValue(selfAddress, tx, decimal = this.wallet.decimal) {
+    return this.getTransactionType(tx) === 'vote'
+      ? tx.amount
+      : this.wallet.toCurrencyUnit(tx.amount, decimal);
   }
 
-  getTxValue (selfAddress, tx, decimal = this.wallet.decimal) {
+  getTxValue(selfAddress, tx, decimal = this.wallet.decimal) {
     switch (tx.contractType) {
       case TRON_CONTRACT_TYPES.FreezeBalanceContract:
-        return 'Freeze'
+        return 'Freeze';
       case TRON_CONTRACT_TYPES.UnfreezeBalanceContract:
       case TRON_CONTRACT_TYPES.UnfreezeAssetContract:
       case TRON_CONTRACT_TYPES.UnfreezeBalanceV2Contract:
-        return this.wallet.toCurrencyUnit(tx.info.unfreeze_amount, decimal)
+        return this.wallet.toCurrencyUnit(tx.info.unfreeze_amount, decimal);
       case TRON_CONTRACT_TYPES.WithdrawBalanceContract:
-        return 'Reward'
+        return 'Reward';
       case TRON_CONTRACT_TYPES.TransferContract:
       default:
-        return this.wallet.toCurrencyUnit(tx.amount, decimal)
+        return this.wallet.toCurrencyUnit(tx.amount, decimal);
     }
   }
 
@@ -319,8 +365,8 @@ class TronscanExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {Date} The transmit date time.
    */
-  getTxDateTime (tx) {
-    return new Date(Number(tx.timestamp))
+  getTxDateTime(tx) {
+    return new Date(Number(tx.timestamp));
   }
 
   /**
@@ -329,31 +375,33 @@ class TronscanExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {<type>} The transmit confirmations.
    */
-  getTxConfirmations (tx) {
+  getTxConfirmations(tx) {
     if (this.latestBlock) {
-      return this.latestBlock.number - tx.block
+      return this.latestBlock.number - tx.block;
     }
-    return Number(tx.confirmed)
+    return Number(tx.confirmed);
   }
 
-  SHA256 (msgBytes) {
-    const shaObj = new TronscanClient.sha256('SHA-256', 'HEX')
-    const msgHex = TronscanClient.bytes.byteArray2hexStr(msgBytes)
+  SHA256(msgBytes) {
+    const shaObj = new TronscanClient.sha256('SHA-256', 'HEX');
+    const msgHex = TronscanClient.bytes.byteArray2hexStr(msgBytes);
 
-    shaObj.update(msgHex)
+    shaObj.update(msgHex);
 
-    return shaObj.getHash('HEX')
+    return shaObj.getHash('HEX');
   }
 
-  getTokenTransfers (address, limit = 10) {
-    return this.request(`token_trc20/transfers?limit=${limit}&start=0&sort=-timestamp&count=false&relatedAddress=${address}`)
+  getTokenTransfers(address, limit = 10) {
+    return this.request(
+      `token_trc20/transfers?limit=${limit}&start=0&sort=-timestamp&count=false&relatedAddress=${address}`,
+    );
   }
 
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit(tx?.cost?.fee || this.wallet.feeDefault)
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit(tx?.cost?.fee || this.wallet.feeDefault);
   }
 
-  getTransaction (address, tx, amount, ticker, walletid, name) {
+  getTransaction(address, tx, amount, ticker, walletid, name) {
     return new Transaction({
       alias: this.wallet.alias,
       amount,
@@ -369,35 +417,45 @@ class TronscanExplorer extends Explorer {
       txid: this.getTxHash(tx),
       txType: this.getTransactionType(tx),
       walletid,
-    })
+    });
   }
 
-  getTransactionInfo (txId) {
-    return this.request(`transaction-info?hash=${txId}`)
+  getTransactionInfo(txId) {
+    return this.request(`transaction-info?hash=${txId}`);
   }
 
-  getTransactionType ({ contractType }) {
+  getTransactionType({ contractType }) {
     const typesMap = {
       freeze: [TRON_CONTRACT_TYPES.FreezeBalanceContract],
-      reward: [TRON_CONTRACT_TYPES.WithdrawBalanceContract, TRON_CONTRACT_TYPES.ExchangeWithdrawContract],
-      unstake: [TRON_CONTRACT_TYPES.UnfreezeBalanceContract, TRON_CONTRACT_TYPES.UnfreezeAssetContract, TRON_CONTRACT_TYPES.UnfreezeBalanceV2Contract],
-      vote: [TRON_CONTRACT_TYPES.VoteAssetContract, TRON_CONTRACT_TYPES.VoteWitnessContract],
-    }
+      reward: [
+        TRON_CONTRACT_TYPES.WithdrawBalanceContract,
+        TRON_CONTRACT_TYPES.ExchangeWithdrawContract,
+      ],
+      unstake: [
+        TRON_CONTRACT_TYPES.UnfreezeBalanceContract,
+        TRON_CONTRACT_TYPES.UnfreezeAssetContract,
+        TRON_CONTRACT_TYPES.UnfreezeBalanceV2Contract,
+      ],
+      vote: [
+        TRON_CONTRACT_TYPES.VoteAssetContract,
+        TRON_CONTRACT_TYPES.VoteWitnessContract,
+      ],
+    };
 
     for (const txType of Object.keys(typesMap)) {
       if (typesMap[txType].includes(contractType)) {
-        return txType
+        return txType;
       }
     }
 
-    return 'regular'
+    return 'regular';
   }
 
-  async isFirstTransfer (to) {
-    const { token_transfers: transfers } = await this.getTokenTransfers(to, 1)
+  async isFirstTransfer(to) {
+    const { token_transfers: transfers } = await this.getTokenTransfers(to, 1);
 
-    return !transfers.length
+    return !transfers.length;
   }
 }
 
-export default TronscanExplorer
+export default TronscanExplorer;

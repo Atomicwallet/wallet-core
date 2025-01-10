@@ -1,7 +1,7 @@
 import bech32 from 'bech32';
+import BigNumber from 'bignumber.js';
 import bip39 from 'bip39';
 import bs58 from 'bs58check';
-import BigNumber from 'bignumber.js';
 import cardanoCrypto from 'cardano-crypto-js';
 import { pbkdf2Sync } from 'pbkdf2';
 
@@ -107,7 +107,7 @@ class HaskellShelleyTxSignRequest {
   }
 
   isEqual(tx) {
-    if (tx == null) {
+    if (tx === null) {
       return false;
     }
     if (!(tx instanceof this.cardano.TransactionBuilder)) {
@@ -119,7 +119,7 @@ class HaskellShelleyTxSignRequest {
   toHexOrBase58(address) {
     const asByron = this.cardano.ByronAddress.from_address(address);
 
-    if (asByron == null) {
+    if (asByron === null) {
       return Buffer.from(address.to_bytes()).toString('hex');
     }
     return asByron.to_base58();
@@ -408,7 +408,7 @@ export default class AdaLibApi {
     const addressedUtxos = unsignedTxResponse.senderUtxos.map((utxo) => {
       const addressedUtxo = addressingMap.get(utxo);
 
-      if (addressedUtxo == null) {
+      if (addressedUtxo === null) {
         throw new Error(
           '[newAdaUnsignedTx] utxo reference was changed. Should not happen',
         );
@@ -513,7 +513,7 @@ export default class AdaLibApi {
   ) {
     const wasmReceiver = this.normalizeToAddress(receiver);
 
-    if (wasmReceiver == null) {
+    if (wasmReceiver === null) {
       throw new Error(
         '[newAdaUnsignedTxFromUtxo] receiver not a valid Shelley address',
       );
@@ -577,7 +577,7 @@ export default class AdaLibApi {
     });
 
     const changeAddr = (() => {
-      if (changeAdaAddr == null) {
+      if (changeAdaAddr === null) {
         txBuilder.set_fee(txBuilder.min_fee());
         return [];
       }
@@ -588,7 +588,7 @@ export default class AdaLibApi {
 
       const wasmChange = this.normalizeToAddress(changeAdaAddr);
 
-      if (wasmChange == null) {
+      if (wasmChange === null) {
         throw new Error(
           '[newAdaUnsignedTxFromUtxo] change not a valid Shelley address',
         );
@@ -634,7 +634,7 @@ export default class AdaLibApi {
     if (keyHash === null) {
       const byronAddr = this.cardano.ByronAddress.from_address(wasmInput);
 
-      if (byronAddr == null) {
+      if (byronAddr === null) {
         throw new Error(
           'Add input should never happen: non-byron address without key hash',
         );
@@ -734,7 +734,7 @@ export default class AdaLibApi {
     for (const senderUtxo of signRequest.senderUtxos) {
       const wasmAddr = this.normalizeToAddress(senderUtxo.receiver);
 
-      if (wasmAddr == null) {
+      if (wasmAddr === null) {
         throw new Error('[signTransaction] utxo not a valid Shelley address');
       }
 
@@ -804,7 +804,7 @@ export default class AdaLibApi {
     for (let index = 0; index < uniqueUtxo.length; index += 1) {
       const wasmAddr = this.normalizeToAddress(uniqueUtxo[index].receiver);
 
-      if (wasmAddr == null) {
+      if (wasmAddr === null) {
         throw new Error('[addWitnesses] utxo not a valid Shelley address');
       }
       const byronAddr = this.cardano.ByronAddress.from_address(wasmAddr);

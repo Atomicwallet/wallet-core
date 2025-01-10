@@ -509,4 +509,4 @@ export default [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-]
+];

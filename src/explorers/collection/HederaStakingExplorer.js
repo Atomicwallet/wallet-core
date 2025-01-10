@@ -1,18 +1,18 @@
-import { AccountUpdateTransaction, PrivateKey } from 'hedera-sdk-v2'
+import { AccountUpdateTransaction, PrivateKey } from 'hedera-sdk-v2';
 
-import Explorer from '../Explorer'
+import Explorer from '../Explorer';
 
 class HederaStakingExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['HBAR']
+  getAllowedTickers() {
+    return ['HBAR'];
   }
 
-  getInfoParams () {
-    return { limit: 1 }
+  getInfoParams() {
+    return { limit: 1 };
   }
 
-  getInfoUrl (address) {
-    return `accounts/${address}`
+  getInfoUrl(address) {
+    return `accounts/${address}`;
   }
 
   /**
@@ -21,9 +21,14 @@ class HederaStakingExplorer extends Explorer {
    * @param {number|string} nodeId The staked node id
    * @return {Promise<string>} the tx hash
    */
-  stake (wallet, nodeId, privateKey) {
-    return this.#sendTx(this.#createAccountUpdateTx(wallet).setStakedNodeId(nodeId).setDeclineStakingReward(false),
-      wallet, privateKey)
+  stake(wallet, nodeId, privateKey) {
+    return this.#sendTx(
+      this.#createAccountUpdateTx(wallet)
+        .setStakedNodeId(nodeId)
+        .setDeclineStakingReward(false),
+      wallet,
+      privateKey,
+    );
   }
 
   /**
@@ -31,21 +36,25 @@ class HederaStakingExplorer extends Explorer {
    * @param {Object} wallet The HBAR wallet
    * @return {Promise<string>} the tx hash
    */
-  unstake (wallet, privateKey) {
-    return this.#sendTx(this.#createAccountUpdateTx(wallet).clearStakedNodeId(), wallet, privateKey)
+  unstake(wallet, privateKey) {
+    return this.#sendTx(
+      this.#createAccountUpdateTx(wallet).clearStakedNodeId(),
+      wallet,
+      privateKey,
+    );
   }
 
-  #createAccountUpdateTx ({ address }) {
-    return new AccountUpdateTransaction().setAccountId(address)
+  #createAccountUpdateTx({ address }) {
+    return new AccountUpdateTransaction().setAccountId(address);
   }
 
-  async #sendTx (tx, wallet, privateKey) {
-    const client = await wallet.getClient()
-    const frozen = await tx.freezeWith(client)
-    const signedTx = await frozen.sign(PrivateKey.fromString(privateKey))
+  async #sendTx(tx, wallet, privateKey) {
+    const client = await wallet.getClient();
+    const frozen = await tx.freezeWith(client);
+    const signedTx = await frozen.sign(PrivateKey.fromString(privateKey));
 
-    return signedTx.execute(client)
+    return signedTx.execute(client);
   }
 }
 
-export default HederaStakingExplorer
+export default HederaStakingExplorer;

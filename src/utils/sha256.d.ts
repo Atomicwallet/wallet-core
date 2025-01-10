@@ -8,14 +8,14 @@
 type Message = string | Buffer | number[];
 
 interface Sha256 {
-    (message: Message, options?: { asString: true }): string
-    (message: Message, options: { asBytes: true }): number[]
+  (message: Message, options?: { asString: true }): string;
+  (message: Message, options: { asBytes: true }): number[];
 }
 
 interface Sha256WithX2 extends Sha256 {
-    x2: Sha256
+  x2: Sha256;
 }
 
-const sha256: Sha256WithX2
+const sha256: Sha256WithX2;
 
-export = sha256
+export = sha256;

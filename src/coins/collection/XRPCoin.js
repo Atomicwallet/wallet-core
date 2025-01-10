@@ -2,9 +2,9 @@
 
 import { Coin } from '../../abstract';
 import { WalletError } from '../../errors';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
-import { LazyLoadedLib } from '../../utils';
 import RippleExplorer from '../../explorers/collection/RippleExplorer';
+import { LazyLoadedLib } from '../../utils';
+import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 
 const racodecLazyLoaded = new LazyLoadedLib(
   () => import('ripple-address-codec'),
@@ -84,32 +84,30 @@ class XRPCoin extends Coin {
    * @param {BitcoreMnemonic} mnemonic The private key object.
    * @return {Promise<Object>} The private key.
    */
-  loadWallet(seed) {
-    return new Promise(async (resolve, reject) => {
-      const [{ default: Keypairs }, BitcoinJS] = await Promise.all([
-        KeypairsLazyLoaded.get(),
-        BitcoinJSLazyLoaded.get(),
-      ]);
+  async loadWallet(seed) {
+    const [{ default: Keypairs }, BitcoinJS] = await Promise.all([
+      KeypairsLazyLoaded.get(),
+      BitcoinJSLazyLoaded.get(),
+    ]);
 
-      const root = BitcoinJS.bip32.fromSeed(seed); // fromBase58
-      const node = root.derivePath(this.derivation);
+    const root = BitcoinJS.bip32.fromSeed(seed); // fromBase58
+    const node = root.derivePath(this.derivation);
 
-      const secret = Keypairs.generateSeed({ entropy: node.chainCode });
-      const keypair = Keypairs.deriveKeypair(secret);
+    const secret = Keypairs.generateSeed({ entropy: node.chainCode });
+    const keypair = Keypairs.deriveKeypair(secret);
 
-      if (!secret) {
-        reject(new Error("Ripple can't get a secret!!!"));
-      }
+    if (!secret) {
+      throw new Error("Ripple can't get a secret!!!");
+    }
 
-      this.#privateKey = secret;
-      this.address = Keypairs.deriveAddress(keypair.publicKey);
+    this.#privateKey = secret;
+    this.address = Keypairs.deriveAddress(keypair.publicKey);
 
-      resolve({
-        id: this.id,
-        privateKey: this.#privateKey,
-        address: this.address,
-      });
-    });
+    return {
+      id: this.id,
+      privateKey: this.#privateKey,
+      address: this.address,
+    };
   }
 
   /**

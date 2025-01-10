@@ -3,15 +3,15 @@ import axios from 'axios';
 import { Coin } from '../../abstract';
 // import configManager from '../ConfigManager';
 import { ExplorerRequestError, WalletError } from '../../errors';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const';
 // import { coinStakings } from '../Stakings';
 // import logger from '../Logger';
-import predefinedValidators from '../../resources/staking/validators.json';
 import TzktIoV1Explorer from '../../explorers/collection/TzktIoV1Explorer';
 import TezosNodeWithBlockscannerExplorer from '../../explorers/extended/TezosNodeWithBlockscannerExplorer';
+// import predefinedValidators from '../../resources/staking/validators.json';
+// import validators from '../../resources/staking/validators.json';
 import { LazyLoadedLib } from '../../utils';
+import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const';
 import { HasProviders } from '../mixins';
-import validators from '../../resources/staking/validators.json';
 
 const bs58checkLazyLoaded = new LazyLoadedLib(() => import('bs58check'));
 const libsodiumWrappersLazyLoaded = new LazyLoadedLib(
@@ -120,30 +120,28 @@ class XTZCoin extends HasProviders(Coin) {
    * @param {BitcoreMnemonic} mnemonic The private key object.
    * @return {Promise<Object>} The private key.
    */
-  loadWallet(seed) {
-    return new Promise(async (resolve, reject) => {
-      const libsodiumWrappers = await this.getLibsodiumWrappers();
-      const keyPair = libsodiumWrappers.crypto_sign_seed_keypair(
-        seed.slice(0, PK_HASH_LENGTH),
-      );
+  async loadWallet(seed) {
+    const libsodiumWrappers = await this.getLibsodiumWrappers();
+    const keyPair = libsodiumWrappers.crypto_sign_seed_keypair(
+      seed.slice(0, PK_HASH_LENGTH),
+    );
 
-      if (!keyPair) {
-        reject(new Error(`${this.ticker} can't get a privateKey`));
-      }
+    if (!keyPair) {
+      throw new Error(`${this.ticker} can't get a privateKey`);
+    }
 
-      const [privateKey, address] = await Promise.all([
-        this.bs58EncodeWithPrefix(keyPair.privateKey, this.prefix.edsk),
-        this.bs58EncodeWithPrefix(
-          libsodiumWrappers.crypto_generichash(HASH_LENGTH, keyPair.publicKey),
-          this.prefix.tz1,
-        ),
-      ]);
+    const [privateKey, address] = await Promise.all([
+      this.bs58EncodeWithPrefix(keyPair.privateKey, this.prefix.edsk),
+      this.bs58EncodeWithPrefix(
+        libsodiumWrappers.crypto_generichash(HASH_LENGTH, keyPair.publicKey),
+        this.prefix.tz1,
+      ),
+    ]);
 
-      this.#privateKey = privateKey;
-      this.address = address;
+    this.#privateKey = privateKey;
+    this.address = address;
 
-      resolve({ id: this.id, privateKey, address });
-    });
+    return { id: this.id, privateKey, address };
   }
 
   /**

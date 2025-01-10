@@ -1,18 +1,17 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 6, 8, 16, 256] }] */
 /* eslint no-bitwise: ["error", { "allow": ["&"] }] */
 import { Coin } from '../../abstract';
-import { TRXToken } from '../../tokens';
 import { WalletError } from '../../errors';
-import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils/const';
-import { Amount } from '../../utils';
 // import configManager, { ConfigKey } from '../ConfigManager';
 // import logger from '../Logger';
-import TOKENS_CACHE from '../../resources/trx/tokens.json';
-import BANNED_TOKENS_CACHE from '../../resources/trx/tokens-banned.json';
-import { LazyLoadedLib } from '../../utils';
-import TronscanExplorer from '../../explorers/collection/TronscanExplorer';
 import TrongridExplorer from '../../explorers/collection/TrongridExplorer';
+import TronscanExplorer from '../../explorers/collection/TronscanExplorer';
 import TronNodeWithBlockscannerExplorer from '../../explorers/extended/TronNodeWithBlockscannerExplorer';
+import BANNED_TOKENS_CACHE from '../../resources/trx/tokens-banned.json';
+import TOKENS_CACHE from '../../resources/trx/tokens.json';
+import { TRXToken } from '../../tokens';
+import { LazyLoadedLib, Amount } from '../../utils';
+import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils/const';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 const hdkeyLib = new LazyLoadedLib(() => import('hdkey'));
@@ -419,7 +418,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
     const estimatedEnergy = await this.getProvider('dynamicEnergy')
       .getEstimatedEnergy(args)
-      .catch((error) => {
+      .catch(() => {
         // logger.error({ instance: this, error })
       });
 

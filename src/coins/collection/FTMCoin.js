@@ -1,24 +1,20 @@
 import { Coin } from '../../abstract';
-import { FTMToken } from '../../tokens';
-import TOKENS_CACHE from '../../resources/ftm/tokens.json';
+import { NftMixin } from '../../coins/nfts/mixins';
+import { ExternalError } from '../../errors';
+import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
+import FtmExplorer from '../../explorers/collection/FtmExplorer';
+import MoralisExplorer from '../../explorers/collection/MoralisExplorer';
+import Web3Explorer from '../../explorers/collection/Web3Explorer';
+import Transaction from '../../explorers/Transaction';
 import BANNED_TOKENS_CACHE from '../../resources/ftm/tokens-banned.json';
+import TOKENS_CACHE from '../../resources/ftm/tokens.json';
+import { FTMToken } from '../../tokens';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 // import { ConfigKey } from '../ConfigManager/ConfigManager.const';
-import { ExternalError } from '../../errors';
-import { getTokenId } from '../../utils';
+import { getTokenId, Amount, LazyLoadedLib } from '../../utils';
 import { EXTERNAL_ERROR } from '../../utils/const';
 import { toCurrency } from '../../utils/convert';
-import { Amount } from '../../utils';
-import Transaction from '../../explorers/Transaction';
-// import history from '../History';
-
-import { NftMixin } from '../../coins/nfts/mixins';
-import { LazyLoadedLib } from '../../utils';
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
-import FtmExplorer from '../../explorers/collection/FtmExplorer';
-import MoralisExplorer from '../../explorers/collection/MoralisExplorer';
-import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
@@ -471,18 +467,14 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<number>} - Gas price in WEI
    */
   async getGasPriceForSendNft(coefficient) {
-    try {
-      const { node: rawGasPrice } =
-        (await this.getProvider('node').getGasPrice()) ?? {};
-      const gasPrice = Number(rawGasPrice) + coefficient * GWEI;
-      const defaultMaxGasPriceInGwei = this.defaultMaxGasPrice * GWEI;
+    const { node: rawGasPrice } =
+      (await this.getProvider('node').getGasPrice()) ?? {};
+    const gasPrice = Number(rawGasPrice) + coefficient * GWEI;
+    const defaultMaxGasPriceInGwei = this.defaultMaxGasPrice * GWEI;
 
-      return gasPrice > defaultMaxGasPriceInGwei
-        ? defaultMaxGasPriceInGwei
-        : gasPrice;
-    } catch (error) {
-      throw error;
-    }
+    return gasPrice > defaultMaxGasPriceInGwei
+      ? defaultMaxGasPriceInGwei
+      : gasPrice;
   }
 
   /**
@@ -767,13 +759,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         to: contract,
         data: tokenSendData,
       })
-      .catch(
-        (error) => {},
-        // logger.error({
-        //   instance: this,
-        //   error,
-        // }),
-      );
+      .catch(() => {});
 
     return estimateGas
       ? Math.round(estimateGas * this.gasLimitCoefficient).toString()

@@ -5,7 +5,7 @@ export const REQUEST_TYPE = {
   INITIAL_BALANCES: 'initial_balances',
   INITIAL_TRANSACTIONS: 'initial_transactions',
   NEXT: 'next',
-}
+};
 
 // @TODO Get order from config service
 /** @type REQUEST_TYPE[] */
@@ -15,38 +15,38 @@ const ordered = [
   REQUEST_TYPE.INITIAL_BALANCES,
   REQUEST_TYPE.INITIAL_TRANSACTIONS,
   REQUEST_TYPE.NEXT,
-]
+];
 
 /**
  * RequestState class
  */
 class RequestState {
   /** @type boolean */
-  #isPermitted = false
-  #isCompleted = false
+  #isPermitted = false;
+  #isCompleted = false;
 
   /**
    * Constructs RequestState class
    *
    * @param {boolean} [isPermitted] - Sets `isPermitted` property to true.
    */
-  constructor (isPermitted) {
+  constructor(isPermitted) {
     this.promise = new Promise((resolve) => {
-      this.resolve = resolve
+      this.resolve = resolve;
       if (isPermitted) {
-        this.setPermitted()
+        this.setPermitted();
       }
-    })
+    });
   }
 
-  setPermitted () {
-    this.#isPermitted = true
-    this.resolve()
+  setPermitted() {
+    this.#isPermitted = true;
+    this.resolve();
   }
 
-  setCompleted () {
-    this.#isCompleted = true
-    this.setPermitted()
+  setCompleted() {
+    this.#isCompleted = true;
+    this.setPermitted();
   }
 
   /**
@@ -54,8 +54,8 @@ class RequestState {
    *
    * @returns {boolean}
    */
-  getIsCompleted () {
-    return this.#isCompleted
+  getIsCompleted() {
+    return this.#isCompleted;
   }
 }
 
@@ -69,18 +69,18 @@ class RequestState {
 class RequestQueueState {
   /** @type RequestStateObj */
   #completeState = ordered.reduce((result, type, index) => {
-    result[type] = new RequestState(index === 0 ? true : undefined)
-    return result
-  }, {})
+    result[type] = new RequestState(index === 0 ? true : undefined);
+    return result;
+  }, {});
 
   /**
    * @param {REQUEST_TYPE} type
    * @returns {void}
    * @throws {Error} - When the type is not in REQUEST_TYPE.
    */
-  #checkTypeForThrow (type) {
+  #checkTypeForThrow(type) {
     if (!ordered.includes(type)) {
-      throw new Error(`The type '${type}' is not in REQUEST_TYPE`)
+      throw new Error(`The type '${type}' is not in REQUEST_TYPE`);
     }
   }
 
@@ -91,22 +91,22 @@ class RequestQueueState {
    * @returns {void}
    * @throws {Error} - When the type is not in REQUEST_TYPE.
    */
-  setAsCompleted (type) {
-    this.#checkTypeForThrow(type)
-    this.#completeState[type].setCompleted()
+  setAsCompleted(type) {
+    this.#checkTypeForThrow(type);
+    this.#completeState[type].setCompleted();
 
     for (let index = 0; index < ordered.length; index++) {
-      const requestType = ordered[index]
+      const requestType = ordered[index];
 
       // Set as permitted all requests which was completed before
-      this.#completeState[requestType].setPermitted()
+      this.#completeState[requestType].setPermitted();
 
       if (requestType === type && type !== ordered[ordered.length - 1]) {
         // And also set as permitted next request after this
-        const nextRequestType = ordered[index + 1]
+        const nextRequestType = ordered[index + 1];
 
-        this.#completeState[nextRequestType].setPermitted()
-        break
+        this.#completeState[nextRequestType].setPermitted();
+        break;
       }
     }
   }
@@ -119,12 +119,12 @@ class RequestQueueState {
    * @returns {Promise<void>}
    * @throws {Error} - When the type is not in REQUEST_TYPE.
    */
-  waitForPermitted (type) {
-    this.#checkTypeForThrow(type)
-    return this.#completeState[type].promise
+  waitForPermitted(type) {
+    this.#checkTypeForThrow(type);
+    return this.#completeState[type].promise;
   }
 }
 
-const requestQueueState = new RequestQueueState()
+const requestQueueState = new RequestQueueState();
 
-export { requestQueueState }
+export { requestQueueState };

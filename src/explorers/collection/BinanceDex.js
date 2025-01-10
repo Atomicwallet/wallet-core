@@ -1,8 +1,8 @@
-import ReconnectingWebSocket from 'reconnecting-websocket'
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import Explorer from '../Explorer'
-import TOKENS_CACHE from '../../resources/binance/tokens.json'
-import Transaction from '../Transaction'
+import TOKENS_CACHE from '../../resources/binance/tokens.json';
+import Explorer from '../Explorer';
+import Transaction from '../Transaction';
 // import history from '../History'
 
 const WEBSOCKET_CONFIG = {
@@ -11,7 +11,7 @@ const WEBSOCKET_CONFIG = {
   maxReconnectionDelay: 20000,
   minReconnectionDelay: 10000,
   maxRetries: 10,
-}
+};
 
 // https://testnet-dex.binance.org/api/v1/fees
 
@@ -22,81 +22,105 @@ const WEBSOCKET_CONFIG = {
  * @class {Explorer}
  */
 class BinanceDex extends Explorer {
-  constructor (...args) {
-    super(...args)
-    this.socket = null
+  constructor(...args) {
+    super(...args);
+    this.socket = null;
   }
 
-  getAllowedTickers () {
-    return ['BNB']
+  getAllowedTickers() {
+    return ['BNB'];
   }
 
-  getTransactionUrl (txid) {
-    return `${this.config.baseUrl}api/v1/tx/${txid}`
+  getTransactionUrl(txid) {
+    return `${this.config.baseUrl}api/v1/tx/${txid}`;
   }
 
-  getTransactionParams () {
+  getTransactionParams() {
     return {
       format: 'json',
-    }
+    };
   }
 
-  getLatestBlockUrl () {
-    return `${this.config.baseUrl}api/v1/node-info`
+  getLatestBlockUrl() {
+    return `${this.config.baseUrl}api/v1/node-info`;
   }
 
-  getBlockUrl (height) {
-    return `${this.config.baseUrl}api/v2/transactions-in-block/${height}`
+  getBlockUrl(height) {
+    return `${this.config.baseUrl}api/v2/transactions-in-block/${height}`;
   }
 
-  async getBlock (heigh) {
-    const block = await this.request(this.getBlockUrl(heigh))
+  async getBlock(heigh) {
+    const block = await this.request(this.getBlockUrl(heigh));
 
-    return block
+    return block;
   }
 
-  async getTransactions (address, asset = 'BNB') {
-    const { tx } = await this.request(`${this.config.baseUrl}api/v1/transactions?address=${address}`)
+  async getTransactions(address, asset = 'BNB') {
+    const { tx } = await this.request(
+      `${this.config.baseUrl}api/v1/transactions?address=${address}`,
+    );
 
-    return this.modifyTransactionsResponse(tx
-      .filter((item) => item.type === 'TRANSFER')
-      .filter((item) => item.txAsset === asset),
-    address
-    )
+    return this.modifyTransactionsResponse(
+      tx
+        .filter((item) => item.type === 'TRANSFER')
+        .filter((item) => item.txAsset === asset),
+      address,
+    );
   }
 
-  async getMultisendTransactions (selfAddress, txs) {
-    this.latestBlock = await this.getLatestBlock()
+  async getMultisendTransactions(selfAddress, txs) {
+    this.latestBlock = await this.getLatestBlock();
 
-    const modifiedMultisendTxs = await Promise.all(txs.map(async ({ hash, height }) => {
-      const block = await this.getBlock(height)
-        .catch((error) => console.warn('GetBlockError', error))
+    const modifiedMultisendTxs = await Promise.all(
+      txs.map(async ({ hash, height }) => {
+        const block = await this.getBlock(height).catch((error) =>
+          console.warn('GetBlockError', error),
+        );
 
-      if (!block) {
-        return undefined
-      }
+        if (!block) {
+          return undefined;
+        }
 
-      const { subTransactions = [], memo, timeStamp } = block.tx.find((transaction) => transaction.txHash === hash)
+        const {
+          subTransactions = [],
+          memo,
+          timeStamp,
+        } = block.tx.find((transaction) => transaction.txHash === hash);
 
-      const selfTx = subTransactions.find((subTx) => [subTx.toAddr, subTx.fromAddr].includes(selfAddress))
+        const selfTx = subTransactions.find((subTx) =>
+          [subTx.toAddr, subTx.fromAddr].includes(selfAddress),
+        );
 
-      if (!selfTx) {
-        return undefined
-      }
+        if (!selfTx) {
+          return undefined;
+        }
 
-      const fromAddr = selfTx.fromAddr
-      const toAddr = selfTx.toAddr
-      const value = selfTx.value
-      const ticker = selfTx.txAsset
-      const confirmations = Number(this.latestBlock) - Number(height)
+        const fromAddr = selfTx.fromAddr;
+        const toAddr = selfTx.toAddr;
+        const value = selfTx.value;
+        const ticker = selfTx.txAsset;
+        const confirmations = Number(this.latestBlock) - Number(height);
 
-      return this.modifyMultisendTransactionResponse({ ticker, value, memo, fromAddr, toAddr, hash, timeStamp, confirmations }, selfAddress)
-    }))
+        return this.modifyMultisendTransactionResponse(
+          {
+            ticker,
+            value,
+            memo,
+            fromAddr,
+            toAddr,
+            hash,
+            timeStamp,
+            confirmations,
+          },
+          selfAddress,
+        );
+      }),
+    );
 
-    return modifiedMultisendTxs.filter(Boolean)
+    return modifiedMultisendTxs.filter(Boolean);
   }
 
-  async modifyMultisendTransactionResponse (tx, selfAddress) {
+  async modifyMultisendTransactionResponse(tx, selfAddress) {
     return new Transaction({
       ticker: tx.ticker,
       name: this.wallet.name,
@@ -111,91 +135,98 @@ class BinanceDex extends Explorer {
       datetime: this.getTxDateTime(tx),
       memo: this.getTxMemo(tx),
       confirmations: this.getTxConfirmations(tx),
-    })
+    });
   }
 
-  modifyLatestBlockResponse (response) {
-    return response.sync_info.latest_block_height
+  modifyLatestBlockResponse(response) {
+    return response.sync_info.latest_block_height;
   }
 
-  getTxHash (tx) {
-    return tx.hash || tx.txHash
+  getTxHash(tx) {
+    return tx.hash || tx.txHash;
   }
 
-  getTxDirection (selfAddress, tx) {
-    return tx.toAddr === selfAddress
+  getTxDirection(selfAddress, tx) {
+    return tx.toAddr === selfAddress;
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx) ? tx.fromAddr : tx.toAddr
+  getTxOtherSideAddress(selfAddress, tx) {
+    return this.getTxDirection(selfAddress, tx) ? tx.fromAddr : tx.toAddr;
   }
 
-  getTxValue (selfAddress, tx) {
-    return tx.value.replace(/(\.\d*[1-9])0+$|\.0*$/, '$1')
+  getTxValue(selfAddress, tx) {
+    return tx.value.replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
   }
 
-  getTxDateTime (tx) {
-    return new Date(tx.timeStamp)
+  getTxDateTime(tx) {
+    return new Date(tx.timeStamp);
   }
 
-  getTxMemo (tx) {
-    return tx.memo
+  getTxMemo(tx) {
+    return tx.memo;
   }
 
-  getTxConfirmations (tx) {
-    return tx.confirmations || tx.txAge
+  getTxConfirmations(tx) {
+    return tx.confirmations || tx.txAge;
   }
 
-  async getTokenList (userTokenSymbols = []) {
-    const tokens = await this.request(`${this.config.baseUrl}api/v1/tokens?limit=1000`)
-      .catch(() => TOKENS_CACHE)
+  async getTokenList(userTokenSymbols = []) {
+    const tokens = await this.request(
+      `${this.config.baseUrl}api/v1/tokens?limit=1000`,
+    ).catch(() => TOKENS_CACHE);
 
-    return tokens
-      .filter((token) => userTokenSymbols.includes(token.symbol))
+    return tokens.filter((token) => userTokenSymbols.includes(token.symbol));
   }
 
-  setSocketClient (address) {
+  setSocketClient(address) {
     if (!this.socket) {
-      this.socket = new ReconnectingWebSocket(`${this.config.websocketUrl}${address}`, undefined, WEBSOCKET_CONFIG)
+      this.socket = new ReconnectingWebSocket(
+        `${this.config.websocketUrl}${address}`,
+        undefined,
+        WEBSOCKET_CONFIG,
+      );
     } else {
-      this.socket.reconnect()
+      this.socket.reconnect();
     }
   }
 
-  disconnectSocket () {
-    this.socket.close()
+  disconnectSocket() {
+    this.socket.close();
   }
 
-  async connectSocket (address) {
-    this.setSocketClient(address)
+  async connectSocket(address) {
+    this.setSocketClient(address);
 
     if (this.socket._listeners.message.length > 0) {
-      console.warn('[BNB][websocket] already have message listener, skip')
-      return
+      console.warn('[BNB][websocket] already have message listener, skip');
+      return;
     }
 
     this.socket.addEventListener('message', async (msg) => {
       try {
-        const msgData = JSON.parse(msg.data)
+        const msgData = JSON.parse(msg.data);
 
         if (msgData.stream === 'accounts') {
-          this.wallet.updateBalances(msgData.data.B)
+          this.wallet.updateBalances(msgData.data.B);
         }
 
         if (msgData.stream === 'transfers') {
-          const txData = msgData.data
+          const txData = msgData.data;
 
-          const txid = txData.H // HASH
-          const sender = txData.f // from
+          const txid = txData.H; // HASH
+          const sender = txData.f; // from
 
           txData.t.forEach((transfers) => {
-            const reciever = transfers.o
+            const reciever = transfers.o;
 
-            const direction = reciever === address
+            const direction = reciever === address;
 
             transfers.c.forEach((transfer) => {
-              const asset = transfer.a
-              const amount = String(transfer.A).replace(/(\.\d*[1-9])0+$|\.0*$/, '$1')
+              const asset = transfer.a;
+              const amount = String(transfer.A).replace(
+                /(\.\d*[1-9])0+$|\.0*$/,
+                '$1',
+              );
 
               const tx = new Transaction({
                 ticker: asset,
@@ -205,31 +236,37 @@ class BinanceDex extends Explorer {
                 amount,
                 datetime: new Date(),
                 alias: this.wallet.alias,
-              })
+              });
 
               // history.filterAndUpdateTransactions([tx])
 
-              this.eventEmitter.emit(`${this.wallet.parent}-${asset}::new-socket-tx`, {
-                unconfirmedTx: tx,
-              })
-            })
-          })
+              this.eventEmitter.emit(
+                `${this.wallet.parent}-${asset}::new-socket-tx`,
+                {
+                  unconfirmedTx: tx,
+                },
+              );
+            });
+          });
         }
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    })
+    });
   }
 
-  updateParams (params) {
-    super.updateParams(params)
+  updateParams(params) {
+    super.updateParams(params);
 
-    if (params.websocketUrl && this.config.websocketUrl !== params.websocketUrl) {
-      this.config.websocketUrl = params.websocketUrl
-      this.disconnectSocket()
-      this.connectSocket(this.wallet.address)
+    if (
+      params.websocketUrl &&
+      this.config.websocketUrl !== params.websocketUrl
+    ) {
+      this.config.websocketUrl = params.websocketUrl;
+      this.disconnectSocket();
+      this.connectSocket(this.wallet.address);
     }
   }
 }
 
-export default BinanceDex
+export default BinanceDex;

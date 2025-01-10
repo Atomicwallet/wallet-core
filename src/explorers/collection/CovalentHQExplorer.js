@@ -1,11 +1,15 @@
-import Explorer from '../Explorer'
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/const'
-import { ExplorerRequestError } from '../../errors/index.js'
-import { getTokenId } from '../../utils'
-import { toCurrency } from '../../utils/convert'
-import { TxTypes } from '../enum/index.js'
+import { ExplorerRequestError } from '../../errors/index.js';
+import { getTokenId } from '../../utils';
+import {
+  GET_BALANCE_TYPE,
+  GET_TRANSACTIONS_TYPE,
+  HTTP_STATUS_NOT_FOUND,
+} from '../../utils/const';
+import { toCurrency } from '../../utils/convert';
+import { TxTypes } from '../enum/index.js';
+import Explorer from '../Explorer';
 
-const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
+const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 /**
  * Class for explorer.
@@ -13,29 +17,33 @@ const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
  * @class {CovalentHQExplorer}
  */
 class CovalentHQExplorer extends Explorer {
-  constructor ({ wallet, config }) {
-    super({ wallet, config })
+  constructor({ wallet, config }) {
+    super({ wallet, config });
   }
 
-  modifyTokenResponse (response) {
+  modifyTokenResponse(response) {
     if (response.data && !response.data.error) {
-      return response.data.items
+      return response.data.items;
     }
 
-    throw new ExplorerRequestError({ type: GET_BALANCE_TYPE, error: new Error(JSON.stringify(response)), instance: this })
+    throw new ExplorerRequestError({
+      type: GET_BALANCE_TYPE,
+      error: new Error(JSON.stringify(response)),
+      instance: this,
+    });
   }
 
-  handleRequestError (error, reqArgs) {
+  handleRequestError(error, reqArgs) {
     if (error.response?.status === HTTP_STATUS_NOT_FOUND) {
-
       switch (reqArgs.type) {
-        case GET_TRANSACTIONS_TYPE: return {
-          transactions: [],
-        }
+        case GET_TRANSACTIONS_TYPE:
+          return {
+            transactions: [],
+          };
       }
-      return null
+      return null;
     }
-    return super.handleRequestError(error, reqArgs)
+    return super.handleRequestError(error, reqArgs);
   }
 
   /**
@@ -43,28 +51,28 @@ class CovalentHQExplorer extends Explorer {
    * @param {string} address - Wallet address.
    * @returns {Promise<object[]>}
    */
-  async getUserTokenList (address) {
+  async getUserTokenList(address) {
     try {
       const response = await this.request(
         `${this.wallet.chainId}/address/${address}/balances_v2/`,
-        'get'
-      )
+        'get',
+      );
 
       if (!response?.data) {
-        return []
+        return [];
       }
 
-      const tokens = this.modifyTokenResponse(response)
+      const tokens = this.modifyTokenResponse(response);
 
-      return tokens.map((token) => this.#mapToTokenFormat(token))
+      return tokens.map((token) => this.#mapToTokenFormat(token));
     } catch (error) {
-      console.error(error)
+      console.error(error);
 
-      return []
+      return [];
     }
   }
 
-  #mapToTokenFormat (token) {
+  #mapToTokenFormat(token) {
     return {
       name: token.contract_name,
       ticker: token.contract_ticker_symbol,
@@ -73,15 +81,20 @@ class CovalentHQExplorer extends Explorer {
       parentTicker: this.wallet.ticker,
       uniqueField: token.contract_address.toLowerCase(),
       supportedStandards: token.supports_erc,
-    }
+    };
   }
 
-  getTransactionsUrl (address, offset, limit, pageNum) {
-    return `${this.wallet.chainId}/address/${address}/transactions_v2/`
+  getTransactionsUrl(address, offset, limit, pageNum) {
+    return `${this.wallet.chainId}/address/${address}/transactions_v2/`;
   }
 
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit, pageNum) {
-    return { 'page-size': limit, 'page-number': pageNum }
+  getTransactionsParams(
+    address,
+    offset = 0,
+    limit = this.defaultTxLimit,
+    pageNum,
+  ) {
+    return { 'page-size': limit, 'page-number': pageNum };
   }
 
   /**
@@ -89,16 +102,20 @@ class CovalentHQExplorer extends Explorer {
    *
    * @param {object} response
    */
-  modifyTransactionsResponse (response, address) {
+  modifyTransactionsResponse(response, address) {
     if (response.data && !response.data.error) {
-      return super.modifyTransactionsResponse(response.data.items, address)
+      return super.modifyTransactionsResponse(response.data.items, address);
     }
 
-    throw new ExplorerRequestError({ type: GET_BALANCE_TYPE, error: new Error(JSON.stringify(response)), instance: this })
+    throw new ExplorerRequestError({
+      type: GET_BALANCE_TYPE,
+      error: new Error(JSON.stringify(response)),
+      instance: this,
+    });
   }
 
-  getTransactionsModifiedResponse (tx, selfAddress, asset = this.wallet.ticker) {
-    const event = this.#getLogEvent(tx, selfAddress)
+  getTransactionsModifiedResponse(tx, selfAddress, asset = this.wallet.ticker) {
+    const event = this.#getLogEvent(tx, selfAddress);
 
     return {
       ticker: this.getTxTicker(event),
@@ -123,7 +140,7 @@ class CovalentHQExplorer extends Explorer {
       isToken: this.getTxIsToken(event),
       isNft: this.getTxIsNft(event),
       contract: this.getTxContract(tx, event),
-    }
+    };
   }
 
   /**
@@ -133,49 +150,53 @@ class CovalentHQExplorer extends Explorer {
    * @param {string} selfAddress
    * @returns {object|null}
    */
-  #getLogEvent (tx, selfAddress) {
+  #getLogEvent(tx, selfAddress) {
     const events = (tx.log_events ?? []).filter((event) => {
-      const from = event.decoded?.params[0]?.value.toLowerCase()
-      const to = event.decoded?.params[1]?.value.toLowerCase()
+      const from = event.decoded?.params[0]?.value.toLowerCase();
+      const to = event.decoded?.params[1]?.value.toLowerCase();
 
-      return from !== EMPTY_ADDRESS && to !== EMPTY_ADDRESS && (from === selfAddress.toLowerCase() || to === selfAddress.toLowerCase())
-    })
+      return (
+        from !== EMPTY_ADDRESS &&
+        to !== EMPTY_ADDRESS &&
+        (from === selfAddress.toLowerCase() || to === selfAddress.toLowerCase())
+      );
+    });
 
     if (events.length === 0) {
-      return null
+      return null;
     }
-    return events.pop()
+    return events.pop();
   }
 
-  #getTxLogEventParams (event) {
+  #getTxLogEventParams(event) {
     if (!event) {
-      return {}
+      return {};
     }
-    const eventParams = event.decoded?.params
-    const typeName = event.decoded?.name
-    const name = event.sender_name
-    const tickerSymbol = event.sender_contract_ticker_symbol
-    const decimal = event.sender_contract_decimals
-    const from = eventParams && eventParams[0]?.value
-    const to = eventParams && eventParams[1]?.value
-    const valueOrTokenId = eventParams && eventParams[2]?.value
+    const eventParams = event.decoded?.params;
+    const typeName = event.decoded?.name;
+    const name = event.sender_name;
+    const tickerSymbol = event.sender_contract_ticker_symbol;
+    const decimal = event.sender_contract_decimals;
+    const from = eventParams && eventParams[0]?.value;
+    const to = eventParams && eventParams[1]?.value;
+    const valueOrTokenId = eventParams && eventParams[2]?.value;
 
-    return { typeName, name, tickerSymbol, decimal, from, to, valueOrTokenId }
+    return { typeName, name, tickerSymbol, decimal, from, to, valueOrTokenId };
   }
 
-  getTxTicker (event) {
+  getTxTicker(event) {
     if (this.getTxIsToken(event)) {
-      const { tickerSymbol } = this.#getTxLogEventParams(event)
+      const { tickerSymbol } = this.#getTxLogEventParams(event);
 
-      return tickerSymbol
+      return tickerSymbol;
     }
-    return this.wallet.ticker
+    return this.wallet.ticker;
   }
 
-  getTxName (event) {
-    const { typeName, name } = this.#getTxLogEventParams(event)
+  getTxName(event) {
+    const { typeName, name } = this.#getTxLogEventParams(event);
 
-    return typeName ? name : this.wallet.name
+    return typeName ? name : this.wallet.name;
   }
 
   /**
@@ -185,14 +206,14 @@ class CovalentHQExplorer extends Explorer {
    * @param {object} event
    * @returns {string|null}
    */
-  getTxWalletId (tx, event) {
+  getTxWalletId(tx, event) {
     if (this.getTxIsToken(event)) {
-      const ticker = this.getTxTicker(event)
-      const contract = this.getTxContract(tx, event)
+      const ticker = this.getTxTicker(event);
+      const contract = this.getTxContract(tx, event);
 
-      return getTokenId({ ticker, contract, parent: this.wallet.id })
+      return getTokenId({ ticker, contract, parent: this.wallet.id });
     }
-    return this.wallet.id
+    return this.wallet.id;
   }
 
   /**
@@ -203,38 +224,42 @@ class CovalentHQExplorer extends Explorer {
    * @param {object} event - The transaction event.
    * @return {boolean} - True if we accept transaction.
    */
-  getTxDirection (selfAddress, tx, event) {
-    const selfLowerCased = selfAddress.toLowerCase()
+  getTxDirection(selfAddress, tx, event) {
+    const selfLowerCased = selfAddress.toLowerCase();
+
+    if (!event) {
+      return tx.to_address.toLowerCase() === selfLowerCased;
+    }
+
+    const { typeName, to } = this.#getTxLogEventParams(event);
+
+    if (!typeName) {
+      return to.toLowerCase() === selfLowerCased;
+    }
+
+    return typeof to === 'string' ? to.toLowerCase() === selfLowerCased : false;
+  }
+
+  getTxOtherSideAddress(selfAddress, tx, event) {
+    const selfLowerCased = selfAddress.toLowerCase();
 
     if (!event) {
       return tx.to_address.toLowerCase() === selfLowerCased
+        ? tx.from_address
+        : tx.to_address;
     }
 
-    const { typeName, to } = this.#getTxLogEventParams(event)
+    const { typeName, to, from } = this.#getTxLogEventParams(event);
 
     if (!typeName) {
       return to.toLowerCase() === selfLowerCased
-    }
-
-    return typeof to === 'string' ? to.toLowerCase() === selfLowerCased : false
-  }
-
-  getTxOtherSideAddress (selfAddress, tx, event) {
-    const selfLowerCased = selfAddress.toLowerCase()
-
-    if (!event) {
-      return tx.to_address.toLowerCase() === selfLowerCased ? tx.from_address : tx.to_address
-    }
-
-    const { typeName, to, from } = this.#getTxLogEventParams(event)
-
-    if (!typeName) {
-      return to.toLowerCase() === selfLowerCased ? tx.from_address : tx.to_address
+        ? tx.from_address
+        : tx.to_address;
     }
 
     return typeof to === 'string' && to.toLowerCase() === selfLowerCased
       ? from
-      : to
+      : to;
   }
 
   /**
@@ -245,20 +270,21 @@ class CovalentHQExplorer extends Explorer {
    * @param {object} event
    * @return {string|0|null}
    */
-  getTxValue (selfAddress, tx, event) {
+  getTxValue(selfAddress, tx, event) {
     if (!event) {
-      return this.wallet.toCurrencyUnit(tx.value)
+      return this.wallet.toCurrencyUnit(tx.value);
     }
 
     if (this.getTxIsToken(event)) {
-      const { valueOrTokenId: value, decimal } = this.#getTxLogEventParams(event)
+      const { valueOrTokenId: value, decimal } =
+        this.#getTxLogEventParams(event);
 
-      return toCurrency(value, decimal)
+      return toCurrency(value, decimal);
     }
     if (this.getTxIsNft(event)) {
-      return 'NFT'
+      return 'NFT';
     }
-    return null
+    return null;
   }
 
   /**
@@ -267,26 +293,26 @@ class CovalentHQExplorer extends Explorer {
    * @param {object} event
    * @returns {string}
    */
-  getTxType (event) {
+  getTxType(event) {
     if (this.getTxIsToken(event)) {
-      return TxTypes.TRANSFER
+      return TxTypes.TRANSFER;
     }
     if (this.getTxIsNft(event)) {
-      return TxTypes.TRANSFERNFT
+      return TxTypes.TRANSFERNFT;
     }
-    return TxTypes.TRANSACTION
+    return TxTypes.TRANSACTION;
   }
 
-  getTxIsToken (event) {
-    const { typeName, decimal } = this.#getTxLogEventParams(event)
+  getTxIsToken(event) {
+    const { typeName, decimal } = this.#getTxLogEventParams(event);
 
-    return typeName === 'Transfer' && decimal > 0
+    return typeName === 'Transfer' && decimal > 0;
   }
 
-  getTxIsNft (event) {
-    const { typeName, decimal } = this.#getTxLogEventParams(event)
+  getTxIsNft(event) {
+    const { typeName, decimal } = this.#getTxLogEventParams(event);
 
-    return typeName === 'Transfer' && decimal === 0
+    return typeName === 'Transfer' && decimal === 0;
   }
 
   /**
@@ -296,8 +322,10 @@ class CovalentHQExplorer extends Explorer {
    * @param {object} event
    * @returns {string|null}
    */
-  getTxContract (tx, event) {
-    return this.getTxIsToken(event) || this.getTxIsNft(event) ? tx.to_address : null
+  getTxContract(tx, event) {
+    return this.getTxIsToken(event) || this.getTxIsNft(event)
+      ? tx.to_address
+      : null;
   }
 
   /**
@@ -307,9 +335,9 @@ class CovalentHQExplorer extends Explorer {
    *
    * @return {Promise<{tokenTransactions: object[]}>}
    */
-  async getTokensTransactions (args) {
-    return { tokenTransactions: [] }
+  async getTokensTransactions(args) {
+    return { tokenTransactions: [] };
   }
 }
 
-export default CovalentHQExplorer
+export default CovalentHQExplorer;

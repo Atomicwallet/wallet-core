@@ -1,58 +1,63 @@
-import { Token } from '../abstract'
+import { Token } from '../abstract';
 // import history from '../History'
-import { HISTORY_WALLET_UPDATED } from '../utils/eventTopics'
+import { HISTORY_WALLET_UPDATED } from '../utils/eventTopics';
 
 class TONToken extends Token {
-  #parent
+  #parent;
 
   /** @type {string} */
-  _jettonWalletAddress = null
+  _jettonWalletAddress = null;
 
-  fields = { paymentId: true }
+  fields = { paymentId: true };
 
-  constructor (args) {
-    super(args)
-    this.#parent = args.parent
-    this.mint = args.mint
+  constructor(args) {
+    super(args);
+    this.#parent = args.parent;
+    this.mint = args.mint;
 
-    this._getJettonWalletAddress()
+    this._getJettonWalletAddress();
   }
 
-  async _getJettonWalletAddress () {
+  async _getJettonWalletAddress() {
     if (this._jettonWalletAddress) {
-      return this._jettonWalletAddress
+      return this._jettonWalletAddress;
     }
 
-    this._jettonWalletAddress = await this.#parent.getJettonWalletAddress(this.mint)
+    this._jettonWalletAddress = await this.#parent.getJettonWalletAddress(
+      this.mint,
+    );
 
-    return this._jettonWalletAddress
+    return this._jettonWalletAddress;
   }
 
   /**
    * Gets the information about a wallet.
    * @return {Promise<{ balance: string }>} The information data.
    */
-  async getInfo () {
-    const balance = await this.#parent.getTokenInfo({ mint: this.mint })
+  async getInfo() {
+    const balance = await this.#parent.getTokenInfo({ mint: this.mint });
 
     if (balance) {
-      this.balance = balance
+      this.balance = balance;
     }
 
     return {
       balance: this.balance,
-    }
+    };
   }
 
   /* @TODO DEPRECATED
-  * should be used `createTransaction method from Token.js
-  * wich proxied to parent `createTransaction
-  * */
-  async createTransaction ({
-    address,
-    amount,
-  }) {
-    return { mint: this.mint, address, amount, decimals: this.decimal, transfer: true }
+   * should be used `createTransaction method from Token.js
+   * wich proxied to parent `createTransaction
+   * */
+  async createTransaction({ address, amount }) {
+    return {
+      mint: this.mint,
+      address,
+      amount,
+      decimals: this.decimal,
+      transfer: true,
+    };
   }
 
   /**
@@ -60,25 +65,30 @@ class TONToken extends Token {
    * @param {number} limit
    * @returns {Promise<Array>}
    */
-  async getTransactions (offset, limit) {
+  async getTransactions(offset, limit) {
     try {
-      const txs = await this.#parent.getTokenTransactions({ jettonWalletAddress: this._jettonWalletAddress })
+      const txs = await this.#parent.getTokenTransactions({
+        jettonWalletAddress: this._jettonWalletAddress,
+      });
 
       if (txs.length > 0) {
-        const tokenTransactions = txs.filter((tx) => tx.walletId === this.id)
+        const tokenTransactions = txs.filter((tx) => tx.walletId === this.id);
 
         // await history.filterAndUpdateTransactions(tokenTransactions)
-        const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions)
+        const { topic, payload } = HISTORY_WALLET_UPDATED(
+          this.id,
+          tokenTransactions,
+        );
 
-        this.eventEmitter.emit(topic, payload)
-        this.transactions = tokenTransactions
+        this.eventEmitter.emit(topic, payload);
+        this.transactions = tokenTransactions;
       }
 
-      return txs
+      return txs;
     } catch (error) {
-      return this.transactions
+      return this.transactions;
     }
   }
 }
 
-export default TONToken
+export default TONToken;

@@ -1,36 +1,43 @@
 // import configManager from '../ConfigManager'
-import Explorer from '../Explorer'
 // import history from '../History'
 // import logger from '../Logger'
-import Transaction from '../Transaction'
-import { getTokenId } from '../../utils'
-import { GET_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from '../../utils/const'
-import { toCurrency } from '../../utils/convert'
+import { getTokenId } from '../../utils';
+import {
+  GET_TRANSACTION_TYPE,
+  GET_TRANSACTIONS_TYPE,
+  ONE_MINUTE,
+} from '../../utils/const';
+import { toCurrency } from '../../utils/convert';
+import Explorer from '../Explorer';
+import Transaction from '../Transaction';
 
-const EXPLORER_VERSION = 2
+const EXPLORER_VERSION = 2;
 
 class BlockbookV2Explorer extends Explorer {
-  constructor (...args) {
-    super(...args)
-    this.version = EXPLORER_VERSION
-    this.canPaginate = true
+  constructor(...args) {
+    super(...args);
+    this.version = EXPLORER_VERSION;
+    this.canPaginate = true;
   }
 
-  async getSocketTransaction ({ address, hash, scriptPubKey }) {
-    const unconfirmedTx = await this.getTransaction(address, hash)
+  async getSocketTransaction({ address, hash, scriptPubKey }) {
+    const unconfirmedTx = await this.getTransaction(address, hash);
 
-    const utxos = await this.getUnspentOutputs(address, scriptPubKey)
-    const unconfirmedBalance = this.calculateBalance(utxos).toString()
+    const utxos = await this.getUnspentOutputs(address, scriptPubKey);
+    const unconfirmedBalance = this.calculateBalance(utxos).toString();
 
     // await history.filterAndUpdateTransactions([unconfirmedTx])
 
-    this.eventEmitter.emit(`${this.wallet.parent}-${this.wallet.id}::new-socket-tx`, {
-      unconfirmedTx,
-      unconfirmedBalance,
-    })
+    this.eventEmitter.emit(
+      `${this.wallet.parent}-${this.wallet.id}::new-socket-tx`,
+      {
+        unconfirmedTx,
+        unconfirmedBalance,
+      },
+    );
   }
 
-  getAllowedTickers () {
+  getAllowedTickers() {
     return [
       'BTC',
       'BSC',
@@ -50,66 +57,65 @@ class BlockbookV2Explorer extends Explorer {
       'ZEC',
       'YEC',
       'GRS',
-    ]
+    ];
   }
 
-  getNnTickers () {
-    return [
-      'DOGE',
-      'ZEC',
-    ]
+  getNnTickers() {
+    return ['DOGE', 'ZEC'];
   }
 
-  getApiPrefix () {
-    return `api/v${this.version}/`
+  getApiPrefix() {
+    return `api/v${this.version}/`;
   }
 
-  getLatestBlockUrl () {
-    return `${this.getApiPrefix()}block-index/last`
+  getLatestBlockUrl() {
+    return `${this.getApiPrefix()}block-index/last`;
   }
 
-  getBlockUrl (hash) {
-    return `${this.getApiPrefix()}block/${hash}`
+  getBlockUrl(hash) {
+    return `${this.getApiPrefix()}block/${hash}`;
   }
 
-  getBlockMethod () {
-    return 'get'
+  getBlockMethod() {
+    return 'get';
   }
 
-  getBlockParams () {
-    return {}
+  getBlockParams() {
+    return {};
   }
 
-  getBlockOptions () {
-    return {}
+  getBlockOptions() {
+    return {};
   }
 
-  getAddressUrl (address) {
-    return `${this.getApiPrefix()}address/${address}`
+  getAddressUrl(address) {
+    return `${this.getApiPrefix()}address/${address}`;
   }
 
-  getInfoUrl (address) {
-    return `${this.getApiPrefix()}address/${address}`
+  getInfoUrl(address) {
+    return `${this.getApiPrefix()}address/${address}`;
   }
 
   /**
    * Temp hacks for nownodes
    * @return {*}
    */
-  getInfoOptions () {
-    return this.config.options || {}
+  getInfoOptions() {
+    return this.config.options || {};
   }
 
-  getUserTokenListParams () {
-    return {}
+  getUserTokenListParams() {
+    return {};
   }
 
-  getTransactionsOptions () {
-    return this.wallet.ticker === 'BSC' ? { headers: { 'api-key': 'ypa5Llv3B3fyToNsMkkaiEIIGKdcRYqU' } } : {}
+  getTransactionsOptions() {
+    return this.wallet.ticker === 'BSC'
+      ? { headers: { 'api-key': 'ypa5Llv3B3fyToNsMkkaiEIIGKdcRYqU' } }
+      : {};
   }
 
-  getInfoParams () {
-    return this.config.options || {}
+  getInfoParams() {
+    return this.config.options || {};
   }
 
   /**
@@ -117,28 +123,28 @@ class BlockbookV2Explorer extends Explorer {
    *
    * @returns {Object}
    */
-  getSendOptions () {
+  getSendOptions() {
     if (this.wallet.ticker === 'BSV') {
-      return { headers: { 'Content-Type': 'text/plain' } }
+      return { headers: { 'Content-Type': 'text/plain' } };
     }
     if (this.getNnTickers().includes(this.wallet.ticker)) {
-      return { headers: { 'Content-Type': 'application/json' } }
+      return { headers: { 'Content-Type': 'application/json' } };
     }
-    return {}
+    return {};
   }
 
-  modifyInfoResponse (response) {
-    const unconfirmedBalance = new this.wallet.BN(response.unconfirmedBalance)
-    const confirmedBalance = new this.wallet.BN(response.balance)
+  modifyInfoResponse(response) {
+    const unconfirmedBalance = new this.wallet.BN(response.unconfirmedBalance);
+    const confirmedBalance = new this.wallet.BN(response.balance);
 
-    const actualBalance = confirmedBalance.add(unconfirmedBalance).toString()
+    const actualBalance = confirmedBalance.add(unconfirmedBalance).toString();
 
-    const tokenBalances = {}
+    const tokenBalances = {};
 
     if (response.tokens) {
       response.tokens.forEach((token) => {
-        tokenBalances[token.symbol] = token.balance
-      })
+        tokenBalances[token.symbol] = token.balance;
+      });
     }
 
     return {
@@ -146,23 +152,28 @@ class BlockbookV2Explorer extends Explorer {
       tokenBalances,
       unconfirmedBalance: unconfirmedBalance.toString(),
       transactions: [],
-    }
+    };
   }
 
-  getTransactionUrl (txId) {
-    return `${this.getApiPrefix()}tx/${txId}`
+  getTransactionUrl(txId) {
+    return `${this.getApiPrefix()}tx/${txId}`;
   }
 
-  getTransactionParams () {
-    return this.getInfoParams()
+  getTransactionParams() {
+    return this.getInfoParams();
   }
 
-  getTransactionsUrl (address) {
-    return `${this.getApiPrefix()}address/${address}`
+  getTransactionsUrl(address) {
+    return `${this.getApiPrefix()}address/${address}`;
   }
 
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit, pageNum) {
-    const options = this.getInfoParams()
+  getTransactionsParams(
+    address,
+    offset = 0,
+    limit = this.defaultTxLimit,
+    pageNum,
+  ) {
+    const options = this.getInfoParams();
 
     return {
       ...options,
@@ -170,7 +181,7 @@ class BlockbookV2Explorer extends Explorer {
       pageSize: limit,
       details: 'txs',
       filter: 'All',
-    }
+    };
   }
 
   /**
@@ -178,160 +189,222 @@ class BlockbookV2Explorer extends Explorer {
    *
    * @return {Promise<Object[]>}
    */
-  async getTokenTransactions ({ address, offset, limit, pageNum, contract }) {
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) < this.lastGetTxsRequestTime) {
-      return []
+  async getTokenTransactions({ address, offset, limit, pageNum, contract }) {
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE <
+        this.lastGetTxsRequestTime
+    ) {
+      return [];
     }
 
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) > this.lastGetTxsRequestTime) {
-      this.lastGetTxsRequestTime = Date.now()
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE >
+        this.lastGetTxsRequestTime
+    ) {
+      this.lastGetTxsRequestTime = Date.now();
     }
 
     try {
       const response = await this.request(
-        this.getTransactionsUrl(address, offset || 0, limit || this.defaultTxLimit, pageNum),
+        this.getTransactionsUrl(
+          address,
+          offset || 0,
+          limit || this.defaultTxLimit,
+          pageNum,
+        ),
         this.getTransactionsMethod(),
-        this.getTokenTransactionsParams(address, offset || 0, limit || this.defaultTxLimit, pageNum, contract),
+        this.getTokenTransactionsParams(
+          address,
+          offset || 0,
+          limit || this.defaultTxLimit,
+          pageNum,
+          contract,
+        ),
         GET_TRANSACTIONS_TYPE,
-        this.getTransactionsOptions()
-      )
+        this.getTransactionsOptions(),
+      );
 
-      return this.modifyTokenTransactionsResponse(response?.transactions || [], address)
+      return this.modifyTokenTransactionsResponse(
+        response?.transactions || [],
+        address,
+      );
     } catch {
-      return []
+      return [];
     }
   }
 
-  getTokenTransactionsParams (address, offset, limit, pageNum, contract) {
-    const params = this.getTransactionsParams(address, offset, limit, pageNum)
+  getTokenTransactionsParams(address, offset, limit, pageNum, contract) {
+    const params = this.getTransactionsParams(address, offset, limit, pageNum);
 
-    return { ...params, contract }
+    return { ...params, contract };
   }
 
-  modifyTransactionResponse (response, address) {
+  modifyTransactionResponse(response, address) {
     if (response.tokenTransfers && Number(response.value) === 0) {
-      const tokenTransactions = {}
+      const tokenTransactions = {};
 
       response.tokenTransfers.forEach((transfer) => {
         /* some tokens could have empty symbol/ticker
-        * (service tokens / spam / etc)
-        * e.g. Matic staking will mint empty symbol tokens
-        *
-        * those transfers should be ignored
-        */
+         * (service tokens / spam / etc)
+         * e.g. Matic staking will mint empty symbol tokens
+         *
+         * those transfers should be ignored
+         */
         if (!transfer.symbol) {
-          return
+          return;
         }
 
         if (!tokenTransactions[transfer.token]) {
-          tokenTransactions[transfer.token] = []
+          tokenTransactions[transfer.token] = [];
         }
 
-        tokenTransactions[transfer.token].push(this.getTransactionFromTokenTransfer({ transfer, selfAddress: address, tx: response }))
-      })
+        tokenTransactions[transfer.token].push(
+          this.getTransactionFromTokenTransfer({
+            transfer,
+            selfAddress: address,
+            tx: response,
+          }),
+        );
+      });
 
-      // eslint-disable-next-line guard-for-in
       for (const contract in tokenTransactions) {
-        const transactions = tokenTransactions[contract]
+        const transactions = tokenTransactions[contract];
 
         // there is no guarantee about single contract transfer inside,
         // but anyway we are expecting only one to keep explorers API as-is
         if (transactions.length !== 0) {
           for (const transaction of transactions) {
-            const { otherSideAddress } = transaction
+            const { otherSideAddress } = transaction;
 
             if (
-              [otherSideAddress.toLowerCase(), address.toLowerCase()].includes(address.toLowerCase())
+              [otherSideAddress.toLowerCase(), address.toLowerCase()].includes(
+                address.toLowerCase(),
+              )
             ) {
-              return transaction
+              return transaction;
             }
           }
         }
       }
     }
 
-    return super.modifyTransactionResponse(response, address)
+    return super.modifyTransactionResponse(response, address);
   }
 
-  modifyTransactionsResponse (response, selfAddress) {
-    const condition = response && !!response.transactions
+  modifyTransactionsResponse(response, selfAddress) {
+    const condition = response && !!response.transactions;
 
     const transfers = condition
-      ? response.transactions.filter((tx) => tx.tokenTransfers && Array.isArray(tx.tokenTransfers) && Number(tx.value) === 0)
-      : []
+      ? response.transactions.filter(
+          (tx) =>
+            tx.tokenTransfers &&
+            Array.isArray(tx.tokenTransfers) &&
+            Number(tx.value) === 0,
+        )
+      : [];
     const transactions = condition
-      ? response.transactions.filter((tx) => (!tx.tokenTransfers || Number(tx.value) !== 0) && !(tx.ethereumSpecific && tx.ethereumSpecific.status === 0))
-      : []
-    const failed = condition ? response.transactions.filter((tx) => tx.ethereumSpecific && tx.ethereumSpecific.status === 0)
-      : []
+      ? response.transactions.filter(
+          (tx) =>
+            (!tx.tokenTransfers || Number(tx.value) !== 0) &&
+            !(tx.ethereumSpecific && tx.ethereumSpecific.status === 0),
+        )
+      : [];
+    const failed = condition
+      ? response.transactions.filter(
+          (tx) => tx.ethereumSpecific && tx.ethereumSpecific.status === 0,
+        )
+      : [];
 
-    const txs = super.modifyTransactionsResponse(transactions, selfAddress)
+    const txs = super.modifyTransactionsResponse(transactions, selfAddress);
 
     if (transfers.length > 0) {
       return {
         transactions: txs,
         failed,
-        tokenTransactions: this.modifyTokenTransactionsResponse(transfers, selfAddress),
-      }
+        tokenTransactions: this.modifyTokenTransactionsResponse(
+          transfers,
+          selfAddress,
+        ),
+      };
     }
 
     if (['ETH', 'BSC'].includes(this.wallet.parent)) {
-      return { transactions: txs, failed }
+      return { transactions: txs, failed };
     }
 
-    return txs
+    return txs;
   }
 
-  modifyTokenTransactionsResponse (response, selfAddress) {
-    return response?.map((tx) => {
-      return tx
-        .tokenTransfers?.filter((transfer) => this.filterTokenTransferTransactions(selfAddress, transfer))
-        .map(
-          (transfer) => this.getTransactionFromTokenTransfer({
-            transfer,
-            selfAddress,
-            tx,
-          })
-        )
-    }).flat() ?? []
+  modifyTokenTransactionsResponse(response, selfAddress) {
+    return (
+      response
+        ?.map((tx) => {
+          return tx.tokenTransfers
+            ?.filter((transfer) =>
+              this.filterTokenTransferTransactions(selfAddress, transfer),
+            )
+            .map((transfer) =>
+              this.getTransactionFromTokenTransfer({
+                transfer,
+                selfAddress,
+                tx,
+              }),
+            );
+        })
+        .flat() ?? []
+    );
   }
 
-  filterTokenTransferTransactions (selfAddress, transfer) {
-    if (![transfer.to.toLowerCase(), transfer.from.toLowerCase()].includes(selfAddress.toLowerCase()) || !transfer.symbol) {
-      return false
+  filterTokenTransferTransactions(selfAddress, transfer) {
+    if (
+      ![transfer.to.toLowerCase(), transfer.from.toLowerCase()].includes(
+        selfAddress.toLowerCase(),
+      ) ||
+      !transfer.symbol
+    ) {
+      return false;
     }
-    return true
+    return true;
   }
 
-  getTransactionFromTokenTransfer ({ transfer, selfAddress, tx }) {
+  getTransactionFromTokenTransfer({ transfer, selfAddress, tx }) {
     return new Transaction({
       ticker: transfer.symbol.toUpperCase(),
       txid: this.getTxHash(tx),
-      walletid: getTokenId({ ticker: transfer.symbol, contract: transfer.token ?? transfer.contract, parent: this.wallet.id }),
+      walletid: getTokenId({
+        ticker: transfer.symbol,
+        contract: transfer.token ?? transfer.contract,
+        parent: this.wallet.id,
+      }),
       fee: this.getTxFee(tx),
       feeTicker: this.wallet.parent,
       direction: transfer.to.toLowerCase() === selfAddress.toLowerCase(),
-      otherSideAddress: transfer.to.toLowerCase() === selfAddress.toLowerCase() ? transfer.from.toLowerCase() : transfer.to.toLowerCase(),
+      otherSideAddress:
+        transfer.to.toLowerCase() === selfAddress.toLowerCase()
+          ? transfer.from.toLowerCase()
+          : transfer.to.toLowerCase(),
       amount: toCurrency(transfer.value, transfer.decimals),
       datetime: this.getTxDateTime(tx),
       memo: this.getTxMemo(tx),
       confirmations: this.getTxConfirmations(tx),
       nonce: this.getTxNonce(tx),
       alias: this.wallet.alias,
-    })
+    });
   }
 
-  getUnspentOutputsUrl (address) {
-    return `${this.getApiPrefix()}utxo/${address}`
+  getUnspentOutputsUrl(address) {
+    return `${this.getApiPrefix()}utxo/${address}`;
   }
 
-  getUnspentOutputsParams (address) {
-    return this.getInfoParams()
+  getUnspentOutputsParams(address) {
+    return this.getInfoParams();
   }
 
-  modifyUnspentOutputsResponse (address, response, scriptPubKey) {
+  modifyUnspentOutputsResponse(address, response, scriptPubKey) {
     if (!scriptPubKey) {
-      throw this.createError('No scriptPubKey')
+      throw this.createError('No scriptPubKey');
     }
 
     return response.map(({ txid, vout, value, height }) => ({
@@ -344,25 +417,25 @@ class BlockbookV2Explorer extends Explorer {
       outputIndex: vout, // BTC
       satoshis: Number(value),
       height,
-    }))
+    }));
   }
 
-  getSendTransactionUrl () {
-    return `${this.getApiPrefix()}sendtx/`
+  getSendTransactionUrl() {
+    return `${this.getApiPrefix()}sendtx/`;
   }
 
-  getSendTransactionParams (rawtx) {
+  getSendTransactionParams(rawtx) {
     if (this.getNnTickers().includes(this.wallet.ticker)) {
-      return JSON.stringify(rawtx)
+      return JSON.stringify(rawtx);
     }
 
-    return rawtx
+    return rawtx;
   }
 
-  modifySendTransactionResponse (response) {
+  modifySendTransactionResponse(response) {
     return {
       txid: response.result,
-    }
+    };
   }
 
   /**
@@ -371,8 +444,8 @@ class BlockbookV2Explorer extends Explorer {
    * @param {Object} tx The transaction response
    * @return {Date} The transaction datetime.
    */
-  getTxDateTime (tx) {
-    return tx.blockTime ? new Date(Number(`${tx.blockTime}000`)) : new Date()
+  getTxDateTime(tx) {
+    return tx.blockTime ? new Date(Number(`${tx.blockTime}000`)) : new Date();
   }
 
   /**
@@ -381,75 +454,73 @@ class BlockbookV2Explorer extends Explorer {
    * @param {Object} tx The transaction
    * @return {String} The transaction amount.
    */
-  getTxValue (selfAddress, tx) {
-    let valueIn = new this.wallet.BN(0)
-    let valueOut = new this.wallet.BN(0)
+  getTxValue(selfAddress, tx) {
+    let valueIn = new this.wallet.BN(0);
+    let valueOut = new this.wallet.BN(0);
 
     if (!tx.vin || !tx.vout) {
-      return '0'
+      return '0';
     }
 
     if (['ETH', 'BSC'].includes(this.wallet.ticker)) {
       tx.vout.forEach((output) => {
         if (Array.isArray(output.addresses) && output.addresses.length > 0) {
-          valueOut = valueOut.add(new this.wallet.BN(output.value))
+          valueOut = valueOut.add(new this.wallet.BN(output.value));
         }
-      })
+      });
 
-      return this.wallet.toCurrencyUnit(valueOut)
+      return this.wallet.toCurrencyUnit(valueOut);
     }
 
-    const fees = new this.wallet.BN(tx.fees)
-    let insOuts = []
+    const fees = new this.wallet.BN(tx.fees);
+    let insOuts = [];
 
     tx.vin.forEach((input) => {
       if (Array.isArray(input.addresses)) {
-        insOuts = insOuts.concat(input.addresses)
+        insOuts = insOuts.concat(input.addresses);
 
         if (input.addresses.includes(selfAddress)) {
-          valueIn = valueIn.add(new this.wallet.BN(input.value))
+          valueIn = valueIn.add(new this.wallet.BN(input.value));
         }
       }
-    })
+    });
 
     tx.vout.forEach((output) => {
       if (Array.isArray(output.addresses)) {
-        insOuts = insOuts.concat(output.addresses)
+        insOuts = insOuts.concat(output.addresses);
 
         if (output.addresses.includes(selfAddress)) {
-          valueOut = valueOut.add(new this.wallet.BN(output.value))
+          valueOut = valueOut.add(new this.wallet.BN(output.value));
         }
       }
-    })
+    });
 
-    const sentToSelf = insOuts.every((inOut) => inOut === selfAddress)
-    const decimal = this.wallet.decimal
+    const sentToSelf = insOuts.every((inOut) => inOut === selfAddress);
+    const decimal = this.wallet.decimal;
 
     if (sentToSelf) {
       if (this.wallet.ticker === 'KMD') {
-        const txValue = valueOut.sub(valueIn)
+        const txValue = valueOut.sub(valueIn);
 
         if (txValue.gten(0)) {
-          return toCurrency(txValue, decimal)
+          return toCurrency(txValue, decimal);
         }
       }
-      return toCurrency(tx.fees, decimal)
+      return toCurrency(tx.fees, decimal);
     }
 
-    const txDirection = this.getTxDirection(selfAddress, tx)
-    const txValue = txDirection
-      ? valueOut
-      : valueIn.sub(valueOut).sub(fees)
+    const txDirection = this.getTxDirection(selfAddress, tx);
+    const txValue = txDirection ? valueOut : valueIn.sub(valueOut).sub(fees);
 
-    return toCurrency(txValue, decimal)
+    return toCurrency(txValue, decimal);
   }
 
-  getTxNonce (tx) {
+  getTxNonce(tx) {
     if (tx.ethereumSpecific) {
-      return tx.ethereumSpecific.nonce
+      return tx.ethereumSpecific.nonce;
     }
 
-    return undefined
+    return undefined;
   }
 
   /**
@@ -458,31 +529,47 @@ class BlockbookV2Explorer extends Explorer {
    * @param {Object} tx The transaction
    * @return {Boolean} The transaction direction.
    */
-  getTxDirection (selfAddress, tx) {
+  getTxDirection(selfAddress, tx) {
     if (['ETH', 'BSC'].includes(this.wallet.ticker)) {
-      return tx.vout[0].addresses && tx.vout[0].addresses[0].toLowerCase() === selfAddress.toLowerCase()
+      return (
+        tx.vout[0].addresses &&
+        tx.vout[0].addresses[0].toLowerCase() === selfAddress.toLowerCase()
+      );
     }
 
-    const hasIn = tx.vin && tx.vin
-      .filter(({ addresses }) => Array.isArray(addresses))
-      .some(({ addresses }) => addresses.some((address) => address === selfAddress))
+    const hasIn =
+      tx.vin &&
+      tx.vin
+        .filter(({ addresses }) => Array.isArray(addresses))
+        .some(({ addresses }) =>
+          addresses.some((address) => address === selfAddress),
+        );
 
-    const hasOut = tx.vout && tx.vout
-      .filter(({ addresses }) => Array.isArray(addresses))
-      .some(({ addresses }) => addresses.some((address) => address === selfAddress))
+    const hasOut =
+      tx.vout &&
+      tx.vout
+        .filter(({ addresses }) => Array.isArray(addresses))
+        .some(({ addresses }) =>
+          addresses.some((address) => address === selfAddress),
+        );
 
-    const hasOtherOut = tx.vout && tx.vout
-      .filter(({ addresses }) => Array.isArray(addresses))
-      .some(({ addresses }) => addresses.some((address) => address !== selfAddress))
+    const hasOtherOut =
+      tx.vout &&
+      tx.vout
+        .filter(({ addresses }) => Array.isArray(addresses))
+        .some(({ addresses }) =>
+          addresses.some((address) => address !== selfAddress),
+        );
 
     if (hasOut && !hasIn) {
-      return true
+      return true;
     }
-    if (hasIn && hasOut && !hasOtherOut && this.wallet.ticker === 'KMD') { // looks like sent to self - may be claim
-      return true
+    if (hasIn && hasOut && !hasOtherOut && this.wallet.ticker === 'KMD') {
+      // looks like sent to self - may be claim
+      return true;
     }
 
-    return false // sent to self or outgoing
+    return false; // sent to self or outgoing
   }
 
   /**
@@ -491,57 +578,64 @@ class BlockbookV2Explorer extends Explorer {
    * @param {Object} tx The transaction response.
    * @return {(Boolean|String)} The transaction recipient.
    */
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     if (!selfAddress) {
-      throw new Error('selfAddress is not defined')
+      throw new Error('selfAddress is not defined');
     }
-    const isIncoming = this.getTxDirection(selfAddress, tx)
+    const isIncoming = this.getTxDirection(selfAddress, tx);
 
     if (['ETH', 'BSC'].includes(this.wallet.ticker)) {
-      return isIncoming ? tx.vin[0].addresses[0] : ((tx.vout[0].addresses && tx.vout[0].addresses[0]) || selfAddress)
+      return isIncoming
+        ? tx.vin[0].addresses[0]
+        : (tx.vout[0].addresses && tx.vout[0].addresses[0]) || selfAddress;
     }
 
     if (!tx.vin) {
-      return '...'
+      return '...';
     }
 
-    let outputAddresses = []
-    let inputAddresses = []
+    let outputAddresses = [];
+    let inputAddresses = [];
 
     tx.vout.forEach((out) => {
-      outputAddresses = outputAddresses.concat(out.addresses)
-    })
+      outputAddresses = outputAddresses.concat(out.addresses);
+    });
 
     tx.vin.forEach((input) => {
-      inputAddresses = inputAddresses.concat(input.addresses)
-    })
+      inputAddresses = inputAddresses.concat(input.addresses);
+    });
 
     if (isIncoming) {
-      const hasOtherIn = tx.vin && tx.vin
-        .filter(({ addresses }) => Array.isArray(addresses))
-        .some(({ addresses }) => addresses.some((address) => address !== selfAddress))
+      const hasOtherIn =
+        tx.vin &&
+        tx.vin
+          .filter(({ addresses }) => Array.isArray(addresses))
+          .some(({ addresses }) =>
+            addresses.some((address) => address !== selfAddress),
+          );
 
-      if (!hasOtherIn) { // kmd claim
-        return 'Claim'
+      if (!hasOtherIn) {
+        // kmd claim
+        return 'Claim';
       }
       return inputAddresses.find((inputAddress) => {
-        return inputAddress !== selfAddress
-      })
+        return inputAddress !== selfAddress;
+      });
     }
 
     const myAddressCount = outputAddresses.reduce((acc, curAddr) => {
-      return curAddr === selfAddress ? acc + 1 : acc
-    }, 0)
+      return curAddr === selfAddress ? acc + 1 : acc;
+    }, 0);
 
     if (myAddressCount === outputAddresses.length) {
-      return selfAddress
+      return selfAddress;
     }
 
     const otherSide = outputAddresses.find((address) => {
-      return address !== selfAddress
-    })
+      return address !== selfAddress;
+    });
 
-    return otherSide
+    return otherSide;
   }
 
   /**
@@ -550,11 +644,11 @@ class BlockbookV2Explorer extends Explorer {
    * @param {Object[]} utxos The utxos
    * @return {BN} The balance.
    */
-  calculateBalance (utxos = []) {
+  calculateBalance(utxos = []) {
     return utxos.reduce(
       (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0')
-    )
+      new this.wallet.BN('0'),
+    );
   }
 
   /**
@@ -562,24 +656,24 @@ class BlockbookV2Explorer extends Explorer {
    * @param {String} address
    * @returns {Array}
    */
-  getUserTokenList (address) {
-    return this
-      .request(
-        this.getInfoUrl(address),
-        'get',
-        this.getUserTokenListParams(),
-        '',
-        this.getTransactionsOptions()
-      )
-      .then((data) => data.tokens.map((token) => ({
+  getUserTokenList(address) {
+    return this.request(
+      this.getInfoUrl(address),
+      'get',
+      this.getUserTokenListParams(),
+      '',
+      this.getTransactionsOptions(),
+    ).then((data) =>
+      data.tokens.map((token) => ({
         contractAddress: token.contract,
         decimals: 0,
         ...token,
-      })))
+      })),
+    );
   }
 
-  async getBannedTokensList () {
-    let banned
+  async getBannedTokensList() {
+    let banned;
 
     // try {
     //   banned = await configManager.get('ethereum-tokens-banned')
@@ -587,43 +681,45 @@ class BlockbookV2Explorer extends Explorer {
     //   // logger.error({ instance: this, error })
     // }
 
-    return Array.isArray(banned) ? banned : []
+    return Array.isArray(banned) ? banned : [];
   }
 
   // only for ETH
-  async getNonce (address) {
-    const info = await this.request(this.getInfoUrl(address))
+  async getNonce(address) {
+    const info = await this.request(this.getInfoUrl(address));
 
-    return info.nonce
+    return info.nonce;
   }
 
-  getTokensInfo () {
-    return 0
+  getTokensInfo() {
+    return 0;
   }
 
-  getTokenBalanceByContractAddress ({ info, tokenTicker }) {
+  getTokenBalanceByContractAddress({ info, tokenTicker }) {
     if (info === 'undefined' && info.tokenBalances === 'undefined') {
-      throw new Error('BlockbookV2Explorer: getTokenBalanceByContractAddress error: info.tokenBalances must be object')
+      throw new Error(
+        'BlockbookV2Explorer: getTokenBalanceByContractAddress error: info.tokenBalances must be object',
+      );
       /* eslint-disable no-unreachable */
-      return 0
+      return 0;
       /* eslint-enable */
     }
-    return info.tokenBalances[tokenTicker]
+    return info.tokenBalances[tokenTicker];
   }
 
-  async getTransactionUnmodified (txId) {
+  async getTransactionUnmodified(txId) {
     return this.request(
       this.getTransactionUrl(txId),
       this.getTransactionMethod(),
       this.getTransactionParams(txId),
       GET_TRANSACTION_TYPE,
-      this.getTransactionOptions()
-    )
+      this.getTransactionOptions(),
+    );
   }
 
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit((tx && tx.fees) || 0)
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit((tx && tx.fees) || 0);
   }
 }
 
-export default BlockbookV2Explorer
+export default BlockbookV2Explorer;

@@ -1,8 +1,8 @@
 import BN from 'bn.js';
+
 import { Coin } from '../../abstract';
-import { Amount } from '../../utils';
-import { LazyLoadedLib } from '../../utils';
 import ElrondApiExplorer from '../../explorers/collection/ElrondApiExplorer';
+import { Amount, LazyLoadedLib } from '../../utils';
 import { HasProviders, StakingMixin } from '../mixins';
 
 const elrondCoreJsLazyLoaded = new LazyLoadedLib(

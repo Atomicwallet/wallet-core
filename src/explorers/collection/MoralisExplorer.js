@@ -1,62 +1,66 @@
-import axios from 'axios'
+import axios from 'axios';
 
-import { ExternalError, InternalError } from '../../errors/index.js'
-import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/const'
-import Explorer from '../Explorer'
-import { getTransformedTokenUri } from '../../coins/nfts/utils'
-import { getStringWithEnsuredEndChar } from '../../utils/convert'
-import { ETHNftToken } from '../../coins/nfts'
+import { ETHNftToken } from '../../coins/nfts';
 import {
   ERC1155_TOKEN_STANDARD,
   ERC721_TOKEN_STANDARD,
   erc1155StandardTest,
   erc721StandardTest,
   UNRECOGNIZED_TOKEN_STANDARD,
-} from '../../coins/nfts/ETHNftToken'
-import { MORALIS_API_KEY, MORALIS_NATIVE_API } from '../../env'
-import { TxTypes } from '../enum/index.js'
+} from '../../coins/nfts/ETHNftToken';
+import { getTransformedTokenUri } from '../../coins/nfts/utils';
+import { MORALIS_API_KEY, MORALIS_NATIVE_API } from '../../env';
+import { ExternalError, InternalError } from '../../errors/index.js';
+import {
+  GET_TRANSACTIONS_TYPE,
+  EXTERNAL_ERROR,
+  INTERNAL_ERROR,
+} from '../../utils/const';
+import { getStringWithEnsuredEndChar } from '../../utils/convert';
+import { TxTypes } from '../enum/index.js';
+import Explorer from '../Explorer';
 
 const convertPairs = [
   [erc721StandardTest, ERC721_TOKEN_STANDARD],
   [erc1155StandardTest, ERC1155_TOKEN_STANDARD],
-]
+];
 
-const AXIOS_GET_METHOD = 'get'
-const MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST = 100
-const MAX_LIMIT_NFT_TRANSACTIONS_REQUEST = 100
-const NFT_FAKE_VALUE = 'NFT'
+const AXIOS_GET_METHOD = 'get';
+const MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST = 100;
+const MAX_LIMIT_NFT_TRANSACTIONS_REQUEST = 100;
+const NFT_FAKE_VALUE = 'NFT';
 
 /**
  * Class MoralisExplorer.
  *
  */
 class MoralisExplorer extends Explorer {
-  constructor ({ wallet, config }) {
-    super({ wallet, config })
+  constructor({ wallet, config }) {
+    super({ wallet, config });
 
-    this.chain = config.chain || 'eth'
+    this.chain = config.chain || 'eth';
   }
 
-  getAllowedTickers () {
-    return ['ETH', 'BSC', 'MATIC', 'AVAX', 'FTM']
+  getAllowedTickers() {
+    return ['ETH', 'BSC', 'MATIC', 'AVAX', 'FTM'];
   }
 
-  async getInfo (address, isSpamNftsEnabled) {
+  async getInfo(address, isSpamNftsEnabled) {
     try {
       const response = await this.request(
         this.getInfoUrl(address),
         this.getInfoMethod(),
-        this.getInfoParams(address, this.chain, isSpamNftsEnabled)
-      )
+        this.getInfoParams(address, this.chain, isSpamNftsEnabled),
+      );
 
-      return this.modifyInfoResponse(response)
+      return this.modifyInfoResponse(response);
     } catch (error) {
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
-  getInfoUrl (address) {
-    return `/${address}/nft`
+  getInfoUrl(address) {
+    return `/${address}/nft`;
   }
 
   /**
@@ -65,33 +69,33 @@ class MoralisExplorer extends Explorer {
    * @param (string) baseUrl
    * @returns {boolean}
    */
-  getIsApiKeyRequired (baseUrl) {
-    return getStringWithEnsuredEndChar(baseUrl, '/') === MORALIS_NATIVE_API
+  getIsApiKeyRequired(baseUrl) {
+    return getStringWithEnsuredEndChar(baseUrl, '/') === MORALIS_NATIVE_API;
   }
 
-  getInitParams () {
-    const parentParams = super.getInitParams()
+  getInitParams() {
+    const parentParams = super.getInitParams();
 
     const headers = {
-      'accept': 'application/json',
-    }
+      accept: 'application/json',
+    };
 
     if (this.getIsApiKeyRequired(parentParams?.baseURL)) {
-      headers['X-API-Key'] = MORALIS_API_KEY
+      headers['X-API-Key'] = MORALIS_API_KEY;
     }
 
     return {
       ...parentParams,
       headers,
-    }
+    };
   }
 
-  getInfoParams (address, chain, isSpamNftsEnabled) {
+  getInfoParams(address, chain, isSpamNftsEnabled) {
     return {
       chain,
       format: 'decimal',
       exclude_spam: !isSpamNftsEnabled,
-    }
+    };
   }
 
   /**
@@ -112,12 +116,12 @@ class MoralisExplorer extends Explorer {
    * @throws {ExternalError}
    * @throws {InternalError}
    */
-  async modifyInfoResponse (response) {
+  async modifyInfoResponse(response) {
     // @TODO Use next for pagination
     // const { total, page, page_size, cursor, result: nfts } = response
-    const { result: nftRawList } = response
+    const { result: nftRawList } = response;
 
-    const metadataPromises = []
+    const metadataPromises = [];
 
     const nftList = nftRawList.map((rawNft, index) => {
       const {
@@ -126,62 +130,83 @@ class MoralisExplorer extends Explorer {
         token_uri: tokenUri,
         contract_type: tokenStandard,
         metadata,
-      } = rawNft
+      } = rawNft;
 
       if (!metadata) {
         // In some cases, the metadata is missing, so we can get it using the token_uri
-        const transformedTokenUri = getTransformedTokenUri({ tokenId, tokenUri })
+        const transformedTokenUri = getTransformedTokenUri({
+          tokenId,
+          tokenUri,
+        });
 
         metadataPromises.push(
           Promise.all([
             index,
             axios.get(transformedTokenUri).catch((error) => {
               // @TODO New error type
-              throw new Error(JSON.stringify({ index, error }))
+              throw new Error(JSON.stringify({ index, error }));
             }),
-          ])
-        )
-        return { contractAddress, tokenId, tokenStandard }
+          ]),
+        );
+        return { contractAddress, tokenId, tokenStandard };
       }
 
       try {
-        const { name, description, image: imageUrl } = JSON.parse(metadata)
+        const { name, description, image: imageUrl } = JSON.parse(metadata);
 
-        return { contractAddress, tokenId, tokenStandard, name, description, imageUrl }
+        return {
+          contractAddress,
+          tokenId,
+          tokenStandard,
+          name,
+          description,
+          imageUrl,
+        };
       } catch (error) {
-        console.warn(error)
-        throw new InternalError({ type: INTERNAL_ERROR, error, instance: this })
+        console.warn(error);
+        throw new InternalError({
+          type: INTERNAL_ERROR,
+          error,
+          instance: this,
+        });
       }
-    })
+    });
 
     try {
-      const resultList = await Promise.allSettled(metadataPromises)
+      const resultList = await Promise.allSettled(metadataPromises);
 
       resultList.forEach((result) => {
         if (result.status === 'fulfilled') {
-          const { value: [index, { data: fetchedMetadata }] } = result
-          const { name, description, image: imageUrl } = fetchedMetadata
+          const {
+            value: [index, { data: fetchedMetadata }],
+          } = result;
+          const { name, description, image: imageUrl } = fetchedMetadata;
 
-          nftList[index] = { ...nftList[index], name, description, imageUrl }
+          nftList[index] = { ...nftList[index], name, description, imageUrl };
         } else {
-          const { reason: { message } } = result
+          const {
+            reason: { message },
+          } = result;
 
           try {
-            const { index, message: errorMessage } = JSON.parse(message)
+            const { index, message: errorMessage } = JSON.parse(message);
 
-            console.warn(`Failed to get NFT metadata for tokenUri=${nftList[index]}`, errorMessage)
+            console.warn(
+              `Failed to get NFT metadata for tokenUri=${nftList[index]}`,
+              errorMessage,
+            );
           } catch (error) {
-            console.warn(error)
+            console.warn(error);
           }
           // Do nothing
         }
-      })
+      });
     } catch (error) {
-      console.warn(error)
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      console.warn(error);
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
 
-    return nftList
+    return nftList;
   }
 
   /**
@@ -191,14 +216,14 @@ class MoralisExplorer extends Explorer {
    * @param {string} rawTokenStandard
    * @returns {string|Symbol}
    */
-  fixTokenStandard (rawTokenStandard) {
+  fixTokenStandard(rawTokenStandard) {
     for (const [condition, value] of convertPairs) {
       if (condition.test(rawTokenStandard)) {
-        return value
+        return value;
       }
     }
 
-    return UNRECOGNIZED_TOKEN_STANDARD
+    return UNRECOGNIZED_TOKEN_STANDARD;
   }
 
   /**
@@ -210,27 +235,30 @@ class MoralisExplorer extends Explorer {
    * @returns {Promise<ETHNftToken[]>}
    * @throws {ExternalError} - Throws error receiving NFT list
    */
-  async fetchNftList (coin, isSpamNftsEnabled) {
-    const { address: coinAddress } = coin
+  async fetchNftList(coin, isSpamNftsEnabled) {
+    const { address: coinAddress } = coin;
 
-    const rawList = await this.getInfo(coinAddress, isSpamNftsEnabled)
+    const rawList = await this.getInfo(coinAddress, isSpamNftsEnabled);
 
-    return rawList.map(({
-      contractAddress,
-      tokenId,
-      tokenStandard,
-      name,
-      description,
-      imageUrl,
-    }) => new ETHNftToken(
-      contractAddress,
-      tokenId,
-      coin.id,
-      this.fixTokenStandard(tokenStandard),
-      name,
-      description,
-      imageUrl
-    ))
+    return rawList.map(
+      ({
+        contractAddress,
+        tokenId,
+        tokenStandard,
+        name,
+        description,
+        imageUrl,
+      }) =>
+        new ETHNftToken(
+          contractAddress,
+          tokenId,
+          coin.id,
+          this.fixTokenStandard(tokenStandard),
+          name,
+          description,
+          imageUrl,
+        ),
+    );
   }
 
   /**
@@ -267,20 +295,24 @@ class MoralisExplorer extends Explorer {
    * @param {string|null} [cursor=null] - Cursor.
    * @return {Promise<RawTokenTransactionsResponse>}
    */
-  async getRawTokenTransactions ({ address, limit = this.defaultTxLimit, cursor = null }) {
+  async getRawTokenTransactions({
+    address,
+    limit = this.defaultTxLimit,
+    cursor = null,
+  }) {
     try {
       const response = await this.request(
         this.getTokenTransactionsUrl(address),
         AXIOS_GET_METHOD,
         this.getTokenTransactionsParams(limit, cursor),
         GET_TRANSACTIONS_TYPE,
-        this.getTransactionsOptions()
-      )
+        this.getTransactionsOptions(),
+      );
 
-      return this.modifyRawTokenTransactionsResponse(response, address)
+      return this.modifyRawTokenTransactionsResponse(response, address);
     } catch (error) {
-      console.warn(error)
-      return []
+      console.warn(error);
+      return [];
     }
   }
 
@@ -290,8 +322,8 @@ class MoralisExplorer extends Explorer {
    * @param {string} address  - Wallet address.
    * @returns {string}
    */
-  getTokenTransactionsUrl (address) {
-    return `/${address}/erc20/transfers`
+  getTokenTransactionsUrl(address) {
+    return `/${address}/erc20/transfers`;
   }
 
   /**
@@ -302,14 +334,17 @@ class MoralisExplorer extends Explorer {
    * there are no more results to return.
    * @return {{chain: string, limit: number, cursor: string}}
    */
-  getTokenTransactionsParams (pageLimit, cursor) {
-    const limit = pageLimit > MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST ? MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST : pageLimit
+  getTokenTransactionsParams(pageLimit, cursor) {
+    const limit =
+      pageLimit > MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST
+        ? MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST
+        : pageLimit;
 
     return {
       chain: this.chain,
       limit,
       cursor,
-    }
+    };
   }
 
   /**
@@ -319,12 +354,18 @@ class MoralisExplorer extends Explorer {
    * @param {string} selfAddress - Wallet address.
    * @returns {RawTokenTransactionsResponse}
    */
-  modifyRawTokenTransactionsResponse (response, selfAddress) {
-    const { total, page, page_size: pageSize, cursor, result: txs } = response ?? { result: [] }
+  modifyRawTokenTransactionsResponse(response, selfAddress) {
+    const {
+      total,
+      page,
+      page_size: pageSize,
+      cursor,
+      result: txs,
+    } = response ?? { result: [] };
 
     const rawTokenTransactions = txs.reduce((rawTxs, tx, index) => {
       try {
-        const direction = this.getTokenTxDirection(selfAddress, tx)
+        const direction = this.getTokenTxDirection(selfAddress, tx);
 
         rawTxs.push({
           // Calculate some values in the coin because these not known here
@@ -340,18 +381,18 @@ class MoralisExplorer extends Explorer {
           confirmations: 1,
           ticker: tx.token_symbol,
           name: tx.token_name,
-        })
+        });
 
-        return rawTxs
+        return rawTxs;
       } catch (error) {
-        console.warn('[FTM] tx parse failed')
-        console.error(error)
+        console.warn('[FTM] tx parse failed');
+        console.error(error);
 
-        return rawTxs
+        return rawTxs;
       }
-    }, [])
+    }, []);
 
-    return { total, page, pageSize, cursor, rawTokenTransactions }
+    return { total, page, pageSize, cursor, rawTokenTransactions };
   }
 
   /**
@@ -361,8 +402,8 @@ class MoralisExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {boolean} - True if we accept transaction.
    */
-  getTokenTxDirection (selfAddress, tx) {
-    return tx.to_address.toLowerCase() === selfAddress.toLowerCase()
+  getTokenTxDirection(selfAddress, tx) {
+    return tx.to_address.toLowerCase() === selfAddress.toLowerCase();
   }
 
   /**
@@ -370,16 +411,16 @@ class MoralisExplorer extends Explorer {
    * @param {string} address
    * @returns {object[]}
    */
-  async getUserTokenList (address) {
+  async getUserTokenList(address) {
     const results = await this.request(
       this.getUserTokenListUrl(address),
       AXIOS_GET_METHOD,
       this.getInfoParams(address, this.chain),
       '',
-      this.getTransactionsOptions()
-    )
+      this.getTransactionsOptions(),
+    );
 
-    return this.modifyUserTokenList(results)
+    return this.modifyUserTokenList(results);
   }
 
   /**
@@ -388,14 +429,14 @@ class MoralisExplorer extends Explorer {
    * @param results
    * @returns {object[]}
    */
-  modifyUserTokenList (results = []) {
+  modifyUserTokenList(results = []) {
     return results.map((token) => ({
       // @TODO One of this is redundant - contract or contractAddress but it's used - refactor that
       contract: token.token_address,
       contractAddress: token.token_address,
       decimals: 0,
       ...token,
-    }))
+    }));
   }
 
   /**
@@ -404,8 +445,8 @@ class MoralisExplorer extends Explorer {
    * @param {string} address  - Wallet address.
    * @returns {string}
    */
-  getUserTokenListUrl (address) {
-    return `/${address}/erc20`
+  getUserTokenListUrl(address) {
+    return `/${address}/erc20`;
   }
 
   /**
@@ -449,20 +490,24 @@ class MoralisExplorer extends Explorer {
    * @param {string|null} [cursor=null] - Cursor.
    * @return {Promise<NftTransactionsResponse>}
    */
-  async getNftTransactions ({ address, limit = this.defaultTxLimit, cursor = null }) {
+  async getNftTransactions({
+    address,
+    limit = this.defaultTxLimit,
+    cursor = null,
+  }) {
     try {
       const response = await this.request(
         this.getNftTransactionsUrl(address),
         AXIOS_GET_METHOD,
         this.getNftTransactionsParams(limit, cursor),
         GET_TRANSACTIONS_TYPE,
-        this.getTransactionsOptions()
-      )
+        this.getTransactionsOptions(),
+      );
 
-      return this.modifyNftTransactionsResponse(response, address)
+      return this.modifyNftTransactionsResponse(response, address);
     } catch (error) {
-      console.warn(error)
-      return []
+      console.warn(error);
+      return [];
     }
   }
 
@@ -472,8 +517,8 @@ class MoralisExplorer extends Explorer {
    * @param {string} address  - Wallet address.
    * @returns {string}
    */
-  getNftTransactionsUrl (address) {
-    return `/${address}/nft/transfers`
+  getNftTransactionsUrl(address) {
+    return `/${address}/nft/transfers`;
   }
 
   /**
@@ -484,8 +529,11 @@ class MoralisExplorer extends Explorer {
    * there are no more results to return.
    * @return {{chain: string, limit: number, format: 'decimal', direction: 'both', cursor: string}}
    */
-  getNftTransactionsParams (pageLimit, cursor) {
-    const limit = pageLimit > MAX_LIMIT_NFT_TRANSACTIONS_REQUEST ? MAX_LIMIT_NFT_TRANSACTIONS_REQUEST : pageLimit
+  getNftTransactionsParams(pageLimit, cursor) {
+    const limit =
+      pageLimit > MAX_LIMIT_NFT_TRANSACTIONS_REQUEST
+        ? MAX_LIMIT_NFT_TRANSACTIONS_REQUEST
+        : pageLimit;
 
     return {
       chain: this.chain,
@@ -493,7 +541,7 @@ class MoralisExplorer extends Explorer {
       format: 'decimal',
       direction: 'both',
       cursor,
-    }
+    };
   }
 
   /**
@@ -503,12 +551,18 @@ class MoralisExplorer extends Explorer {
    * @param {string} selfAddress - Wallet address.
    * @returns {NftTransactionsResponse}
    */
-  modifyNftTransactionsResponse (response, selfAddress) {
-    const { total, page, page_size: pageSize, cursor, result: txs } = response ?? { result: [] }
+  modifyNftTransactionsResponse(response, selfAddress) {
+    const {
+      total,
+      page,
+      page_size: pageSize,
+      cursor,
+      result: txs,
+    } = response ?? { result: [] };
 
     const nftTransactions = txs.reduce((rawTxs, tx, index) => {
       try {
-        const direction = this.getTokenTxDirection(selfAddress, tx)
+        const direction = this.getTokenTxDirection(selfAddress, tx);
 
         rawTxs.push({
           ticker: this.wallet.ticker,
@@ -528,18 +582,18 @@ class MoralisExplorer extends Explorer {
           txType: TxTypes.TRANSFERNFT,
           isNft: true,
           amount: NFT_FAKE_VALUE,
-        })
+        });
 
-        return rawTxs
+        return rawTxs;
       } catch (error) {
-        console.warn('[FTM] tx parse failed')
-        console.error(error)
+        console.warn('[FTM] tx parse failed');
+        console.error(error);
 
-        return rawTxs
+        return rawTxs;
       }
-    }, [])
+    }, []);
 
-    return { total, page, pageSize, cursor, nftTransactions }
+    return { total, page, pageSize, cursor, nftTransactions };
   }
 }
-export default MoralisExplorer
+export default MoralisExplorer;

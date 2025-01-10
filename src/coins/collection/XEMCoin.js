@@ -1,6 +1,6 @@
 import { Coin } from '../../abstract';
-import { LazyLoadedLib } from '../../utils';
 import NemNodeExplorer from '../../explorers/collection/NemNodeExplorer';
+import { LazyLoadedLib } from '../../utils';
 
 const nemLazyLoaded = new LazyLoadedLib(() => import('nem-sdk'));
 

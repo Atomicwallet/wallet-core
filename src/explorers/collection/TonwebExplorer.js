@@ -1,17 +1,25 @@
-import TonWeb from 'tonweb'
+import TonWeb from 'tonweb';
 
-import Explorer from '../Explorer'
-import { ExplorerRequestError } from '../../errors/index.js'
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from '../../utils/const'
-import { toCurrency } from '../../utils/convert'
-import Transaction from '../Transaction'
-import { getTokenId } from '../../utils'
-import { TONWEB_API_KEY, TONWEB_FALLBACK_INDEX_URL, TONWEB_FALLBACK_V2_URL } from '../../env'
+import {
+  TONWEB_API_KEY,
+  TONWEB_FALLBACK_INDEX_URL,
+  TONWEB_FALLBACK_V2_URL,
+} from '../../env';
+import { ExplorerRequestError } from '../../errors/index.js';
+import { getTokenId } from '../../utils';
+import {
+  GET_BALANCE_TYPE,
+  GET_TRANSACTIONS_TYPE,
+  ONE_MINUTE,
+} from '../../utils/const';
+import { toCurrency } from '../../utils/convert';
+import Explorer from '../Explorer';
+import Transaction from '../Transaction';
 
-const IN_TRANSFER_COIN = 'IN_TRANSFER_COIN'
-const OUT_TRANSFER_COIN = 'OUT_TRANSFER_COIN'
-const IN_TRANSFER_TOKEN = 'IN_TRANSFER_TOKEN'
-const OUT_TRANSFER_TOKEN = 'OUT_TRANSFER_TOKEN'
+const IN_TRANSFER_COIN = 'IN_TRANSFER_COIN';
+const OUT_TRANSFER_COIN = 'OUT_TRANSFER_COIN';
+const IN_TRANSFER_TOKEN = 'IN_TRANSFER_TOKEN';
+const OUT_TRANSFER_TOKEN = 'OUT_TRANSFER_TOKEN';
 
 /**
  * Tries to retrieve the opcode (operation code) from the given message
@@ -19,17 +27,17 @@ const OUT_TRANSFER_TOKEN = 'OUT_TRANSFER_TOKEN'
  * @param {string} msg - The message value in base64 format.
  * @returns {boolean}
  */
-function isNoValidOpInMsg (msg) {
+function isNoValidOpInMsg(msg) {
   try {
-    const msgBody = TonWeb.utils.base64ToBytes(msg)
-    const cell = TonWeb.boc.Cell.oneFromBoc(msgBody)
-    const slice = cell.beginParse()
+    const msgBody = TonWeb.utils.base64ToBytes(msg);
+    const cell = TonWeb.boc.Cell.oneFromBoc(msgBody);
+    const slice = cell.beginParse();
 
-    slice.loadUint(32)
+    slice.loadUint(32);
 
-    return false
+    return false;
   } catch (error) {
-    return true
+    return true;
   }
 }
 
@@ -45,38 +53,38 @@ function isNoValidOpInMsg (msg) {
  *  source?: string,
  * }} The decoded token body message.
  */
-export function decodeTokenBodyMsg (value) {
-  const msgBody = TonWeb.utils.base64ToBytes(value)
-  const cell = TonWeb.boc.Cell.oneFromBoc(msgBody)
-  const slice = cell.beginParse()
+export function decodeTokenBodyMsg(value) {
+  const msgBody = TonWeb.utils.base64ToBytes(value);
+  const cell = TonWeb.boc.Cell.oneFromBoc(msgBody);
+  const slice = cell.beginParse();
 
-  let op
-
-  try {
-    op = slice.loadUint(32)
-  } catch (error) {
-    return { op: null }
-  }
-
-  const queryId = slice.loadUint(64)
-
-  let amount
-  let destination
-  let source
+  let op;
 
   try {
-    amount = slice.loadCoins()?.toString()
-    destination = slice.loadAddress()?.toString(true, true, true)
-    source = slice.loadAddress()?.toString(true, true, true)
+    op = slice.loadUint(32);
   } catch (error) {
-    return { op, queryId }
+    return { op: null };
   }
 
-  return { op, queryId, amount, destination, source }
+  const queryId = slice.loadUint(64);
+
+  let amount;
+  let destination;
+  let source;
+
+  try {
+    amount = slice.loadCoins()?.toString();
+    destination = slice.loadAddress()?.toString(true, true, true);
+    source = slice.loadAddress()?.toString(true, true, true);
+  } catch (error) {
+    return { op, queryId };
+  }
+
+  return { op, queryId, amount, destination, source };
 }
 
 export default class TonwebExplorer extends Explorer {
-  _walletAddress = null
+  _walletAddress = null;
 
   /**
    * @typedef OwnJettonsWalletsAddressesToTokenUniqueFieldObj
@@ -84,7 +92,7 @@ export default class TonwebExplorer extends Explorer {
    */
 
   /** @type {OwnJettonsWalletsAddressesToTokenUniqueFieldObj} */
-  static ownJettonsWalletsAddressesToTokenUniqueFieldObj = null
+  static ownJettonsWalletsAddressesToTokenUniqueFieldObj = null;
 
   /**
    * @type {Object.<string, {isMatch: DetectFunction, parse: ParseFunction}>}
@@ -98,7 +106,7 @@ export default class TonwebExplorer extends Explorer {
       isMatch: this._getIsOutCoinTx,
       parse: this._parseOutCoinTx,
     },
-  }
+  };
 
   /**
    * @type {Object.<string, {isMatch: DetectFunction, parse: ParseFunction}>}
@@ -112,44 +120,53 @@ export default class TonwebExplorer extends Explorer {
       isMatch: this._getIsOutTokenTx,
       parse: this._parseOutTokenTx,
     },
+  };
+
+  constructor({ wallet, config }) {
+    super(...arguments);
+
+    this.provider = new TonWeb.HttpProvider(
+      this.config?.baseUrl || TONWEB_FALLBACK_V2_URL,
+      { apiKey: TONWEB_API_KEY },
+    );
   }
 
-  constructor ({ wallet, config }) {
-    super(...arguments)
-
-    this.provider = new TonWeb.HttpProvider(this.config?.baseUrl || TONWEB_FALLBACK_V2_URL, { apiKey: TONWEB_API_KEY })
+  getAllowedTickers() {
+    return ['TON'];
   }
 
-  getAllowedTickers () {
-    return ['TON']
+  async getJettonWalletAddress(ownerAddressStr, jettonMinterAddress) {
+    const hotWalletAddress = new TonWeb.utils.Address(ownerAddressStr);
+
+    const jettonMinter = new TonWeb.token.jetton.JettonMinter(this.provider, {
+      address: jettonMinterAddress,
+    });
+    const jettonWalletAddress =
+      await jettonMinter.getJettonWalletAddress(hotWalletAddress);
+
+    return jettonWalletAddress.toString(true, true, true);
   }
 
-  async getJettonWalletAddress (ownerAddressStr, jettonMinterAddress) {
-    const hotWalletAddress = new TonWeb.utils.Address(ownerAddressStr)
-
-    const jettonMinter = new TonWeb.token.jetton.JettonMinter(this.provider, { address: jettonMinterAddress })
-    const jettonWalletAddress = await jettonMinter.getJettonWalletAddress(hotWalletAddress)
-
-    return jettonWalletAddress.toString(true, true, true)
-  }
-
-  async _getOwnJettonsWalletsAddressesToTokenUniqueFieldObj () {
+  async _getOwnJettonsWalletsAddressesToTokenUniqueFieldObj() {
     if (TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj) {
-      return TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj
+      return TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj;
     }
 
-    const tokensList = Object.entries(this.wallet.getTokens())
+    const tokensList = Object.entries(this.wallet.getTokens());
 
     const jettonsWalletsAddresses = await Promise.all(
-      tokensList.map((token) => this.getJettonWalletAddress(this.wallet.address, token[1].mint))
-    )
+      tokensList.map((token) =>
+        this.getJettonWalletAddress(this.wallet.address, token[1].mint),
+      ),
+    );
 
-    TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj = jettonsWalletsAddresses.reduce((obj, jettonWalletAddress, index) => {
-      obj[jettonWalletAddress] = tokensList[index][0]
-      return obj
-    }, {})
+    TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj =
+      jettonsWalletsAddresses.reduce((obj, jettonWalletAddress, index) => {
+        obj[jettonWalletAddress] = tokensList[index][0];
+        return obj;
+      }, {});
 
-    return TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj
+    return TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj;
   }
 
   /**
@@ -161,53 +178,41 @@ export default class TonwebExplorer extends Explorer {
    */
 
   /** @type {DetectFunction} */
-  _getIsInCoinTx (tx) {
-    const {
-      in_msg: {
-        op = '',
-      } = {},
-    } = tx || {}
+  _getIsInCoinTx(tx) {
+    const { in_msg: { op = '' } = {} } = tx || {};
 
-    return op === null
+    return op === null;
   }
 
   /** @type {DetectFunction} */
-  _getIsOutCoinTx (tx, selfAddress) {
+  _getIsOutCoinTx(tx, selfAddress) {
     const {
-      in_msg: {
-        source = '',
-        destination = '',
-      } = {},
+      in_msg: { source = '', destination = '' } = {},
       out_msgs: outMsgs,
-    } = tx || {}
+    } = tx || {};
 
-    return source === '' &&
+    return (
+      source === '' &&
       destination === selfAddress &&
       isNoValidOpInMsg(outMsgs[0]?.body)
+    );
   }
 
   /** @type {DetectFunction} */
-  _getIsInTokenTx (tx) {
-    const {
-      in_msg: inMsg = {},
-    } = tx || {}
+  _getIsInTokenTx(tx) {
+    const { in_msg: inMsg = {} } = tx || {};
 
-    const op = inMsg.op.toString(16)
+    const op = inMsg.op.toString(16);
 
     /* op === '178d4519' means internal_transfer */
-    return op === '178d4519' &&
-      !!inMsg.source &&
-      !!inMsg.value
+    return op === '178d4519' && !!inMsg.source && !!inMsg.value;
   }
 
   /** @type {DetectFunction} */
-  _getIsOutTokenTx (tx, selfAddress) {
-    const {
-      in_msg: inMsg = {},
-      out_msgs: outMessages = [],
-    } = tx || {}
+  _getIsOutTokenTx(tx, selfAddress) {
+    const { in_msg: inMsg = {}, out_msgs: outMessages = [] } = tx || {};
 
-    const op = inMsg.op.toString(16)
+    const op = inMsg.op.toString(16);
 
     /**
      * op === 'f8a7ea5' means transfer
@@ -215,10 +220,12 @@ export default class TonwebExplorer extends Explorer {
      * outMessages.length = 0 - means 'No out messages produced'
      * outMessages[0].destination !== selfAddress - means 'Error in jetton transfer - bounced message'
      */
-    return op === 'f8a7ea5' &&
+    return (
+      op === 'f8a7ea5' &&
       inMsg.source === selfAddress &&
       outMessages.length > 0 &&
       outMessages[0].destination !== selfAddress
+    );
   }
 
   /**
@@ -249,137 +256,170 @@ export default class TonwebExplorer extends Explorer {
    */
 
   /** @type {ParseFunction} */
-  _parseInCoinTx (tx) {
-    const {
-      in_msg: inMsg,
-    } = tx || {}
-    const source = inMsg.source
-    const destination = inMsg.destination
-    const amount = inMsg.value
+  _parseInCoinTx(tx) {
+    const { in_msg: inMsg } = tx || {};
+    const source = inMsg.source;
+    const destination = inMsg.destination;
+    const amount = inMsg.value;
 
-    return { source, destination, amount }
+    return { source, destination, amount };
   }
 
   /** @type {ParseFunction} */
-  _parseOutCoinTx (tx, { selfAddress }) {
-    const {
-      out_msgs: outMsgs,
-    } = tx || {}
-    const source = selfAddress
-    const destination = outMsgs[0].destination
-    const amount = outMsgs[0].value
+  _parseOutCoinTx(tx, { selfAddress }) {
+    const { out_msgs: outMsgs } = tx || {};
+    const source = selfAddress;
+    const destination = outMsgs[0].destination;
+    const amount = outMsgs[0].value;
 
-    return { source, destination, amount }
+    return { source, destination, amount };
   }
 
-  static _getTokenByJettonWalletAddress (jettonWalletAddress, tokens) {
-    const tokenUniqueField = TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj[jettonWalletAddress] ?? null
+  static _getTokenByJettonWalletAddress(jettonWalletAddress, tokens) {
+    const tokenUniqueField =
+      TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj[
+        jettonWalletAddress
+      ] ?? null;
 
-    return tokens[tokenUniqueField] ?? {}
+    return tokens[tokenUniqueField] ?? {};
   }
 
   /** @type {ParseFunction} */
-  static _parseTokenTx (tx, { selfAddress, tokens }, shouldCheckDestination = false) {
-    const { in_msg: inMsg = {} } = tx || {}
-    const { destination: jettonWalletAddress, body: inBody } = inMsg
-    const decodedMsg = decodeTokenBodyMsg(inBody)
+  static _parseTokenTx(
+    tx,
+    { selfAddress, tokens },
+    shouldCheckDestination = false,
+  ) {
+    const { in_msg: inMsg = {} } = tx || {};
+    const { destination: jettonWalletAddress, body: inBody } = inMsg;
+    const decodedMsg = decodeTokenBodyMsg(inBody);
 
     // Check if properties are defined and not falsy
     const isMsgInvalid = shouldCheckDestination
-      ? !(decodedMsg.source && decodedMsg.destination && decodedMsg.amount && jettonWalletAddress)
-      : !(decodedMsg.source && decodedMsg.amount && jettonWalletAddress)
+      ? !(
+          decodedMsg.source &&
+          decodedMsg.destination &&
+          decodedMsg.amount &&
+          jettonWalletAddress
+        )
+      : !(decodedMsg.source && decodedMsg.amount && jettonWalletAddress);
 
     if (isMsgInvalid) {
-      return {}
+      return {};
     }
 
-    const { ticker: symbol, name, decimal, mint } = TonwebExplorer._getTokenByJettonWalletAddress(jettonWalletAddress, tokens)
+    const {
+      ticker: symbol,
+      name,
+      decimal,
+      mint,
+    } = TonwebExplorer._getTokenByJettonWalletAddress(
+      jettonWalletAddress,
+      tokens,
+    );
 
     return {
       source: decodedMsg.source,
-      destination: shouldCheckDestination ? decodedMsg.destination : selfAddress,
+      destination: shouldCheckDestination
+        ? decodedMsg.destination
+        : selfAddress,
       isToken: true,
       amount: decodedMsg.amount,
       decimal,
       symbol,
       name,
       mint,
-    }
+    };
   }
 
   /** @type {ParseFunction} */
-  _parseInTokenTx (tx, payload) {
-    return TonwebExplorer._parseTokenTx(tx, payload, false)
+  _parseInTokenTx(tx, payload) {
+    return TonwebExplorer._parseTokenTx(tx, payload, false);
   }
 
   /** @type {ParseFunction} */
-  _parseOutTokenTx (tx, payload) {
-    return TonwebExplorer._parseTokenTx(tx, payload, true)
+  _parseOutTokenTx(tx, payload) {
+    return TonwebExplorer._parseTokenTx(tx, payload, true);
   }
 
-  _getWalletAddress (address) {
+  _getWalletAddress(address) {
     if (!this._walletAddress) {
-      this._walletAddress = new TonWeb.utils.Address(address)
+      this._walletAddress = new TonWeb.utils.Address(address);
     }
 
-    return this._walletAddress
+    return this._walletAddress;
   }
 
-  async getBalance (address) {
+  async getBalance(address) {
     try {
-      const response = await this.provider.getBalance(address)
+      const response = await this.provider.getBalance(address);
 
-      return response
+      return response;
     } catch (error) {
-      throw new ExplorerRequestError({ type: GET_BALANCE_TYPE, error, instance: this })
+      throw new ExplorerRequestError({
+        type: GET_BALANCE_TYPE,
+        error,
+        instance: this,
+      });
     }
   }
 
-  async getState (address) {
-    return this.provider.getAddressInfo(address)
+  async getState(address) {
+    return this.provider.getAddressInfo(address);
   }
 
-  async sendTransaction (boc) {
-    return this.provider.send('sendBocReturnHash', { boc })
+  async sendTransaction(boc) {
+    return this.provider.send('sendBocReturnHash', { boc });
   }
 
-  _getCoinTxInstruction (tx) {
-    const defaultInstruction = { destination: '', source: '', isToken: false, amount: '0' }
+  _getCoinTxInstruction(tx) {
+    const defaultInstruction = {
+      destination: '',
+      source: '',
+      isToken: false,
+      amount: '0',
+    };
 
-    return Object.entries(this.TX_COINS_INSTRUCTIONS_PARSERS).reduce((instruction,
-      [,
-        {
-          isMatch,
-          parse,
-        },
-      ]) => {
-      const parsed = isMatch(tx, this.wallet.address) ? parse(tx, { selfAddress: this.wallet.address }) : {}
+    return Object.entries(this.TX_COINS_INSTRUCTIONS_PARSERS).reduce(
+      (instruction, [, { isMatch, parse }]) => {
+        const parsed = isMatch(tx, this.wallet.address)
+          ? parse(tx, { selfAddress: this.wallet.address })
+          : {};
 
-      return { ...instruction, ...parsed }
-    }, defaultInstruction)
+        return { ...instruction, ...parsed };
+      },
+      defaultInstruction,
+    );
   }
 
-  _getTokenTxInstruction (tx) {
-    const defaultInstruction = { destination: '', source: '', isToken: false, amount: '0', decimal: 0, symbol: '', mint: '' }
+  _getTokenTxInstruction(tx) {
+    const defaultInstruction = {
+      destination: '',
+      source: '',
+      isToken: false,
+      amount: '0',
+      decimal: 0,
+      symbol: '',
+      mint: '',
+    };
 
-    const tokens = this.wallet.getTokens()
-    const selfAddress = this.wallet.address
+    const tokens = this.wallet.getTokens();
+    const selfAddress = this.wallet.address;
 
-    return Object.entries(this.TX_TOKENS_INSTRUCTIONS_PARSERS).reduce((instruction,
-      [,
-        {
-          isMatch,
-          parse,
-        },
-      ]) => {
-      const parsed = isMatch(tx, selfAddress) ? parse(tx, { selfAddress, tokens }) : {}
+    return Object.entries(this.TX_TOKENS_INSTRUCTIONS_PARSERS).reduce(
+      (instruction, [, { isMatch, parse }]) => {
+        const parsed = isMatch(tx, selfAddress)
+          ? parse(tx, { selfAddress, tokens })
+          : {};
 
-      return { ...instruction, ...parsed }
-    }, defaultInstruction)
+        return { ...instruction, ...parsed };
+      },
+      defaultInstruction,
+    );
   }
 
-  async modifyTransactionsResponse (txs) {
-    const selfAddress = this.wallet.address
+  async modifyTransactionsResponse(txs) {
+    const selfAddress = this.wallet.address;
 
     return txs.reduce((list, tx, index) => {
       try {
@@ -388,50 +428,53 @@ export default class TonwebExplorer extends Explorer {
           destination,
           isToken,
           amount: txAmount,
-        } = this._getCoinTxInstruction(tx)
+        } = this._getCoinTxInstruction(tx);
 
-        const isValidBaseProperties = source && destination && txAmount
+        const isValidBaseProperties = source && destination && txAmount;
 
         if (!isValidBaseProperties) {
-          return list
+          return list;
         }
 
-        const amount = `${toCurrency(txAmount, this.wallet.decimal)}`
-        const walletid = this.wallet.id
-        const name = this.wallet.name
+        const amount = `${toCurrency(txAmount, this.wallet.decimal)}`;
+        const walletid = this.wallet.id;
+        const name = this.wallet.name;
 
-        list.push(new Transaction({
-          ticker: this.wallet.ticker,
-          name,
-          alias: this.wallet.alias,
-          explorer: this.constructor.name,
-          txid: this.getTxHash(tx),
-          direction: destination === selfAddress,
-          otherSideAddress: destination === selfAddress ? source : destination,
-          amount,
-          datetime: this.getTxDateTime(tx),
-          memo: this.getTxMemo(tx),
-          confirmations: this.getTxConfirmations(tx),
-          fee: this.getTxFee(tx),
-          feeTicker: this.getTxFeeTicker(),
-          isToken,
-          walletid,
-        }))
+        list.push(
+          new Transaction({
+            ticker: this.wallet.ticker,
+            name,
+            alias: this.wallet.alias,
+            explorer: this.constructor.name,
+            txid: this.getTxHash(tx),
+            direction: destination === selfAddress,
+            otherSideAddress:
+              destination === selfAddress ? source : destination,
+            amount,
+            datetime: this.getTxDateTime(tx),
+            memo: this.getTxMemo(tx),
+            confirmations: this.getTxConfirmations(tx),
+            fee: this.getTxFee(tx),
+            feeTicker: this.getTxFeeTicker(),
+            isToken,
+            walletid,
+          }),
+        );
 
-        return list
+        return list;
       } catch (error) {
-        console.warn(`[${this.wallet.id}] tx parse failed`)
-        console.error(error)
+        console.warn(`[${this.wallet.id}] tx parse failed`);
+        console.error(error);
 
-        return list
+        return list;
       }
-    }, [])
+    }, []);
   }
 
-  async modifyTokensTransactionsResponse (txs) {
-    const selfAddress = this.wallet.address
+  async modifyTokensTransactionsResponse(txs) {
+    const selfAddress = this.wallet.address;
 
-    await this._getOwnJettonsWalletsAddressesToTokenUniqueFieldObj()
+    await this._getOwnJettonsWalletsAddressesToTokenUniqueFieldObj();
 
     return txs.reduce((list, tx, index) => {
       try {
@@ -444,103 +487,110 @@ export default class TonwebExplorer extends Explorer {
           symbol,
           name: tokenName,
           mint,
-        } = this._getTokenTxInstruction(tx)
+        } = this._getTokenTxInstruction(tx);
 
-        const isValidBaseProperties = source && destination && txAmount
-        const isValidToken = decimal && symbol && tokenName && mint
+        const isValidBaseProperties = source && destination && txAmount;
+        const isValidToken = decimal && symbol && tokenName && mint;
 
         if (!isValidBaseProperties || (isToken && !isValidToken)) {
-          return list
+          return list;
         }
 
-        let amount
-        let walletid
-        let name
+        let amount;
+        let walletid;
+        let name;
 
         if (isToken) {
-          amount = `${toCurrency(txAmount, parseInt(decimal, 10))}`
-          walletid = getTokenId({ contract: mint.toLowerCase(), parent: this.wallet.id, ticker: symbol })
-          name = tokenName
+          amount = `${toCurrency(txAmount, parseInt(decimal, 10))}`;
+          walletid = getTokenId({
+            contract: mint.toLowerCase(),
+            parent: this.wallet.id,
+            ticker: symbol,
+          });
+          name = tokenName;
         } else {
-          amount = `${toCurrency(txAmount, this.wallet.decimal)}`
-          walletid = this.wallet.id
-          name = this.wallet.name
+          amount = `${toCurrency(txAmount, this.wallet.decimal)}`;
+          walletid = this.wallet.id;
+          name = this.wallet.name;
         }
 
-        list.push(new Transaction({
-          ticker: symbol || this.wallet.ticker,
-          name,
-          alias: this.wallet.alias,
-          explorer: this.constructor.name,
-          txid: this.getTxHash(tx),
-          direction: destination === selfAddress,
-          otherSideAddress: destination === selfAddress ? source : destination,
-          amount,
-          datetime: this.getTxDateTime(tx),
-          memo: this.getTxMemo(tx),
-          confirmations: this.getTxConfirmations(tx),
-          fee: this.getTxFee(tx),
-          feeTicker: this.getTxFeeTicker(),
-          isToken,
-          symbol,
-          walletid,
-        }))
+        list.push(
+          new Transaction({
+            ticker: symbol || this.wallet.ticker,
+            name,
+            alias: this.wallet.alias,
+            explorer: this.constructor.name,
+            txid: this.getTxHash(tx),
+            direction: destination === selfAddress,
+            otherSideAddress:
+              destination === selfAddress ? source : destination,
+            amount,
+            datetime: this.getTxDateTime(tx),
+            memo: this.getTxMemo(tx),
+            confirmations: this.getTxConfirmations(tx),
+            fee: this.getTxFee(tx),
+            feeTicker: this.getTxFeeTicker(),
+            isToken,
+            symbol,
+            walletid,
+          }),
+        );
 
-        return list
+        return list;
       } catch (error) {
-        console.warn(`[${this.wallet.id}] tx parse failed`)
-        console.error(error)
+        console.warn(`[${this.wallet.id}] tx parse failed`);
+        console.error(error);
 
-        return list
+        return list;
       }
-    }, [])
+    }, []);
   }
 
-  getTransactionsUrl () {
-    return `${this.config?.indexApiUrl || TONWEB_FALLBACK_INDEX_URL}/getTransactionsByAddress`
+  getTransactionsUrl() {
+    return `${this.config?.indexApiUrl || TONWEB_FALLBACK_INDEX_URL}/getTransactionsByAddress`;
   }
 
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit) {
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit) {
     return {
       address,
       limit,
       offset,
       include_msg_body: true,
-    }
+    };
   }
 
-  getTransactionsOptions () {
+  getTransactionsOptions() {
     return {
       headers: { 'X-API-Key': TONWEB_API_KEY },
-    }
+    };
   }
 
-  getTxDataMsg (tx) {
-    return tx.out_msgs[0] || tx.in_msg
+  getTxDataMsg(tx) {
+    return tx.out_msgs[0] || tx.in_msg;
   }
 
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit(tx.fee)
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit(tx.fee);
   }
 
-  getTxConfirmations () {
-    return 1
+  getTxConfirmations() {
+    return 1;
   }
 
-  getTxDateTime (tx) {
-    return new Date(tx.utime * 1000)
+  getTxDateTime(tx) {
+    return new Date(tx.utime * 1000);
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
-  getTxFeeTicker () {
-    return this.wallet.ticker
+  getTxFeeTicker() {
+    return this.wallet.ticker;
   }
 
-  getTxMemo (tx) {
-    return this.getTxDataMsg(tx).comment
+  getTxMemo(tx) {
+    return this.getTxDataMsg(tx).comment;
   }
 
   /**
@@ -549,24 +599,33 @@ export default class TonwebExplorer extends Explorer {
    * @param {string} mint
    * @returns {Promise<string|null>}
    */
-  async getTokenBalance ({ address, mint }) {
+  async getTokenBalance({ address, mint }) {
     try {
-      const jettonMinter = new TonWeb.token.jetton.JettonMinter(this.provider, { address: mint })
-      const jettonWalletAddress = await jettonMinter.getJettonWalletAddress(this._getWalletAddress(address))
+      const jettonMinter = new TonWeb.token.jetton.JettonMinter(this.provider, {
+        address: mint,
+      });
+      const jettonWalletAddress = await jettonMinter.getJettonWalletAddress(
+        this._getWalletAddress(address),
+      );
 
       const jettonWallet = new TonWeb.token.jetton.JettonWallet(this.provider, {
         address: jettonWalletAddress,
-      })
-      const jettonData = await jettonWallet.getData()
+      });
+      const jettonData = await jettonWallet.getData();
 
-      if (jettonData.jettonMinterAddress.toString(false) !== new TonWeb.utils.Address(mint).toString(false)) {
-        throw new Error('jetton minter address from jetton wallet doesnt match config')
+      if (
+        jettonData.jettonMinterAddress.toString(false) !==
+        new TonWeb.utils.Address(mint).toString(false)
+      ) {
+        throw new Error(
+          'jetton minter address from jetton wallet doesnt match config',
+        );
       }
 
-      return jettonData?.balance?.toString()
+      return jettonData?.balance?.toString();
     } catch (error) {
-      console.warn(error)
-      return null
+      console.warn(error);
+      return null;
     }
   }
 
@@ -575,13 +634,21 @@ export default class TonwebExplorer extends Explorer {
    *
    * @return {Promise<Object[]>}
    */
-  async getTokenTransactions ({ jettonWalletAddress }) {
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) < this.lastGetTxsRequestTime) {
-      return []
+  async getTokenTransactions({ jettonWalletAddress }) {
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE <
+        this.lastGetTxsRequestTime
+    ) {
+      return [];
     }
 
-    if (this.defaultRequestTimeout && (Date.now() - (this.defaultRequestTimeout * ONE_MINUTE)) > this.lastGetTxsRequestTime) {
-      this.lastGetTxsRequestTime = Date.now()
+    if (
+      this.defaultRequestTimeout &&
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE >
+        this.lastGetTxsRequestTime
+    ) {
+      this.lastGetTxsRequestTime = Date.now();
     }
 
     const response = await this.request(
@@ -589,9 +656,9 @@ export default class TonwebExplorer extends Explorer {
       this.getTransactionsMethod(),
       this.getTransactionsParams(jettonWalletAddress),
       GET_TRANSACTIONS_TYPE,
-      this.getTransactionsOptions()
-    )
+      this.getTransactionsOptions(),
+    );
 
-    return this.modifyTokensTransactionsResponse(response, this.wallet.address)
+    return this.modifyTokensTransactionsResponse(response, this.wallet.address);
   }
 }

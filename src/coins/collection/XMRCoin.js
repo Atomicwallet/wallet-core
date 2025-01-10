@@ -1,9 +1,10 @@
 import BN from 'bn.js';
-import { ExternalError } from '../../errors';
+
 import { Coin } from '../../abstract';
+import { ExternalError } from '../../errors';
 import MyMoneroExplorer from '../../explorers/collection/MyMoneroExplorer';
-import { HasProviders } from '../mixins';
 import { getAccount, validateAddress as isAddressValid } from '../libs/monero';
+import { HasProviders } from '../mixins';
 
 const NAME = 'Monero';
 const TICKER = 'XMR';

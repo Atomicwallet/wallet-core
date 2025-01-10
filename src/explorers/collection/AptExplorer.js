@@ -1,12 +1,19 @@
-import { AptosClient, CoinClient } from 'aptos'
+import { AptosClient, CoinClient } from 'aptos';
 
-import { EXTERNAL_ERROR, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/const'
-import { ExternalError } from '../../errors/index.js'
-import { convertTimestampToDateTime, getStringWithEnsuredEndChar } from '../../utils/convert'
-import Explorer from '../Explorer'
+import { ExternalError } from '../../errors/index.js';
+import {
+  EXTERNAL_ERROR,
+  GET_TRANSACTIONS_TYPE,
+  HTTP_STATUS_NOT_FOUND,
+} from '../../utils/const';
+import {
+  convertTimestampToDateTime,
+  getStringWithEnsuredEndChar,
+} from '../../utils/convert';
+import Explorer from '../Explorer';
 
-const ACCOUNT_NOT_FOUND_ERROR_CODE = 'account_not_found'
-const TX_TIMESTAMPS_IN_ONE_SECOND = 1e6
+const ACCOUNT_NOT_FOUND_ERROR_CODE = 'account_not_found';
+const TX_TIMESTAMPS_IN_ONE_SECOND = 1e6;
 
 /**
  * @typedef GasPriceResponse
@@ -16,13 +23,13 @@ const TX_TIMESTAMPS_IN_ONE_SECOND = 1e6
  */
 
 class AptExplorer extends Explorer {
-  constructor ({ wallet, config }) {
-    super({ wallet, config })
+  constructor({ wallet, config }) {
+    super({ wallet, config });
 
-    this.baseUrl = getStringWithEnsuredEndChar(config.baseUrl, '/')
-    this.ticker = wallet.ticker
-    this.aptosClient = new AptosClient(this.baseUrl)
-    this.coinClient = new CoinClient(this.aptosClient)
+    this.baseUrl = getStringWithEnsuredEndChar(config.baseUrl, '/');
+    this.ticker = wallet.ticker;
+    this.aptosClient = new AptosClient(this.baseUrl);
+    this.coinClient = new CoinClient(this.aptosClient);
   }
 
   /**
@@ -30,8 +37,8 @@ class AptExplorer extends Explorer {
    *
    * @returns {string[]}
    */
-  getAllowedTickers () {
-    return ['APT']
+  getAllowedTickers() {
+    return ['APT'];
   }
 
   /**
@@ -41,8 +48,8 @@ class AptExplorer extends Explorer {
    * @param {string} address
    * @returns {Promise<AccountData>}
    */
-  getAccount (address) {
-    return this.aptosClient.getAccount(address)
+  getAccount(address) {
+    return this.aptosClient.getAccount(address);
   }
 
   /**
@@ -52,13 +59,14 @@ class AptExplorer extends Explorer {
    * @returns {Promise<{txid: string}>} - The transaction id.
    * @throws {ExternalError}
    */
-  async sendTransaction (bcsTxn) {
+  async sendTransaction(bcsTxn) {
     try {
-      const { hash } = await this.aptosClient.submitSignedBCSTransaction(bcsTxn)
+      const { hash } =
+        await this.aptosClient.submitSignedBCSTransaction(bcsTxn);
 
-      return { txid: hash }
+      return { txid: hash };
     } catch (error) {
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -75,30 +83,36 @@ class AptExplorer extends Explorer {
    * @returns {Promise<GetInfoResponse>} - The account balance
    * @throws {ExternalError}
    */
-  async getInfo (address) {
+  async getInfo(address) {
     try {
-      const { account } = this.wallet.getLocalAccount()
-      const balance = (await this.coinClient.checkBalance(account)).toString()
+      const { account } = this.wallet.getLocalAccount();
+      const balance = (await this.coinClient.checkBalance(account)).toString();
 
-      return { balance, isRegistered: true }
+      return { balance, isRegistered: true };
     } catch (error) {
-      const { status, errorCode } = error ?? {}
+      const { status, errorCode } = error ?? {};
 
-      if (status === HTTP_STATUS_NOT_FOUND && errorCode === ACCOUNT_NOT_FOUND_ERROR_CODE) {
+      if (
+        status === HTTP_STATUS_NOT_FOUND &&
+        errorCode === ACCOUNT_NOT_FOUND_ERROR_CODE
+      ) {
         return {
           balance: null,
           isRegistered: false,
-        }
+        };
       }
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
-  handleRequestError (error, reqArgs) {
-    if (reqArgs.type === GET_TRANSACTIONS_TYPE && error.response?.status === HTTP_STATUS_NOT_FOUND) {
-      return []
+  handleRequestError(error, reqArgs) {
+    if (
+      reqArgs.type === GET_TRANSACTIONS_TYPE &&
+      error.response?.status === HTTP_STATUS_NOT_FOUND
+    ) {
+      return [];
     }
-    return super.handleRequestError(error, reqArgs)
+    return super.handleRequestError(error, reqArgs);
   }
 
   /**
@@ -107,8 +121,8 @@ class AptExplorer extends Explorer {
    * @async
    * @returns {Promise<{GasPriceResponse}>}
    */
-  getGasPrice () {
-    return this.aptosClient.estimateGasPrice()
+  getGasPrice() {
+    return this.aptosClient.estimateGasPrice();
   }
 
   /**
@@ -119,8 +133,13 @@ class AptExplorer extends Explorer {
    * @param {number} [pageNum]
    * @return {start: string, limit: string}
    */
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit, pageNum) {
-    return { start: String(offset), limit: String(limit) }
+  getTransactionsParams(
+    address,
+    offset = 0,
+    limit = this.defaultTxLimit,
+    pageNum,
+  ) {
+    return { start: String(offset), limit: String(limit) };
   }
 
   /**
@@ -129,8 +148,8 @@ class AptExplorer extends Explorer {
    * @param {string} address
    * @returns {string}
    */
-  getTransactionsUrl (address) {
-    return `/accounts/${address}/transactions`
+  getTransactionsUrl(address) {
+    return `/accounts/${address}/transactions`;
   }
 
   /**
@@ -139,8 +158,8 @@ class AptExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {string}
    */
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
   /**
@@ -149,8 +168,8 @@ class AptExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @returns {string}
    */
-  #getTxRecipientAddress (tx) {
-    return tx.payload?.arguments[0]
+  #getTxRecipientAddress(tx) {
+    return tx.payload?.arguments[0];
   }
 
   /**
@@ -159,8 +178,8 @@ class AptExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @returns {string} - The recipient amount in Octas.
    */
-  #getTxRecipientAmount (tx) {
-    return tx.payload?.arguments[1]
+  #getTxRecipientAmount(tx) {
+    return tx.payload?.arguments[1];
   }
 
   /**
@@ -169,8 +188,8 @@ class AptExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {boolean} - True if we accept transaction.
    */
-  getTxDirection (selfAddress, tx) {
-    return this.#getTxRecipientAddress(tx) === selfAddress
+  getTxDirection(selfAddress, tx) {
+    return this.#getTxRecipientAddress(tx) === selfAddress;
   }
 
   /**
@@ -179,12 +198,12 @@ class AptExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {string}
    */
-  getTxOtherSideAddress (selfAddress, tx) {
+  getTxOtherSideAddress(selfAddress, tx) {
     if (this.getTxDirection(selfAddress, tx)) {
-      return selfAddress
+      return selfAddress;
     }
 
-    return this.#getTxRecipientAddress(tx)
+    return this.#getTxRecipientAddress(tx);
   }
 
   /**
@@ -193,10 +212,10 @@ class AptExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {string}
    */
-  getTxValue (address, tx) {
-    const octas = this.#getTxRecipientAmount(tx)
+  getTxValue(address, tx) {
+    const octas = this.#getTxRecipientAmount(tx);
 
-    return this.wallet.toCurrencyUnit(octas)
+    return this.wallet.toCurrencyUnit(octas);
   }
 
   /**
@@ -205,8 +224,11 @@ class AptExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {Date}
    */
-  getTxDateTime (tx) {
-    return convertTimestampToDateTime(Number(tx.timestamp), TX_TIMESTAMPS_IN_ONE_SECOND)
+  getTxDateTime(tx) {
+    return convertTimestampToDateTime(
+      Number(tx.timestamp),
+      TX_TIMESTAMPS_IN_ONE_SECOND,
+    );
   }
 
   /**
@@ -215,10 +237,10 @@ class AptExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {string}
    */
-  getTxFee (tx) {
-    const { gas_used: gasUsed, gas_unit_price: usedGasPrice } = tx
+  getTxFee(tx) {
+    const { gas_used: gasUsed, gas_unit_price: usedGasPrice } = tx;
 
-    return this.wallet.toCurrencyUnit(BigInt(gasUsed) * BigInt(usedGasPrice))
+    return this.wallet.toCurrencyUnit(BigInt(gasUsed) * BigInt(usedGasPrice));
   }
 
   /**
@@ -227,9 +249,9 @@ class AptExplorer extends Explorer {
    * @param {object} tx - The transaction response.
    * @return {number} The transaction confirmations.
    */
-  getTxConfirmations (tx) {
-    return tx.success ? 1 : 0
+  getTxConfirmations(tx) {
+    return tx.success ? 1 : 0;
   }
 }
 
-export default AptExplorer
+export default AptExplorer;

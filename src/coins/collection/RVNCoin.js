@@ -1,8 +1,6 @@
-/* eslint-disable unicorn/number-literal-case */
-import { LazyLoadedLib } from '../../utils';
 import { Coin } from '../../abstract';
-
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
+import { LazyLoadedLib } from '../../utils';
 import { BitcoinLikeFeeMixin, BitcoreMixin } from '../mixins';
 
 const NAME = 'Ravencoin';

@@ -9,11 +9,11 @@ jest.mock('axios');
 
 const generateMockData = (address: string) => {
   return {
-    mockBlockHash: createHash64(address + 'block', 32),
-    mockChainId: createHash64(address + 'chain', 32),
-    mockProtocol: createHash64(address + 'protocol', 32),
-    mockRawTx: createHash64(address + 'rawTx', 32),
-    mockSignature: createHash64(address + 'signature', 32),
+    mockBlockHash: createHash64(`${address}block`, 32),
+    mockChainId: createHash64(`${address}chain`, 32),
+    mockProtocol: createHash64(`${address}protocol`, 32),
+    mockRawTx: createHash64(`${address}rawTx`, 32),
+    mockSignature: createHash64(`${address}signature`, 32),
   };
 };
 

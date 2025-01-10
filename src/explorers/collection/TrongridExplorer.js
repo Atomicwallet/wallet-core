@@ -1,38 +1,42 @@
-import TronWeb from 'tronweb'
+import TronWeb from 'tronweb';
 
-import Explorer from '../Explorer'
-import Transaction from '../Transaction'
-import { getTokenId } from '../../utils'
+import { getTokenId } from '../../utils';
+import Explorer from '../Explorer';
+import Transaction from '../Transaction';
 // import logger from '../Logger'
 
-const DYNAMIC_PARAMETERS = ['getDynamicEnergyThreshold', 'getDynamicEnergyIncreaseFactor', 'getDynamicEnergyMaxFactor']
+const DYNAMIC_PARAMETERS = [
+  'getDynamicEnergyThreshold',
+  'getDynamicEnergyIncreaseFactor',
+  'getDynamicEnergyMaxFactor',
+];
 
 /**
  * Max tx limit specified by Trongrid
  * @type {number}
  */
-const TX_LIMIT = 200
+const TX_LIMIT = 200;
 
 /**
  * Class for tronscan explorer.
  *
  */
 class TrongridExplorer extends Explorer {
-  constructor (...args) {
-    super(...args)
-    this.defaultTxLimit = TX_LIMIT
+  constructor(...args) {
+    super(...args);
+    this.defaultTxLimit = TX_LIMIT;
   }
 
-  addressHex (address) {
-    return TronWeb.address.toHex(address)
+  addressHex(address) {
+    return TronWeb.address.toHex(address);
   }
 
-  getAllowedTickers () {
-    return ['TRX']
+  getAllowedTickers() {
+    return ['TRX'];
   }
 
-  getApiPrefix () {
-    return 'v1/'
+  getApiPrefix() {
+    return 'v1/';
   }
 
   /**
@@ -41,12 +45,12 @@ class TrongridExplorer extends Explorer {
    * @param address
    * @return {string} The information url.
    */
-  getInfoUrl (address) {
+  getInfoUrl(address) {
     /**
      * Address must be converted to Hex
      */
 
-    return `${this.getApiPrefix()}accounts/${this.addressHex(address)}`
+    return `${this.getApiPrefix()}accounts/${this.addressHex(address)}`;
   }
 
   /**
@@ -54,8 +58,8 @@ class TrongridExplorer extends Explorer {
    *
    * @return {Object}
    */
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit) {
-    return { address, limit }
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit) {
+    return { address, limit };
   }
 
   /**
@@ -63,12 +67,12 @@ class TrongridExplorer extends Explorer {
    *
    * @return {Object} { description_of_the_return_value }
    */
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       unfrozenV2: response.data[0]?.unfrozenV2,
       votes: response.data[0]?.votes,
       balance: response.data[0]?.balance,
-    }
+    };
   }
 
   /**
@@ -77,8 +81,8 @@ class TrongridExplorer extends Explorer {
    * @param  {<type>} txId The transmit identifier
    * @return {<type>} The transaction url.
    */
-  getTransactionUrl (txId) {
-    return `transaction-info?hash=${txId}`
+  getTransactionUrl(txId) {
+    return `transaction-info?hash=${txId}`;
   }
 
   /**
@@ -86,70 +90,67 @@ class TrongridExplorer extends Explorer {
    *
    * @return {<type>} The transactions url.
    */
-  getTransactionsUrl (address) {
-    return `${this.getApiPrefix()}accounts/${this.addressHex(address)}/transactions/trc20`
+  getTransactionsUrl(address) {
+    return `${this.getApiPrefix()}accounts/${this.addressHex(address)}/transactions/trc20`;
   }
 
-  getContractInfoUrl () {
-    return 'wallet/getcontractinfo'
+  getContractInfoUrl() {
+    return 'wallet/getcontractinfo';
   }
 
-  getContractInfoMethod () {
-    return 'POST'
+  getContractInfoMethod() {
+    return 'POST';
   }
 
-  getContractInfoParams (contract) {
+  getContractInfoParams(contract) {
     return {
       value: contract,
       visible: true,
-    }
+    };
   }
 
-  getChainParametersUrl () {
-    return 'wallet/getchainparameters'
+  getChainParametersUrl() {
+    return 'wallet/getchainparameters';
   }
 
-  getAccountResourceUrl () {
-    return 'wallet/getaccountresource'
+  getAccountResourceUrl() {
+    return 'wallet/getaccountresource';
   }
 
-  getAccountResourceMethod () {
-    return 'post'
+  getAccountResourceMethod() {
+    return 'post';
   }
 
-  getAccountResourceParams (address) {
-    return { address, visible: true }
+  getAccountResourceParams(address) {
+    return { address, visible: true };
   }
 
-  getContractInfo (contract) {
+  getContractInfo(contract) {
     return this.request(
       this.getContractInfoUrl(),
       this.getContractInfoMethod(),
-      this.getContractInfoParams(contract)
-    )
+      this.getContractInfoParams(contract),
+    );
   }
 
-  getChainParameters () {
-    return this.request(
-      this.getChainParametersUrl(),
-      this.getInfoMethod()
-    )
+  getChainParameters() {
+    return this.request(this.getChainParametersUrl(), this.getInfoMethod());
   }
 
-  getAccountResource (address) {
+  getAccountResource(address) {
     return this.request(
       this.getAccountResourceUrl(),
       this.getAccountResourceMethod(),
-      this.getAccountResourceParams(address)
-    )
+      this.getAccountResourceParams(address),
+    );
   }
 
-  getEstimatedEnergyUrl () {
-    return 'wallet/triggerconstantcontract'
+  getEstimatedEnergyUrl() {
+    return 'wallet/triggerconstantcontract';
   }
 
-  getEstimatedEnergyMethod () {
-    return 'POST'
+  getEstimatedEnergyMethod() {
+    return 'POST';
   }
 
   /**
@@ -159,17 +160,17 @@ class TrongridExplorer extends Explorer {
    * @param {boolean} args.visible
    * @return {args}
    */
-  getEstimatedEnergyParameters (args) {
-    return args
+  getEstimatedEnergyParameters(args) {
+    return args;
   }
 
-  async getDynamicEnergyParameters () {
+  async getDynamicEnergyParameters() {
     const { chainParameter = [] } = await this.request(
       this.getChainParametersUrl(),
-      this.getInfoMethod()
-    )
+      this.getInfoMethod(),
+    );
 
-    return this.modifyDynamicEnergyParametersResponse(chainParameter)
+    return this.modifyDynamicEnergyParametersResponse(chainParameter);
   }
 
   /**
@@ -178,27 +179,26 @@ class TrongridExplorer extends Explorer {
    * @param response
    * @return {object}
    */
-  modifyDynamicEnergyParametersResponse (response) {
-    return response
-      .reduce((acc, { key, value = undefined }) => {
-        if (DYNAMIC_PARAMETERS.includes(key)) {
-          acc[key] = value
-        }
+  modifyDynamicEnergyParametersResponse(response) {
+    return response.reduce((acc, { key, value = undefined }) => {
+      if (DYNAMIC_PARAMETERS.includes(key)) {
+        acc[key] = value;
+      }
 
-        return acc
-      }, {})
+      return acc;
+    }, {});
   }
 
-  modifyEstimagedEnergyResponse (response) {
-    const failed = response?.transaction?.ret[0]?.ret === 'FAILED'
+  modifyEstimagedEnergyResponse(response) {
+    const failed = response?.transaction?.ret[0]?.ret === 'FAILED';
 
     if (failed) {
       // logger.error({ instance: this, error: new Error('[TrongridExplorer]: Failed to call estimate energy, node rejects tx with REVERT opcode, probably invalid tx was passed') })
 
-      return undefined
+      return undefined;
     }
 
-    return response?.energy_used
+    return response?.energy_used;
   }
 
   /**
@@ -207,16 +207,16 @@ class TrongridExplorer extends Explorer {
    * @param args
    * @return {Promise<*>}
    */
-  async getEstimatedEnergy (args) {
+  async getEstimatedEnergy(args) {
     const response = await this.request(
       this.getEstimatedEnergyUrl(),
       this.getEstimatedEnergyMethod(),
       this.getEstimatedEnergyParameters(args),
       'TRX_ESTIMATE_ENERGY_REQUEST',
-      { timeout: 10000 }
-    )
+      { timeout: 10000 },
+    );
 
-    return this.modifyEstimagedEnergyResponse(response)
+    return this.modifyEstimagedEnergyResponse(response);
   }
 
   /**
@@ -224,7 +224,7 @@ class TrongridExplorer extends Explorer {
    *
    * @return {<type>} { description_of_the_return_value }
    */
-  modifyTransactionsResponse (response, address, asset = this.wallet.ticker) {
+  modifyTransactionsResponse(response, address, asset = this.wallet.ticker) {
     const trc20transfers = response.data
       .filter((tx) => tx?.token_info?.symbol)
       .map((tx) => {
@@ -246,10 +246,10 @@ class TrongridExplorer extends Explorer {
           memo: this.getTxMemo(tx),
           confirmations: this.getTxConfirmations(tx),
           alias: this.wallet.alias,
-        })
-      })
+        });
+      });
 
-    return { trc20transfers }
+    return { trc20transfers };
   }
 
   /**
@@ -257,10 +257,10 @@ class TrongridExplorer extends Explorer {
    *
    * @return {Promise<String>} The balance.
    */
-  async getBalance () {
-    const info = await this.getInfo()
+  async getBalance() {
+    const info = await this.getInfo();
 
-    return this.wallet.toCurrencyUnit(info.balance)
+    return this.wallet.toCurrencyUnit(info.balance);
   }
 
   /**
@@ -268,18 +268,18 @@ class TrongridExplorer extends Explorer {
    * @param tx
    * @return {string|*}
    */
-  getTxAsset (tx) {
-    const symbol = tx.token_info.symbol
+  getTxAsset(tx) {
+    const symbol = tx.token_info.symbol;
 
     if (symbol === 'USDT') {
-      return 'TRX-USDT'
+      return 'TRX-USDT';
     }
 
     if (symbol === 'USDC') {
-      return 'TRX-USDC'
+      return 'TRX-USDC';
     }
 
-    return symbol
+    return symbol;
   }
 
   /**
@@ -288,8 +288,8 @@ class TrongridExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {<type>} The transmit hash.
    */
-  getTxHash (tx) {
-    return tx.transaction_id
+  getTxHash(tx) {
+    return tx.transaction_id;
   }
 
   /**
@@ -298,8 +298,8 @@ class TrongridExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {<type>} The transmit direction.
    */
-  getTxDirection (selfAddress, tx) {
-    return tx.to === selfAddress
+  getTxDirection(selfAddress, tx) {
+    return tx.to === selfAddress;
   }
 
   /**
@@ -308,9 +308,8 @@ class TrongridExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {<type>} The transmit recipient.
    */
-  getTxOtherSideAddress (selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx)
-      ? tx.from : tx.to
+  getTxOtherSideAddress(selfAddress, tx) {
+    return this.getTxDirection(selfAddress, tx) ? tx.from : tx.to;
   }
 
   /**
@@ -319,8 +318,8 @@ class TrongridExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {<type>} The transmit value.
    */
-  getTxValue (selfAddress, tx, decimal = this.wallet.decimal) {
-    return this.wallet.toCurrencyUnit(tx.value, decimal)
+  getTxValue(selfAddress, tx, decimal = this.wallet.decimal) {
+    return this.wallet.toCurrencyUnit(tx.value, decimal);
   }
 
   /**
@@ -329,8 +328,8 @@ class TrongridExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {Date} The transmit date time.
    */
-  getTxDateTime (tx) {
-    return new Date(Number(tx.block_timestamp))
+  getTxDateTime(tx) {
+    return new Date(Number(tx.block_timestamp));
   }
 
   /**
@@ -339,9 +338,9 @@ class TrongridExplorer extends Explorer {
    * @param  {<type>} tx The transmit
    * @return {<type>} The transmit confirmations.
    */
-  getTxConfirmations (tx) {
-    return 1
+  getTxConfirmations(tx) {
+    return 1;
   }
 }
 
-export default TrongridExplorer
+export default TrongridExplorer;

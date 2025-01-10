@@ -18,11 +18,11 @@ export default {
   FREEZE: 'Freeze',
   BUY: 'Buy',
   EXCHANGE: 'Exchange',
-}
+};
 
 export const COSMOS_MSG_TO_TYPE = {
   MsgWithdrawDelegatorReward: 'reward',
   MsgDelegate: 'stake',
   MsgUndelegate: 'unstake',
   MsgSend: 'transfer',
-}
+};

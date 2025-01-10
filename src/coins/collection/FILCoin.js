@@ -1,13 +1,13 @@
 import BN from 'bn.js';
+
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 import { ExternalError } from '../../errors';
-import { EXTERNAL_ERROR } from '../../utils/const';
-import { isStartsWith } from '../../utils/funcs';
-
 import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import { LazyLoadedLib } from '../../utils';
+import { EXTERNAL_ERROR } from '../../utils/const';
+import { isStartsWith } from '../../utils/funcs';
 import { HasProviders } from '../mixins';
 
 const NAME = 'Filecoin';
@@ -200,7 +200,7 @@ class FILCoin extends HasProviders(Coin) {
    * @see {@link https://atomicwallet.atlassian.net/wiki/spaces/DevOps/pages/343638041#%D0%94%D0%B5%D1%84%D0%BE%D0%BB%D1%82%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BC%D0%B8%D1%81%D1%81%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-ETH}
    */
   getFeeSettings() {
-    return {} // configManager.get(ETH_MODERATED_GAS_PRICE_URL);
+    return {}; // configManager.get(ETH_MODERATED_GAS_PRICE_URL);
   }
 
   /**
@@ -419,12 +419,7 @@ class FILCoin extends HasProviders(Coin) {
         to: contract,
         data: tokenSendData,
       })
-      .catch((error) => {}
-        // logger.error({
-        //   instance: this,
-        //   error,
-        // }),
-      );
+      .catch(() => {});
 
     return estimateGas
       ? Math.round(estimateGas * this.gasLimitCoefficient).toString()

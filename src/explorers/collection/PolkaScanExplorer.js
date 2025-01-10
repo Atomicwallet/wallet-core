@@ -1,44 +1,47 @@
-import BN from 'bn.js'
-import Explorer from '../Explorer'
+import BN from 'bn.js';
+
+import Explorer from '../Explorer';
 
 class PolkaScanExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['DOT']
+  getAllowedTickers() {
+    return ['DOT'];
   }
 
-  getApiPrefix () {
-    return 'api'
+  getApiPrefix() {
+    return 'api';
   }
 
-  getInfoUrl (address) {
-    return `${this.getApiPrefix()}/scan/search`
+  getInfoUrl(address) {
+    return `${this.getApiPrefix()}/scan/search`;
   }
 
-  getInfoMethod () {
-    return 'POST'
+  getInfoMethod() {
+    return 'POST';
   }
 
-  getInfoParams (address) {
+  getInfoParams(address) {
     return {
       key: address,
       page: 0,
       row: 1,
-    }
+    };
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     const data = {
       balance: 0,
       ring_lock: 0,
       nonce: 0,
-    }
+    };
 
     if (response.data && response.data.account) {
-      data.balance = new BN(this.wallet.toMinimalUnit(response.data.account.balance))
+      data.balance = new BN(
+        this.wallet.toMinimalUnit(response.data.account.balance),
+      )
         .sub(new BN(this.wallet.toMinimalUnit(response.data.account.ring_lock)))
-        .toString()
-      data.ring_lock = response.data.account.ring_lock
-      data.nonce = response.data.account.nonce
+        .toString();
+      data.ring_lock = response.data.account.ring_lock;
+      data.nonce = response.data.account.nonce;
     }
 
     return {
@@ -49,76 +52,80 @@ class PolkaScanExplorer extends Explorer {
       },
       transactions: this.wallet.transactions,
       nonce: data.nonce,
-    }
+    };
   }
 
-  getTransactionUrl (txId) {
-    return `${this.getApiPrefix()}/scan/extrinsic`
+  getTransactionUrl(txId) {
+    return `${this.getApiPrefix()}/scan/extrinsic`;
   }
 
-  getTransactionMethod () {
-    return 'POST'
+  getTransactionMethod() {
+    return 'POST';
   }
 
-  getTransactionParams (txId) {
+  getTransactionParams(txId) {
     return {
       hash: txId,
-    }
+    };
   }
 
-  getTransactionsMethod () {
-    return 'POST'
+  getTransactionsMethod() {
+    return 'POST';
   }
 
-  getTransactionsUrl (address) {
-    return `${this.getApiPrefix()}/v2/scan/transfers`
+  getTransactionsUrl(address) {
+    return `${this.getApiPrefix()}/v2/scan/transfers`;
   }
 
-  getTransactionsParams (address, offset = 0, limit = this.defaultTxLimit) {
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit) {
     return {
       address,
-      page: offset > this.defaultTxLimit ? parseInt(offset / this.defaultTxLimit, 10) : 0,
+      page:
+        offset > this.defaultTxLimit
+          ? parseInt(offset / this.defaultTxLimit, 10)
+          : 0,
       row: limit,
-    }
+    };
   }
 
-  modifyTransactionsResponse (response, address) {
+  modifyTransactionsResponse(response, address) {
     if (!response?.data?.transfers) {
-      return []
+      return [];
     }
 
-    return super.modifyTransactionsResponse(response.data.transfers.filter(({ success }) => success), address)
+    return super.modifyTransactionsResponse(
+      response.data.transfers.filter(({ success }) => success),
+      address,
+    );
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
-  getTxDirection (selfAddress, tx) {
-    return tx.to === selfAddress
+  getTxDirection(selfAddress, tx) {
+    return tx.to === selfAddress;
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx)
-      ? tx.from
-      : tx.to
+  getTxOtherSideAddress(selfAddress, tx) {
+    return this.getTxDirection(selfAddress, tx) ? tx.from : tx.to;
   }
 
-  getTxValue (selfAddress, tx) {
-    return Number(tx.amount)
+  getTxValue(selfAddress, tx) {
+    return Number(tx.amount);
   }
 
-  getTxDateTime (tx) {
-    return new Date(Number(`${tx.block_timestamp}000`))
+  getTxDateTime(tx) {
+    return new Date(Number(`${tx.block_timestamp}000`));
   }
 
-  getTxConfirmations (tx) {
-    return Number(tx.success) || 0
+  getTxConfirmations(tx) {
+    return Number(tx.success) || 0;
   }
 
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit((tx && tx.fee) || 0)
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit((tx && tx.fee) || 0);
   }
 }
 
-export default PolkaScanExplorer
+export default PolkaScanExplorer;

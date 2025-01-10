@@ -1,11 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-this-alias */
-
-/* eslint-disable no-redeclare */
-/* eslint-disable unicorn/explicit-length-check */
-
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable no-useless-escape */
+/* eslint-disable */
 
 /*
   JavaScript BigInteger library version 0.9.1

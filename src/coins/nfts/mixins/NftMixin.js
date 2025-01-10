@@ -1,5 +1,5 @@
-import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../../utils/const';
 import { ExternalError, InternalError } from '../../../errors';
+import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../../utils/const';
 // import nftHistory from '../../NftHistory';
 
 const NftMixin = (superclass) =>

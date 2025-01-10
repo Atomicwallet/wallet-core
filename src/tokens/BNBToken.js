@@ -1,10 +1,10 @@
-import { Token } from '../abstract'
+import { Token } from '../abstract';
 
 class BNBToken extends Token {
-  constructor (args) {
-    super(args)
-    this.fields.paymentId = true
-    this.balances = {}
+  constructor(args) {
+    super(args);
+    this.fields.paymentId = true;
+    this.balances = {};
   }
 
   /**
@@ -12,41 +12,41 @@ class BNBToken extends Token {
    *
    * @return {Promise<String>} The balance.
    */
-  async availableBalance () {
+  async availableBalance() {
     if (this.balances && this.balances.available) {
-      return this.balances.available
+      return this.balances.available;
     }
 
-    return this.divisibleBalance ? String(this.divisibleBalance) : '0'
+    return this.divisibleBalance ? String(this.divisibleBalance) : '0';
   }
 
-  async getInfo () {
-    await this.getBalance()
+  async getInfo() {
+    await this.getBalance();
 
     return {
       balance: String(this.balance),
       transactions: this.transactions,
-    }
+    };
   }
 
   /* @TODO DEPRECATED
-  * should be used `createTransaction method from Token.js
-  * wich proxied to parent `createTransaction
-  * */
-  async createTransaction ({ address, amount, memo }) {
-    return { address, amount, memo, asset: this.ticker }
+   * should be used `createTransaction method from Token.js
+   * wich proxied to parent `createTransaction
+   * */
+  async createTransaction({ address, amount, memo }) {
+    return { address, amount, memo, asset: this.ticker };
   }
 
-  async getBalance () {
-    return this.balance
+  async getBalance() {
+    return this.balance;
   }
 
   // async getTransactions () {
   //   return this.transactions
   // }
 
-  getUserTicker () {
-    return this.ticker.split('-')[0]
+  getUserTicker() {
+    return this.ticker.split('-')[0];
   }
 
   // Rewards calculation draft
@@ -80,4 +80,4 @@ class BNBToken extends Token {
   // }
 }
 
-export default BNBToken
+export default BNBToken;

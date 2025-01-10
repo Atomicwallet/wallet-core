@@ -1,98 +1,110 @@
-import { Connection, Keypair, PublicKey, StakeProgram, Transaction } from '@solana/web3.js'
 import {
   TOKEN_PROGRAM_ID,
   getOrCreateAssociatedTokenAccount,
   createTransferCheckedInstruction,
-} from '@solana/spl-token'
-import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz'
-import BN from 'bn.js'
-import axios from 'axios'
+} from '@solana/spl-token';
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  StakeProgram,
+  Transaction,
+} from '@solana/web3.js';
+import axios from 'axios';
+import BN from 'bn.js';
+import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz';
 
-import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/const'
-import { ExternalError } from '../../errors/index.js'
-import { getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert'
-import Explorer from '../Explorer'
+import { SOLNftToken } from '../../coins/nfts';
+import { ExternalError } from '../../errors/index.js';
+import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/const';
+import { getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert';
+import AddrCacheDb from '../AddrCacheDb';
+import Explorer from '../Explorer';
 // import history from '../History'
-import AddrCacheDb from '../AddrCacheDb'
-import { SOLNftToken } from '../../coins/nfts'
 
-const STAKE_DATA_LENGTH = 200
+const STAKE_DATA_LENGTH = 200;
 
 /**
  * Solana JSON-RCP explorer
  *
- */hi
+ */
 class SolanaNodeExplorer extends Explorer {
-  #finalizedSocketListenerId
-  #confirmedSocketListenerId
+  #finalizedSocketListenerId;
+  #confirmedSocketListenerId;
 
-  constructor ({ wallet, config }) {
-    super({ wallet, config })
+  constructor({ wallet, config }) {
+    super({ wallet, config });
 
-    this.connection = new Connection(config.baseUrl)
-    this.socket = undefined
+    this.connection = new Connection(config.baseUrl);
+    this.socket = undefined;
   }
 
-  setAxiosClient () {
-    const { baseURL } = this.getInitParams()
+  setAxiosClient() {
+    const { baseURL } = this.getInitParams();
 
-    this.connection = new Connection(baseURL)
+    this.connection = new Connection(baseURL);
   }
 
-  setSocketClient (endpoint) {
-    this.socket = new Connection(endpoint)
+  setSocketClient(endpoint) {
+    this.socket = new Connection(endpoint);
   }
 
-  getAllowedTickers () {
-    return ['SOL']
+  getAllowedTickers() {
+    return ['SOL'];
   }
 
-  async getInfo (address) {
-    const pubKey = new PublicKey(address)
+  async getInfo(address) {
+    const pubKey = new PublicKey(address);
 
-    const response = await this.connection.getBalance(pubKey, 'finalized')
+    const response = await this.connection.getBalance(pubKey, 'finalized');
 
-    return this.modifyInfoResponse(response)
+    return this.modifyInfoResponse(response);
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       balance: String(response),
-    }
+    };
   }
 
-  async getCurrentSigs (pubkey, commitment = 'finalize') {
-    const sigs = await this.connection.getConfirmedSignaturesForAddress2(pubkey, {}, commitment)
+  async getCurrentSigs(pubkey, commitment = 'finalize') {
+    const sigs = await this.connection.getConfirmedSignaturesForAddress2(
+      pubkey,
+      {},
+      commitment,
+    );
 
-    return sigs.map(({ confirmationStatus, signature }) => {
-      if (confirmationStatus === commitment) {
-        return signature
-      }
+    return sigs
+      .map(({ confirmationStatus, signature }) => {
+        if (confirmationStatus === commitment) {
+          return signature;
+        }
 
-      return undefined
-    }).filter(Boolean)
+        return undefined;
+      })
+      .filter(Boolean);
   }
 
-  async getLatestBlock () {
-    const response = await this.connection.getLatestBlockhash()
+  async getLatestBlock() {
+    const response = await this.connection.getLatestBlockhash();
 
-    return response
+    return response;
   }
 
-  modifyLatestBlockResponse (response) {
-    return response && response.value
+  modifyLatestBlockResponse(response) {
+    return response && response.value;
   }
 
-  async sendTransaction ({ rawtx, signer }) {
-    const txid = await this.connection.sendTransaction(rawtx, [signer])
+  async sendTransaction({ rawtx, signer }) {
+    const txid = await this.connection.sendTransaction(rawtx, [signer]);
 
-    return { txid }
+    return { txid };
   }
 
-  async sendRawTransaction (rawtx) {
-    const txid = await this.connection.sendRawTransaction(rawtx)
+  async sendRawTransaction(rawtx) {
+    const txid = await this.connection.sendRawTransaction(rawtx);
 
-    return { txid }
+    return { txid };
   }
 
   /**
@@ -101,40 +113,40 @@ class SolanaNodeExplorer extends Explorer {
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async getFee () {
+  async getFee() {
     try {
-      const transaction = new Transaction()
+      const transaction = new Transaction();
 
-      transaction.feePayer = this.wallet.address
-      const { blockhash } = await this.getLatestBlock()
+      transaction.feePayer = this.wallet.address;
+      const { blockhash } = await this.getLatestBlock();
 
-      transaction.recentBlockhash = blockhash
+      transaction.recentBlockhash = blockhash;
 
       // Assume that there are no operations, only a transaction structure to estimate the fee
-      const message = transaction.compileMessage()
-      const { value: fee } = await this.connection.getFeeForMessage(message)
+      const message = transaction.compileMessage();
+      const { value: fee } = await this.connection.getFeeForMessage(message);
 
-      return String(fee)
+      return String(fee);
     } catch (error) {
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
-  getAccountInfo (pubKey) {
-    const info = this.connection.getParsedAccountInfo(pubKey)
+  getAccountInfo(pubKey) {
+    const info = this.connection.getParsedAccountInfo(pubKey);
 
-    return info
+    return info;
   }
 
-  getEpochInfo () {
-    return this.connection.getEpochInfo('finalized')
+  getEpochInfo() {
+    return this.connection.getEpochInfo('finalized');
   }
 
-  getStakeProgramInfo (address) {
+  getStakeProgramInfo(address) {
     return this.connection.getParsedProgramAccounts(StakeProgram.programId, {
       commitment: 'finalize',
       filters: [{ memcmp: { bytes: address, offset: 12 } }],
-    })
+    });
   }
 
   /**
@@ -145,157 +157,209 @@ class SolanaNodeExplorer extends Explorer {
    * @param address
    * @returns {Promise<{account: *, pubkey: *}>}
    */
-  async getStakeAccountInfo (address) {
-    const accountInfo = await this.connection.getParsedAccountInfo(new PublicKey(address), 'processed')
+  async getStakeAccountInfo(address) {
+    const accountInfo = await this.connection.getParsedAccountInfo(
+      new PublicKey(address),
+      'processed',
+    );
 
-    return this.modifyStakeAccountInfo(accountInfo, address)
+    return this.modifyStakeAccountInfo(accountInfo, address);
   }
 
-  modifyStakeAccountInfo (response, address) {
-    return { account: response.value, pubkey: new PublicKey(address) }
+  modifyStakeAccountInfo(response, address) {
+    return { account: response.value, pubkey: new PublicKey(address) };
   }
 
-  async getStakingBalance (props) {
+  async getStakingBalance(props) {
     // fetch cached stake addresses from db
-    const cachedAddrRows = await AddrCacheDb.getAddrCache(this.wallet.ticker, STAKE_ADDR_TYPE)
+    const cachedAddrRows = await AddrCacheDb.getAddrCache(
+      this.wallet.ticker,
+      STAKE_ADDR_TYPE,
+    );
 
-    let addresses = []
+    let addresses = [];
 
     // map addresses if cache exists
     if (cachedAddrRows) {
-      addresses = cachedAddrRows.map(({ address }) => address)
+      addresses = cachedAddrRows.map(({ address }) => address);
     }
 
     // If cached addresses exists then get account info for each cached address
     // else fetch huge `getStakeProgramInfo` request to get all existing stake account for specified address
-    const stakeAccounts = addresses.length > 0
-      ? await Promise.all(addresses.map((address) => this.getStakeAccountInfo(address)))
-      : await this.getStakeProgramInfo(props.address)
+    const stakeAccounts =
+      addresses.length > 0
+        ? await Promise.all(
+            addresses.map((address) => this.getStakeAccountInfo(address)),
+          )
+        : await this.getStakeProgramInfo(props.address);
 
     // re-map addresses from `getStakeProgramInfo` if no cache exists
     if ((addresses.length === 0 && stakeAccounts) || props.ignoreCache) {
       addresses = stakeAccounts.map(({ pubkey }) => {
         try {
-          return pubkey.toBase58()
+          return pubkey.toBase58();
         } catch {
-          return pubkey
+          return pubkey;
         }
-      })
+      });
 
       // Insert addresses to DB, adding only new addresses
-      AddrCacheDb.setAddrCache({ ticker: this.wallet.ticker, type: STAKE_ADDR_TYPE, addresses })
+      AddrCacheDb.setAddrCache({
+        ticker: this.wallet.ticker,
+        type: STAKE_ADDR_TYPE,
+        addresses,
+      });
     }
 
-    const { epoch } = await this.getEpochInfo()
+    const { epoch } = await this.getEpochInfo();
 
-    const accounts = stakeAccounts.map((info) => {
-      // for empty addresses
-      // rm saved address if not exists on B/C
-      if (!info.account) {
-        AddrCacheDb._removeItem(info.pubkey.toBase58())
-        return undefined
-      }
+    const accounts = stakeAccounts
+      .map((info) => {
+        // for empty addresses
+        // rm saved address if not exists on B/C
+        if (!info.account) {
+          AddrCacheDb._removeItem(info.pubkey.toBase58());
+          return undefined;
+        }
 
-      /**
-       * @TODO only returns delegation for now, need to implement `deactivate` and `withdrawals`
-       */
-      if (info.account.data.parsed.type !== 'delegated') {
-        return undefined
-      }
+        /**
+         * @TODO only returns delegation for now, need to implement `deactivate` and `withdrawals`
+         */
+        if (info.account.data.parsed.type !== 'delegated') {
+          return undefined;
+        }
 
-      const accountAddress = info.pubkey.toBase58()
-      const staked = info.account.lamports
-      const validator = info.account.data.parsed.info.stake.delegation.voter
-      const isDeactivated = Number.isSafeInteger(Number(info.account.data.parsed.info.stake.delegation.deactivationEpoch))
-      const isAvailableForWithdraw = isDeactivated &&
-        Number(info.account.data.parsed.info.stake.delegation.deactivationEpoch) < epoch
+        const accountAddress = info.pubkey.toBase58();
+        const staked = info.account.lamports;
+        const validator = info.account.data.parsed.info.stake.delegation.voter;
+        const isDeactivated = Number.isSafeInteger(
+          Number(
+            info.account.data.parsed.info.stake.delegation.deactivationEpoch,
+          ),
+        );
+        const isAvailableForWithdraw =
+          isDeactivated &&
+          Number(
+            info.account.data.parsed.info.stake.delegation.deactivationEpoch,
+          ) < epoch;
 
-      return { accountAddress, staked, validator, isDeactivated, isAvailableForWithdraw }
-    }).filter(Boolean)
+        return {
+          accountAddress,
+          staked,
+          validator,
+          isDeactivated,
+          isAvailableForWithdraw,
+        };
+      })
+      .filter(Boolean);
 
     const staked = accounts.reduce((prev, cur) => {
-      return prev.add(new this.wallet.BN(cur.staked))
-    }, new this.wallet.BN(0))
+      return prev.add(new this.wallet.BN(cur.staked));
+    }, new this.wallet.BN(0));
 
     return {
       staking: accounts,
       staked,
       total: accounts.reduce((acc, next) => {
-        return acc.add(new BN(next.staked))
+        return acc.add(new BN(next.staked));
       }, new BN(0)),
-    }
+    };
   }
 
-  getTxInstruction (tx) {
-    const parsedValues = { destination: '', source: '', lamports: 0 }
+  getTxInstruction(tx) {
+    const parsedValues = { destination: '', source: '', lamports: 0 };
 
     tx.transaction.message.instructions.forEach((ins) => {
-      if (['transfer', 'createAccount', 'createAccountWithSeed', 'delegate', 'deactivate', 'withdraw'].includes(ins.parsed.type)) {
-        parsedValues.destination = ins.parsed.info.destination || ins.parsed.info.voteAccount || ins.parsed.info.stakeAccount
-        parsedValues.source = ins.parsed.info.source || ins.parsed.info.stakeAuthority || ins.parsed.info.stakeAccount
+      if (
+        [
+          'transfer',
+          'createAccount',
+          'createAccountWithSeed',
+          'delegate',
+          'deactivate',
+          'withdraw',
+        ].includes(ins.parsed.type)
+      ) {
+        parsedValues.destination =
+          ins.parsed.info.destination ||
+          ins.parsed.info.voteAccount ||
+          ins.parsed.info.stakeAccount;
+        parsedValues.source =
+          ins.parsed.info.source ||
+          ins.parsed.info.stakeAuthority ||
+          ins.parsed.info.stakeAccount;
         if (ins.parsed.info.lamports) {
-          parsedValues.lamports = ins.parsed.info.lamports
+          parsedValues.lamports = ins.parsed.info.lamports;
         }
       }
-    })
+    });
 
-    return parsedValues
+    return parsedValues;
   }
 
-  getTxHash (tx) {
-    return tx.transaction.signatures[0]
+  getTxHash(tx) {
+    return tx.transaction.signatures[0];
   }
 
-  getTxDirection (selfAddress, tx) {
-    return this.getTxInstruction(tx).destination === selfAddress
+  getTxDirection(selfAddress, tx) {
+    return this.getTxInstruction(tx).destination === selfAddress;
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
-    const { destination, source } = this.getTxInstruction(tx)
+  getTxOtherSideAddress(selfAddress, tx) {
+    const { destination, source } = this.getTxInstruction(tx);
 
-    return destination === selfAddress ? source : destination
+    return destination === selfAddress ? source : destination;
   }
 
-  getTxValue (address, tx) {
-    return toCurrency(this.getTxInstruction(tx).lamports, this.wallet.decimal)
+  getTxValue(address, tx) {
+    return toCurrency(this.getTxInstruction(tx).lamports, this.wallet.decimal);
   }
 
-  getTxDateTime (tx) {
-    return new Date(Number(`${tx.blockTime}000`))
+  getTxDateTime(tx) {
+    return new Date(Number(`${tx.blockTime}000`));
   }
 
-  getTxMemo (tx) {
-    return ''
+  getTxMemo(tx) {
+    return '';
   }
 
-  async getTransactions ({ address }) {
-    const sigs = await this.getCurrentSigs(new PublicKey(address), 'finalized')
-    const txs = await this.connection.getParsedConfirmedTransactions(sigs, 'finalized')
+  async getTransactions({ address }) {
+    const sigs = await this.getCurrentSigs(new PublicKey(address), 'finalized');
+    const txs = await this.connection.getParsedConfirmedTransactions(
+      sigs,
+      'finalized',
+    );
 
-    return this.modifyTransactionsResponse(txs, address)
+    return this.modifyTransactionsResponse(txs, address);
   }
 
-  async getSpecifiedTransactions (sigs, selfAddress) {
-    const txs = await this.connection.getParsedConfirmedTransactions(sigs, 'confirmed')
+  async getSpecifiedTransactions(sigs, selfAddress) {
+    const txs = await this.connection.getParsedConfirmedTransactions(
+      sigs,
+      'confirmed',
+    );
 
-    return this.modifyTransactionsResponse(txs, selfAddress)
+    return this.modifyTransactionsResponse(txs, selfAddress);
   }
 
-  modifyTransactionResponse (txs, selfAddress) {
-    return txs.map((tx) => new Transaction({
-      ticker: this.wallet.ticker,
-      name: this.wallet.name,
-      alias: this.wallet.alias,
-      walletid: this.wallet.id,
-      explorer: this.constructor.name,
-      txid: this.getTxHash(tx),
-      direction: this.getTxDirection(selfAddress, tx),
-      otherSideAddress: this.getTxOtherSideAddress(selfAddress, tx),
-      amount: this.getTxValue(selfAddress, tx),
-      datetime: this.getTxDateTime(tx),
-      memo: this.getTxMemo(tx),
-      confirmations: 1,
-    }))
+  modifyTransactionResponse(txs, selfAddress) {
+    return txs.map(
+      (tx) =>
+        new Transaction({
+          ticker: this.wallet.ticker,
+          name: this.wallet.name,
+          alias: this.wallet.alias,
+          walletid: this.wallet.id,
+          explorer: this.constructor.name,
+          txid: this.getTxHash(tx),
+          direction: this.getTxDirection(selfAddress, tx),
+          otherSideAddress: this.getTxOtherSideAddress(selfAddress, tx),
+          amount: this.getTxValue(selfAddress, tx),
+          datetime: this.getTxDateTime(tx),
+          memo: this.getTxMemo(tx),
+          confirmations: 1,
+        }),
+    );
   }
 
   /**
@@ -303,67 +367,84 @@ class SolanaNodeExplorer extends Explorer {
    * @param length
    * @returns {Promise<number>}
    */
-  getMinRent (length = STAKE_DATA_LENGTH) {
-    return this.connection.getMinimumBalanceForRentExemption(length)
+  getMinRent(length = STAKE_DATA_LENGTH) {
+    return this.connection.getMinimumBalanceForRentExemption(length);
   }
 
-  async connectSocket (address) {
-    const { baseUrl, websocketUrl } = this.config
+  async connectSocket(address) {
+    const { baseUrl, websocketUrl } = this.config;
 
     if (this.#finalizedSocketListenerId) {
-      this.socket.removeAccountChangeListener(this.#finalizedSocketListenerId)
-      this.#finalizedSocketListenerId = null
+      this.socket.removeAccountChangeListener(this.#finalizedSocketListenerId);
+      this.#finalizedSocketListenerId = null;
     }
     if (this.#confirmedSocketListenerId) {
-      this.socket.removeAccountChangeListener(this.#confirmedSocketListenerId)
-      this.#confirmedSocketListenerId = null
+      this.socket.removeAccountChangeListener(this.#confirmedSocketListenerId);
+      this.#confirmedSocketListenerId = null;
     }
 
-    this.setSocketClient(websocketUrl || baseUrl)
+    this.setSocketClient(websocketUrl || baseUrl);
 
-    const pubkey = new PublicKey(address)
+    const pubkey = new PublicKey(address);
 
     if (this.socket) {
-      this.#finalizedSocketListenerId = this.socket.onAccountChange(pubkey, (event) => this.processBalanceChangeEvent(event, pubkey), 'finalized')
-      this.#confirmedSocketListenerId = this.socket.onAccountChange(pubkey, (event) => this.processTxsChangeEvent(event, pubkey), 'confirmed')
+      this.#finalizedSocketListenerId = this.socket.onAccountChange(
+        pubkey,
+        (event) => this.processBalanceChangeEvent(event, pubkey),
+        'finalized',
+      );
+      this.#confirmedSocketListenerId = this.socket.onAccountChange(
+        pubkey,
+        (event) => this.processTxsChangeEvent(event, pubkey),
+        'confirmed',
+      );
     }
   }
 
-  updateParams (params) {
-    super.updateParams(params)
+  updateParams(params) {
+    super.updateParams(params);
 
-    if (params.websocketUrl && this.config.websocketUrl !== params.websocketUrl) {
-      this.config.websocketUrl = params.websocketUrl
-      this.connectSocket(this.wallet.address)
+    if (
+      params.websocketUrl &&
+      this.config.websocketUrl !== params.websocketUrl
+    ) {
+      this.config.websocketUrl = params.websocketUrl;
+      this.connectSocket(this.wallet.address);
     }
   }
 
-  async processTxsChangeEvent (event, pubkey) {
-    const sigs = await this.getCurrentSigs(pubkey, 'confirmed')
+  async processTxsChangeEvent(event, pubkey) {
+    const sigs = await this.getCurrentSigs(pubkey, 'confirmed');
 
-    const txs = await this.getSpecifiedTransactions(sigs, pubkey.toBase58())
+    const txs = await this.getSpecifiedTransactions(sigs, pubkey.toBase58());
 
     // await history.filterAndUpdateTransactions(txs)
 
     txs.forEach((tx) => {
       if (tx.direction) {
-        this.eventEmitter.emit(`${this.wallet.parent}-${this.wallet.id}::new-socket-tx`, {
-          unconfirmedTx: tx,
-        })
+        this.eventEmitter.emit(
+          `${this.wallet.parent}-${this.wallet.id}::new-socket-tx`,
+          {
+            unconfirmedTx: tx,
+          },
+        );
       }
-    })
+    });
   }
 
-  processBalanceChangeEvent (event, pubkey) {
-    this.eventEmitter.emit(`update::${this.wallet.id}::balance`, event.lamports)
+  processBalanceChangeEvent(event, pubkey) {
+    this.eventEmitter.emit(
+      `update::${this.wallet.id}::balance`,
+      event.lamports,
+    );
   }
 
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit((tx.meta && tx.meta.fee) || 0)
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit((tx.meta && tx.meta.fee) || 0);
   }
 
-  getTxConfirmations () {
-    return 1
+  getTxConfirmations() {
+    return 1;
   }
 
   /**
@@ -381,49 +462,58 @@ class SolanaNodeExplorer extends Explorer {
    * @returns {Promise<{FetchRawListResponse}[]>} - NFTs fetched metadata list.
    * @throws {ExternalError} - Throws error receiving NFT list
    */
-  async fetchRawList (address) {
+  async fetchRawList(address) {
     try {
       const publicAddress = await resolveToWalletAddress({
         text: address,
         connection: this.connection,
-      })
+      });
 
-      const rawList = await getParsedNftAccountsByOwner({ publicAddress, connection: this.connection })
-      const urls = []
+      const rawList = await getParsedNftAccountsByOwner({
+        publicAddress,
+        connection: this.connection,
+      });
+      const urls = [];
 
-      const rawTokens = rawList.map(({
-        mint,
-        // @TODO Research this
-        // tokenStandard,
-        data: { name, uri },
-      }) => {
-        urls.push(uri)
-        return {
-          tokenId: mint,
-          name,
-        }
-      })
-      const additionalPropertyResults = await Promise.allSettled(urls.map((url) => axios.get(url)))
+      const rawTokens = rawList.map(
+        ({
+          mint,
+          // @TODO Research this
+          // tokenStandard,
+          data: { name, uri },
+        }) => {
+          urls.push(uri);
+          return {
+            tokenId: mint,
+            name,
+          };
+        },
+      );
+      const additionalPropertyResults = await Promise.allSettled(
+        urls.map((url) => axios.get(url)),
+      );
 
       for (let index = 0; index < rawTokens.length; index++) {
-        const token = rawTokens[index]
-        const { status, value, reason } = additionalPropertyResults[index]
+        const token = rawTokens[index];
+        const { status, value, reason } = additionalPropertyResults[index];
 
         if (status === 'fulfilled') {
-          const { data: { description, image } } = value
+          const {
+            data: { description, image },
+          } = value;
 
-          token.description = description
-          token.imageUrl = image
+          token.description = description;
+          token.imageUrl = image;
         } else {
           // @TODO token.description = 'Error getting token description'
           // @TODO token.imageUrl = '<Some error url>'
-          console.warn(reason)
+          console.warn(reason);
         }
       }
-      return rawTokens
+      return rawTokens;
     } catch (error) {
-      console.warn(error)
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      console.warn(error);
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -435,21 +525,19 @@ class SolanaNodeExplorer extends Explorer {
    * @returns {Promise<SOLNftToken[]>}
    * @throws {ExternalError} - Throws error receiving NFT list
    */
-  async fetchNftList (coin) {
-    const { address, ticker } = coin
+  async fetchNftList(coin) {
+    const { address, ticker } = coin;
 
     try {
-      const rawList = await this.fetchRawList(address)
+      const rawList = await this.fetchRawList(address);
 
-      return rawList.map(({
-        tokenId,
-        name,
-        description,
-        imageUrl,
-      }) => new SOLNftToken(tokenId, ticker, name, description, imageUrl))
+      return rawList.map(
+        ({ tokenId, name, description, imageUrl }) =>
+          new SOLNftToken(tokenId, ticker, name, description, imageUrl),
+      );
     } catch (error) {
-      console.warn(error)
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      console.warn(error);
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -466,26 +554,34 @@ class SolanaNodeExplorer extends Explorer {
    * @returns {Promise<{tx: string}>} - Transaction hash.
    * @throws {ExternalError} - Throws transfer NFT error.
    */
-  async sendNft (coin, toAddress, contractAddress, tokenId, tokenStandard, options) {
-    const fromKeypair = Keypair.fromSecretKey(coin.getPrivateKey())
+  async sendNft(
+    coin,
+    toAddress,
+    contractAddress,
+    tokenId,
+    tokenStandard,
+    options,
+  ) {
+    const fromKeypair = Keypair.fromSecretKey(coin.getPrivateKey());
 
     // Mint is the Mint address found in the NFT metadata
-    const mintPublicKey = new PublicKey(tokenId)
-    const destPublicKey = new PublicKey(toAddress)
+    const mintPublicKey = new PublicKey(tokenId);
+    const destPublicKey = new PublicKey(toAddress);
 
     try {
       const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
         this.connection,
         fromKeypair,
         mintPublicKey,
-        fromKeypair.publicKey
-      )
+        fromKeypair.publicKey,
+      );
 
       const toTokenAccount = await getOrCreateAssociatedTokenAccount(
         this.connection,
         fromKeypair,
         mintPublicKey,
-        destPublicKey)
+        destPublicKey,
+      );
 
       const transaction = new Transaction().add(
         createTransferCheckedInstruction(
@@ -496,16 +592,18 @@ class SolanaNodeExplorer extends Explorer {
           1,
           0,
           [],
-          TOKEN_PROGRAM_ID
-        )
-      )
+          TOKEN_PROGRAM_ID,
+        ),
+      );
 
-      const tx = await this.connection.sendTransaction(transaction, [fromKeypair])
+      const tx = await this.connection.sendTransaction(transaction, [
+        fromKeypair,
+      ]);
 
-      return { tx }
+      return { tx };
     } catch (error) {
-      console.warn(error)
-      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this })
+      console.warn(error);
+      throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
   }
 
@@ -516,24 +614,31 @@ class SolanaNodeExplorer extends Explorer {
    * @param {string} tokenId - Token id.
    * @returns {string} - NFT info url.
    */
-  makeNftInfoUrl (contractAddress, tokenId) {
-    return `${getStringWithEnsuredEndChar(this.config.baseUrl, '/')}${tokenId}`
+  makeNftInfoUrl(contractAddress, tokenId) {
+    return `${getStringWithEnsuredEndChar(this.config.baseUrl, '/')}${tokenId}`;
   }
 
-  async getUserTokenList () {
-    const { value: splAccounts } = await this.connection.getParsedTokenAccountsByOwner(new PublicKey(this.wallet.address), {
-      programId: new PublicKey(TOKEN_PROGRAM_ID),
-    })
+  async getUserTokenList() {
+    const { value: splAccounts } =
+      await this.connection.getParsedTokenAccountsByOwner(
+        new PublicKey(this.wallet.address),
+        {
+          programId: new PublicKey(TOKEN_PROGRAM_ID),
+        },
+      );
 
-    const rawTokensList = []
+    const rawTokensList = [];
 
     splAccounts.forEach((acc) => {
-      if (acc.account.data.program === 'spl-token' && acc.account.data.parsed.type === 'account') {
-        rawTokensList.push(acc.account.data.parsed.info)
+      if (
+        acc.account.data.program === 'spl-token' &&
+        acc.account.data.parsed.type === 'account'
+      ) {
+        rawTokensList.push(acc.account.data.parsed.info);
       }
-    })
+    });
 
-    return rawTokensList
+    return rawTokensList;
   }
 
   /**
@@ -541,29 +646,36 @@ class SolanaNodeExplorer extends Explorer {
    * @param {string} mint
    * @returns {Promise<string|null>}
    */
-  async getTokenBalance ({ mint }) {
+  async getTokenBalance({ mint }) {
     try {
-      const { value: splAccounts } = await this.connection.getParsedTokenAccountsByOwner(new PublicKey(this.wallet.address), {
-        programId: new PublicKey(TOKEN_PROGRAM_ID),
-      })
+      const { value: splAccounts } =
+        await this.connection.getParsedTokenAccountsByOwner(
+          new PublicKey(this.wallet.address),
+          {
+            programId: new PublicKey(TOKEN_PROGRAM_ID),
+          },
+        );
 
       splAccounts.forEach((acc) => {
-        if (acc.account.data.program === 'spl-token' && acc.account.data.parsed.type === 'account') {
-          const parsedInfo = acc.account.data.parsed.info
+        if (
+          acc.account.data.program === 'spl-token' &&
+          acc.account.data.parsed.type === 'account'
+        ) {
+          const parsedInfo = acc.account.data.parsed.info;
 
           if (parsedInfo.mint === mint) {
-            return parsedInfo.tokenAmount.amount
+            return parsedInfo.tokenAmount.amount;
           }
         }
-        return null
-      })
+        return null;
+      });
 
-      return null
+      return null;
     } catch (error) {
-      console.warn(error)
-      return null
+      console.warn(error);
+      return null;
     }
   }
 }
 
-export default SolanaNodeExplorer
+export default SolanaNodeExplorer;

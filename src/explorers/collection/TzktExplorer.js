@@ -1,12 +1,12 @@
-import TzktAbstractExplorer from './TzktAbstractExplorer.js'
+import TzktAbstractExplorer from './TzktAbstractExplorer.js';
 
 class TzktExplorer extends TzktAbstractExplorer {
-  getTransactionsUrl (address) {
-    return `${this.config.baseUrl}accounts/${address}/operations`
+  getTransactionsUrl(address) {
+    return `${this.config.baseUrl}accounts/${address}/operations`;
   }
 
-  getTransactionUrl (txid) {
-    return `${this.config.baseUrl}explorer/op/${txid}`
+  getTransactionUrl(txid) {
+    return `${this.config.baseUrl}explorer/op/${txid}`;
   }
 
   /**
@@ -14,8 +14,8 @@ class TzktExplorer extends TzktAbstractExplorer {
    *
    * @return {string}
    */
-  getExtraParam () {
-    return this.lastTxId
+  getExtraParam() {
+    return this.lastTxId;
   }
 
   /**
@@ -23,8 +23,8 @@ class TzktExplorer extends TzktAbstractExplorer {
    *
    * @param lastTx {Object} the last tx got
    */
-  setExtraParam (lastTx) {
-    this.lastTxId = lastTx?.id
+  setExtraParam(lastTx) {
+    this.lastTxId = lastTx?.id;
   }
 
   /**
@@ -32,9 +32,9 @@ class TzktExplorer extends TzktAbstractExplorer {
    *
    * @return {Object}
    */
-  getTransactionsParams (address, limit, lastId) {
-    return { lastId, limit }
+  getTransactionsParams(address, limit, lastId) {
+    return { lastId, limit };
   }
 }
 
-export default TzktExplorer
+export default TzktExplorer;

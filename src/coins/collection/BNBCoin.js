@@ -1,14 +1,13 @@
-import { BNBToken } from '../../tokens';
 import { Coin } from '../../abstract';
+import { DEFAULT_BINANCE_NET_URL } from '../../env';
 import { WalletError } from '../../errors';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
-import { Amount } from '../../utils';
-// import configManager, { ConfigKey } from '../ConfigManager';
+import BinanceBCExplorer from '../../explorers/collection/BinanceBCExplorer';
 import BinanceDex from '../../explorers/collection/BinanceDex';
 import BinanceExplorer from '../../explorers/collection/BinanceExplorer';
-import BinanceBCExplorer from '../../explorers/collection/BinanceBCExplorer';
-import { LazyLoadedLib } from '../../utils';
-import { DEFAULT_BINANCE_NET_URL } from '../../env';
+import { BNBToken } from '../../tokens';
+import { Amount, LazyLoadedLib } from '../../utils';
+import { SEND_TRANSACTION_TYPE } from '../../utils/const';
+// import configManager, { ConfigKey } from '../ConfigManager';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 const NAME = 'BNB Coin';
@@ -583,7 +582,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   async getTokenList() {
-    return [] // configManager.get(ConfigKey.BnbTokens);
+    return []; // configManager.get(ConfigKey.BnbTokens);
   }
 
   /**

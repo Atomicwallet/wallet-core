@@ -15,7 +15,7 @@ if (!config) {
   throw new Error(`Missing ${id} config`);
 }
 
-let wallet = createCoin(LUNCCoin, config as CoinDataConfig);
+const wallet = createCoin(LUNCCoin, config as CoinDataConfig);
 
 if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);

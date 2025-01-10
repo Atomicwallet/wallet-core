@@ -1,53 +1,49 @@
-import Explorer from '../Explorer'
-import Transaction from '../Transaction'
-import {
-  GET_TRANSACTIONS_TYPE,
-} from '../../utils/const'
+import { GET_TRANSACTIONS_TYPE } from '../../utils/const';
+import Explorer from '../Explorer';
+import Transaction from '../Transaction';
 
 class VergeInsightExplorer extends Explorer {
-  constructor (...args) {
-    super(...args)
+  constructor(...args) {
+    super(...args);
 
-    this.canPaginate = true
+    this.canPaginate = true;
   }
 
-  getAllowedTickers () {
-    return [
-      'XVG',
-    ]
+  getAllowedTickers() {
+    return ['XVG'];
   }
 
-  getApiPrefix () {
-    return 'api/XVG/mainnet/'
+  getApiPrefix() {
+    return 'api/XVG/mainnet/';
   }
 
-  getInfoUrl (address) {
-    return `${this.getApiPrefix()}address/${address}/balance`
+  getInfoUrl(address) {
+    return `${this.getApiPrefix()}address/${address}/balance`;
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       balance: response.confirmed,
-    }
+    };
   }
 
-  getTransactionUrl (txId) {
-    return `${this.getApiPrefix()}tx/${txId}/coins`
+  getTransactionUrl(txId) {
+    return `${this.getApiPrefix()}tx/${txId}/coins`;
   }
 
-  getTransactionsUrl (address) {
-    return `${this.getApiPrefix()}address/${address}/txs`
+  getTransactionsUrl(address) {
+    return `${this.getApiPrefix()}address/${address}/txs`;
   }
 
-  getTransactionsParams (address, offset, limit, pageNum) {
+  getTransactionsParams(address, offset, limit, pageNum) {
     return {
       pageNum,
-    }
+    };
   }
 
-  modifyTransactionsResponse (response, transactions, selfAddress) {
+  modifyTransactionsResponse(response, transactions, selfAddress) {
     return transactions.map((tx) => {
-      const direction = this.getTxDirection(selfAddress, tx)
+      const direction = this.getTxDirection(selfAddress, tx);
 
       return new Transaction({
         ticker: this.wallet.ticker,
@@ -55,36 +51,47 @@ class VergeInsightExplorer extends Explorer {
         walletid: this.wallet.id,
         txid: this.getTxHash(tx),
         direction,
-        otherSideAddress: this.getTxOtherSideAddress(selfAddress, tx, direction),
+        otherSideAddress: this.getTxOtherSideAddress(
+          selfAddress,
+          tx,
+          direction,
+        ),
         amount: this.getTxValue(selfAddress, tx, direction),
         datetime: this.getTxDateTime(tx),
         alias: this.wallet.alias,
-      })
-    })
+      });
+    });
   }
 
-  getUnspentOutputsUrl (address) {
-    return `${this.getApiPrefix()}address/${address}`
+  getUnspentOutputsUrl(address) {
+    return `${this.getApiPrefix()}address/${address}`;
   }
 
-  getUnspentOutputsParams () {
+  getUnspentOutputsParams() {
     return {
       unspent: true,
-    }
+    };
   }
 
-  modifyUnspentOutputsResponse (selfAddress, response) {
+  modifyUnspentOutputsResponse(selfAddress, response) {
     return response.map(({ value, script, mintTxid, mintIndex, address }) => {
-      return { satoshis: value, value, script, txid: mintTxid, vout: mintIndex, address }
-    })
+      return {
+        satoshis: value,
+        value,
+        script,
+        txid: mintTxid,
+        vout: mintIndex,
+        address,
+      };
+    });
   }
 
-  getSendTransactionUrl () {
-    return `${this.getApiPrefix()}tx/send`
+  getSendTransactionUrl() {
+    return `${this.getApiPrefix()}tx/send`;
   }
 
-  getSendTransactionParam () {
-    return 'rawTx'
+  getSendTransactionParam() {
+    return 'rawTx';
   }
 
   /**
@@ -93,8 +100,8 @@ class VergeInsightExplorer extends Explorer {
    * @param {Object} tx The transaction response
    * @return {Date} The transaction datetime.
    */
-  getTxDateTime (tx) {
-    return new Date(tx.blockTimeNormalized)
+  getTxDateTime(tx) {
+    return new Date(tx.blockTimeNormalized);
   }
 
   /**
@@ -103,17 +110,16 @@ class VergeInsightExplorer extends Explorer {
    * @param {Object} tx The trasaction
    * @return {Number} The trasaction amount.
    */
-  getTxValue (selfAddress, tx, direction) {
+  getTxValue(selfAddress, tx, direction) {
     const filterFn = direction
       ? (output) => output.address === selfAddress
-      : (output) => output.address !== selfAddress
+      : (output) => output.address !== selfAddress;
 
-    const value = tx.outputs
-      .filter(filterFn).reduce((prev, cur) => {
-        return prev.add(new this.wallet.BN(cur.value))
-      }, new this.wallet.BN(0))
+    const value = tx.outputs.filter(filterFn).reduce((prev, cur) => {
+      return prev.add(new this.wallet.BN(cur.value));
+    }, new this.wallet.BN(0));
 
-    return this.wallet.toCurrencyUnit(value)
+    return this.wallet.toCurrencyUnit(value);
   }
 
   /**
@@ -122,8 +128,8 @@ class VergeInsightExplorer extends Explorer {
    * @param {Object} tx The trasaction
    * @return {Boolean} The trasaction direction.
    */
-  getTxDirection (selfAddress, tx) {
-    return tx.inputs.every((input) => input.address !== selfAddress)
+  getTxDirection(selfAddress, tx) {
+    return tx.inputs.every((input) => input.address !== selfAddress);
   }
 
   /**
@@ -132,14 +138,16 @@ class VergeInsightExplorer extends Explorer {
    * @param {Object} tx The transaction response.
    * @return {(Boolean|String)} The transaction recipient.
    */
-  getTxOtherSideAddress (selfAddress, tx, direction) {
+  getTxOtherSideAddress(selfAddress, tx, direction) {
     if (direction) {
-      return tx.inputs[0].address
+      return tx.inputs[0].address;
     }
 
-    const foreignOutput = tx.outputs.find((output) => output.address !== selfAddress)
+    const foreignOutput = tx.outputs.find(
+      (output) => output.address !== selfAddress,
+    );
 
-    return foreignOutput?.address || selfAddress
+    return foreignOutput?.address || selfAddress;
   }
 
   /**
@@ -148,11 +156,11 @@ class VergeInsightExplorer extends Explorer {
    * @param {Object[]} utxos The utxos
    * @return {BN} The balance.
    */
-  calculateBalance (utxos = []) {
+  calculateBalance(utxos = []) {
     return utxos.reduce(
       (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0')
-    )
+      new this.wallet.BN('0'),
+    );
   }
 
   /**
@@ -161,8 +169,8 @@ class VergeInsightExplorer extends Explorer {
    * @param {Object} tx
    * @return {Transaction}
    */
-  modifyTransactionResponse (tx, selfAddress) {
-    const direction = this.getTxDirection(selfAddress, tx)
+  modifyTransactionResponse(tx, selfAddress) {
+    const direction = this.getTxDirection(selfAddress, tx);
 
     return new Transaction({
       ticker: this.wallet.ticker,
@@ -177,58 +185,77 @@ class VergeInsightExplorer extends Explorer {
       datetime: this.getTxDateTime(tx),
       confirmations: this.getTxConfirmations(tx),
       alias: this.wallet.alias,
-    })
+    });
   }
 
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit(tx?.fee || this.wallet.feeDefault || 0)
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit(tx?.fee || this.wallet.feeDefault || 0);
   }
 
-  getTxConfirmations (tx) {
-    return tx.confirmations
+  getTxConfirmations(tx) {
+    return tx.confirmations;
   }
 
-  getTxHash (tx) {
-    return tx.txid
+  getTxHash(tx) {
+    return tx.txid;
   }
 
-  async getTransactionCoins (txid) {
-    return this.request(`${this.getApiPrefix()}tx/${txid}/coins`)
+  async getTransactionCoins(txid) {
+    return this.request(`${this.getApiPrefix()}tx/${txid}/coins`);
   }
 
-  async getTransaction (txid) {
-    return this.request(`${this.getApiPrefix()}tx/${txid}`)
+  async getTransaction(txid) {
+    return this.request(`${this.getApiPrefix()}tx/${txid}`);
   }
 
-  async getTransactions ({ address, offset = 0, limit = this.defaultTxLimit, pageNum }) {
+  async getTransactions({
+    address,
+    offset = 0,
+    limit = this.defaultTxLimit,
+    pageNum,
+  }) {
     const response = await this.request(
       this.getTransactionsUrl(address),
       this.getTransactionsMethod(),
-      this.getTransactionsParams(address, offset || 0, limit || this.defaultTxLimit, pageNum),
+      this.getTransactionsParams(
+        address,
+        offset || 0,
+        limit || this.defaultTxLimit,
+        pageNum,
+      ),
       GET_TRANSACTIONS_TYPE,
-      this.getTransactionsOptions()
-    )
+      this.getTransactionsOptions(),
+    );
 
-    const txIds = []
+    const txIds = [];
 
     response.forEach((utxo) => {
-      if (utxo.mintTxid && txIds.findIndex((tx) => tx === utxo.mintTxid) === -1) {
-        txIds.push(utxo.mintTxid)
+      if (
+        utxo.mintTxid &&
+        txIds.findIndex((tx) => tx === utxo.mintTxid) === -1
+      ) {
+        txIds.push(utxo.mintTxid);
       }
-      if (utxo.spentTxid && txIds.findIndex((tx) => tx === utxo.spentTxid) === -1) {
-        txIds.push(utxo.spentTxid)
+      if (
+        utxo.spentTxid &&
+        txIds.findIndex((tx) => tx === utxo.spentTxid) === -1
+      ) {
+        txIds.push(utxo.spentTxid);
       }
-    })
+    });
 
     return Promise.all(
       txIds.map(async (txid) => {
-        const tx = await this.getTransaction(txid)
-        const coins = await this.getTransactionCoins(txid)
+        const tx = await this.getTransaction(txid);
+        const coins = await this.getTransactionCoins(txid);
 
-        return this.modifyTransactionResponse({ txid, ...tx, ...coins }, address)
-      })
-    )
+        return this.modifyTransactionResponse(
+          { txid, ...tx, ...coins },
+          address,
+        );
+      }),
+    );
   }
 }
 
-export default VergeInsightExplorer
+export default VergeInsightExplorer;

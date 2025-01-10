@@ -1,17 +1,14 @@
 import { Coin } from '../../abstract';
 // import configManager, { ConfigKey } from '../ConfigManager';
 // import AddrCacheDb from '../AddrCacheDb';
-import { STAKE_ADDR_TYPE } from '../../utils/const';
 import { NftMixin } from '../../coins/nfts/mixins';
-
-// import { coinStakings } from '../Stakings';
-// import logger from '../Logger';
-import predefinedValidators from '../../resources/staking/validators.json';
+import { UnknownConfigKeyError } from '../../errors';
 import SolanaNodeExplorer from '../../explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from '../../explorers/collection/SolanaTritonExplorer';
-import { LazyLoadedLib } from '../../utils';
-import { UnknownConfigKeyError } from '../../errors';
+import predefinedValidators from '../../resources/staking/validators.json';
 import { SOLToken } from '../../tokens';
+import { LazyLoadedLib } from '../../utils';
+import { STAKE_ADDR_TYPE } from '../../utils/const';
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
 import {
   NODE_PROVIDER_OPERATION,
@@ -477,7 +474,7 @@ class SOLCoin extends NftMixin(
     //   }
     //   return [];
     // });
-    return []
+    return [];
   }
 
   /**
@@ -496,7 +493,7 @@ class SOLCoin extends NftMixin(
     //   }
     //   return [];
     // });
-    return []
+    return [];
   }
 
   /**

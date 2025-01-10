@@ -92,6 +92,7 @@ abstract class Coin extends AbstractWallet {
   abstract createTokenTransaction(
     args: unknown,
   ): Promise<RawTxHex | RawTxBinary | RawTxObject>;
+
   abstract getTokenTransactions(args: unknown): Transaction[];
   abstract getTokenInfo(args: unknown): string | null;
 
@@ -391,8 +392,6 @@ abstract class Coin extends AbstractWallet {
               type: event,
             });
           }
-
-          return;
         },
       );
     });

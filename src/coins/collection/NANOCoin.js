@@ -1,8 +1,8 @@
 import { Coin } from '../../abstract';
 import { WalletError } from '../../errors';
-import { WALLET_ERROR } from '../../utils/const';
-import { LazyLoadedLib } from '../../utils';
 import NanonodeExplorer from '../../explorers/collection/NanonodeExplorer';
+import { LazyLoadedLib } from '../../utils';
+import { WALLET_ERROR } from '../../utils/const';
 import { HasProviders } from '../mixins';
 
 const blakeLazyLoaded = new LazyLoadedLib(() => import('blakejs'));

@@ -1,9 +1,12 @@
+import { ExplorerRequestError } from '../../errors/index.js';
+import {
+  SEND_TRANSACTION_TYPE,
+  GET_TRANSACTION_TYPE,
+  UNDEFINED_OPERATION_ERROR,
+} from '../../utils/const';
+import Explorer from '../Explorer';
 
-import Explorer from '../Explorer'
-import { ExplorerRequestError } from '../../errors/index.js'
-import { SEND_TRANSACTION_TYPE, GET_TRANSACTION_TYPE, UNDEFINED_OPERATION_ERROR } from '../../utils/const'
-
-const RIPPLE_START_DATE = 946684800
+const RIPPLE_START_DATE = 946684800;
 
 /**
  * Class for explorer.
@@ -12,77 +15,79 @@ const RIPPLE_START_DATE = 946684800
  * @class {Explorer}
  */
 class RippleExplorer extends Explorer {
-  constructor (...args) {
-    super(...args)
+  constructor(...args) {
+    super(...args);
 
-    this.requestId = 0
+    this.requestId = 0;
   }
 
-  getInitParams () {
+  getInitParams() {
     return {
       baseURL: this.config.baseUrl,
       headers: { 'Content-Type': 'text/plain' },
       credentials: false,
-    }
+    };
   }
 
-  async checkStatusTransaction (txId) {
+  async checkStatusTransaction(txId) {
     const response = await this.request(
       this.getTransactionUrl(txId),
       this.getTransactionMethod(),
       this.getTransactionParams(txId),
       GET_TRANSACTION_TYPE,
-      this.getTransactionOptions()
-    )
+      this.getTransactionOptions(),
+    );
 
-    return response.status
+    return response.status;
   }
 
-  getAllowedTickers () {
-    return ['XRP']
+  getAllowedTickers() {
+    return ['XRP'];
   }
 
-  getInfoUrl (address) {
-    return 'account_info'
+  getInfoUrl(address) {
+    return 'account_info';
   }
 
-  getInfoParams (address) {
-    return { account: address }
+  getInfoParams(address) {
+    return { account: address };
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     return {
       balance: response.account_data.Balance,
       transactions: [],
       sequence: response.account_data.Sequence,
-    }
+    };
   }
 
-  getTransactionsUrl (address) {
-    return 'account_tx'
+  getTransactionsUrl(address) {
+    return 'account_tx';
   }
 
-  getTransactionsParams (address) {
-    return { account: address, limit: 999 }
+  getTransactionsParams(address) {
+    return { account: address, limit: 999 };
   }
 
-  modifyTransactionsResponse (response, address) {
-    this.currentLedgerVersion = response.ledger_index_max
+  modifyTransactionsResponse(response, address) {
+    this.currentLedgerVersion = response.ledger_index_max;
 
     // return super.modifyTransactionsResponse(response.transactions)
-    return response.transactions.map(({ tx }) => this.modifyTransactionResponse(tx, address))
+    return response.transactions.map(({ tx }) =>
+      this.modifyTransactionResponse(tx, address),
+    );
   }
 
-  getTransactionUrl (txId) {
-    return 'tx'
+  getTransactionUrl(txId) {
+    return 'tx';
   }
 
-  getTransactionParams (txId) {
-    return { transaction: txId, binary: false }
+  getTransactionParams(txId) {
+    return { transaction: txId, binary: false };
   }
 
-  getTxHash (tx) {
-    return tx.hash
+  getTxHash(tx) {
+    return tx.hash;
   }
 
   /**
@@ -91,8 +96,8 @@ class RippleExplorer extends Explorer {
    * @param {Object} tx The transaction
    * @return {Boolean} The transaction direction.
    */
-  getTxDirection (selfAddress, tx) {
-    return tx.Destination === selfAddress
+  getTxDirection(selfAddress, tx) {
+    return tx.Destination === selfAddress;
   }
 
   /**
@@ -101,10 +106,8 @@ class RippleExplorer extends Explorer {
    * @param {Object} tx The transaction response.
    * @return {(Boolean|String)} The transaction recipient.
    */
-  getTxOtherSideAddress (selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx)
-      ? tx.Account
-      : tx.Destination
+  getTxOtherSideAddress(selfAddress, tx) {
+    return this.getTxDirection(selfAddress, tx) ? tx.Account : tx.Destination;
   }
 
   /**
@@ -113,22 +116,22 @@ class RippleExplorer extends Explorer {
    * @param {Object} tx The trasaction
    * @return {Number} The trasaction amount.
    */
-  getTxValue (selfAddress, tx) {
-    return Number(this.wallet.toCurrencyUnit(tx.Amount))
+  getTxValue(selfAddress, tx) {
+    return Number(this.wallet.toCurrencyUnit(tx.Amount));
   }
 
-  getTxDateTime (tx) {
-    const timestamp = tx.date + RIPPLE_START_DATE
+  getTxDateTime(tx) {
+    const timestamp = tx.date + RIPPLE_START_DATE;
 
-    return new Date(Number(`${timestamp}000`))
+    return new Date(Number(`${timestamp}000`));
   }
 
-  getTxMemo (tx) {
-    return (tx.DestinationTag && String(tx.DestinationTag)) || ''
+  getTxMemo(tx) {
+    return (tx.DestinationTag && String(tx.DestinationTag)) || '';
   }
 
-  getTxConfirmations (tx) {
-    return this.currentLedgerVersion - tx.inLedger
+  getTxConfirmations(tx) {
+    return this.currentLedgerVersion - tx.inLedger;
   }
 
   /**
@@ -137,14 +140,18 @@ class RippleExplorer extends Explorer {
    * @param {String} rawtx The rawtx
    * @return {Promise<Object>} The transaction data
    */
-  async sendTransaction (rawtx) {
-    const response = await this.request('submit', null, { tx_blob: rawtx })
+  async sendTransaction(rawtx) {
+    const response = await this.request('submit', null, { tx_blob: rawtx });
 
     if (!response.engine_result === 'tesSUCCESS') {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error: new Error(response.engine_result), instance: this })
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error: new Error(response.engine_result),
+        instance: this,
+      });
     }
 
-    return { txid: response.tx_json.hash }
+    return { txid: response.tx_json.hash };
   }
 
   /**
@@ -152,10 +159,10 @@ class RippleExplorer extends Explorer {
    *
    * @return {Promise<void>}
    */
-  async getFee () {
-    const response = await this.request('fee')
+  async getFee() {
+    const response = await this.request('fee');
 
-    return response.drops.median_fee
+    return response.drops.median_fee;
   }
 
   /**
@@ -163,20 +170,20 @@ class RippleExplorer extends Explorer {
    *
    * @return {Promise<number>}
    */
-  async getCurrentLedger () {
-    const response = await this.request('ledger_current')
+  async getCurrentLedger() {
+    const response = await this.request('ledger_current');
 
-    return response.ledger_current_index
+    return response.ledger_current_index;
   }
 
   /**
    *
    * @return {Promise<number>}
    */
-  async getServerInfo () {
-    const response = await this.request('server_info')
+  async getServerInfo() {
+    const response = await this.request('server_info');
 
-    return response.info
+    return response.info;
   }
 
   /**
@@ -188,42 +195,48 @@ class RippleExplorer extends Explorer {
    * @param {String} type Request type
    * @return {Promise}
    */
-  async request (url, method, data = {}, type = UNDEFINED_OPERATION_ERROR) {
-    this.requestId += 1
+  async request(url, method, data = {}, type = UNDEFINED_OPERATION_ERROR) {
+    this.requestId += 1;
 
     const params = {
       jsonrpc: '2.0',
       method: url,
       params: [data],
       id: this.requestId,
-    }
-    const response = await this.client.post('', JSON.stringify(params))
+    };
+    const response = await this.client
+      .post('', JSON.stringify(params))
       .catch((error) => {
         throw new ExplorerRequestError({
           type,
           error,
           url,
           instance: this,
-        })
-      })
+        });
+      });
 
     // hook for not activated acc
     if (response.data.result.error === 'actNotFound') {
       return {
         account_data: { Balance: 0 },
-      }
+      };
     }
 
     if (response.data.result.status === 'error') {
-      throw new ExplorerRequestError({ type, url, error: new Error(response.data.result.error_message), instance: this })
+      throw new ExplorerRequestError({
+        type,
+        url,
+        error: new Error(response.data.result.error_message),
+        instance: this,
+      });
     }
 
-    return response.data.result
+    return response.data.result;
   }
 
-  getTxFee (tx) {
-    return this.wallet.toCurrencyUnit((tx && tx.Fee) || 0)
+  getTxFee(tx) {
+    return this.wallet.toCurrencyUnit((tx && tx.Fee) || 0);
   }
 }
 
-export default RippleExplorer
+export default RippleExplorer;

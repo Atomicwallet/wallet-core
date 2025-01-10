@@ -1,7 +1,7 @@
-import { NftToken } from './index'
+import { NftToken } from './index';
 
-const BLOCKCHAIN = 'Solana'
-const DEFAULT_TOKEN_STANDARD = 'SPL'
+const BLOCKCHAIN = 'Solana';
+const DEFAULT_TOKEN_STANDARD = 'SPL';
 
 /**
  * Class representing Solana NFT
@@ -15,9 +15,18 @@ class SOLNftToken extends NftToken {
    * @param {string} [description] - NFT description. Optional.
    * @param {string} imageUrl - URL to NFT image.
    */
-  constructor (tokenId, ticker, name, description, imageUrl) {
-    super(null, tokenId, ticker, BLOCKCHAIN, DEFAULT_TOKEN_STANDARD, name, description, imageUrl)
+  constructor(tokenId, ticker, name, description, imageUrl) {
+    super(
+      null,
+      tokenId,
+      ticker,
+      BLOCKCHAIN,
+      DEFAULT_TOKEN_STANDARD,
+      name,
+      description,
+      imageUrl,
+    );
   }
 }
 
-export default SOLNftToken
+export default SOLNftToken;

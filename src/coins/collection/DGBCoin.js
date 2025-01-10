@@ -1,9 +1,8 @@
-/* eslint-disable unicorn/number-literal-case */
 import { Coin } from '../../abstract';
-import { LazyLoadedLib } from '../../utils';
 import { WalletError } from '../../errors';
-import { LIB_NAME_INDEX } from '../../utils/const';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
+import { LazyLoadedLib } from '../../utils';
+import { LIB_NAME_INDEX } from '../../utils/const';
 import { BitcoinLikeFeeMixin, BitcoreMixin } from '../mixins';
 
 const { BITCORE } = LIB_NAME_INDEX;

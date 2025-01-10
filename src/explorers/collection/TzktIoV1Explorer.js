@@ -1,12 +1,12 @@
-import TzktAbstractExplorer from './TzktAbstractExplorer.js'
+import TzktAbstractExplorer from './TzktAbstractExplorer.js';
 
 class TzktIoV1Explorer extends TzktAbstractExplorer {
-  getTransactionsUrl (address) {
-    return `${this.config.baseUrl}/operations/transactions`
+  getTransactionsUrl(address) {
+    return `${this.config.baseUrl}/operations/transactions`;
   }
 
-  getTransactionUrl (txid) {
-    return `${this.config.baseUrl}/operations/transactions/${txid}`
+  getTransactionUrl(txid) {
+    return `${this.config.baseUrl}/operations/transactions/${txid}`;
   }
 
   /**
@@ -16,21 +16,20 @@ class TzktIoV1Explorer extends TzktAbstractExplorer {
    * @param txsPerPage {Number} the number of txs per page
    * @return {Number}
    */
-  getExtraParam (pageNumber, txsPerPage) {
-    return pageNumber * txsPerPage
+  getExtraParam(pageNumber, txsPerPage) {
+    return pageNumber * txsPerPage;
   }
 
-  setExtraParam () {
-  }
+  setExtraParam() {}
 
   /**
    * Get transaction list params
    *
    * @return {Object}
    */
-  getTransactionsParams (address, limit, offset) {
-    return { 'anyof.sender.target': address, limit, offset, 'sort.desc': 'id' }
+  getTransactionsParams(address, limit, offset) {
+    return { 'anyof.sender.target': address, limit, offset, 'sort.desc': 'id' };
   }
 }
 
-export default TzktIoV1Explorer
+export default TzktIoV1Explorer;

@@ -1,7 +1,7 @@
 class RequestStatusCodeError extends Error {
-  constructor (errorString) {
-    super(`Request Status Code Error ${errorString}`)
+  constructor(errorString) {
+    super(`Request Status Code Error ${errorString}`);
   }
 }
 
-export default RequestStatusCodeError
+export default RequestStatusCodeError;

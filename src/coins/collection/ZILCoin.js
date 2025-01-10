@@ -1,19 +1,14 @@
-import { Zilliqa } from '@zilliqa-js/zilliqa';
 import { bytes, Long, units } from '@zilliqa-js/util';
+import { Zilliqa } from '@zilliqa-js/zilliqa';
 
 import { Coin } from '../../abstract';
-// import configManager from '../ConfigManager';
 import { WalletError } from '../../errors';
-import { LOAD_WALLET_ERROR, WALLET_ERROR } from '../../utils/const';
-import { ZILToken } from '../../tokens';
-
-// import { coinStakings } from '../Stakings';
-// import logger from '../Logger';
-// import predefinedValidators from '../../resources/staking/validators.json';
-import ZilliqaAtomicExplorer from '../../explorers/collection//ZilliqaAtomicExplorer';
 import ViewblockExplorer from '../../explorers/collection//ViewblockExplorer';
+import ZilliqaAtomicExplorer from '../../explorers/collection//ZilliqaAtomicExplorer';
 import ZilliqaNodeExplorer from '../../explorers/collection//ZilliqaNodeExplorer';
+import { ZILToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';
+import { LOAD_WALLET_ERROR, WALLET_ERROR } from '../../utils/const';
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
 
 const bitcoinJsLib = new LazyLoadedLib(() => import('bitcoinjs-lib'));

@@ -1,46 +1,54 @@
-import Explorer from '../Explorer'
-import { ExplorerRequestError } from '../../errors/index.js'
-import { GET_BALANCE_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const'
+import { ExplorerRequestError } from '../../errors/index.js';
+import { GET_BALANCE_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const';
+import Explorer from '../Explorer';
 
 class DogeChainExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['DOGE']
+  getAllowedTickers() {
+    return ['DOGE'];
   }
 
-  getApiPrefix () {
-    return 'api/v1/'
+  getApiPrefix() {
+    return 'api/v1/';
   }
 
-  getInfoUrl (address) {
-    return `${this.getApiPrefix()}address/balance/${address}`
+  getInfoUrl(address) {
+    return `${this.getApiPrefix()}address/balance/${address}`;
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     if (response.success === 1) {
       return {
         balance: this.wallet.toMinimalUnit(response.balance),
         transactions: [],
-      }
+      };
     }
-    throw new ExplorerRequestError({ type: GET_BALANCE_TYPE, error: new Error(response.error), instance: this })
+    throw new ExplorerRequestError({
+      type: GET_BALANCE_TYPE,
+      error: new Error(response.error),
+      instance: this,
+    });
   }
 
-  getSendTransactionUrl () {
-    return `${this.getApiPrefix()}pushtx`
+  getSendTransactionUrl() {
+    return `${this.getApiPrefix()}pushtx`;
   }
 
-  getSendTransactionParam () {
-    return 'tx'
+  getSendTransactionParam() {
+    return 'tx';
   }
 
-  modifySendTransactionResponse (response) {
-    if (typeof (response.tx_hash) === 'undefined' || response.success === 0) {
-      throw new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error: new Error(response.error), instance: this })
+  modifySendTransactionResponse(response) {
+    if (typeof response.tx_hash === 'undefined' || response.success === 0) {
+      throw new ExplorerRequestError({
+        type: SEND_TRANSACTION_TYPE,
+        error: new Error(response.error),
+        instance: this,
+      });
     }
 
     return {
       txid: response.tx_hash,
-    }
+    };
   }
 
   /**
@@ -48,24 +56,26 @@ class DogeChainExplorer extends Explorer {
    *
    * @return {Promise<String>}
    */
-  async getBalance () {
-    const info = await this.getInfo()
+  async getBalance() {
+    const info = await this.getInfo();
 
-    return this.wallet.toCurrencyUnit(info.balance)
+    return this.wallet.toCurrencyUnit(info.balance);
   }
 
-  getUnspentOutputsUrl (address) {
-    return `${this.getApiPrefix()}unspent/${address}`
+  getUnspentOutputsUrl(address) {
+    return `${this.getApiPrefix()}unspent/${address}`;
   }
 
-  modifyUnspentOutputsResponse (response) {
-    return response.unspent_outputs.map(({ address, tx_hash: txid, tx_output_n: vout, script, value }) => ({
-      txid,
-      vout,
-      script,
-      value,
-      address,
-    }))
+  modifyUnspentOutputsResponse(response) {
+    return response.unspent_outputs.map(
+      ({ address, tx_hash: txid, tx_output_n: vout, script, value }) => ({
+        txid,
+        vout,
+        script,
+        value,
+        address,
+      }),
+    );
   }
 
   /**
@@ -74,12 +84,12 @@ class DogeChainExplorer extends Explorer {
    * @param {Object[]} utxos The utxos
    * @return {BN} The balance.
    */
-  calculateBalance (utxos = []) {
+  calculateBalance(utxos = []) {
     return utxos.reduce(
       (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0')
-    )
+      new this.wallet.BN('0'),
+    );
   }
 }
 
-export default DogeChainExplorer
+export default DogeChainExplorer;

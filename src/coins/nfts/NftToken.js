@@ -1,17 +1,17 @@
-import axios from 'axios'
+import axios from 'axios';
 
 // import configManager from '../ConfigManager'
 // import { ConfigKey } from '../ConfigManager/ConfigManager.const'
-import { DEFAULT_IPFS_GATEWAY } from '../../env'
+import { DEFAULT_IPFS_GATEWAY } from '../../env';
 
-const IPFS_PROTOCOL = /(^ipfs:\/\/ipfs\/|^ipfs:\/\/)/
-const HTTP_OK = 200
+const IPFS_PROTOCOL = /(^ipfs:\/\/ipfs\/|^ipfs:\/\/)/;
+const HTTP_OK = 200;
 
 /**
  * Class representing NFTs
  */
 class NftToken {
-  static ipfsGateway = DEFAULT_IPFS_GATEWAY
+  static ipfsGateway = DEFAULT_IPFS_GATEWAY;
 
   /**
    * Create a NFT
@@ -25,86 +25,97 @@ class NftToken {
    * @param {string} [description] - NFT description. Optional.
    * @param {string} imageUrl - URL to NFT image.
    */
-  constructor (contractAddress, tokenId, coinId, blockchain, tokenStandard, name, description = undefined, imageUrl) {
+  constructor(
+    contractAddress,
+    tokenId,
+    coinId,
+    blockchain,
+    tokenStandard,
+    name,
+    description = undefined,
+    imageUrl,
+  ) {
     /** @type string | null */
-    this.contractAddress = contractAddress
+    this.contractAddress = contractAddress;
     /** @type string */
-    this.tokenId = tokenId
+    this.tokenId = tokenId;
     /** @type string */
-    this.coinId = coinId
+    this.coinId = coinId;
     /** @type string */
-    this.blockchain = blockchain
+    this.blockchain = blockchain;
     /** @type string */
-    this.tokenStandard = tokenStandard
+    this.tokenStandard = tokenStandard;
     /** @type string */
-    this.name = name
+    this.name = name;
     /** @type string | undefined */
-    this.description = description
+    this.description = description;
     /** @type string */
-    this.imageUrl = imageUrl
+    this.imageUrl = imageUrl;
   }
 
   /**
    * @deprecated
    * @returns {string}
    */
-  get address () {
-    return this.contractAddress
+  get address() {
+    return this.contractAddress;
   }
 
   /**
    * @returns {string}
    */
-  get id () {
-    return `${this.coinId}-${this.contractAddress}-${this.tokenId}`
-  }
-
-  /**
-   * @deprecated
-   * @returns {string}
-   */
-  get standard () {
-    return this.tokenStandard
+  get id() {
+    return `${this.coinId}-${this.contractAddress}-${this.tokenId}`;
   }
 
   /**
    * @deprecated
    * @returns {string}
    */
-  get image () {
-    return this.imageUrl
+  get standard() {
+    return this.tokenStandard;
+  }
+
+  /**
+   * @deprecated
+   * @returns {string}
+   */
+  get image() {
+    return this.imageUrl;
   }
 
   /**
    * Returns url to image location. Ipfs links is get replaced with ipfs http links.
    * @returns {string}
    */
-  getImageUrl () {
-    return this.imageUrl?.replace(IPFS_PROTOCOL, NftToken.ipfsGateway)
+  getImageUrl() {
+    return this.imageUrl?.replace(IPFS_PROTOCOL, NftToken.ipfsGateway);
   }
 
   /**
    * Returns Buffer of file contents and content-type
    * @returns {Promise<{ buffer: Buffer, contentType: string }>}
    */
-  async fetchImageBlob () {
+  async fetchImageBlob() {
     if (!this.imageUrl) {
-      throw new Error('NftToken: fetchImageBlob: No imageUrl')
+      throw new Error('NftToken: fetchImageBlob: No imageUrl');
     }
 
     const response = await axios(this.getImageUrl(), {
       responseType: 'arraybuffer',
-    })
+    });
 
     if (response.status !== HTTP_OK) {
-      throw new Error(`NftToken: fetchImageBlob: Could not fetch image blob: Server returned ${response.status}`)
+      throw new Error(
+        `NftToken: fetchImageBlob: Could not fetch image blob: Server returned ${response.status}`,
+      );
     }
 
     return {
       base64: response.data,
       buffer: Buffer.from(response.data, 'base64'),
       contentType: response.headers['content-type'],
-    }
+    };
   }
 
   /**
@@ -112,7 +123,7 @@ class NftToken {
    *
    * @returns {Promise<void>}
    */
-  static async updateIpfsGateway () {
+  static async updateIpfsGateway() {
     // const { ipfsGateway } = await configManager.get(ConfigKey.IpfsGateway).catch() ?? {}
     //
     // if (ipfsGateway) {
@@ -121,4 +132,4 @@ class NftToken {
   }
 }
 
-export default NftToken
+export default NftToken;

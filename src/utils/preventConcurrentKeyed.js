@@ -6,16 +6,16 @@
  *    will return same promise if called multiple times with the same key while the promise is in pending state
  */
 export default () => {
-  const pendingPromises = new Map()
+  const pendingPromises = new Map();
 
   return (key, cb) => {
     if (!pendingPromises.has(key)) {
       const promise = cb().finally(() => {
-        pendingPromises.delete(key)
-      })
+        pendingPromises.delete(key);
+      });
 
-      pendingPromises.set(key, promise)
+      pendingPromises.set(key, promise);
     }
-    return pendingPromises.get(key)
-  }
-}
+    return pendingPromises.get(key);
+  };
+};

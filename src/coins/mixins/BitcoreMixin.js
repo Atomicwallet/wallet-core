@@ -1,4 +1,5 @@
 import coinSelect from 'coinselect';
+
 import { WalletError } from '../../errors';
 import { LOAD_WALLET_ERROR, LIB_NAME_INDEX } from '../../utils/const';
 
@@ -16,34 +17,30 @@ const BitcoreMixin = (superclass) =>
     async loadWallet(seed) {
       const bitcoreLib = await this.loadLib(BITCORE);
 
-      return new Promise(async (resolve, reject) => {
-        const hdPrivateKey = bitcoreLib.HDPrivateKey.fromSeed(
-          seed,
-          await this.getNetwork(),
-        );
-        const { privateKey } = hdPrivateKey[this.getDeriveFunctionName()](
-          this.derivation,
-        );
+      const hdPrivateKey = bitcoreLib.HDPrivateKey.fromSeed(
+        seed,
+        await this.getNetwork(),
+      );
+      const { privateKey } = hdPrivateKey[this.getDeriveFunctionName()](
+        this.derivation,
+      );
 
-        if (!privateKey) {
-          reject(
-            new WalletError({
-              type: LOAD_WALLET_ERROR,
-              error: "can't derive privateKey!",
-              instance: this,
-            }),
-          );
-        }
-
-        this.setPrivateKey(privateKey.toWIF());
-        this.address = await this.getAddress();
-
-        resolve({
-          id: this.id,
-          privateKey: this.#privateKey,
-          address: this.address,
+      if (!privateKey) {
+        throw new WalletError({
+          type: LOAD_WALLET_ERROR,
+          error: "can't derive privateKey!",
+          instance: this,
         });
-      });
+      }
+
+      this.setPrivateKey(privateKey.toWIF());
+      this.address = await this.getAddress();
+
+      return {
+        id: this.id,
+        privateKey: this.#privateKey,
+        address: this.address,
+      };
     }
 
     async getNetwork() {

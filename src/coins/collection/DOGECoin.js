@@ -1,8 +1,7 @@
-import { LazyLoadedLib } from '../../utils';
-
 import { Coin } from '../../abstract';
-import { LIB_NAME_INDEX } from '../../utils/const';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
+import { LazyLoadedLib } from '../../utils';
+import { LIB_NAME_INDEX } from '../../utils/const';
 import { BitcoinJSMixin, BitcoinLikeFeeMixin } from '../mixins';
 
 const NAME = 'Doge';

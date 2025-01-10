@@ -1,14 +1,13 @@
 // import configManager from '../ConfigManager'
-import Explorer from '../Explorer'
-import Transaction from '../Transaction'
-import { GET_BALANCE_TYPE } from '../../utils/const'
+import { ETHPLORER_API_KEY } from '../../env';
+import TOKENS_CACHE from '../../resources/eth/tokens.json';
+import { GET_BALANCE_TYPE } from '../../utils/const';
+import Explorer from '../Explorer';
+import Transaction from '../Transaction';
 // import logger from '../Logger'
 
-import TOKENS_CACHE from '../../resources/eth/tokens.json'
-import { ETHPLORER_API_KEY } from '../../env'
-
-const USER_TOKEN_LIST = 'https://api.ethplorer.io/getAddressInfo/{address}'
-const MAX_CONFIRMATIONS = 10
+const USER_TOKEN_LIST = 'https://api.ethplorer.io/getAddressInfo/{address}';
+const MAX_CONFIRMATIONS = 10;
 
 /**
  * Class for explorer.
@@ -17,8 +16,8 @@ const MAX_CONFIRMATIONS = 10
  * @class {Explorer}
  */
 class EthplorerExplorer extends Explorer {
-  getAllowedTickers () {
-    return ['ETH']
+  getAllowedTickers() {
+    return ['ETH'];
   }
 
   /**
@@ -26,104 +25,104 @@ class EthplorerExplorer extends Explorer {
    *
    * @return {string}
    */
-  async getBalance () {
-    let info
+  async getBalance() {
+    const info = await this.getInfo();
 
-    try {
-      info = await this.getInfo()
-    } catch (error) {
-      throw error
-    }
-
-    return String(this.wallet.toCurrencyUnit(info.balance))
+    return String(this.wallet.toCurrencyUnit(info.balance));
   }
 
-  async getInfo (address) {
+  async getInfo(address) {
     try {
       const response = await this.request(
         this.getInfoUrl(address),
         this.getInfoMethod(),
         this.getInfoParams(address),
-        GET_BALANCE_TYPE
-      )
+        GET_BALANCE_TYPE,
+      );
 
-      return this.modifyInfoResponse(response, address)
+      return this.modifyInfoResponse(response, address);
     } catch (error) {
-      const balance = address ? await this.wallet.coreLibrary.eth.getBalance(address) : 0
+      const balance = address
+        ? await this.wallet.coreLibrary.eth.getBalance(address)
+        : 0;
 
-      return { balance }
+      return { balance };
     }
   }
 
-  getInfoUrl (address) {
-    return 'service/service.php'
+  getInfoUrl(address) {
+    return 'service/service.php';
   }
 
-  getInfoParams (address) {
+  getInfoParams(address) {
     return {
       data: address,
       apiKey: ETHPLORER_API_KEY,
       page: 'pageSize=1000',
-    }
+    };
   }
 
-  modifyInfoResponse (response) {
+  modifyInfoResponse(response) {
     if (Array.isArray(response.transfers)) {
-      const walletTransactions = []
-      const tokenTransactions = {}
+      const walletTransactions = [];
+      const tokenTransactions = {};
 
       response.transfers.forEach((tx) => {
-        tx.contract = tx.contract.toLowerCase()
+        tx.contract = tx.contract.toLowerCase();
         const transaction = tx.isEth
           ? this.modifyTransactionResponse(tx)
-          : this.modifyTokenTransactionResponse(tx, this.wallet.tokens[tx.contract])
+          : this.modifyTokenTransactionResponse(
+              tx,
+              this.wallet.tokens[tx.contract],
+            );
 
         if (tx.isEth) {
-          walletTransactions.push(transaction)
-          return
+          walletTransactions.push(transaction);
+          return;
         }
         if (this.wallet.tokens[tx.contract]) {
-          tokenTransactions[tx.contract] = tokenTransactions[tx.contract] || []
-          tokenTransactions[tx.contract].push(transaction)
+          tokenTransactions[tx.contract] = tokenTransactions[tx.contract] || [];
+          tokenTransactions[tx.contract].push(transaction);
         }
-      })
+      });
 
-      this.wallet.transactions = walletTransactions
+      this.wallet.transactions = walletTransactions;
 
-      // eslint-disable-next-line guard-for-in
       for (const contract in tokenTransactions) {
-        this.wallet.tokens[contract].transactions = tokenTransactions[contract]
+        this.wallet.tokens[contract].transactions = tokenTransactions[contract];
       }
     }
 
     return {
       balance: this.wallet.toMinimalUnit(response.balance),
       transactions: [],
-    }
+    };
   }
 
-  getTransactionsUrl (address) {
-    return 'service/service.php'
+  getTransactionsUrl(address) {
+    return 'service/service.php';
   }
 
-  getTransactionsParams (address, offset, limit) {
+  getTransactionsParams(address, offset, limit) {
     return {
       data: address,
       apiKey: ETHPLORER_API_KEY,
       page: 'pageSize=1000',
-    }
+    };
   }
 
-  modifyTransactionsResponse (response) {
-    return response.transfers.map((tx) => {
-      if (tx.isEth) {
-        return this.modifyTransactionResponse(tx)
-      }
-      const token = this.wallet.tokens[tx.contract.toLowerCase()]
+  modifyTransactionsResponse(response) {
+    return response.transfers
+      .map((tx) => {
+        if (tx.isEth) {
+          return this.modifyTransactionResponse(tx);
+        }
+        const token = this.wallet.tokens[tx.contract.toLowerCase()];
 
-      this.modifyTokenTransactionResponse(tx, token)
-      return false
-    }).filter(Boolean)
+        this.modifyTokenTransactionResponse(tx, token);
+        return false;
+      })
+      .filter(Boolean);
   }
 
   /**
@@ -132,7 +131,7 @@ class EthplorerExplorer extends Explorer {
    * @param {Object} response
    * @return {Transaction}
    */
-  modifyTokenTransactionResponse (tx, token, address) {
+  modifyTokenTransactionResponse(tx, token, address) {
     return new Transaction({
       ticker: token.ticker,
       name: token.name,
@@ -147,60 +146,62 @@ class EthplorerExplorer extends Explorer {
       memo: this.getTxMemo(tx),
       confirmations: this.getTxConfirmations(tx),
       alias: this.wallet.alias,
-    })
+    });
   }
 
-  getTxHash (tx) {
-    return tx.transactionHash
+  getTxHash(tx) {
+    return tx.transactionHash;
   }
 
-  getTxDateTime (tx) {
-    return new Date(Number(`${tx.timestamp}000`))
+  getTxDateTime(tx) {
+    return new Date(Number(`${tx.timestamp}000`));
   }
 
-  getTxConfirmations (tx) {
-    return Number(tx.blockNumber > 0 ? MAX_CONFIRMATIONS : 0)
+  getTxConfirmations(tx) {
+    return Number(tx.blockNumber > 0 ? MAX_CONFIRMATIONS : 0);
   }
 
-  getTxDirection (selfAddress, tx) {
-    return selfAddress.toLowerCase() !== tx.from.toLowerCase()
+  getTxDirection(selfAddress, tx) {
+    return selfAddress.toLowerCase() !== tx.from.toLowerCase();
   }
 
-  getTxOtherSideAddress (selfAddress, tx) {
-    return selfAddress.toLowerCase() === tx.from.toLowerCase() ? tx.to : tx.from
+  getTxOtherSideAddress(selfAddress, tx) {
+    return selfAddress.toLowerCase() === tx.from.toLowerCase()
+      ? tx.to
+      : tx.from;
   }
 
-  getTxValue (selfAddress, tx) {
+  getTxValue(selfAddress, tx) {
     if (tx.isEth) {
-      return tx.value
+      return tx.value;
     }
-    const token = this.wallet.tokens[tx.contract.toLowerCase()]
+    const token = this.wallet.tokens[tx.contract.toLowerCase()];
 
     if (token) {
-      return token.toCurrencyUnit(tx.value)
+      return token.toCurrencyUnit(tx.value);
     }
 
-    return this.wallet.toCurrencyUnit(tx.value)
+    return this.wallet.toCurrencyUnit(tx.value);
   }
 
   /**
    * Returns user token list url
    * @returns {String}
    */
-  getUserTokenListUrl (address) {
-    return USER_TOKEN_LIST.replace('{address}', address)
+  getUserTokenListUrl(address) {
+    return USER_TOKEN_LIST.replace('{address}', address);
   }
 
-  modifyTokenListResponse (response) {
-    return response.data
+  modifyTokenListResponse(response) {
+    return response.data;
   }
 
   /**
    * Returns all token list data
    * @returns {Array}
    */
-  async getTokenList () {
-    let tokens = TOKENS_CACHE
+  async getTokenList() {
+    const tokens = TOKENS_CACHE;
 
     // try {
     //   tokens = await configManager.get('ethereum-tokens')
@@ -208,7 +209,7 @@ class EthplorerExplorer extends Explorer {
     //   // logger.error({ instance: this, error })
     // }
 
-    return tokens
+    return tokens;
   }
 
   /**
@@ -216,18 +217,21 @@ class EthplorerExplorer extends Explorer {
    * @param {String} address
    * @returns {Array}
    */
-  async getUserTokenList (address) {
+  async getUserTokenList(address) {
     if (!address) {
-      return []
+      return [];
     }
 
-    const response = await this
-      .request(this.getUserTokenListUrl(address), this.getInfoMethod(), { apiKey: ETHPLORER_API_KEY })
+    const response = await this.request(
+      this.getUserTokenListUrl(address),
+      this.getInfoMethod(),
+      { apiKey: ETHPLORER_API_KEY },
+    )
       .then((data) => data.tokens)
-      .catch(() => []) // user token list is loaded from db in HasTokensMixin
+      .catch(() => []); // user token list is loaded from db in HasTokensMixin
 
-    return response
+    return response;
   }
 }
 
-export default EthplorerExplorer
+export default EthplorerExplorer;

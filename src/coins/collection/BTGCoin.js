@@ -1,8 +1,8 @@
 import { Coin } from '../../abstract';
 import { WalletError } from '../../errors';
-import { LIB_NAME_INDEX, WALLET_ERROR } from '../../utils/const';
-import { LazyLoadedLib } from '../../utils';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
+import { LazyLoadedLib } from '../../utils';
+import { LIB_NAME_INDEX, WALLET_ERROR } from '../../utils/const';
 import { BitcoinJSMixin, BitcoinLikeFeeMixin } from '../mixins';
 
 const NAME = 'Bitcoin gold';

@@ -1,4 +1,4 @@
-import { Token } from '../abstract'
+import { Token } from '../abstract';
 
 class TRXToken extends Token {
   /* @TODO DEPRECATED
@@ -9,15 +9,21 @@ class TRXToken extends Token {
    * @param {Number} amount The amount to send
    * @return {Promise<Object>} Raw transaction
    */
-  async createTransaction ({ address, amount, userFee }) {
-    return { address, amount, contract: this.contract, transfer: true, userFee }
+  async createTransaction({ address, amount, userFee }) {
+    return {
+      address,
+      amount,
+      contract: this.contract,
+      transfer: true,
+      userFee,
+    };
   }
 
-  getUserTicker () {
+  getUserTicker() {
     return this.ticker.indexOf('-') !== -1
       ? this.ticker.split('-')[1] || this.ticker
-      : this.ticker
+      : this.ticker;
   }
 }
 
-export default TRXToken
+export default TRXToken;

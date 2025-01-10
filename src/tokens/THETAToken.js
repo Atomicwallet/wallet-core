@@ -1,49 +1,46 @@
-import BN from 'bn.js'
-import { Token } from '../abstract'
+import BN from 'bn.js';
+
+import { Token } from '../abstract';
 
 export default class THETAToken extends Token {
-  #parent
+  #parent;
 
-  constructor (args) {
-    super(args)
-    this.id = this.ticker
-    this.#parent = args.parent
+  constructor(args) {
+    super(args);
+    this.id = this.ticker;
+    this.#parent = args.parent;
   }
 
-  get feeTicker () {
-    return this.ticker
+  get feeTicker() {
+    return this.ticker;
   }
 
-  get feeWallet () {
-    return this
+  get feeWallet() {
+    return this;
   }
 
   /* @TODO DEPRECATED
-  * should be used `createTransaction method from Token.js
-  * which calls parent coin's `createTransaction
-  *
-  *
-  * @param {object} txData transaction data
-  * @return {Promise<object>} Raw transaction
-  */
-  async createTransaction ({
-    address,
-    amount,
-    userFee,
-  }) {
+   * should be used `createTransaction method from Token.js
+   * which calls parent coin's `createTransaction
+   *
+   *
+   * @param {object} txData transaction data
+   * @return {Promise<object>} Raw transaction
+   */
+  async createTransaction({ address, amount, userFee }) {
     return {
       address,
       amount,
       contract: this.contract,
       ticker: this.ticker,
-      userFee: userFee || await this.getFee(),
-    }
+      userFee: userFee || (await this.getFee()),
+    };
   }
 
-  async sendTransaction (args) {
-    const rawTx = await this.#parent.createTransaction(args)
+  async sendTransaction(args) {
+    const rawTx = await this.#parent.createTransaction(args);
 
-    return this.#parent.sendTransaction(rawTx)
+    return this.#parent.sendTransaction(rawTx);
   }
 
   /**
@@ -51,8 +48,8 @@ export default class THETAToken extends Token {
    *
    * @return {Promise<string>} In currency units
    */
-  async availableBalance (fee) {
-    return this.#parent.getAvailableBalanceForWallet(this, fee)
+  async availableBalance(fee) {
+    return this.#parent.getAvailableBalanceForWallet(this, fee);
   }
 
   /**
@@ -62,16 +59,14 @@ export default class THETAToken extends Token {
    * @param {string} fee - The fee in currency unit
    * @return {Promise<boolean>} True if available for send, False otherwise.
    */
-  async isAvailableForSend (amount, fee) {
+  async isAvailableForSend(amount, fee) {
     const availableBalance = await this.availableBalance(
-      this.toMinimalUnit(fee)
-    )
+      this.toMinimalUnit(fee),
+    );
 
-    return new BN(
-      this.toMinimalUnit(amount)
-    ).lte(
-      new BN(this.toMinimalUnit(availableBalance))
-    )
+    return new BN(this.toMinimalUnit(amount)).lte(
+      new BN(this.toMinimalUnit(availableBalance)),
+    );
   }
 
   /**
@@ -80,7 +75,7 @@ export default class THETAToken extends Token {
    * @param {BN} [userFee]
    * @returns {Promise<boolean>}
    */
-  async isAvailableForFee (userFee) {
-    return this.#parent.hasEnoughFeeBalance(userFee)
+  async isAvailableForFee(userFee) {
+    return this.#parent.hasEnoughFeeBalance(userFee);
   }
 }

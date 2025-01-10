@@ -1,24 +1,24 @@
 import { Coin } from '../../abstract';
-import { OPToken } from '../../tokens';
-import TOKENS_CACHE from '../../resources/op/tokens.json';
+import { ExternalError } from '../../errors';
+import Web3Explorer from '../../explorers/collection//Web3Explorer';
+import CovalentHQExplorer from '../../explorers/collection/CovalentHQExplorer';
+import EtherscanExplorer from '../../explorers/collection/EtherscanExplorer';
+import Transaction from '../../explorers/Transaction';
 import BANNED_TOKENS_CACHE from '../../resources/op/tokens-banned.json';
+import TOKENS_CACHE from '../../resources/op/tokens.json';
+import { OPToken } from '../../tokens';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 // import { ConfigKey } from '../ConfigManager/ConfigManager.const';
-import { ExternalError } from '../../errors';
+import { LazyLoadedLib } from '../../utils';
 import { EXTERNAL_ERROR } from '../../utils/const';
 import { toCurrency } from '../../utils/convert';
-import Transaction from '../../explorers/Transaction';
 // import history from '../History';
 
-import EtherscanExplorer from '../../explorers/collection/EtherscanExplorer';
-import CovalentHQExplorer from '../../explorers/collection/CovalentHQExplorer';
-import Web3Explorer from '../../explorers/collection//Web3Explorer';
-import { LazyLoadedLib } from '../../utils';
+import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
-import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 
 const NAME = 'Ethereum OP';
 const TICKER = 'ETHOP';
@@ -705,8 +705,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
   async _getGasPriceL1FromConfig() {
     const { fast } = await configManager
       .get(ConfigKey.EthereumGasPrice)
-      .catch((error) => {
-        // logger.error({ instance: this, error });
+      .catch(() => {
         return this.maxGasPriceL1;
       });
 

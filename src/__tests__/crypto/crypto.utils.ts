@@ -1,5 +1,5 @@
-import { generateMockUtxo } from '../fixtures/common.fixture';
 import {
+  generateMockUtxo,
   mnemonicPhrasesList,
   mnemonicMappingKeys,
 } from '../fixtures/common.fixture';
