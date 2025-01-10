@@ -547,7 +547,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     //
     //   return [];
     // }
-    return []
+    return [];
   }
 
   /**
@@ -729,7 +729,10 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<Object.<string, string>>}
    */
   getGasPricesList() {
-    return null // configManager.get(ConfigKey.LunaClassicGasPrice);
+    // @TODO implement gasprice estimation
+    return Promise.resolve({
+      uluna: '28.325',
+    });
   }
 
   async getBalance() {
