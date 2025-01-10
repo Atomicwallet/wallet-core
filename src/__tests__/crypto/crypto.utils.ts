@@ -1,21 +1,34 @@
+import { generateMockUtxo } from '../fixtures/common.fixture';
 import {
   mnemonicPhrasesList,
   mnemonicMappingKeys,
 } from '../fixtures/common.fixture';
-import type { Coin } from '@/abstract';
+import type { Coin, RawTxBinary } from '@/abstract';
 import { initializeMnemonic } from '@/utils';
 
+function isJson(value: string | RawTxBinary): boolean {
+  if (typeof value !== 'string') {
+    return false;
+  }
+
+  try {
+    JSON.parse(value);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 export function generateWalletTests(wallet: Coin) {
-  describe(`Generate keys from mnemonics`, () => {
+  const { id } = wallet;
+
+  describe(`Generate keys and signed tx`, () => {
     test.each(mnemonicPhrasesList)(
       `Generate keys for ${wallet.ticker}`,
       async (phrase) => {
         const { seed, phrase: mnemonicPhrase } =
           await initializeMnemonic(phrase);
         const keys = await wallet.loadWallet(seed, mnemonicPhrase);
-
-        const { id } = wallet;
-
         const mapping = mnemonicMappingKeys[phrase]?.[id];
         const address = mapping?.address;
         const pk = mapping?.privateKey;
@@ -31,6 +44,60 @@ export function generateWalletTests(wallet: Coin) {
         // @ts-expect-error privateKey types can differs
         expect(keys.privateKey).toStrictEqual(pk);
       },
+    );
+  });
+
+  describe('Create signed tx', () => {
+    test.each(mnemonicPhrasesList)(
+      `Generate signed tx for ${wallet.ticker}`,
+      async (phrase) => {
+        if (id === 'EOS') {
+          // eos tx sign should be defined in instance first
+          return;
+        }
+
+        const mappingKeyElement = mnemonicMappingKeys[phrase]?.[id];
+
+        if (!mappingKeyElement) {
+          throw new Error('Failed to map keys');
+        }
+
+        const { address, privateKey, tx } = mappingKeyElement;
+
+        await wallet.setPrivateKey(privateKey as string, phrase);
+        wallet.setAddress(address);
+
+        const amount = wallet.toMinimalUnit('42');
+        const utxo = generateMockUtxo(wallet.address, amount);
+
+        if (wallet.getScriptPubKey) {
+          for (const out of utxo) {
+            out.script = (await wallet.getScriptPubKey()) as string;
+          }
+        }
+
+        // @ts-expect-error typ
+        jest.spyOn(wallet, 'getUnspentOutputs').mockReturnValue(utxo);
+
+        let signedTx = await wallet.createTransaction({
+          amount,
+          address: wallet.address,
+        });
+
+        if (signedTx instanceof Object && !(signedTx instanceof Uint8Array)) {
+          signedTx = JSON.parse(JSON.stringify(signedTx));
+        } else if (isJson(signedTx)) {
+          // @ts-expect-error typ
+          signedTx = JSON.parse(signedTx);
+        } else if (signedTx instanceof Uint8Array) {
+          signedTx = Array.from(signedTx);
+        }
+
+        console.log(wallet.address, '\n', JSON.stringify(signedTx));
+
+        expect(signedTx).toStrictEqual(tx);
+      },
+      30000,
     );
   });
 }
