@@ -112,6 +112,10 @@ export default class STXCoin extends HasProviders(Coin) {
     return tx.auth.spendingCondition.fee;
   }
 
+  getNonce() {
+    return this.getProvider('nonce').getPossibleNextNonce(this.address);
+  }
+
   /**
    * Creates a transaction.
    *
@@ -128,7 +132,7 @@ export default class STXCoin extends HasProviders(Coin) {
       senderKey: this.#privateKey,
       network: this.getProvider('network').getNetwork(), // for mainnet, use 'mainnet'
       memo,
-      nonce: await this.getProvider('nonce').getPossibleNextNonce(this.address), // set a nonce manually if you don't want builder to fetch from a Stacks node
+      nonce: await this.getNonce(), // set a nonce manually if you don't want builder to fetch from a Stacks node
       // fee: 200n, // set a tx fee if you don't want the builder to estimate
       anchorMode: AnchorMode.Any,
     };
