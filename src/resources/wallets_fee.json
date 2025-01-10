@@ -2112,7 +2112,9 @@
     "ticker": "STX",
     "id": "STX",
     "name": "Stacks",
-    "feeData": {},
+    "feeData": {
+      "fee": "489469"
+    },
     "txWebUrl": "https://explorer.hiro.so/txid/",
     "explorers": [
       {
