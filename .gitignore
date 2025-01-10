@@ -9,6 +9,7 @@ wallaby.js
 test/
 /configs
 dist/fonts
+licenses.json
 
 # Log files
 npm-debug.log*

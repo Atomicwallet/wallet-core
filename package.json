@@ -11,7 +11,8 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write .",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "postinstall": "sh ./scripts/postinstall.sh"
   },
   "author": "Atomic Protocol Systems OÜ",
   "license": "GPL",

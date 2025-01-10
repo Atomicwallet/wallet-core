@@ -1,4 +1,6 @@
 import { UnknownConfigKeyError } from 'src/errors';
+import { LazyLoadedLib } from 'src/utils';
+import { STAKE_ADDR_TYPE } from 'src/utils/const';
 
 import { Coin } from '../../abstract';
 // import configManager, { ConfigKey } from '../ConfigManager';
@@ -7,8 +9,6 @@ import { NftMixin } from '../../coins/nfts/mixins';
 import SolanaNodeExplorer from '../../explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from '../../explorers/collection/SolanaTritonExplorer';
 import { SOLToken } from '../../tokens';
-import { LazyLoadedLib } from '../../utils';
-import { STAKE_ADDR_TYPE } from '../../utils/const';
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
 import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from '../mixins/HasProviders';
 
