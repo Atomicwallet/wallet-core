@@ -37,7 +37,7 @@ export type CoinConfigType = {
   socket?: boolean;
   atomicId?: string;
   memoRegexp?: string;
-  dependencies?: { [name: string]: LazyLoadedLib<any> };
+  dependencies?: { [name: string]: LazyLoadedLib<unknown> };
 } & CosmosCoinConfigType &
   EVMCoinConfigType;
 
