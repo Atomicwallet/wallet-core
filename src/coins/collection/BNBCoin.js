@@ -501,6 +501,10 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   async setPrivateKey(privateKey) {
     this.#privateKey = privateKey;
 
+    await this.initClientKey(privateKey);
+  }
+
+  async initClientKey(privateKey) {
     const bncClient = await this.getBncClient();
 
     return bncClient.setPrivateKey(privateKey);

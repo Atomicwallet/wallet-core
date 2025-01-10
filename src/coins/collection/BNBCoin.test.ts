@@ -17,4 +17,7 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
+// @ts-expect-error not implemente in abstract class
+jest.spyOn(wallet, 'initClientKey').mockImplementation(() => {});
+
 generateWalletTests(wallet);
