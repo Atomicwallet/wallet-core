@@ -112,7 +112,7 @@ class APTCoin extends HasProviders(Coin) {
    *
    * @return {bigint}
    */
-  #getTransactionExpirationTimeout() {
+  getTransactionExpirationTimeout() {
     return BigInt(Math.floor(Date.now() / 1000) + this.#txExpirationTimeout);
   }
 
@@ -229,7 +229,7 @@ class APTCoin extends HasProviders(Coin) {
    * @param {UserFeeOptions} userOptions
    * @returns {Promise<{gasPrice: number, gasLimit: number}>}
    */
-  async #getGasParams({
+  async getGasParams({
     userGasPrice = null,
     gasLimit: userGasLimit = null,
   } = {}) {
@@ -259,12 +259,16 @@ class APTCoin extends HasProviders(Coin) {
    */
   async getFee(userOptions) {
     try {
-      const { gasPrice, gasLimit } = await this.#getGasParams(userOptions);
+      const { gasPrice, gasLimit } = await this.getGasParams(userOptions);
 
       return String(gasPrice * gasLimit);
     } catch (error) {
       throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }
+  }
+
+  getAccount(address = this.address) {
+    return this.getProvider('node').getAccount(address);
   }
 
   /**
@@ -310,8 +314,8 @@ class APTCoin extends HasProviders(Coin) {
     try {
       const [{ sequence_number: sequenceNumber }, { gasPrice, gasLimit }] =
         await Promise.all([
-          this.getProvider('node').getAccount(this.address),
-          this.#getGasParams({ userGasPrice, gasLimit: userGasLimit }),
+          this.getAccount(),
+          this.getGasParams({ userGasPrice, gasLimit: userGasLimit }),
         ]);
 
       const rawTxn = new RawTransaction(
@@ -323,7 +327,7 @@ class APTCoin extends HasProviders(Coin) {
         // Gas price per unit
         BigInt(gasPrice),
         // Expiration timestamp. Transaction is discarded if it is not executed within provided `txExpirationTimeout` seconds from now.
-        this.#getTransactionExpirationTimeout(),
+        this.getTransactionExpirationTimeout(),
         new ChainId(APTOS_MAINNET_CHAIN_ID),
       );
 
