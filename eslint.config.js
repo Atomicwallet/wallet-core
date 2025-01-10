@@ -82,6 +82,7 @@ module.exports = [
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-inferrable-types': 'warn',
+      '@typescript-eslint/ban-ts-ignore': 'off',
 
       'import/order': [
         'error',
