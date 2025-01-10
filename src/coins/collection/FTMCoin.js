@@ -250,7 +250,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @see {@link https://atomicwallet.atlassian.net/wiki/spaces/DevOps/pages/343638041#%D0%94%D0%B5%D1%84%D0%BE%D0%BB%D1%82%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BC%D0%B8%D1%81%D1%81%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-ETH}
    */
   getFeeSettings() {
-    return {} // configManager.get(FTM_MODERATED_GAS_PRICE_URL);
+    return {}; // configManager.get(FTM_MODERATED_GAS_PRICE_URL);
   }
 
   /**
@@ -767,7 +767,8 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         to: contract,
         data: tokenSendData,
       })
-      .catch((error) => {}
+      .catch(
+        (error) => {},
         // logger.error({
         //   instance: this,
         //   error,
