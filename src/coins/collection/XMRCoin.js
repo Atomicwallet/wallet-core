@@ -166,7 +166,7 @@ class XMRCoin extends HasProviders(Coin) {
    * @param {string} amount
    * @returns {Promise<boolean>}
    */
-  async #getIsSendAllByAmount(amount) {
+  async getIsSendAllByAmount(amount) {
     const [balance, fee] = await Promise.all([
       this.getBalance(),
       this.getFee(),
@@ -200,7 +200,7 @@ class XMRCoin extends HasProviders(Coin) {
   }) {
     try {
       const isSendAll =
-        isSendAllRequested || (await this.#getIsSendAllByAmount(amount));
+        isSendAllRequested || (await this.getIsSendAllByAmount(amount));
 
       return {
         destinations: [
