@@ -23,7 +23,7 @@ export { sleepFor } from './sleepFor';
 export { getTokenId } from './token';
 // @ts-ignore
 export { PROMISE_STATE, getPromiseState } from './promiseState';
-export * from './walletConfig'
-export * from './mnemonic'
+export * from './walletConfig';
+export * from './mnemonic';
 export * from './emitter';
 export * from './types';
