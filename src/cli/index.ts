@@ -35,15 +35,10 @@ program
     console.log('OK');
 
     console.log('Generate key pairs...');
-    const promises = await Promise.allSettled(
-      wallets.map(async (wallet) => generateKeys(wallet, mnemonic)),
-    );
+    const promises = await Promise.allSettled(wallets.map(async (wallet) => generateKeys(wallet, mnemonic)));
 
     const keys = promises
-      .filter(
-        (promise): promise is PromiseFulfilledResult<IKeysObject> =>
-          promise.status === 'fulfilled',
-      )
+      .filter((promise): promise is PromiseFulfilledResult<IKeysObject> => promise.status === 'fulfilled')
       .map((fulfilled) => fulfilled?.value)
       .filter(Boolean);
 
@@ -74,27 +69,21 @@ program
 
       console.log(`Create ${options.wallet} wallet...`);
       const wallets = await createWallets({ id: options.wallet });
-      const wallet = wallets.find(
-        (wallet) => wallet.id.toLowerCase() === options.wallet.toLowerCase(),
-      );
+      const wallet = wallets.find((wallet) => wallet.id.toLowerCase() === options.wallet.toLowerCase());
 
       if (!wallet) {
         throw new Error(`Failed to create ${options.wallet}, not supported`);
       }
       console.log('OK');
 
-      const validAddress = (await wallet.validateAddress(
-        options.recepient,
-      )) as unknown as boolean;
+      const validAddress = (await wallet.validateAddress(options.recepient)) as unknown as boolean;
 
       if (!validAddress) {
         throw new Error(`Invalid recepient address: ${options.recepient}`);
       }
 
       console.log('Generate key pairs...');
-      await Promise.allSettled(
-        wallets.map(async (wallet) => generateKeys(wallet, mnemonic)),
-      );
+      await Promise.allSettled(wallets.map(async (wallet) => generateKeys(wallet, mnemonic)));
       console.log('OK');
 
       console.log('Create transaction...');
@@ -121,11 +110,7 @@ program
   .option('-w, --wallet <wallet>', 'wallet ticker, e.g. BTC')
   .option('-t, --tx <tx>', 'signed tx hex')
   .action(
-    async (options: {
-      phrase: string;
-      wallet: string;
-      tx: RawTxHex | RawTxBinary | RawTxObject;
-    }): Promise<void> => {
+    async (options: { phrase: string; wallet: string; tx: RawTxHex | RawTxBinary | RawTxObject }): Promise<void> => {
       console.log('Init mnemonic...');
       const mnemonic = await initializeMnemonic(options.phrase);
 
@@ -133,9 +118,7 @@ program
 
       console.log(`Create ${options.wallet} wallet...`);
       const wallets = await createWallets({ id: options.wallet });
-      const wallet = wallets.find(
-        (wallet) => wallet.id.toLowerCase() === options.wallet.toLowerCase(),
-      );
+      const wallet = wallets.find((wallet) => wallet.id.toLowerCase() === options.wallet.toLowerCase());
 
       if (!wallet) {
         throw new Error(`Failed to create ${options.wallet}, not supported`);
@@ -143,9 +126,7 @@ program
       console.log('OK');
 
       console.log('Generate key pairs...');
-      await Promise.allSettled(
-        wallets.map(async (wallet) => generateKeys(wallet, mnemonic)),
-      );
+      await Promise.allSettled(wallets.map(async (wallet) => generateKeys(wallet, mnemonic)));
       console.log('OK');
 
       console.log('Submit transaction...');

@@ -38,9 +38,7 @@ const HEX_ZERO = '0x0';
 /**
  * @class BSCCoin
  */
-class BSCCoin extends Web3Mixin(
-  NftMixin(HasBlockScanner(HasProviders(HasTokensMixin(Coin)))),
-) {
+class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensMixin(Coin))))) {
   #privateKey;
 
   /**
@@ -59,12 +57,7 @@ class BSCCoin extends Web3Mixin(
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      Web3Explorer,
-      BlockbookV2Explorer,
-      MoralisExplorer,
-      ETHNftExplorer,
-    ]);
+    this.setExplorersModules([Web3Explorer, BlockbookV2Explorer, MoralisExplorer, ETHNftExplorer]);
 
     this.loadExplorers(config);
 
@@ -73,9 +66,7 @@ class BSCCoin extends Web3Mixin(
     this.setFeeData(feeData);
     this.bannedTokens = [];
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3 = new Web3Explorer({
       wallet: this.instance,
@@ -116,13 +107,7 @@ class BSCCoin extends Web3Mixin(
       address: this.address,
     });
     const failedTxs = await Promise.all(
-      failed.map(({ txid }) =>
-        this.getProvider('history').getTransaction(
-          this.address,
-          txid,
-          this.tokens,
-        ),
-      ),
+      failed.map(({ txid }) => this.getProvider('history').getTransaction(this.address, txid, this.tokens)),
     );
 
     return transactions.concat(tokenTransactions).concat(failedTxs);
@@ -161,9 +146,7 @@ class BSCCoin extends Web3Mixin(
       const { hdkey } = await hdkeyLazyLoaded.get();
       const ethHDKey = hdkey.fromMasterSeed(seed);
       const wallet = ethHDKey.getWallet();
-      const account = await this.coreLibrary.eth.accounts.privateKeyToAccount(
-        wallet.getPrivateKeyString(),
-      );
+      const account = await this.coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
       if (!account) {
         reject(new Error(`${TICKER} cant get a wallet!`));
@@ -188,9 +171,7 @@ class BSCCoin extends Web3Mixin(
    */
   getAddress() {
     try {
-      this.#privateKey = this.coreLibrary.eth.accounts.privateKeyToAccount(
-        this.#privateKey,
-      ).address;
+      this.#privateKey = this.coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
     } catch (error) {
       // logger.error({ instance: this, error });
     }
@@ -251,24 +232,12 @@ class BSCCoin extends Web3Mixin(
       transaction.data = paymentData;
     }
 
-    const signedTx = await this.coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await this.coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
 
-  async createTokenTransaction({
-    address,
-    amount,
-    custom,
-    userGasPrice,
-    gasLimit,
-    contract,
-    multiplier,
-    nonce,
-  }) {
+  async createTokenTransaction({ address, amount, custom, userGasPrice, gasLimit, contract, multiplier, nonce }) {
     const contractData = this.getProvider('send').createSendTokenContract(
       contract,
       this.address,
@@ -299,9 +268,7 @@ class BSCCoin extends Web3Mixin(
     try {
       const fetchedGasPrice = await this.getProvider('nft-send').getGasPrice();
 
-      return new BN(fetchedGasPrice)
-        .mul(new BN(gasPriceCoefficient))
-        .toString();
+      return new BN(fetchedGasPrice).mul(new BN(gasPriceCoefficient)).toString();
     } catch (error) {
       console.warn(error);
       throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
@@ -319,21 +286,10 @@ class BSCCoin extends Web3Mixin(
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async estimateGasForSendNft(
-    address,
-    toAddress,
-    nonce,
-    data,
-    gasLimitCoefficient = 1,
-  ) {
+  async estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient = 1) {
     try {
       /** @type number */
-      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(
-        address,
-        toAddress,
-        nonce,
-        data,
-      );
+      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(address, toAddress, nonce, data);
 
       return Math.ceil(fetchedGasLimit * gasLimitCoefficient).toString();
     } catch (error) {
@@ -355,11 +311,7 @@ class BSCCoin extends Web3Mixin(
    * @param {UserFeeOptions} userOptions - Custom user options.
    * @returns {Promise<{gasLimit: string, gasPrice: string, nonce: number}>}
    */
-  async getNftTransferGasParams(
-    toAddress,
-    data,
-    { userGasPrice, userGasLimit },
-  ) {
+  async getNftTransferGasParams(toAddress, data, { userGasPrice, userGasLimit }) {
     const {
       address,
       nftGasPriceCoefficient,
@@ -371,11 +323,9 @@ class BSCCoin extends Web3Mixin(
     } = this;
 
     /** @type number */
-    const gasPriceCoefficient =
-      nftGasPriceCoefficient || configGasPriceCoefficient;
+    const gasPriceCoefficient = nftGasPriceCoefficient || configGasPriceCoefficient;
     /** @type number */
-    const gasLimitCoefficient =
-      nftGasLimitCoefficient || configGasLimitCoefficient;
+    const gasLimitCoefficient = nftGasLimitCoefficient || configGasLimitCoefficient;
 
     const defaultGasValues = [
       new BN(defaultGasPrice).mul(new BN(gasPriceCoefficient)).toString(),
@@ -386,19 +336,10 @@ class BSCCoin extends Web3Mixin(
 
     const [gasPrice, gasLimit] = await Promise.allSettled([
       userGasPrice || this.getNftGasPrice(gasPriceCoefficient),
-      userGasLimit ||
-        this.estimateGasForSendNft(
-          address,
-          toAddress,
-          nonce,
-          data,
-          gasLimitCoefficient,
-        ),
+      userGasLimit || this.estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient),
     ]).then((resultList) =>
       resultList.map((result, i) => {
-        return result.status === 'fulfilled'
-          ? result.value
-          : defaultGasValues[i];
+        return result.status === 'fulfilled' ? result.value : defaultGasValues[i];
       }),
     );
 
@@ -417,13 +358,7 @@ class BSCCoin extends Web3Mixin(
    * @return {Promise<BN>} - The fee.
    * @throws {ExternalError}
    */
-  async getNftFee({
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    toAddress,
-    userOptions = {},
-  }) {
+  async getNftFee({ contractAddress, tokenId, tokenStandard, toAddress, userOptions = {} }) {
     try {
       const data = await this.getProvider('nft-send').getNftContractData(
         this,
@@ -432,11 +367,7 @@ class BSCCoin extends Web3Mixin(
         tokenId,
         tokenStandard,
       );
-      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(toAddress, data, userOptions);
 
       return new BN(gasPrice).mul(new BN(gasLimit));
     } catch (error) {
@@ -454,18 +385,9 @@ class BSCCoin extends Web3Mixin(
    * @return {Promise<string>} - Raw transaction
    * @throws {ExternalError}
    */
-  async createNftTransaction({
-    toAddress,
-    contractAddress,
-    data,
-    userOptions = {},
-  }) {
+  async createNftTransaction({ toAddress, contractAddress, data, userOptions = {} }) {
     try {
-      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(toAddress, data, userOptions);
 
       const transaction = {
         to: contractAddress,
@@ -477,11 +399,7 @@ class BSCCoin extends Web3Mixin(
         gasPrice,
       };
 
-      const { rawTransaction } =
-        await this.coreLibrary.eth.accounts.signTransaction(
-          transaction,
-          this.#privateKey,
-        );
+      const { rawTransaction } = await this.coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
       return rawTransaction;
     } catch (error) {
@@ -491,9 +409,7 @@ class BSCCoin extends Web3Mixin(
   }
 
   async getNonce() {
-    this.nonce = new this.BN(
-      await this.coreLibrary.eth.getTransactionCount(this.address),
-    );
+    this.nonce = new this.BN(await this.coreLibrary.eth.getTransactionCount(this.address));
 
     return this.nonce;
   }
@@ -512,8 +428,7 @@ class BSCCoin extends Web3Mixin(
   }
 
   async getGasPrice(withoutCoeff = false) {
-    const { fastest = null, standard = null } =
-      await this.getProvider('node').getGasPrice();
+    const { fastest = null, standard = null } = await this.getProvider('node').getGasPrice();
 
     if (withoutCoeff) {
       return standard || this.defaultGasPrice;
@@ -548,9 +463,7 @@ class BSCCoin extends Web3Mixin(
       })
       .catch(() => {});
 
-    return estimateGas
-      ? Math.ceil(estimateGas * this.gasLimitCoefficient).toString()
-      : defaultGas;
+    return estimateGas ? Math.ceil(estimateGas * this.gasLimitCoefficient).toString() : defaultGas;
   }
 
   /**
@@ -564,9 +477,7 @@ class BSCCoin extends Web3Mixin(
     }
 
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -579,17 +490,12 @@ class BSCCoin extends Web3Mixin(
     this.getNonce();
 
     if (tokenInfo && tokenInfo.isToken) {
-      const tokenBalance = await this.getProvider(
-        'node',
-      ).getTokenBalanceByContractAddress({
+      const tokenBalance = await this.getProvider('node').getTokenBalanceByContractAddress({
         address: this.address,
         contractAddress: tokenInfo.contract.toLowerCase(),
       });
 
-      const contractVariant = [
-        tokenInfo.contract,
-        tokenInfo.contract.toLowerCase(),
-      ];
+      const contractVariant = [tokenInfo.contract, tokenInfo.contract.toLowerCase()];
 
       contractVariant.forEach((contract) => {
         if (this.tokens[contract]) {
@@ -705,9 +611,7 @@ class BSCCoin extends Web3Mixin(
     try {
       const isUpdateNeeded = !this.gasPriceConfig || force;
 
-      this.gasPriceConfig = isUpdateNeeded
-        ? await this.web3.getGasPriceConfig()
-        : this.gasPriceConfig;
+      this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
       console.error(error);
     }
@@ -718,9 +622,7 @@ class BSCCoin extends Web3Mixin(
     // ACT-992: This multiplier needed because 'fastest', 'fast', 'average' params in config contains gwei * 10
     const multiplier = 10;
     const config = await this.getEstimatedTimeCfg();
-    const speed = ['fastest', 'fast', 'average'].find(
-      (key) => config?.[key] <= gasPrice * multiplier,
-    );
+    const speed = ['fastest', 'fast', 'average'].find((key) => config?.[key] <= gasPrice * multiplier);
 
     if (mapping) {
       const TIMES_MAP = {

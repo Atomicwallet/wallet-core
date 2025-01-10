@@ -21,17 +21,13 @@ class CardanoRestExplorer extends Explorer {
     const outgoing = !this.getTxDirection(selfAddress, tx);
 
     if (outgoing) {
-      const outgoingOutput = tx.ctbOutputs.find(
-        ({ ctaAddress }) => ctaAddress !== selfAddress,
-      );
+      const outgoingOutput = tx.ctbOutputs.find(({ ctaAddress }) => ctaAddress !== selfAddress);
 
       if (outgoingOutput) {
         return outgoingOutput.ctaAddress;
       }
     } else {
-      const incomingOutput = tx.ctbInputs.find(
-        ({ ctaAddress }) => ctaAddress !== selfAddress,
-      );
+      const incomingOutput = tx.ctbInputs.find(({ ctaAddress }) => ctaAddress !== selfAddress);
 
       return incomingOutput.ctaAddress;
     }
@@ -42,9 +38,7 @@ class CardanoRestExplorer extends Explorer {
   getTxValue(selfAddress, tx) {
     const incoming = this.getTxDirection(selfAddress, tx);
 
-    const sentToMyself = tx.ctbInputs
-      .concat(tx.ctbOutputs)
-      .every(({ ctaAddress }) => ctaAddress === selfAddress);
+    const sentToMyself = tx.ctbInputs.concat(tx.ctbOutputs).every(({ ctaAddress }) => ctaAddress === selfAddress);
 
     if (sentToMyself) {
       return this.wallet.toCurrencyUnit(tx.ctbFees.getCoin);
@@ -84,20 +78,12 @@ class CardanoRestExplorer extends Explorer {
   }
 
   async sendTransaction({ rawtx }) {
-    const result = await this.request(
-      'api/submit/tx',
-      'post',
-      Buffer.from(rawtx),
-      undefined,
-      {
-        headers: {
-          'Content-Type': 'application/cbor',
-          'API-key': this.config.options
-            ? this.config.options['API-key']
-            : undefined,
-        },
+    const result = await this.request('api/submit/tx', 'post', Buffer.from(rawtx), undefined, {
+      headers: {
+        'Content-Type': 'application/cbor',
+        'API-key': this.config.options ? this.config.options['API-key'] : undefined,
       },
-    );
+    });
 
     return { txid: result };
   }
@@ -121,26 +107,17 @@ class CardanoRestExplorer extends Explorer {
   }
 
   async getTransactions({ address }) {
-    const response = await this.request(
-      `api/addresses/summary/${address}`,
-      'get',
-    );
+    const response = await this.request(`api/addresses/summary/${address}`, 'get');
 
     if (response.Left) {
       throw new Error(response.Left);
     }
 
-    return this.modifyTransactionsResponse(
-      response.Right && response.Right.caTxList,
-      address,
-    );
+    return this.modifyTransactionsResponse(response.Right && response.Right.caTxList, address);
   }
 
   async getInfo(address) {
-    const response = await this.request(
-      `api/addresses/summary/${address}`,
-      'get',
-    );
+    const response = await this.request(`api/addresses/summary/${address}`, 'get');
 
     const balance = response.Right && response.Right.caBalance.getCoin;
     const transactions = response.Right && response.Right.caTxList;

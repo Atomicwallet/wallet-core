@@ -60,12 +60,8 @@ class FILCoin extends HasProviders(Coin) {
       feeData,
       dependencies: {
         [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(
-          () => import('ethereumjs-wallet'),
-        ),
-        [FILECOIN_ADDRESS_SDK]: new LazyLoadedLib(
-          () => import('@glif/filecoin-address'),
-        ),
+        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        [FILECOIN_ADDRESS_SDK]: new LazyLoadedLib(() => import('@glif/filecoin-address')),
       },
     };
 
@@ -77,9 +73,7 @@ class FILCoin extends HasProviders(Coin) {
 
     this.setFeeData(feeData);
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3 = new Web3Explorer({
       wallet: this.instance,
@@ -91,12 +85,9 @@ class FILCoin extends HasProviders(Coin) {
     this.tokens = {};
     this.nonce = new this.BN('0');
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   /**
@@ -157,13 +148,7 @@ class FILCoin extends HasProviders(Coin) {
       address: this.address,
     });
     const failedTxs = await Promise.all(
-      failed.map(({ txid }) =>
-        this.getProvider('history').getTransaction(
-          this.address,
-          txid,
-          this.tokens,
-        ),
-      ),
+      failed.map(({ txid }) => this.getProvider('history').getTransaction(this.address, txid, this.tokens)),
     );
 
     return transactions.concat(tokenTransactions).concat(failedTxs);
@@ -210,15 +195,10 @@ class FILCoin extends HasProviders(Coin) {
    * @return {Promise<object>}
    */
   async loadWallet(seed) {
-    const [coreLibrary, { hdkey }] = await Promise.all([
-      this.getCoreLibrary(),
-      this.loadLib(ETHEREUM_JS_WALLET_SDK),
-    ]);
+    const [coreLibrary, { hdkey }] = await Promise.all([this.getCoreLibrary(), this.loadLib(ETHEREUM_JS_WALLET_SDK)]);
     const ethHDKey = hdkey.fromMasterSeed(seed);
     const wallet = ethHDKey.getWallet();
-    const account = coreLibrary.eth.accounts.privateKeyToAccount(
-      wallet.getPrivateKeyString(),
-    );
+    const account = coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
     if (!account) {
       throw new Error(`${this.wallet.ticker} can't get the wallet`);
@@ -242,9 +222,7 @@ class FILCoin extends HasProviders(Coin) {
       this.getFilecoinAddressSdk(),
     ]);
 
-    return isStartsWith(address, '0x')
-      ? coreLibrary.utils.isAddress(address)
-      : validateAddressString(address);
+    return isStartsWith(address, '0x') ? coreLibrary.utils.isAddress(address) : validateAddressString(address);
   }
 
   /**
@@ -257,13 +235,7 @@ class FILCoin extends HasProviders(Coin) {
    * @param {number} multiplier coefficient
    * @return {Promise<string>} Raw transaction
    */
-  async createTransaction({
-    address,
-    amount,
-    paymentData = null,
-    nonce,
-    gasLimit = this.gasLimit,
-  }) {
+  async createTransaction({ address, amount, paymentData = null, nonce, gasLimit = this.gasLimit }) {
     const [coreLibrary, { ethAddressFromDelegated }] = await Promise.all([
       this.getCoreLibrary(),
       this.getFilecoinAddressSdk(),
@@ -271,9 +243,7 @@ class FILCoin extends HasProviders(Coin) {
     ]);
 
     const transaction = {
-      to: isStartsWith(address, '0x')
-        ? address
-        : ethAddressFromDelegated(address),
+      to: isStartsWith(address, '0x') ? address : ethAddressFromDelegated(address),
       value: amount,
       gas: gasLimit || this.gasLimit, // front may send "null"
       chainId: CHAIN_ID,
@@ -285,10 +255,7 @@ class FILCoin extends HasProviders(Coin) {
       transaction.data = paymentData;
     }
 
-    const signedTx = await coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
@@ -327,9 +294,7 @@ class FILCoin extends HasProviders(Coin) {
   async getNonce() {
     const coreLibrary = await this.getCoreLibrary();
 
-    this.nonce = new this.BN(
-      await coreLibrary.eth.getTransactionCount(this.address),
-    );
+    this.nonce = new this.BN(await coreLibrary.eth.getTransactionCount(this.address));
     return this.nonce;
   }
 
@@ -421,9 +386,7 @@ class FILCoin extends HasProviders(Coin) {
       })
       .catch(() => {});
 
-    return estimateGas
-      ? Math.round(estimateGas * this.gasLimitCoefficient).toString()
-      : defaultGas;
+    return estimateGas ? Math.round(estimateGas * this.gasLimitCoefficient).toString() : defaultGas;
   }
 
   /**
@@ -437,9 +400,7 @@ class FILCoin extends HasProviders(Coin) {
     }
 
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -457,17 +418,12 @@ class FILCoin extends HasProviders(Coin) {
     this.getNonce();
 
     if (tokenInfo && tokenInfo.isToken) {
-      const tokenBalance = await this.getProvider(
-        'node',
-      ).getTokenBalanceByContractAddress({
+      const tokenBalance = await this.getProvider('node').getTokenBalanceByContractAddress({
         address: this.address,
         contractAddress: tokenInfo.contract.toLowerCase(),
       });
 
-      const contractVariant = [
-        tokenInfo.contract,
-        tokenInfo.contract.toLowerCase(),
-      ];
+      const contractVariant = [tokenInfo.contract, tokenInfo.contract.toLowerCase()];
 
       contractVariant.forEach((contract) => {
         if (this.tokens[contract]) {
@@ -501,9 +457,7 @@ class FILCoin extends HasProviders(Coin) {
     try {
       const isUpdateNeeded = !this.gasPriceConfig || force;
 
-      this.gasPriceConfig = isUpdateNeeded
-        ? await this.web3.getGasPriceConfig()
-        : this.gasPriceConfig;
+      this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
       console.error(error);
     }
@@ -514,9 +468,7 @@ class FILCoin extends HasProviders(Coin) {
     // ACT-992: This multiplier needed because 'fastest', 'fast', 'average' params in config contains gwei * 10
     const multiplier = 10;
     const config = await this.getEstimatedTimeCfg();
-    const speed = ['fastest', 'fast', 'average'].find(
-      (key) => config?.[key] <= gasPrice * multiplier,
-    );
+    const speed = ['fastest', 'fast', 'average'].find((key) => config?.[key] <= gasPrice * multiplier);
 
     if (mapping) {
       const TIMES_MAP = {

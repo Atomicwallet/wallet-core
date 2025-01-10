@@ -46,16 +46,11 @@ class BinanceBCExplorer extends Explorer {
    * @param limit { Number }
    * @returns {Promise<QueryDelegationsResponse>)|[]>}
    * */
-  async getDelegations({
-    address = this.wallet.address,
-    offset = DEFAULT_REQ_OFFSET,
-    limit = MAX_REQ_LIMIT,
-  } = {}) {
-    const response = await this.request(
-      this.getDelegationsUrl(address),
-      this.getStakingInfoMethod(),
-      { offset, limit },
-    ).catch((error) => {
+  async getDelegations({ address = this.wallet.address, offset = DEFAULT_REQ_OFFSET, limit = MAX_REQ_LIMIT } = {}) {
+    const response = await this.request(this.getDelegationsUrl(address), this.getStakingInfoMethod(), {
+      offset,
+      limit,
+    }).catch((error) => {
       throw new ExplorerRequestError({
         type: GET_TRANSACTIONS_TYPE,
         error,
@@ -74,16 +69,11 @@ class BinanceBCExplorer extends Explorer {
    * @param limit { Number }
    * @returns {Promise<QueryUndelegationsResponse>)|[]>}
    * */
-  async getUnDelegations({
-    address = this.wallet.address,
-    offset = DEFAULT_REQ_OFFSET,
-    limit = MAX_REQ_LIMIT,
-  } = {}) {
-    const response = await this.request(
-      this.getUnDelegationsUrl(address),
-      this.getStakingInfoMethod(),
-      { offset, limit },
-    ).catch((error) => {
+  async getUnDelegations({ address = this.wallet.address, offset = DEFAULT_REQ_OFFSET, limit = MAX_REQ_LIMIT } = {}) {
+    const response = await this.request(this.getUnDelegationsUrl(address), this.getStakingInfoMethod(), {
+      offset,
+      limit,
+    }).catch((error) => {
       throw new ExplorerRequestError({
         type: GET_TRANSACTIONS_TYPE,
         error,
@@ -91,9 +81,7 @@ class BinanceBCExplorer extends Explorer {
       });
     });
 
-    return response?.unbondingDelegations.filter(
-      ({ completeHeight }) => !completeHeight,
-    );
+    return response?.unbondingDelegations.filter(({ completeHeight }) => !completeHeight);
   }
 
   /**
@@ -104,16 +92,11 @@ class BinanceBCExplorer extends Explorer {
    * @param limit { Number }
    * @returns {Promise<QueryRedelegationsResponse>)|[]>}
    */
-  async getReDelegations({
-    address = this.wallet.address,
-    offset = DEFAULT_REQ_OFFSET,
-    limit = MAX_REQ_LIMIT,
-  } = {}) {
-    const response = await this.request(
-      this.getReDelegationsUrl(address),
-      this.getStakingInfoMethod(),
-      { offset, limit },
-    ).catch((error) => {
+  async getReDelegations({ address = this.wallet.address, offset = DEFAULT_REQ_OFFSET, limit = MAX_REQ_LIMIT } = {}) {
+    const response = await this.request(this.getReDelegationsUrl(address), this.getStakingInfoMethod(), {
+      offset,
+      limit,
+    }).catch((error) => {
       throw new ExplorerRequestError({
         type: GET_TRANSACTIONS_TYPE,
         error,
@@ -132,16 +115,11 @@ class BinanceBCExplorer extends Explorer {
    * @param limit { Number }
    * @returns {Promise<*>}
    */
-  async getRewards({
-    address = this.wallet.address,
-    offset = DEFAULT_REQ_OFFSET,
-    limit = MAX_REQ_LIMIT,
-  } = {}) {
-    const response = await this.request(
-      this.getRewardsUrl(address),
-      this.getStakingInfoMethod(),
-      { offset, limit },
-    ).catch((error) => {
+  async getRewards({ address = this.wallet.address, offset = DEFAULT_REQ_OFFSET, limit = MAX_REQ_LIMIT } = {}) {
+    const response = await this.request(this.getRewardsUrl(address), this.getStakingInfoMethod(), {
+      offset,
+      limit,
+    }).catch((error) => {
       throw new ExplorerRequestError({
         type: GET_TRANSACTIONS_TYPE,
         error,
@@ -160,16 +138,10 @@ class BinanceBCExplorer extends Explorer {
    * @param address {String}
    * @returns {Promise<any>}
    */
-  async getUserValidators(
-    address = this.wallet.address,
-    operations = undefined,
-  ) {
+  async getUserValidators(address = this.wallet.address, operations = undefined) {
     try {
       if (!operations) {
-        operations = await Promise.all([
-          this.getDelegations({ address }),
-          this.getUnDelegations({ address }),
-        ]);
+        operations = await Promise.all([this.getDelegations({ address }), this.getUnDelegations({ address })]);
       }
       // flat map operations -> dedup validators address via Map
       const validatorsMap = new Map();
@@ -226,55 +198,31 @@ class BinanceBCExplorer extends Explorer {
       return acc.set(next.validator, next);
     }, new Map());
 
-    const userValidators = await this.getUserValidators(address, [
-      delegations,
-      unbonding,
-    ]);
+    const userValidators = await this.getUserValidators(address, [delegations, unbonding]);
 
-    const validators = userValidators.reduce(
-      (acc, { validatorName, validator: validatorAddress, valName }) => {
-        const staked = new Amount(
-          this.wallet
-            .toMinimalUnit(stakings.get(validatorAddress)?.amount)
-            .toString(),
-          this.wallet,
-        );
-        const unstaked = new Amount(
-          this.wallet
-            .toMinimalUnit(unstakings.get(validatorAddress)?.balance)
-            .toString(),
-          this.wallet,
-        );
+    const validators = userValidators.reduce((acc, { validatorName, validator: validatorAddress, valName }) => {
+      const staked = new Amount(
+        this.wallet.toMinimalUnit(stakings.get(validatorAddress)?.amount).toString(),
+        this.wallet,
+      );
+      const unstaked = new Amount(
+        this.wallet.toMinimalUnit(unstakings.get(validatorAddress)?.balance).toString(),
+        this.wallet,
+      );
 
-        acc[validatorAddress] = {
-          staked,
-          unstaked,
-          rewards: new Amount(
-            this.wallet
-              .toMinimalUnit(rewards.get(validatorAddress)?.reward)
-              .toString(),
-            this.wallet,
-          ),
-          name: validatorName || valName,
-          isUnstakeAvailable:
-            staked.toBN().gt(new this.wallet.BN(0)) &&
-            unstaked.toBN().eq(new this.wallet.BN(0)),
-        };
+      acc[validatorAddress] = {
+        staked,
+        unstaked,
+        rewards: new Amount(this.wallet.toMinimalUnit(rewards.get(validatorAddress)?.reward).toString(), this.wallet),
+        name: validatorName || valName,
+        isUnstakeAvailable: staked.toBN().gt(new this.wallet.BN(0)) && unstaked.toBN().eq(new this.wallet.BN(0)),
+      };
 
-        return acc;
-      },
-      {},
-    );
+      return acc;
+    }, {});
 
-    const [unstake, totalStake, totalRewards] = [
-      'unstaked',
-      'staked',
-      'rewards',
-    ].map((field) =>
-      Object.values(validators).reduce(
-        (acc, next) => acc.add(next[field].toBN()),
-        new this.wallet.BN('0'),
-      ),
+    const [unstake, totalStake, totalRewards] = ['unstaked', 'staked', 'rewards'].map((field) =>
+      Object.values(validators).reduce((acc, next) => acc.add(next[field].toBN()), new this.wallet.BN('0')),
     );
 
     return {

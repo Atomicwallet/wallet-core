@@ -28,9 +28,7 @@ const blockchain = (ticker) => {
 
 export const ERC721_TOKEN_STANDARD = 'ERC-721';
 export const ERC1155_TOKEN_STANDARD = 'ERC-1155';
-export const UNRECOGNIZED_TOKEN_STANDARD = Symbol(
-  'UNRECOGNIZED_TOKEN_STANDARD',
-);
+export const UNRECOGNIZED_TOKEN_STANDARD = Symbol('UNRECOGNIZED_TOKEN_STANDARD');
 
 export const erc721StandardTest = /^ERC.?721$/i;
 export const erc1155StandardTest = /^ERC.?1155$/i;
@@ -49,25 +47,8 @@ class ETHNftToken extends NftToken {
    * @param {string} [description=undefined] - NFT description. Optional.
    * @param {string} imageUrl - URL to NFT image.
    */
-  constructor(
-    contractAddress,
-    tokenId,
-    coinId,
-    tokenStandard,
-    name,
-    description = undefined,
-    imageUrl,
-  ) {
-    super(
-      contractAddress,
-      tokenId,
-      coinId,
-      blockchain(coinId),
-      tokenStandard,
-      name,
-      description,
-      imageUrl,
-    );
+  constructor(contractAddress, tokenId, coinId, tokenStandard, name, description = undefined, imageUrl) {
+    super(contractAddress, tokenId, coinId, blockchain(coinId), tokenStandard, name, description, imageUrl);
   }
 }
 

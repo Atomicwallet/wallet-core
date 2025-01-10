@@ -7,9 +7,7 @@ import Explorer from '../Explorer';
 class IconNodeExplorer extends Explorer {
   constructor(...args) {
     super(...args);
-    const provider = new IconService.HttpProvider(
-      `${this.config.baseUrl}${this.getApiPrefix()}`,
-    );
+    const provider = new IconService.HttpProvider(`${this.config.baseUrl}${this.getApiPrefix()}`);
     const iconService = new IconService(provider);
 
     this.service = iconService;

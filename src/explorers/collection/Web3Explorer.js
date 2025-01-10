@@ -59,10 +59,7 @@ class Web3Explorer extends Explorer {
 
       const callback = (err, result) => {
         if (err) {
-          console.warn(
-            `Web3Explorer: Failed to fetch ${token.ticker} token balance`,
-            err,
-          );
+          console.warn(`Web3Explorer: Failed to fetch ${token.ticker} token balance`, err);
         }
 
         token.balance = result;
@@ -92,22 +89,15 @@ class Web3Explorer extends Explorer {
     if (!tx) {
       return null;
     }
-    const { timestamp } = await this.wallet.coreLibrary.eth.getBlock(
-      tx.blockNumber,
-    );
+    const { timestamp } = await this.wallet.coreLibrary.eth.getBlock(tx.blockNumber);
     const { number } = await this.wallet.coreLibrary.eth.getBlock('latest');
-    const receipt =
-      await this.wallet.coreLibrary.eth.getTransactionReceipt(txId);
+    const receipt = await this.wallet.coreLibrary.eth.getTransactionReceipt(txId);
 
     if (tx.input !== '0x') {
       tx.inputDecode = this.decodeInput(tx.input);
 
       if (receipt && tx.inputDecode && tx.inputDecode.method === 'transfer') {
-        if (
-          receipt.to &&
-          tokens &&
-          typeof tokens[receipt.to.toLowerCase()] !== 'undefined'
-        ) {
+        if (receipt.to && tokens && typeof tokens[receipt.to.toLowerCase()] !== 'undefined') {
           txWallet = tokens[receipt.to.toLowerCase()];
         }
       }
@@ -212,9 +202,7 @@ class Web3Explorer extends Explorer {
       }
     }
 
-    return selfAddress.toLowerCase() === tx.from.toLowerCase()
-      ? toAddress
-      : tx.from;
+    return selfAddress.toLowerCase() === tx.from.toLowerCase() ? toAddress : tx.from;
   }
 
   /**
@@ -242,29 +230,21 @@ class Web3Explorer extends Explorer {
    * @return {Promise<any>}
    */
   async getTokenBalanceByContractAddress({ address, contractAddress }) {
-    const nodeContractInfo = new this.wallet.coreLibrary.eth.Contract(
-      balanceABItoken,
-      contractAddress,
-    );
+    const nodeContractInfo = new this.wallet.coreLibrary.eth.Contract(balanceABItoken, contractAddress);
 
     return nodeContractInfo.methods.balanceOf(address).call();
   }
 
   getTokenBalanceOfCall({ address, contractAddress }, callback) {
-    const nodeContractInfo = new this.wallet.coreLibrary.eth.Contract(
-      balanceABItoken,
-      contractAddress,
-    );
+    const nodeContractInfo = new this.wallet.coreLibrary.eth.Contract(balanceABItoken, contractAddress);
 
     return nodeContractInfo.methods.balanceOf(address).call.request(callback);
   }
 
   createSendTokenContract(contractAddress, addressFrom, addressTo, amount) {
-    const contract = new this.wallet.coreLibrary.eth.Contract(
-      this.getERC20ABI(),
-      contractAddress,
-      { from: addressFrom },
-    );
+    const contract = new this.wallet.coreLibrary.eth.Contract(this.getERC20ABI(), contractAddress, {
+      from: addressFrom,
+    });
 
     return contract.methods.transfer(addressTo, amount).encodeABI();
   }
@@ -290,14 +270,9 @@ class Web3Explorer extends Explorer {
 
         this.getERC20ABI().forEach((object) => {
           try {
-            const abiMethod =
-              this.wallet.coreLibrary.eth.abi.encodeFunctionSignature(object);
-            const abiTypes = object.inputs
-              ? object.inputs.map((x) => x.type)
-              : [];
-            const attributes = object.inputs
-              ? object.inputs.map((x) => x.name)
-              : [];
+            const abiMethod = this.wallet.coreLibrary.eth.abi.encodeFunctionSignature(object);
+            const abiTypes = object.inputs ? object.inputs.map((x) => x.type) : [];
+            const attributes = object.inputs ? object.inputs.map((x) => x.name) : [];
 
             if (inputMethod === abiMethod) {
               const inputs = this.wallet.coreLibrary.eth.abi.decodeParameters(

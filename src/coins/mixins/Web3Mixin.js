@@ -4,8 +4,7 @@ import ABICollection from '../../tokens/ABI';
 import ERC20Default from '../../tokens/ABI/ERC-20/standard';
 
 const DEFAULT_MAX_GAS = '250000';
-const MAX_ALLOWED_AMOUNT =
-  '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+const MAX_ALLOWED_AMOUNT = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
 const Web3Mixin = (superclass) =>
   class extends superclass {
@@ -19,17 +18,9 @@ const Web3Mixin = (superclass) =>
      * @param {string[]} args specific args
      * @return {string}
      */
-    createSmartContractCall({
-      type = 'ERC20',
-      smartContractAddress,
-      standard = false,
-      action,
-      args = [],
-    } = {}) {
+    createSmartContractCall({ type = 'ERC20', smartContractAddress, standard = false, action, args = [] } = {}) {
       if (!type) {
-        throw new Error(
-          `One of supported 'type' should be defined: [${Object.keys(ABICollection).toString()}`,
-        );
+        throw new Error(`One of supported 'type' should be defined: [${Object.keys(ABICollection).toString()}`);
       }
 
       if (!smartContractAddress) {
@@ -37,43 +28,32 @@ const Web3Mixin = (superclass) =>
       }
 
       const supportedSmartContract =
-        ABICollection[type.toUpperCase()]?.[
-          standard ? 'standard' : smartContractAddress.toLowerCase()
-        ];
+        ABICollection[type.toUpperCase()]?.[standard ? 'standard' : smartContractAddress.toLowerCase()];
 
       if (!supportedSmartContract) {
-        throw new Error(
-          `Smart-contract ${type.toUpperCase()} ${smartContractAddress} is not supported`,
-        );
+        throw new Error(`Smart-contract ${type.toUpperCase()} ${smartContractAddress} is not supported`);
       }
 
       const { name, params } = supportedSmartContract.methods[action] || {};
 
       if (!name) {
         throw new Error(
-          `Smart-contract action '${action}' is not supported, supported actions: [${Object.keys(supportedSmartContract.methods).toString()}]`,
+          `Smart-contract action '${action}' is not supported, supported actions: 
+          [${Object.keys(supportedSmartContract.methods).toString()}]`,
         );
       }
 
       if (params?.length > args.length) {
-        throw new Error(
-          `Smart-contract parameters should include ${params.length} values, got ${args.length}`,
-        );
+        throw new Error(`Smart-contract parameters should include ${params.length} values, got ${args.length}`);
       }
 
       const ABI = supportedSmartContract.abi;
 
       if (!ABI) {
-        throw new Error(
-          `No such ${type} ABI found for ${smartContractAddress}`,
-        );
+        throw new Error(`No such ${type} ABI found for ${smartContractAddress}`);
       }
 
-      const contractInterface = new this.coreLibrary.eth.Contract(
-        ABI,
-        smartContractAddress,
-        args,
-      );
+      const contractInterface = new this.coreLibrary.eth.Contract(ABI, smartContractAddress, args);
 
       if (typeof contractInterface.methods[name] !== 'function') {
         throw new TypeError(
@@ -93,10 +73,7 @@ const Web3Mixin = (superclass) =>
      * @return { Promise<*> }
      */
     makeRawCall(abi, contract, method, args = []) {
-      const contractInterface = new this.coreLibrary.eth.Contract(
-        abi,
-        contract,
-      );
+      const contractInterface = new this.coreLibrary.eth.Contract(abi, contract);
 
       return contractInterface.methods[method](...args).call();
     }
@@ -107,15 +84,11 @@ const Web3Mixin = (superclass) =>
      * @return {Promise<{}>}
      */
     async getContractConstants(contract) {
-      const contractInterface = new this.coreLibrary.eth.Contract(
-        ERC20Default,
-        contract,
-      );
+      const contractInterface = new this.coreLibrary.eth.Contract(ERC20Default, contract);
       const batch = new this.coreLibrary.BatchRequest();
 
       const constants = ERC20Default.filter(
-        ({ constant, type, inputs }) =>
-          constant && type === 'function' && inputs.length === 0,
+        ({ constant, type, inputs }) => constant && type === 'function' && inputs.length === 0,
       );
 
       const info = {};
@@ -173,15 +146,10 @@ const Web3Mixin = (superclass) =>
           data,
         })
         .catch((error) => {
-          console.error(
-            `${this.ticker}: Failed to estimate gas, used default max 250k`,
-            error,
-          );
+          console.error(`${this.ticker}: Failed to estimate gas, used default max 250k`, error);
         });
 
-      return estimateGas
-        ? Math.ceil(estimateGas * (this.gasLimitCoefficient ?? 1)).toString()
-        : DEFAULT_MAX_GAS;
+      return estimateGas ? Math.ceil(estimateGas * (this.gasLimitCoefficient ?? 1)).toString() : DEFAULT_MAX_GAS;
     }
 
     /**
@@ -192,14 +160,9 @@ const Web3Mixin = (superclass) =>
      * @return {any}
      */
     getAllowance({ contract, spender, abi = ERC20Default }) {
-      const contractInterface = new this.coreLibrary.eth.Contract(
-        abi,
-        contract,
-      );
+      const contractInterface = new this.coreLibrary.eth.Contract(abi, contract);
 
-      return contractInterface.methods
-        .allowance([this.address, spender])
-        .call();
+      return contractInterface.methods.allowance([this.address, spender]).call();
     }
 
     /**
@@ -231,15 +194,7 @@ const Web3Mixin = (superclass) =>
      * @param nonce
      * @return {any}
      */
-    createApproveTransaction({
-      contract,
-      address,
-      amount,
-      userGasPrice,
-      gasLimit,
-      multiplier,
-      nonce,
-    } = {}) {
+    createApproveTransaction({ contract, address, amount, userGasPrice, gasLimit, multiplier, nonce } = {}) {
       const paymentData = this.makeApproval({
         contract,
         address,

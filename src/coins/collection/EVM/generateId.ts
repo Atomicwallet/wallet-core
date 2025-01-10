@@ -4,10 +4,6 @@ type IdStruct = {
   walletType: string;
 };
 
-export function generateId({
-  ticker,
-  chainId,
-  walletType = 'EVM',
-}: IdStruct): string {
+export function generateId({ ticker, chainId, walletType = 'EVM' }: IdStruct): string {
   return `${ticker.toUpperCase()}${chainId}`;
 }

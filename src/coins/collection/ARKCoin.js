@@ -5,9 +5,7 @@ import ArkExplorer from '../../explorers/collection/ArkExplorer';
 import { LazyLoadedLib } from '../../utils';
 import { WALLET_ERROR } from '../../utils/const';
 
-const arkecosystemCryptoLazyLoaded = new LazyLoadedLib(
-  () => import('@arkecosystem/crypto'),
-);
+const arkecosystemCryptoLazyLoaded = new LazyLoadedLib(() => import('@arkecosystem/crypto'));
 
 const NAME = 'Ark';
 const TICKER = 'ARK';
@@ -73,8 +71,7 @@ class ARKCoin extends Coin {
       return this.arkecosystemCryptoObj;
     }
 
-    const { Crypto, Identities, Managers, Transactions } =
-      await arkecosystemCryptoLazyLoaded.get();
+    const { Crypto, Identities, Managers, Transactions } = await arkecosystemCryptoLazyLoaded.get();
 
     Managers.configManager.setFromPreset('mainnet');
     Managers.configManager.setHeight(FORK_HEIGHT);
@@ -93,8 +90,7 @@ class ARKCoin extends Coin {
 
   loadWallet(seed, mnemonic) {
     return new Promise(async (resolve, reject) => {
-      const { Crypto, Identities, pubKeyHash } =
-        await this.getArkecosystemCryptoObj();
+      const { Crypto, Identities, pubKeyHash } = await this.getArkecosystemCryptoObj();
       const hdPrivateKey = Crypto.HDWallet.fromMnemonic(mnemonic);
       const key = hdPrivateKey.derivePath(this.derivation);
 
@@ -109,10 +105,7 @@ class ARKCoin extends Coin {
       }
 
       this.#privateKey = key.toWIF();
-      this.address = Identities.Address.fromPublicKey(
-        key.publicKey.toString('hex'),
-        pubKeyHash,
-      );
+      this.address = Identities.Address.fromPublicKey(key.publicKey.toString('hex'), pubKeyHash);
 
       resolve({
         id: this.id,

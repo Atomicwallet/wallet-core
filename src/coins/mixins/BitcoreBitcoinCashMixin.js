@@ -52,10 +52,7 @@ const BitcoreBitcoinCashMixin = (superclass) =>
      */
     async validateAddress(address) {
       try {
-        return (
-          bitcoinCashAddressTools.isLegacyAddress(address) ||
-          bitcoinCashAddressTools.isCashAddress(address)
-        );
+        return bitcoinCashAddressTools.isLegacyAddress(address) || bitcoinCashAddressTools.isCashAddress(address);
       } catch (error) {
         return false;
       }

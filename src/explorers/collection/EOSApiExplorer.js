@@ -32,11 +32,7 @@ class EOSApiExplorer extends Explorer {
       });
     });
 
-    if (
-      response.data &&
-      response.data.permissions &&
-      response.data.permissions.length > 0
-    ) {
+    if (response.data && response.data.permissions && response.data.permissions.length > 0) {
       return false;
     }
     this.wallet.address = account;

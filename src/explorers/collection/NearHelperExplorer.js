@@ -32,12 +32,7 @@ class NearHelperExplorer extends Explorer {
     return 'get';
   }
 
-  getTransactionsParams(
-    address,
-    offset = 0,
-    limit = this.defaultTxLimit,
-    pageNum,
-  ) {
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit, pageNum) {
     return { limit };
   }
 
@@ -46,9 +41,7 @@ class NearHelperExplorer extends Explorer {
   }
 
   getTransactionsModifiedResponse(tx, selfAddress) {
-    return tx.action_kind === TRANSFER_ACTION
-      ? super.getTransactionsModifiedResponse(tx, selfAddress)
-      : null;
+    return tx.action_kind === TRANSFER_ACTION ? super.getTransactionsModifiedResponse(tx, selfAddress) : null;
   }
 
   getTxDirection(selfAddress, tx) {
@@ -56,11 +49,7 @@ class NearHelperExplorer extends Explorer {
   }
 
   getTxDateTime(tx) {
-    return new Date(
-      new this.wallet.BN(tx.block_timestamp)
-        .div(new this.wallet.BN(1000 ** 2))
-        .toNumber(),
-    );
+    return new Date(new this.wallet.BN(tx.block_timestamp).div(new this.wallet.BN(1000 ** 2)).toNumber());
   }
 
   getTxOtherSideAddress(selfAddress, tx) {

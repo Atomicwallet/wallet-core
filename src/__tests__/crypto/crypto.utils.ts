@@ -1,8 +1,4 @@
-import {
-  generateMockUtxo,
-  mnemonicPhrasesList,
-  mnemonicMappingKeys,
-} from '../fixtures/common.fixture';
+import { generateMockUtxo, mnemonicPhrasesList, mnemonicMappingKeys } from '../fixtures/common.fixture';
 import type { Coin, RawTxBinary } from '@/abstract';
 import { initializeMnemonic } from '@/utils';
 
@@ -23,28 +19,24 @@ export function generateWalletTests(wallet: Coin) {
   const { id } = wallet;
 
   describe(`Generate keys and signed tx`, () => {
-    test.each(mnemonicPhrasesList)(
-      `Generate keys for ${wallet.ticker}`,
-      async (phrase) => {
-        const { seed, phrase: mnemonicPhrase } =
-          await initializeMnemonic(phrase);
-        const keys = await wallet.loadWallet(seed, mnemonicPhrase);
-        const mapping = mnemonicMappingKeys[phrase]?.[id];
-        const address = mapping?.address;
-        const pk = mapping?.privateKey;
+    test.each(mnemonicPhrasesList)(`Generate keys for ${wallet.ticker}`, async (phrase) => {
+      const { seed, phrase: mnemonicPhrase } = await initializeMnemonic(phrase);
+      const keys = await wallet.loadWallet(seed, mnemonicPhrase);
+      const mapping = mnemonicMappingKeys[phrase]?.[id];
+      const address = mapping?.address;
+      const pk = mapping?.privateKey;
 
-        expect(pk).toBeDefined();
+      expect(pk).toBeDefined();
 
-        if (id !== 'EOS') {
-          expect(address).toBeDefined();
-          expect(wallet.address).toBeDefined();
-          expect(wallet.address).toBe(address);
-        }
+      if (id !== 'EOS') {
+        expect(address).toBeDefined();
+        expect(wallet.address).toBeDefined();
+        expect(wallet.address).toBe(address);
+      }
 
-        // @ts-expect-error privateKey types can differs
-        expect(keys.privateKey).toStrictEqual(pk);
-      },
-    );
+      // @ts-expect-error privateKey types can differs
+      expect(keys.privateKey).toStrictEqual(pk);
+    });
   });
 
   describe('Create signed tx', () => {

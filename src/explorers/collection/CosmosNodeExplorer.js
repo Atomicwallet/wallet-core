@@ -22,9 +22,7 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
     this.canPaginate = true;
     this.lastKnownHeight = 0;
 
-    const currency = validators.find(
-      (validator) => validator.currency === this.wallet.ticker,
-    );
+    const currency = validators.find((validator) => validator.currency === this.wallet.ticker);
 
     this.validatorMoniker = {};
 
@@ -40,11 +38,7 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
   async request() {
     const response = await super.request(...arguments);
 
-    if (
-      response &&
-      response.height &&
-      this.lastKnownHeight < Number(response.height)
-    ) {
+    if (response && response.height && this.lastKnownHeight < Number(response.height)) {
       this.lastKnownHeight = response.height;
     }
 
@@ -96,11 +90,7 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
   }
 
   async sendDelegationTransaction(address, rawtx) {
-    const response = await this.request(
-      `staking/delegators/${address}/delegations`,
-      'post',
-      rawtx,
-    );
+    const response = await this.request(`staking/delegators/${address}/delegations`, 'post', rawtx);
 
     if (response.value && response.value.account_number === '0') {
       throw new ExplorerRequestError({
@@ -113,33 +103,22 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
     return response.value;
   }
 
-  async getTransactionRewardsBlueprint({
-    from,
-    gas,
-    gas_adjustment = '1.2',
-    fee,
-    chain_id,
-    denom = 'uatom',
-  }) {
-    const response = await this.request(
-      `distribution/delegators/${from}/rewards`,
-      'post',
-      {
-        base_req: {
-          from,
-          chain_id,
-          gas,
-          gas_adjustment,
-          fees: [
-            {
-              denom,
-              amount: fee,
-            },
-          ],
-          simulate: false,
-        },
+  async getTransactionRewardsBlueprint({ from, gas, gas_adjustment = '1.2', fee, chain_id, denom = 'uatom' }) {
+    const response = await this.request(`distribution/delegators/${from}/rewards`, 'post', {
+      base_req: {
+        from,
+        chain_id,
+        gas,
+        gas_adjustment,
+        fees: [
+          {
+            denom,
+            amount: fee,
+          },
+        ],
+        simulate: false,
       },
-    );
+    });
 
     return response.value;
   }
@@ -155,12 +134,8 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
     pageNum += 1;
 
     const [sent, received] = await Promise.all([
-      this.request(
-        `txs?message.sender=${address}&message.action=send&page=${pageNum}&limit=${limit}`,
-      ),
-      this.request(
-        `txs?transfer.recipient=${address}&message.action=send&page=${pageNum}&limit=${limit}`,
-      ),
+      this.request(`txs?message.sender=${address}&message.action=send&page=${pageNum}&limit=${limit}`),
+      this.request(`txs?transfer.recipient=${address}&message.action=send&page=${pageNum}&limit=${limit}`),
     ]);
 
     const receivedHashes = received.txs.map((tx) => tx.txhash);
@@ -192,9 +167,7 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
 
   getTxValue(selfAddress, tx) {
     const msgAmount = tx.tx.value.msg[0].value.amount;
-    const value = Array.isArray(msgAmount)
-      ? msgAmount[0].amount
-      : msgAmount.amount;
+    const value = Array.isArray(msgAmount) ? msgAmount[0].amount : msgAmount.amount;
 
     return this.wallet.toCurrencyUnit(value);
   }
@@ -206,10 +179,7 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
    * @return {Boolean} The transaction direction.
    */
   getTxDirection(selfAddress, tx) {
-    return (
-      String(tx.tx.value.msg[0].value.to_address).toLowerCase() ===
-      selfAddress.toLowerCase()
-    );
+    return String(tx.tx.value.msg[0].value.to_address).toLowerCase() === selfAddress.toLowerCase();
   }
 
   /**
@@ -284,8 +254,7 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
     let total = new this.wallet.BN('0');
 
     delegations.forEach(({ shares, validator_address: validatorAddress }) => {
-      const moniker =
-        this.validatorMoniker[validatorAddress] || validatorAddress;
+      const moniker = this.validatorMoniker[validatorAddress] || validatorAddress;
 
       staking.validators[moniker] = {
         shares: this.wallet.toCurrencyUnit(shares.split('.')[0]),
@@ -303,9 +272,7 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
     let total = new this.wallet.BN('0');
 
     delegations.forEach(({ delegation }) => {
-      const moniker =
-        this.validatorMoniker[delegation.validator_address] ||
-        delegation.validator_address;
+      const moniker = this.validatorMoniker[delegation.validator_address] || delegation.validator_address;
 
       staking.validators[moniker] = {
         shares: this.wallet.toCurrencyUnit(delegation.shares.split('.')[0]),
@@ -323,24 +290,16 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
 
     const balance = await this.request(`bank/balances/${address}`);
 
-    const delegations = await this.request(
-      `staking/delegators/${address}/delegations`,
-    );
+    const delegations = await this.request(`staking/delegators/${address}/delegations`);
 
-    const unbondingDelegations = await this.request(
-      `staking/delegators/${address}/unbonding_delegations`,
-    );
+    const unbondingDelegations = await this.request(`staking/delegators/${address}/unbonding_delegations`);
 
-    const rewardsReponse = await this.request(
-      `distribution/delegators/${address}/rewards`,
-    );
+    const rewardsReponse = await this.request(`distribution/delegators/${address}/rewards`);
 
     let rewardsBN = new this.wallet.BN(0);
 
     if (rewardsReponse.total && rewardsReponse.total.length > 0) {
-      rewardsBN = new this.wallet.BN(
-        rewardsReponse.total[0].amount.split('.')[0],
-      );
+      rewardsBN = new this.wallet.BN(rewardsReponse.total[0].amount.split('.')[0]);
     }
     const rewards = this.wallet.toCurrencyUnit(rewardsBN.toString());
 
@@ -369,26 +328,21 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
     if (unbondingDelegations && unbondingDelegations.length > 0) {
       let unbondingTotal = new this.wallet.BN('0');
 
-      unbondingDelegations.forEach(
-        ({ entries, validator_address: validatorAddress }) => {
-          const moniker =
-            /* this.validatorMoniker[validatorAddress] || */ validatorAddress;
+      unbondingDelegations.forEach(({ entries, validator_address: validatorAddress }) => {
+        const moniker = /* this.validatorMoniker[validatorAddress] || */ validatorAddress;
 
-          unbonding.validators[moniker] = entries
-            .map((entry) => new this.wallet.BN(entry.balance.split('.')[0]))
-            .reduce((prev, cur) => {
-              return prev.add(new this.wallet.BN(cur));
-            }, new this.wallet.BN('0'));
+        unbonding.validators[moniker] = entries
+          .map((entry) => new this.wallet.BN(entry.balance.split('.')[0]))
+          .reduce((prev, cur) => {
+            return prev.add(new this.wallet.BN(cur));
+          }, new this.wallet.BN('0'));
 
-          unbondingTotal = unbondingTotal.add(unbonding.validators[moniker]);
-        },
-      );
+        unbondingTotal = unbondingTotal.add(unbonding.validators[moniker]);
+      });
 
       total = total.add(unbondingTotal);
 
-      unbonding.total = this.wallet.toCurrencyUnit(
-        unbondingTotal.toString().split('.')[0],
-      );
+      unbonding.total = this.wallet.toCurrencyUnit(unbondingTotal.toString().split('.')[0]);
     }
 
     total = total.add(rewardsBN);
@@ -397,9 +351,7 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
       .sub(new this.wallet.BN(this.wallet.feeDefault || 0))
       .sub(new this.wallet.BN(this.wallet.reserveForStake || 0));
     const availableForStake =
-      Number(countAvailableForStake) > 0
-        ? this.wallet.toCurrencyUnit(countAvailableForStake)
-        : 0;
+      Number(countAvailableForStake) > 0 ? this.wallet.toCurrencyUnit(countAvailableForStake) : 0;
 
     return {
       balance: total,
@@ -419,13 +371,10 @@ class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
     if (!response) {
       throw new Error('[CosmosNodeExplorer] wrong latest block response');
     }
-    const blockMetaPropName = Object.hasOwnProperty.call(response, 'block')
-      ? 'block'
-      : 'block_meta';
+    const blockMetaPropName = Object.hasOwnProperty.call(response, 'block') ? 'block' : 'block_meta';
 
     this.chainId = response[blockMetaPropName].header.chain_id;
-    this.lastKnownHeight =
-      Number(response[blockMetaPropName].header.height) || 0;
+    this.lastKnownHeight = Number(response[blockMetaPropName].header.height) || 0;
 
     return response;
   }

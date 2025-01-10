@@ -5,15 +5,9 @@ import ElrondApiExplorer from '../../explorers/collection/ElrondApiExplorer';
 import { Amount, LazyLoadedLib } from '../../utils';
 import { HasProviders, StakingMixin } from '../mixins';
 
-const elrondCoreJsLazyLoaded = new LazyLoadedLib(
-  () => import('@elrondnetwork/elrond-core-js'),
-);
-const elrondJsLazyLoaded = new LazyLoadedLib(
-  () => import('@elrondnetwork/erdjs'),
-);
-const elrondJsOutSignatureLazyLoaded = new LazyLoadedLib(
-  () => import('@elrondnetwork/erdjs/out/signature'),
-);
+const elrondCoreJsLazyLoaded = new LazyLoadedLib(() => import('@elrondnetwork/elrond-core-js'));
+const elrondJsLazyLoaded = new LazyLoadedLib(() => import('@elrondnetwork/erdjs'));
+const elrondJsOutSignatureLazyLoaded = new LazyLoadedLib(() => import('@elrondnetwork/erdjs/out/signature'));
 
 const NAME = 'MultiversX';
 const TICKER = 'EGLD';
@@ -79,26 +73,23 @@ class EGLDCoin extends StakingMixin(HasProviders(Coin)) {
     this.stakingGasLimit = feeData.stakingGasLimit || DEFAULT_STAKING_GAS_LIMIT;
     this.reserveForStake = feeData.reserveForStake || DEFAULT_RESERVE_FOR_STAKE;
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (_, unconfirmedTx) => {
-        this.getInfo();
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (_, unconfirmedTx) => {
+      this.getInfo();
 
-        if (unconfirmedTx && unconfirmedTx.direction) {
-          this.eventEmitter.emit('socket::newtx', {
-            id: this.id,
-            ticker: this.ticker,
-            amount: unconfirmedTx.amount,
-            txid: unconfirmedTx.txid,
-          });
-        } else {
-          this.eventEmitter.emit('socket::newtx::outgoing', {
-            id: this.id,
-            ticker: this.ticker,
-          });
-        }
-      },
-    );
+      if (unconfirmedTx && unconfirmedTx.direction) {
+        this.eventEmitter.emit('socket::newtx', {
+          id: this.id,
+          ticker: this.ticker,
+          amount: unconfirmedTx.amount,
+          txid: unconfirmedTx.txid,
+        });
+      } else {
+        this.eventEmitter.emit('socket::newtx::outgoing', {
+          id: this.id,
+          ticker: this.ticker,
+        });
+      }
+    });
   }
 
   async loadWallet(seed, mnemonic) {
@@ -118,11 +109,7 @@ class EGLDCoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   async createTransaction({ address, amount, data = '', gasLimit }) {
-    const [
-      { Address, Transaction, TransactionPayload },
-      { Signature },
-      { account: Account },
-    ] = await Promise.all([
+    const [{ Address, Transaction, TransactionPayload }, { Signature }, { account: Account }] = await Promise.all([
       elrondJsLazyLoaded.get(),
       elrondJsOutSignatureLazyLoaded.get(),
       elrondCoreJsLazyLoaded.get(),
@@ -188,13 +175,7 @@ class EGLDCoin extends StakingMixin(HasProviders(Coin)) {
     });
   }
 
-  calculateTotal({
-    balance,
-    staked,
-    unstaking,
-    availableWithdrawals,
-    rewards,
-  }) {
+  calculateTotal({ balance, staked, unstaking, availableWithdrawals, rewards }) {
     return new Amount(
       balance
         .toBN()
@@ -230,9 +211,7 @@ class EGLDCoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   async getInfo() {
-    const { balance, nonce } = await this.getProvider('balance').getInfo(
-      this.address,
-    );
+    const { balance, nonce } = await this.getProvider('balance').getInfo(this.address);
 
     if (balance) {
       this.balance = balance;
@@ -248,9 +227,7 @@ class EGLDCoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   getFee({ gasLimit, userGasPrice } = {}) {
-    return new BN(String(userGasPrice || this.gasPrice)).mul(
-      new this.BN(gasLimit || this.gasLimit),
-    );
+    return new BN(String(userGasPrice || this.gasPrice)).mul(new this.BN(gasLimit || this.gasLimit));
   }
 
   async validateAddress(address) {

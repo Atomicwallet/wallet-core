@@ -106,13 +106,8 @@ class DGBCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
     const bitcoreLib = await this.loadLib(BITCORE);
 
     return new Promise(async (resolve, reject) => {
-      const hdPrivateKey = bitcoreLib.HDPrivateKey.fromSeed(
-        seed,
-        await this.getNetwork(),
-      );
-      const { privateKey } = hdPrivateKey[this.getDeriveFunctionName()](
-        this.derivation,
-      );
+      const hdPrivateKey = bitcoreLib.HDPrivateKey.fromSeed(seed, await this.getNetwork());
+      const { privateKey } = hdPrivateKey[this.getDeriveFunctionName()](this.derivation);
 
       if (!privateKey) {
         reject(
@@ -144,10 +139,7 @@ class DGBCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
   async validateAddress(address) {
     const bitcoreLib = await this.loadLib(BITCORE);
 
-    const isValid = bitcoreLib.Address.isValid(
-      address || this.address,
-      await this.getNetwork(),
-    );
+    const isValid = bitcoreLib.Address.isValid(address || this.address, await this.getNetwork());
 
     return isValid;
   }
@@ -157,9 +149,7 @@ class DGBCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
 
     // TODO remove assignment of Error instance to address attribute
     return this.#privateKey
-      ? bitcoreLib.PrivateKey.fromWIF(this.#privateKey.toString())
-          .toAddress(network)
-          .toString()
+      ? bitcoreLib.PrivateKey.fromWIF(this.#privateKey.toString()).toAddress(network).toString()
       : new Error(`${this.ticker} privateKey is empty`);
   }
 

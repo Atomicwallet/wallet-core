@@ -42,9 +42,7 @@ jest.mock('ripple-lib', () => {
           signedTransaction: tx,
         };
       }),
-      getAccountInfo: jest
-        .fn()
-        .mockRejectedValue(new Error('Account not found')),
+      getAccountInfo: jest.fn().mockRejectedValue(new Error('Account not found')),
     })),
   };
 });

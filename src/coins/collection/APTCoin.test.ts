@@ -24,9 +24,7 @@ jest.spyOn(wallet, 'getAccount').mockReturnValue({
   sequence_number: '42',
 });
 
-jest
-  .spyOn(wallet, 'getTransactionExpirationTimeout')
-  .mockReturnValue(BigInt(3472834780));
+jest.spyOn(wallet, 'getTransactionExpirationTimeout').mockReturnValue(BigInt(3472834780));
 
 jest.spyOn(wallet, 'getGasParams').mockReturnValue({
   gasPrice: '100',

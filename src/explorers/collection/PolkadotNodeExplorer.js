@@ -39,8 +39,7 @@ class PolkadotNodeExplorer extends Explorer {
     await this.loadEndpoint();
 
     // const response = await this.endpoint.query.system.account(address)
-    const { nonce, data: balance } =
-      await this.endpoint.query.system.account(address);
+    const { nonce, data: balance } = await this.endpoint.query.system.account(address);
 
     return {
       balance: balance.free.sub(balance.miscFrozen).toString(),
@@ -105,29 +104,24 @@ class PolkadotNodeExplorer extends Explorer {
 
     try {
       return new Promise((resolve) => {
-        bondTransaction.signAndSend(
-          keyPair,
-          async ({ events = [], status }) => {
-            if (status.isInBlock) {
-              try {
-                const nominateTransaction = this.endpoint.tx.staking.nominate(
-                  rawtx.validatorAddresses,
-                );
-                const hash = await nominateTransaction.signAndSend(keyPair);
+        bondTransaction.signAndSend(keyPair, async ({ events = [], status }) => {
+          if (status.isInBlock) {
+            try {
+              const nominateTransaction = this.endpoint.tx.staking.nominate(rawtx.validatorAddresses);
+              const hash = await nominateTransaction.signAndSend(keyPair);
 
-                return resolve({
-                  txid: hash.toString('hex'),
-                });
-              } catch (error) {
-                throw new ExplorerRequestError({
-                  type: SEND_TRANSACTION_TYPE,
-                  error: new Error(error.message),
-                  instance: this,
-                });
-              }
+              return resolve({
+                txid: hash.toString('hex'),
+              });
+            } catch (error) {
+              throw new ExplorerRequestError({
+                type: SEND_TRANSACTION_TYPE,
+                error: new Error(error.message),
+                instance: this,
+              });
             }
-          },
-        );
+          }
+        });
       });
     } catch (error) {
       throw new ExplorerRequestError({
@@ -148,9 +142,7 @@ class PolkadotNodeExplorer extends Explorer {
     const keyPair = keyring.addFromSeed(seed);
 
     try {
-      const unBondTransaction = this.endpoint.tx.staking.unbond(
-        Number(rawtx.amount),
-      );
+      const unBondTransaction = this.endpoint.tx.staking.unbond(Number(rawtx.amount));
       const hash = await unBondTransaction.signAndSend(keyPair);
 
       return {

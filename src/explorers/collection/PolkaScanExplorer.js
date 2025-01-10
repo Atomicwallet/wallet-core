@@ -35,9 +35,7 @@ class PolkaScanExplorer extends Explorer {
     };
 
     if (response.data && response.data.account) {
-      data.balance = new BN(
-        this.wallet.toMinimalUnit(response.data.account.balance),
-      )
+      data.balance = new BN(this.wallet.toMinimalUnit(response.data.account.balance))
         .sub(new BN(this.wallet.toMinimalUnit(response.data.account.ring_lock)))
         .toString();
       data.ring_lock = response.data.account.ring_lock;
@@ -80,10 +78,7 @@ class PolkaScanExplorer extends Explorer {
   getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit) {
     return {
       address,
-      page:
-        offset > this.defaultTxLimit
-          ? parseInt(offset / this.defaultTxLimit, 10)
-          : 0,
+      page: offset > this.defaultTxLimit ? parseInt(offset / this.defaultTxLimit, 10) : 0,
       row: limit,
     };
   }

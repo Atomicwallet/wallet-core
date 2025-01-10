@@ -44,8 +44,7 @@ class ZECCoin extends BitgoMixin(BitcoinLikeFeeMixin(Coin)) {
       dependencies: {
         [BITGO]: new LazyLoadedLib(() =>
           import('bitgo-utxo-lib').then(({ default: coreLibrary }) => {
-            coreLibrary.networks.zcash.consensusBranchId[4] =
-              CONSENSUS_BRANCH_ID;
+            coreLibrary.networks.zcash.consensusBranchId[4] = CONSENSUS_BRANCH_ID;
             return coreLibrary;
           }),
         ),
@@ -91,9 +90,7 @@ class ZECCoin extends BitgoMixin(BitcoinLikeFeeMixin(Coin)) {
   async getTransactionBuilder() {
     const coreLibrary = await this.loadCoreLibrary();
 
-    const txBuilder = new coreLibrary.TransactionBuilder(
-      await this.getNetwork(),
-    );
+    const txBuilder = new coreLibrary.TransactionBuilder(await this.getNetwork());
 
     txBuilder.setVersion(ZCASH_SAPLING_VERSION);
     txBuilder.setLockTime(0);

@@ -32,9 +32,7 @@ class HashnodeExplorer extends Explorer {
 
   async sendTransaction({ rawtx, account, privateKey }) {
     if (!rawtx) {
-      throw new Error(
-        `HBAR: sendTransaction error: incorrect tx: got "${rawtx}" of type ${typeof rawtx}`,
-      );
+      throw new Error(`HBAR: sendTransaction error: incorrect tx: got "${rawtx}" of type ${typeof rawtx}`);
     }
     const tx = Transaction.fromBytes(new Uint8Array(Buffer.from(rawtx, 'hex')));
     const id = await tx.execute(this.wallet.getClient());

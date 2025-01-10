@@ -31,8 +31,7 @@ const UNSPENDABLE_BALANCE_FOR_SEND_ALL = 5e4 * GWEI;
 
 // Public key from a compromised mnemonic used for unit tests
 const MOCKED_OP_ADDRESS = '0x29625E10Cfe090294DC0eC579E322ce87C822745';
-const OVM_GAS_PRICE_ORACLE_CONTRACT_ADDRESS =
-  '0x420000000000000000000000000000000000000F';
+const OVM_GAS_PRICE_ORACLE_CONTRACT_ADDRESS = '0x420000000000000000000000000000000000000F';
 const EMPTY_OVM_GAS_PRICE_ORACLE_CONTRACT = '0x';
 
 const DEFAULT_MIN_GAS = 21000;
@@ -86,9 +85,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
       chainId: OP_CHAIN_ID,
       dependencies: {
         [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(
-          () => import('ethereumjs-wallet'),
-        ),
+        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
       },
     };
 
@@ -96,11 +93,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      Web3Explorer,
-      EtherscanExplorer,
-      CovalentHQExplorer,
-    ]);
+    this.setExplorersModules([Web3Explorer, EtherscanExplorer, CovalentHQExplorer]);
 
     this.loadExplorers(config);
 
@@ -109,9 +102,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     this.gasPriceConfig = null;
     this.bannedTokens = [];
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3BaseUrl = web3Params.baseUrl;
 
@@ -119,12 +110,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     this.tokens = {};
     this.nonce = new this.BN('0');
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   /**
@@ -156,7 +144,8 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
   setFeeData(feeData = {}) {
     super.setFeeData(feeData);
     this.gasLimit = Number(feeData.gasLimit);
-    this.stakingGasLimit = Number(feeData.stakingGasLimit) || DEFAULT_MAX_GAS; // @TODO replace by estimated gasLimit in future
+    // @TODO replace by estimated gasLimit in future
+    this.stakingGasLimit = Number(feeData.stakingGasLimit) || DEFAULT_MAX_GAS;
     this.nftGasLimitCoefficient = Number(feeData.nftGasLimitCoefficient);
     this.nftGasPriceCoefficient = Number(feeData.nftGasPriceCoefficient);
     this.gasLimitCoefficient = Number(feeData.gasLimitCoefficient);
@@ -165,8 +154,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     this.defaultMaxGasPrice = Number(feeData.defaultMaxGasPrice);
     this.resendTimeout = feeData.resendTimeout;
     this.maxGasLimitL1 = Number(feeData.maxGasLimitL1) || DEFAULT_MAX_GAS_L1;
-    this.maxGasPriceL1 =
-      Number(feeData.maxGasPriceL1) || DEFAULT_MAX_GAS_PRICE_L1;
+    this.maxGasPriceL1 = Number(feeData.maxGasPriceL1) || DEFAULT_MAX_GAS_PRICE_L1;
   }
 
   isFeeDynamic() {
@@ -179,22 +167,21 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     }
 
     // @TODO Check for failed transactions (@see ETHCoin)
-    const [transactions, { tokenTransactions: rawTokenTransactions }] =
-      await Promise.all(
-        [
-          this.getProvider('history').getTransactions({
-            address: this.address,
-          }),
-          this.getProvider('token-history').getTokensTransactions({
-            address: this.address,
-          }),
-        ].map((promise) =>
-          promise.catch((error) => {
-            console.error(error);
-            return [];
-          }),
-        ),
-      );
+    const [transactions, { tokenTransactions: rawTokenTransactions }] = await Promise.all(
+      [
+        this.getProvider('history').getTransactions({
+          address: this.address,
+        }),
+        this.getProvider('token-history').getTokensTransactions({
+          address: this.address,
+        }),
+      ].map((promise) =>
+        promise.catch((error) => {
+          console.error(error);
+          return [];
+        }),
+      ),
+    );
 
     const tokenTransactions = rawTokenTransactions.reduce((txs, rawTx) => {
       const contract = rawTx.contract.toLowerCase();
@@ -256,15 +243,10 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {Promise<{id: string, privateKey: string, address: string}>} The private key.
    */
   async loadWallet(seed) {
-    const [coreLibrary, { hdkey }] = await Promise.all([
-      this.getCoreLibrary(),
-      this.loadLib(ETHEREUM_JS_WALLET_SDK),
-    ]);
+    const [coreLibrary, { hdkey }] = await Promise.all([this.getCoreLibrary(), this.loadLib(ETHEREUM_JS_WALLET_SDK)]);
     const ethHDKey = hdkey.fromMasterSeed(seed);
     const wallet = ethHDKey.getWallet();
-    const account = coreLibrary.eth.accounts.privateKeyToAccount(
-      wallet.getPrivateKeyString(),
-    );
+    const account = coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
     if (!account) {
       throw new Error(`${this.wallet.ticker} can't get the wallet`);
@@ -325,13 +307,10 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
       const evaluatedFeeL1 = await this.getCoinFeeL1FromOracle();
       const requiredFeeL2 = new this.BN(userFee).sub(evaluatedFeeL1);
 
-      sendAllGasPrice = Math.floor(
-        new this.BN(requiredFeeL2).div(new this.BN(gas)).toNumber(),
-      );
+      sendAllGasPrice = Math.floor(new this.BN(requiredFeeL2).div(new this.BN(gas)).toNumber());
       value = Number(amount) - UNSPENDABLE_BALANCE_FOR_SEND_ALL;
     }
-    const gasPrice =
-      sendAllGasPrice || userGasPrice || (await this.getGasPrice());
+    const gasPrice = sendAllGasPrice || userGasPrice || (await this.getGasPrice());
 
     const transaction = {
       to: address,
@@ -347,37 +326,17 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     }
 
     const coreLibrary = await this.getCoreLibrary();
-    const signedTx = await coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
 
   _getTransferTokenContractData(contract, to, amount) {
-    return this.getProvider('send').createSendTokenContract(
-      contract,
-      this.address,
-      to,
-      amount,
-    );
+    return this.getProvider('send').createSendTokenContract(contract, this.address, to, amount);
   }
 
-  async createTokenTransaction({
-    address,
-    amount,
-    custom,
-    userGasPrice,
-    gasLimit,
-    contract,
-    multiplier,
-  }) {
-    const contractData = this._getTransferTokenContractData(
-      contract,
-      address,
-      amount,
-    );
+  async createTokenTransaction({ address, amount, custom, userGasPrice, gasLimit, contract, multiplier }) {
+    const contractData = this._getTransferTokenContractData(contract, address, amount);
 
     return this.createTransaction({
       address: contract,
@@ -469,14 +428,11 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<number>} - Gas price in WEI
    */
   async getGasPriceForSendNft(coefficient) {
-    const { node: rawGasPrice } =
-      (await this.getProvider('node').getGasPrice()) ?? {};
+    const { node: rawGasPrice } = (await this.getProvider('node').getGasPrice()) ?? {};
     const gasPrice = Number(rawGasPrice) + coefficient * GWEI;
     const defaultMaxGasPriceInGwei = this.defaultMaxGasPrice * GWEI;
 
-    return gasPrice > defaultMaxGasPriceInGwei
-      ? defaultMaxGasPriceInGwei
-      : gasPrice;
+    return gasPrice > defaultMaxGasPriceInGwei ? defaultMaxGasPriceInGwei : gasPrice;
   }
 
   /**
@@ -489,20 +445,10 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<number>}
    * @throws {ExternalError}
    */
-  async estimateGasForSendNft(
-    address,
-    toContract,
-    data,
-    gasLimitCoefficient = 1,
-  ) {
+  async estimateGasForSendNft(address, toContract, data, gasLimitCoefficient = 1) {
     try {
       /** @type number */
-      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(
-        address,
-        toContract,
-        null,
-        data,
-      );
+      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(address, toContract, null, data);
 
       return Math.ceil(fetchedGasLimit * gasLimitCoefficient);
     } catch (error) {
@@ -524,11 +470,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @param {UserFeeOptions} userOptions - Custom user options.
    * @returns {Promise<{gasLimit: number, gasPrice: number, nonce: number}>}
    */
-  async getNftTransferGasParams(
-    toContract,
-    data,
-    { userGasPrice, userGasLimit },
-  ) {
+  async getNftTransferGasParams(toContract, data, { userGasPrice, userGasLimit }) {
     const {
       address,
       nftGasPriceCoefficient,
@@ -540,11 +482,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     } = this;
 
     /** @type number */
-    const gasPriceCoefficient =
-      nftGasPriceCoefficient || configGasPriceCoefficient;
+    const gasPriceCoefficient = nftGasPriceCoefficient || configGasPriceCoefficient;
     /** @type number */
-    const gasLimitCoefficient =
-      nftGasLimitCoefficient || configGasLimitCoefficient;
+    const gasLimitCoefficient = nftGasLimitCoefficient || configGasLimitCoefficient;
 
     const defaultGasValues = [
       (defaultGasPrice + gasPriceCoefficient) * GWEI,
@@ -555,18 +495,10 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
 
     const [gasPrice, gasLimit] = await Promise.allSettled([
       userGasPrice || this.getGasPriceForSendNft(gasPriceCoefficient),
-      userGasLimit ||
-        this.estimateGasForSendNft(
-          address,
-          toContract,
-          data,
-          gasLimitCoefficient,
-        ),
+      userGasLimit || this.estimateGasForSendNft(address, toContract, data, gasLimitCoefficient),
     ]).then((resultList) =>
       resultList.map((result, i) => {
-        return result.status === 'fulfilled'
-          ? result.value
-          : defaultGasValues[i];
+        return result.status === 'fulfilled' ? result.value : defaultGasValues[i];
       }),
     );
 
@@ -586,17 +518,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {Promise<BN>} - The fee.
    * @throws {ExternalError}
    */
-  async getNftFee({
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    toAddress = null,
-    userOptions = {},
-  }) {
+  async getNftFee({ contractAddress, tokenId, tokenStandard, toAddress = null, userOptions = {} }) {
     const targetAddress =
-      !toAddress || toAddress.toLowerCase() === this.address.toLowerCase()
-        ? MOCKED_OP_ADDRESS
-        : toAddress;
+      !toAddress || toAddress.toLowerCase() === this.address.toLowerCase() ? MOCKED_OP_ADDRESS : toAddress;
 
     try {
       const data = await this.getProvider('nft-send').getNftContractData(
@@ -606,11 +530,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
         tokenId,
         tokenStandard,
       );
-      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(
-        contractAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(contractAddress, data, userOptions);
 
       return new this.BN(gasPrice).mul(new this.BN(gasLimit));
     } catch (error) {
@@ -630,11 +550,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    */
   async createNftTransaction({ contractAddress, data, userOptions = {} }) {
     try {
-      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(
-        contractAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(contractAddress, data, userOptions);
       const transaction = {
         to: contractAddress,
         value: HEX_ZERO,
@@ -649,10 +565,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
       };
 
       const coreLibrary = await this.getCoreLibrary();
-      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(
-        transaction,
-        this.#privateKey,
-      );
+      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
       return rawTransaction;
     } catch (error) {
@@ -664,9 +577,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
   async getNonce() {
     const coreLibrary = await this.getCoreLibrary();
 
-    this.nonce = new this.BN(
-      await coreLibrary.eth.getTransactionCount(this.address),
-    );
+    this.nonce = new this.BN(await coreLibrary.eth.getTransactionCount(this.address));
     return this.nonce;
   }
 
@@ -697,11 +608,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<number>}
    */
   async _getGasPriceL1FromConfig() {
-    const { fast } = await configManager
-      .get(ConfigKey.EthereumGasPrice)
-      .catch(() => {
-        return this.maxGasPriceL1;
-      });
+    const { fast } = await configManager.get(ConfigKey.EthereumGasPrice).catch(() => {
+      return this.maxGasPriceL1;
+    });
 
     return fast;
   }
@@ -717,11 +626,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<number>}
    */
   getTokenFeeL1FromOracle(contract, amount) {
-    const contractData = this._getTransferTokenContractData(
-      contract,
-      MOCKED_OP_ADDRESS,
-      amount,
-    );
+    const contractData = this._getTransferTokenContractData(contract, MOCKED_OP_ADDRESS, amount);
 
     return this._getFeeL1FromOracle(contractData);
   }
@@ -741,23 +646,13 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @param {number} [options.amount=1] - Custom priority
    * @returns {Promise<BN>}
    */
-  async getFee({
-    userGasPrice = null,
-    gasLimit = null,
-    contract = null,
-    amount = 1,
-  } = {}) {
+  async getFee({ userGasPrice = null, gasLimit = null, contract = null, amount = 1 } = {}) {
     const gasPriceL2 = userGasPrice || (await this.getGasPrice());
     const requiredGas =
-      gasLimit ||
-      (contract
-        ? await this.estimateGas(amount, null, contract, this.gasLimit)
-        : this.gasLimit);
+      gasLimit || (contract ? await this.estimateGas(amount, null, contract, this.gasLimit) : this.gasLimit);
     const feeL2 = new this.BN(gasPriceL2).mul(new this.BN(requiredGas));
 
-    const feeL1 = contract
-      ? await this.getTokenFeeL1FromOracle(contract, amount)
-      : await this.getCoinFeeL1FromOracle();
+    const feeL1 = contract ? await this.getTokenFeeL1FromOracle(contract, amount) : await this.getCoinFeeL1FromOracle();
 
     return new this.BN(feeL1).add(feeL2);
   }
@@ -776,8 +671,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
           console.warn(`rawGasPrice for ${NAME} error:`, error);
         })) ?? {};
 
-    const gasPrice =
-      Number(rawGasPrice?.toString()) || this.defaultGasPrice * GWEI;
+    const gasPrice = Number(rawGasPrice?.toString()) || this.defaultGasPrice * GWEI;
 
     if (withoutCoeff) {
       return gasPrice;
@@ -822,9 +716,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     }
 
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -842,17 +734,12 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     this.getNonce();
 
     if (tokenInfo && tokenInfo.isToken) {
-      const tokenBalance = await this.getProvider(
-        'node',
-      ).getTokenBalanceByContractAddress({
+      const tokenBalance = await this.getProvider('node').getTokenBalanceByContractAddress({
         address: this.address,
         contractAddress: tokenInfo.contract.toLowerCase(),
       });
 
-      const contractVariant = [
-        tokenInfo.contract,
-        tokenInfo.contract.toLowerCase(),
-      ];
+      const contractVariant = [tokenInfo.contract, tokenInfo.contract.toLowerCase()];
 
       contractVariant.forEach((contract) => {
         if (this.tokens[contract]) {

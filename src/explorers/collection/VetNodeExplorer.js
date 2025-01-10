@@ -215,19 +215,13 @@ class VetNodeExplorer extends Explorer {
     const vetTx = outputs[0] && outputs[0].transfers[0];
 
     if (vetTx) {
-      return this.modifyTransactionsResponse(
-        [{ meta, ...vetTx }],
-        selfAddress,
-      )[0];
+      return this.modifyTransactionsResponse([{ meta, ...vetTx }], selfAddress)[0];
     }
 
     const vthoTx = outputs[0] && outputs[0].events[0];
 
     if (vthoTx) {
-      return this.modifyTransfersResponse(
-        [{ meta, ...vthoTx }],
-        selfAddress,
-      )[0];
+      return this.modifyTransfersResponse([{ meta, ...vthoTx }], selfAddress)[0];
     }
 
     return undefined;
@@ -246,11 +240,7 @@ class VetNodeExplorer extends Explorer {
           fee: this.getTxFee(tx),
           feeTicker: this.wallet.parent,
           direction: this.getTxDirection(address, tx.sender),
-          otherSideAddress: this.getTxOtherSideAddress(
-            address,
-            tx.sender,
-            tx.recipient,
-          ),
+          otherSideAddress: this.getTxOtherSideAddress(address, tx.sender, tx.recipient),
           amount: this.getTxValue(address, tx.amount),
           datetime: this.getTxDateTime(tx.meta.blockTimestamp),
           memo: this.getTxMemo(tx),
@@ -267,10 +257,7 @@ class VetNodeExplorer extends Explorer {
     const transfers = [];
 
     response.forEach((transfer) => {
-      const { _from, _to, _value } = ABI_EVENT.decode(
-        transfer.data,
-        transfer.topics,
-      );
+      const { _from, _to, _value } = ABI_EVENT.decode(transfer.data, transfer.topics);
 
       transfers.push(
         new Transaction({

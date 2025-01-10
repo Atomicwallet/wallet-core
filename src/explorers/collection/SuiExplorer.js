@@ -33,32 +33,26 @@ export default class SuiExplorer extends Explorer {
       },
     });
 
-    const transactionBlocksFrom = await this.provider.multiGetTransactionBlocks(
-      {
-        digests: from.data.map(({ digest }) => digest),
-        options: {
-          showInput: true,
-          showEffects: true,
-          showBalanceChanges: true,
-        },
+    const transactionBlocksFrom = await this.provider.multiGetTransactionBlocks({
+      digests: from.data.map(({ digest }) => digest),
+      options: {
+        showInput: true,
+        showEffects: true,
+        showBalanceChanges: true,
       },
-    );
+    });
 
-    const balanceChangesFrom = transactionBlocksFrom.flatMap(
-      ({ balanceChanges, digest, effects, timestampMs }) => {
-        return balanceChanges?.map(
-          ({ owner: { AddressOwner }, amount, coinType }) => ({
-            txid: digest,
-            otherSideAddress: AddressOwner,
-            amount,
-            coinType,
-            fee: effects.gasUsed,
-            timestampMs,
-            direction: false,
-          }),
-        );
-      },
-    );
+    const balanceChangesFrom = transactionBlocksFrom.flatMap(({ balanceChanges, digest, effects, timestampMs }) => {
+      return balanceChanges?.map(({ owner: { AddressOwner }, amount, coinType }) => ({
+        txid: digest,
+        otherSideAddress: AddressOwner,
+        amount,
+        coinType,
+        fee: effects.gasUsed,
+        timestampMs,
+        direction: false,
+      }));
+    });
 
     const to = await this.provider.queryTransactionBlocks({
       filter: {
@@ -76,21 +70,12 @@ export default class SuiExplorer extends Explorer {
     });
 
     // filter out sent to self and other addresses
-    const otherSideIsNotMeAndAmountIsPositive = ({
-      otherSideAddress,
-      amount,
-    }) => otherSideAddress !== address && amount > 0;
-    const otherSideIsNotMe = ({ otherSideAddress }) =>
-      otherSideAddress !== address;
+    const otherSideIsNotMeAndAmountIsPositive = ({ otherSideAddress, amount }) =>
+      otherSideAddress !== address && amount > 0;
+    const otherSideIsNotMe = ({ otherSideAddress }) => otherSideAddress !== address;
 
     const balanceChangesTo = transactionBlocksTo.flatMap(
-      ({
-        balanceChanges,
-        digest,
-        transaction: { data },
-        effects,
-        timestampMs,
-      }) => {
+      ({ balanceChanges, digest, transaction: { data }, effects, timestampMs }) => {
         return balanceChanges
           ?.filter(({ owner: { AddressOwner } }) => AddressOwner === address)
           ?.map(({ amount, coinType }) => ({
@@ -158,9 +143,7 @@ export default class SuiExplorer extends Explorer {
 
   getTxFee(tx) {
     return this.wallet.toCurrencyUnit(
-      BigInt(tx.fee.computationCost || 0) +
-        BigInt(tx.fee.storageCost || 0) -
-        BigInt(tx.fee.storageRebate || 0),
+      BigInt(tx.fee.computationCost || 0) + BigInt(tx.fee.storageCost || 0) - BigInt(tx.fee.storageRebate || 0),
     );
   }
 
@@ -173,8 +156,7 @@ export default class SuiExplorer extends Explorer {
       transactionBlock: tx.transactionBlockBytes,
     });
 
-    const { computationCost, nonRefundableStorageFee } =
-      dryRunResult.effects.gasUsed;
+    const { computationCost, nonRefundableStorageFee } = dryRunResult.effects.gasUsed;
 
     return new BN(computationCost).add(new BN(nonRefundableStorageFee));
   }

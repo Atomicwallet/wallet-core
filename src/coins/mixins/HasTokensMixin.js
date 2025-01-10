@@ -101,10 +101,7 @@ const HasTokensMixin = (superclass) =>
      * @param  {} parentTicker - tokens of what coin?
      * @returns {Promise<tokens>}  - an object with selected tokens rows
      */
-    async loadTokensFromDb(
-      parentTicker,
-      filterFun = (token) => token.parentTicker === parentTicker,
-    ) {
+    async loadTokensFromDb(parentTicker, filterFun = (token) => token.parentTicker === parentTicker) {
       const allTokens = await loadTokensFromDb();
 
       return parentTicker ? allTokens.filter(filterFun) : allTokens;
@@ -124,9 +121,7 @@ const HasTokensMixin = (superclass) =>
 
       const [uniques] = await this.getUniquesAndDuplicates(tokens);
 
-      const filteredTokensToInsert = tokensForInsert.filter(
-        (token) => uniques[token.uniqueField] === undefined,
-      );
+      const filteredTokensToInsert = tokensForInsert.filter((token) => uniques[token.uniqueField] === undefined);
 
       await this._insertBatchTokens(
         // do not insert if this parentTicker+uniqueField already inserted
@@ -141,36 +136,29 @@ const HasTokensMixin = (superclass) =>
      * @returns {Promise<updatedTokens>} - updated tokens
      */
     async updateTokensInDb(tokens, initialSource) {
-      const rows = await this.loadTokensFromDb(this.id, (token) =>
-        [this.id, this.ticker].includes(token.parentTicker),
-      );
+      const rows = await this.loadTokensFromDb(this.id, (token) => [this.id, this.ticker].includes(token.parentTicker));
 
-      const oldTokens = rows.map(({ uniqueField }) =>
-        uniqueField.toLowerCase(),
-      );
+      const oldTokens = rows.map(({ uniqueField }) => uniqueField.toLowerCase());
 
-      const tokensForUpdate = tokens.reduce(
-        (acc, { uniqueField, ticker, name, source, isCustom, ...rest }) => {
-          if (oldTokens.includes(uniqueField.toLowerCase())) {
-            if (source === 'list' && !isCustom) {
-              acc.push({
-                ...rest,
-                uniqueField,
-                ticker,
-                name,
-                source,
-                isCustom,
-                parentTicker: this.id,
-              });
-            } else {
-              acc.push({ ...rest, uniqueField, source, parentTicker: this.id });
-            }
+      const tokensForUpdate = tokens.reduce((acc, { uniqueField, ticker, name, source, isCustom, ...rest }) => {
+        if (oldTokens.includes(uniqueField.toLowerCase())) {
+          if (source === 'list' && !isCustom) {
+            acc.push({
+              ...rest,
+              uniqueField,
+              ticker,
+              name,
+              source,
+              isCustom,
+              parentTicker: this.id,
+            });
+          } else {
+            acc.push({ ...rest, uniqueField, source, parentTicker: this.id });
           }
+        }
 
-          return acc;
-        },
-        [],
-      );
+        return acc;
+      }, []);
 
       await this._updateBatchTokens(tokensForUpdate);
 
@@ -204,9 +192,7 @@ const HasTokensMixin = (superclass) =>
           source,
         );
 
-        const processedUniques = processedTokens
-          .filter((token) => token.uniqueField)
-          .map((token) => token.uniqueField);
+        const processedUniques = processedTokens.filter((token) => token.uniqueField).map((token) => token.uniqueField);
 
         // clean up who was inserted by mistake
         await this.deleteDuplicates(processedTokens);
@@ -220,20 +206,11 @@ const HasTokensMixin = (superclass) =>
           // - source is 'list' (they where saved in the db from previous server config)
           // - are not marked as isCustom (they where added by user with ui and have 'list' source set by mistake)
           // - are not in processedUniques (they where just received)
-          return (
-            token.source === source &&
-            !token.isCustom &&
-            !processedUniques.includes(token.uniqueField)
-          );
+          return token.source === source && !token.isCustom && !processedUniques.includes(token.uniqueField);
         });
 
         const inserted =
-          processedUniques.length > 0
-            ? await db.tokens
-                .where('uniqueField')
-                .anyOf(processedUniques)
-                .toArray()
-            : [];
+          processedUniques.length > 0 ? await db.tokens.where('uniqueField').anyOf(processedUniques).toArray() : [];
 
         const insertedUniques = inserted.map((token) => token.uniqueField);
 
@@ -245,9 +222,7 @@ const HasTokensMixin = (superclass) =>
 
         return this.createTokens([...inserted, ...notInserted], wallets);
       } catch (error) {
-        console.warn(
-          `[HasTokensMixin] loadTokensList failed with error ${error}`,
-        );
+        console.warn(`[HasTokensMixin] loadTokensList failed with error ${error}`);
         throw new InternalError({
           type: INTERNAL_ERROR,
           error,
@@ -271,27 +246,14 @@ const HasTokensMixin = (superclass) =>
       if (dbTokens && dbTokens.length === 0) {
         await this.loadTokensList(wallets);
       } else {
-        this.createTokens(
-          await this.setTokensConfirmation(
-            dbTokens,
-            wallets,
-            TOKEN_SOURCE_USER,
-          ),
-          wallets,
-        );
+        this.createTokens(await this.setTokensConfirmation(dbTokens, wallets, TOKEN_SOURCE_USER), wallets);
       }
 
       // Fix ETHCoin con`t read prop
-      const userTokens = this.getUserTokenList
-        ? await this.getUserTokenList()
-        : [];
+      const userTokens = this.getUserTokenList ? await this.getUserTokenList() : [];
 
       const processedTokens = await this.processTokenList(
-        await this.setTokensConfirmation(
-          userTokens,
-          wallets,
-          TOKEN_SOURCE_USER,
-        ),
+        await this.setTokensConfirmation(userTokens, wallets, TOKEN_SOURCE_USER),
         TOKEN_SOURCE_USER,
       );
 
@@ -307,15 +269,11 @@ const HasTokensMixin = (superclass) =>
      */
     async setTokensConfirmation(tokens = [], wallets, source) {
       if (typeof wallets === 'undefined') {
-        throw new TypeError(
-          '#setTokensConfirmation Error: wallets instance is not defined',
-        );
+        throw new TypeError('#setTokensConfirmation Error: wallets instance is not defined');
       }
 
       const confirmedTokens = await this.getTokenList();
-      const confirmedTokensTickers = confirmedTokens
-        .map((token) => token.ticker)
-        .filter(Boolean);
+      const confirmedTokensTickers = confirmedTokens.map((token) => token.ticker).filter(Boolean);
 
       const mainnetTickers = wallets
         .list()
@@ -343,12 +301,10 @@ const HasTokensMixin = (superclass) =>
         // The next for user tokens that do not match by contract with tokens specified in the config
         const noSameTickerAsInMainnet = !mainnetTickers.includes(next.ticker);
         const noSameNameAsMainnetTicker = !mainnetTickers.includes(next.name);
-        const noSameTickerAsInConfirmedTokens =
-          !confirmedTokensTickers.includes(next.ticker);
+        const noSameTickerAsInConfirmedTokens = !confirmedTokensTickers.includes(next.ticker);
         const tickerHasAllowedCharacters = /^[a-zA-Z0-9]+$/.test(next.ticker);
         const nameHasAllowedCharacters = /^[a-zA-Z0-9 -_. ]+$/.test(next.name);
-        const haveAllowedCharacters =
-          tickerHasAllowedCharacters && nameHasAllowedCharacters;
+        const haveAllowedCharacters = tickerHasAllowedCharacters && nameHasAllowedCharacters;
 
         next.confirmed =
           noSameTickerAsInMainnet &&
@@ -383,19 +339,11 @@ const HasTokensMixin = (superclass) =>
       return serverTokenList
         .map((serverToken) => this.getTokenObject(serverToken, source))
         .filter((token) => this.isTokenExcluded(token))
-        .filter(
-          (token) =>
-            !!token.ticker &&
-            !!token.name &&
-            /^[a-zA-Z0-9 -_.]+$/.test(token.ticker),
-        )
+        .filter((token) => !!token.ticker && !!token.name && /^[a-zA-Z0-9 -_.]+$/.test(token.ticker))
         .filter(
           (token) =>
             token.ticker.trim() !== '' &&
-            !(
-              token.ticker.length > MAX_TICKER_LENGTH ||
-              token.name.length > MAX_NAME_LENGTH
-            ),
+            !(token.ticker.length > MAX_TICKER_LENGTH || token.name.length > MAX_NAME_LENGTH),
         )
         .map((token) => ({
           ...token,
@@ -444,9 +392,7 @@ const HasTokensMixin = (superclass) =>
      * @returns {Boolean} - true if excluded
      */
     isTokenExcluded(token) {
-      return !this.getExcludedTokenList().includes(
-        token.contract.toLowerCase(),
-      );
+      return !this.getExcludedTokenList().includes(token.contract.toLowerCase());
     }
 
     /**
@@ -570,10 +516,7 @@ const HasTokensMixin = (superclass) =>
      * @param visibility
      * @returns {Promise<[Token]>}
      */
-    async createCustomToken(
-      { name, ticker, decimal, contract, uniqueField, source = 'custom' },
-      wallets,
-    ) {
+    async createCustomToken({ name, ticker, decimal, contract, uniqueField, source = 'custom' }, wallets) {
       const args = { name, ticker, decimal, contract };
 
       await this.validateCustomToken(args);
@@ -585,9 +528,7 @@ const HasTokensMixin = (superclass) =>
 
       const created = this.createTokens(tokenArgs, wallets);
 
-      await this.insertTokensToDb(
-        created.map((token) => this.getTokenObject(token, source)),
-      );
+      await this.insertTokensToDb(created.map((token) => this.getTokenObject(token, source)));
 
       return created;
     }
@@ -655,12 +596,8 @@ const HasTokensMixin = (superclass) =>
           isStakable: token.isStakable,
           config: {
             ...(token.config || {}),
-            memoRegexp: this.config.hasTokenMemo
-              ? this.config.memoRegexp
-              : null,
-            paymentIdLabelType: this.config.hasTokenMemo
-              ? this.config.paymentIdLabelType
-              : null,
+            memoRegexp: this.config.hasTokenMemo ? this.config.memoRegexp : null,
+            paymentIdLabelType: this.config.hasTokenMemo ? this.config.paymentIdLabelType : null,
           },
           notify: Boolean(token.notify),
           // only for SOL tokens at moment
@@ -679,15 +616,13 @@ const HasTokensMixin = (superclass) =>
     }
 
     async getUniquesAndDuplicates(tokens) {
-      const collection = await db.tokens
-        .where(['parentTicker', 'uniqueField'])
-        .anyOf(
-          tokens
-            .filter((token) => {
-              return token?.uniqueField && token?.parentTicker;
-            })
-            .map((token) => [token.parentTicker, token.uniqueField]),
-        );
+      const collection = await db.tokens.where(['parentTicker', 'uniqueField']).anyOf(
+        tokens
+          .filter((token) => {
+            return token?.uniqueField && token?.parentTicker;
+          })
+          .map((token) => [token.parentTicker, token.uniqueField]),
+      );
 
       const uniques = {};
       const duplicates = [];

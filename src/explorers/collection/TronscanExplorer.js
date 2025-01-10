@@ -56,9 +56,7 @@ const TX_LIMIT = 50;
 class TronscanExplorer extends Explorer {
   constructor(...args) {
     super(...args);
-    this.httpclient = new TronscanClient.Client(
-      this.config.baseUrl.replace('/api/', ''),
-    );
+    this.httpclient = new TronscanClient.Client(this.config.baseUrl.replace('/api/', ''));
     this.helper = TronscanClient;
     this.defaultTxLimit = TX_LIMIT;
 
@@ -157,15 +155,12 @@ class TronscanExplorer extends Explorer {
    * @return {<type>} { description_of_the_return_value }
    */
   modifyTransactionsResponse(response, address, asset = this.wallet.ticker) {
-    const transfers = response.data.filter(
-      (tx) => tx.tokenInfo?.tokenAbbr !== 'trx',
-    );
+    const transfers = response.data.filter((tx) => tx.tokenInfo?.tokenAbbr !== 'trx');
 
     const transactions = response.data
       .filter(
         (tx) =>
-          (tx.tokenInfo?.tokenAbbr === 'trx' &&
-            [tx.ownerAddress, tx.toAddress].includes(address)) ||
+          (tx.tokenInfo?.tokenAbbr === 'trx' && [tx.ownerAddress, tx.toAddress].includes(address)) ||
           this.getTransactionType(tx) === 'vote' ||
           (this.getTransactionType(tx) === 'regular' && tx.amount === '0'),
       )
@@ -300,8 +295,7 @@ class TronscanExplorer extends Explorer {
     }
     return (
       tx.toAddress.toLowerCase() === selfAddress.toLowerCase() ||
-      (tx.toAddress === '' &&
-        tx.ownerAddress.toLowerCase() === selfAddress.toLowerCase())
+      (tx.toAddress === '' && tx.ownerAddress.toLowerCase() === selfAddress.toLowerCase())
     );
   }
 
@@ -325,9 +319,7 @@ class TronscanExplorer extends Explorer {
         return 'Reward';
       case TRON_CONTRACT_TYPES.TransferContract:
       default:
-        return tx.toAddress.toLowerCase() === selfAddress.toLowerCase()
-          ? tx.ownerAddress
-          : tx.toAddress;
+        return tx.toAddress.toLowerCase() === selfAddress.toLowerCase() ? tx.ownerAddress : tx.toAddress;
     }
   }
 
@@ -338,9 +330,7 @@ class TronscanExplorer extends Explorer {
    * @return {<type>} The transmit value.
    */
   getBatchTxValue(selfAddress, tx, decimal = this.wallet.decimal) {
-    return this.getTransactionType(tx) === 'vote'
-      ? tx.amount
-      : this.wallet.toCurrencyUnit(tx.amount, decimal);
+    return this.getTransactionType(tx) === 'vote' ? tx.amount : this.wallet.toCurrencyUnit(tx.amount, decimal);
   }
 
   getTxValue(selfAddress, tx, decimal = this.wallet.decimal) {
@@ -427,19 +417,13 @@ class TronscanExplorer extends Explorer {
   getTransactionType({ contractType }) {
     const typesMap = {
       freeze: [TRON_CONTRACT_TYPES.FreezeBalanceContract],
-      reward: [
-        TRON_CONTRACT_TYPES.WithdrawBalanceContract,
-        TRON_CONTRACT_TYPES.ExchangeWithdrawContract,
-      ],
+      reward: [TRON_CONTRACT_TYPES.WithdrawBalanceContract, TRON_CONTRACT_TYPES.ExchangeWithdrawContract],
       unstake: [
         TRON_CONTRACT_TYPES.UnfreezeBalanceContract,
         TRON_CONTRACT_TYPES.UnfreezeAssetContract,
         TRON_CONTRACT_TYPES.UnfreezeBalanceV2Contract,
       ],
-      vote: [
-        TRON_CONTRACT_TYPES.VoteAssetContract,
-        TRON_CONTRACT_TYPES.VoteWitnessContract,
-      ],
+      vote: [TRON_CONTRACT_TYPES.VoteAssetContract, TRON_CONTRACT_TYPES.VoteWitnessContract],
     };
 
     for (const txType of Object.keys(typesMap)) {

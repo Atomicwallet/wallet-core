@@ -2,11 +2,7 @@ import BN from 'bn.js';
 import { ExternalError } from 'src/errors';
 
 import Coin from '../../abstract/coin';
-import {
-  ETHNftExplorer,
-  MoralisExplorer,
-  Web3Explorer,
-} from '../../explorers/collection';
+import { ETHNftExplorer, MoralisExplorer, Web3Explorer } from '../../explorers/collection';
 import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer';
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
@@ -39,9 +35,7 @@ const LIDO_REF_ADDR = '0xF07A4a4d2fDE367A55FaC93761ecc8181148b826';
 /**
  * @class ETHCoin
  */
-class ETHCoin extends StakingMixin(
-  Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))),
-) {
+class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin))))) {
   #privateKey;
 
   /** @type {string} */
@@ -69,12 +63,7 @@ class ETHCoin extends StakingMixin(
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      Web3Explorer,
-      MoralisExplorer,
-      ETHNftExplorer,
-      BlockbookV2WithBlockscannerExplorer,
-    ]);
+    this.setExplorersModules([Web3Explorer, MoralisExplorer, ETHNftExplorer, BlockbookV2WithBlockscannerExplorer]);
 
     this.loadExplorers(config);
 
@@ -85,9 +74,7 @@ class ETHCoin extends StakingMixin(
     this.gasPriceConfig = null;
     this.bannedTokens = [];
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3 = new Web3Explorer({
       wallet: this.instance,
@@ -100,12 +87,9 @@ class ETHCoin extends StakingMixin(
     this.fields.paymentId = false;
     this.nonce = new this.BN('0');
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   /**
@@ -153,9 +137,7 @@ class ETHCoin extends StakingMixin(
 
   getTokenTransactions({ contract }) {
     if (!contract) {
-      throw new Error(
-        `${this.ticker}: \`contract\` parameter should be defined`,
-      );
+      throw new Error(`${this.ticker}: \`contract\` parameter should be defined`);
     }
 
     return this.getProvider('tokenHistory').getTokenTransactions({
@@ -177,13 +159,7 @@ class ETHCoin extends StakingMixin(
       address: this.address,
     });
     const failedTxs = await Promise.all(
-      failed.map(({ txid }) =>
-        this.getProvider('history').getTransaction(
-          this.address,
-          txid,
-          this.tokens,
-        ),
-      ),
+      failed.map(({ txid }) => this.getProvider('history').getTransaction(this.address, txid, this.tokens)),
     );
 
     return transactions.concat(tokenTransactions).concat(failedTxs);
@@ -240,17 +216,12 @@ class ETHCoin extends StakingMixin(
    * @return {Promise<Object>} The private key.
    */
   async loadWallet(seed) {
-    const [coreLibrary, { hdkey }] = await Promise.all([
-      this.getCoreLibrary(),
-      this.loadLib('hdkey'),
-    ]);
+    const [coreLibrary, { hdkey }] = await Promise.all([this.getCoreLibrary(), this.loadLib('hdkey')]);
 
     return new Promise(async (resolve, reject) => {
       const ethHDKey = hdkey.fromMasterSeed(seed);
       const wallet = ethHDKey.getWallet();
-      const account = await coreLibrary.eth.accounts.privateKeyToAccount(
-        wallet.getPrivateKeyString(),
-      );
+      const account = await coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
       if (!account) {
         reject(new Error(`${TICKER} cant get a wallet!`));
@@ -277,9 +248,7 @@ class ETHCoin extends StakingMixin(
     try {
       const coreLibrary = await this.getCoreLibrary();
 
-      this.#privateKey = coreLibrary.eth.accounts.privateKeyToAccount(
-        this.#privateKey,
-      ).address;
+      this.#privateKey = coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
     } catch (error) {
       // logger.error({ instance: this, error });
     }
@@ -342,24 +311,12 @@ class ETHCoin extends StakingMixin(
       transaction.data = paymentData;
     }
 
-    const signedTx = await coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
 
-  async createTokenTransaction({
-    address,
-    amount,
-    custom,
-    userGasPrice,
-    gasLimit,
-    contract,
-    multiplier,
-    nonce,
-  }) {
+  async createTokenTransaction({ address, amount, custom, userGasPrice, gasLimit, contract, multiplier, nonce }) {
     const contractData = this.getProvider('send').createSendTokenContract(
       contract,
       this.address,
@@ -426,21 +383,10 @@ class ETHCoin extends StakingMixin(
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async estimateGasForSendNft(
-    address,
-    toAddress,
-    nonce,
-    data,
-    gasLimitCoefficient = 1,
-  ) {
+  async estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient = 1) {
     try {
       /** @type number */
-      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(
-        address,
-        toAddress,
-        nonce,
-        data,
-      );
+      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(address, toAddress, nonce, data);
 
       return Math.ceil(fetchedGasLimit * gasLimitCoefficient).toString();
     } catch (error) {
@@ -462,11 +408,7 @@ class ETHCoin extends StakingMixin(
    * @param {UserFeeOptions} userOptions - Custom user options.
    * @returns {Promise<{gasLimit: string, gasPrice: string, nonce: number}>}
    */
-  async getNftTransferGasParams(
-    toAddress,
-    data,
-    { userGasPrice, userGasLimit },
-  ) {
+  async getNftTransferGasParams(toAddress, data, { userGasPrice, userGasLimit }) {
     const {
       address,
       nftGasPriceCoefficient,
@@ -478,11 +420,9 @@ class ETHCoin extends StakingMixin(
     } = this;
 
     /** @type number */
-    const gasPriceCoefficient =
-      nftGasPriceCoefficient || configGasPriceCoefficient;
+    const gasPriceCoefficient = nftGasPriceCoefficient || configGasPriceCoefficient;
     /** @type number */
-    const gasLimitCoefficient =
-      nftGasLimitCoefficient || configGasLimitCoefficient;
+    const gasLimitCoefficient = nftGasLimitCoefficient || configGasLimitCoefficient;
 
     const defaultGasValues = [
       new BN(defaultGasPrice).mul(new BN(gasPriceCoefficient)).toString(),
@@ -493,19 +433,10 @@ class ETHCoin extends StakingMixin(
 
     const [gasPrice, gasLimit] = await Promise.allSettled([
       userGasPrice || this.getMaxFeePerGas(gasPriceCoefficient),
-      userGasLimit ||
-        this.estimateGasForSendNft(
-          address,
-          toAddress,
-          nonce,
-          data,
-          gasLimitCoefficient,
-        ),
+      userGasLimit || this.estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient),
     ]).then((resultList) =>
       resultList.map((result, i) => {
-        return result.status === 'fulfilled'
-          ? result.value
-          : defaultGasValues[i];
+        return result.status === 'fulfilled' ? result.value : defaultGasValues[i];
       }),
     );
 
@@ -524,13 +455,7 @@ class ETHCoin extends StakingMixin(
    * @return {Promise<BN>} - The fee.
    * @throws {ExternalError}
    */
-  async getNftFee({
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    toAddress,
-    userOptions = {},
-  }) {
+  async getNftFee({ contractAddress, tokenId, tokenStandard, toAddress, userOptions = {} }) {
     try {
       const data = await this.getProvider('nft-send').getNftContractData(
         this,
@@ -539,11 +464,7 @@ class ETHCoin extends StakingMixin(
         tokenId,
         tokenStandard,
       );
-      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(toAddress, data, userOptions);
 
       return new BN(gasPrice).mul(new BN(gasLimit));
     } catch (error) {
@@ -561,18 +482,9 @@ class ETHCoin extends StakingMixin(
    * @return {Promise<string>} - Raw transaction
    * @throws {ExternalError}
    */
-  async createNftTransaction({
-    toAddress,
-    contractAddress,
-    data,
-    userOptions = {},
-  }) {
+  async createNftTransaction({ toAddress, contractAddress, data, userOptions = {} }) {
     try {
-      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(toAddress, data, userOptions);
       const transaction = {
         to: contractAddress,
         value: HEX_ZERO,
@@ -584,10 +496,7 @@ class ETHCoin extends StakingMixin(
       };
 
       const coreLibrary = await this.getCoreLibrary();
-      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(
-        transaction,
-        this.#privateKey,
-      );
+      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
       return rawTransaction;
     } catch (error) {
@@ -599,9 +508,7 @@ class ETHCoin extends StakingMixin(
   async getNonce() {
     const coreLibrary = await this.getCoreLibrary();
 
-    this.nonce = new this.BN(
-      await coreLibrary.eth.getTransactionCount(this.address),
-    );
+    this.nonce = new this.BN(await coreLibrary.eth.getTransactionCount(this.address));
 
     return this.nonce;
   }
@@ -694,9 +601,7 @@ class ETHCoin extends StakingMixin(
       })
       .catch(() => {});
 
-    return estimateGas
-      ? Math.round(estimateGas * this.gasLimitCoefficient).toString()
-      : defaultGas;
+    return estimateGas ? Math.round(estimateGas * this.gasLimitCoefficient).toString() : defaultGas;
   }
 
   /**
@@ -710,9 +615,7 @@ class ETHCoin extends StakingMixin(
     }
 
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -727,17 +630,12 @@ class ETHCoin extends StakingMixin(
     this.getNonce();
 
     if (tokenInfo && tokenInfo.isToken) {
-      const tokenBalance = await this.getProvider(
-        'node',
-      ).getTokenBalanceByContractAddress({
+      const tokenBalance = await this.getProvider('node').getTokenBalanceByContractAddress({
         address: this.address,
         contractAddress: tokenInfo.contract.toLowerCase(),
       });
 
-      const contractVariant = [
-        tokenInfo.contract,
-        tokenInfo.contract.toLowerCase(),
-      ];
+      const contractVariant = [tokenInfo.contract, tokenInfo.contract.toLowerCase()];
 
       contractVariant.forEach((contract) => {
         if (this.tokens[contract]) {
@@ -781,9 +679,7 @@ class ETHCoin extends StakingMixin(
 
     // filter existing tokens with predefined smart contract addresses
     const tokens = Object.values(this.tokens).filter(({ contract }) =>
-      stakingContracts.some(
-        ({ address }) => address.toLowerCase() === contract.toLowerCase(),
-      ),
+      stakingContracts.some(({ address }) => address.toLowerCase() === contract.toLowerCase()),
     );
 
     await this.getProvider('stake').getTokensInfo(tokens, this.address);
@@ -796,10 +692,7 @@ class ETHCoin extends StakingMixin(
          * But at this point we ensure that every staking smart-contract have same decimals as ETH
          * and their value is 1:1 to ETH
          */
-        acc.staked = new Amount(
-          acc.staked.toBN().add(new this.BN(balance)),
-          this,
-        );
+        acc.staked = new Amount(acc.staked.toBN().add(new this.BN(balance)), this);
 
         acc.validators[contract] = {
           address: contract,
@@ -870,8 +763,7 @@ class ETHCoin extends StakingMixin(
       address,
       amount,
       paymentData: data,
-      gasLimit:
-        this.stakingGasLimit || (await this.estimateGas(amount, address)),
+      gasLimit: this.stakingGasLimit || (await this.estimateGas(amount, address)),
     }); // @TODO replace by estimated gasLimit in future
 
     return tx;
@@ -1028,9 +920,7 @@ class ETHCoin extends StakingMixin(
     try {
       const isUpdateNeeded = !this.gasPriceConfig || force;
 
-      this.gasPriceConfig = isUpdateNeeded
-        ? await this.web3.getGasPriceConfig()
-        : this.gasPriceConfig;
+      this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
       console.error(error);
     }
@@ -1041,9 +931,7 @@ class ETHCoin extends StakingMixin(
     // ACT-992: This multiplier needed because 'fastest', 'fast', 'average' params in config contains gwei * 10
     const multiplier = 10;
     const config = await this.getEstimatedTimeCfg();
-    const speed = ['fastest', 'fast', 'average'].find(
-      (key) => config?.[key] <= gasPrice * multiplier,
-    );
+    const speed = ['fastest', 'fast', 'average'].find((key) => config?.[key] <= gasPrice * multiplier);
 
     if (mapping) {
       const TIMES_MAP = {

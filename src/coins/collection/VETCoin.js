@@ -63,26 +63,23 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
 
     this.#initFeeTokenWallet();
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.getInfo();
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.getInfo();
 
-        if (unconfirmedTx && unconfirmedTx.direction) {
-          this.eventEmitter.emit('socket::newtx', {
-            id: coinId,
-            ticker,
-            amount: unconfirmedTx.amount,
-            txid: unconfirmedTx.txid,
-          });
-        } else {
-          this.eventEmitter.emit('socket::newtx::outgoing', {
-            id: coinId,
-            ticker,
-          });
-        }
-      },
-    );
+      if (unconfirmedTx && unconfirmedTx.direction) {
+        this.eventEmitter.emit('socket::newtx', {
+          id: coinId,
+          ticker,
+          amount: unconfirmedTx.amount,
+          txid: unconfirmedTx.txid,
+        });
+      } else {
+        this.eventEmitter.emit('socket::newtx::outgoing', {
+          id: coinId,
+          ticker,
+        });
+      }
+    });
   }
 
   get feeWallet() {
@@ -171,10 +168,7 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
     if (this.#privateKey) {
       const { cry } = await thorDevKitLib.get();
 
-      const privateKeyBuffer = Buffer.from(
-        this.#privateKey.substring(TWO),
-        'hex',
-      );
+      const privateKeyBuffer = Buffer.from(this.#privateKey.substring(TWO), 'hex');
       const pubKey = cry.secp256k1.derivePublicKey(privateKeyBuffer);
 
       return `0x${cry.publicKeyToAddress(pubKey).toString('hex')}`;
@@ -235,10 +229,7 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
     const hexBase = 16;
     const blockRefLen = 18;
     const lastBlockInfo = await this.getLatestBlock();
-    const privateKeyBuffer = Buffer.from(
-      this.#privateKey.substring(TWO),
-      'hex',
-    );
+    const privateKeyBuffer = Buffer.from(this.#privateKey.substring(TWO), 'hex');
     const value = `0x${new this.BN(amount).toString(hexBase)}`;
     const blockRef = lastBlockInfo.id.substring(0, blockRefLen);
     const transaction = new Transaction({
@@ -289,9 +280,7 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
   async getFee() {
     const { Transaction } = await thorDevKitLib.get();
 
-    return this.toMinimalUnit(
-      this.fee || this.convertGasToVTHO(Transaction.intrinsicGas([])),
-    );
+    return this.toMinimalUnit(this.fee || this.convertGasToVTHO(Transaction.intrinsicGas([])));
   }
 
   /**
@@ -303,19 +292,13 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
     const token = this.tokens[this.#feeTokenWallet.id];
     const fee = await this.getFee();
 
-    return token
-      ? token.indivisibleBalance && token.indivisibleBalance.gte(fee)
-      : false;
+    return token ? token.indivisibleBalance && token.indivisibleBalance.gte(fee) : false;
   }
 
   async availableBalance() {
-    const availableBalance = new this.BN(this.balance).sub(
-      new this.BN(this.unspendableBalance),
-    );
+    const availableBalance = new this.BN(this.balance).sub(new this.BN(this.unspendableBalance));
 
-    return availableBalance.lt(new this.BN(0))
-      ? '0'
-      : this.toCurrencyUnit(availableBalance);
+    return availableBalance.lt(new this.BN(0)) ? '0' : this.toCurrencyUnit(availableBalance);
   }
 
   async fetchUserTokens(wallets) {

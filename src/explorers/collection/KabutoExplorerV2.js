@@ -44,9 +44,7 @@ class KabutoExplorerV2 extends Explorer {
   getTxValue(selfAddress, tx) {
     const direction = this.getTxDirection(selfAddress, tx);
     const otherSideAddress = this.getTxOtherSideAddress(selfAddress, tx);
-    const transfer = direction
-      ? this.getTransferFromTx(otherSideAddress, tx)
-      : this.getTransferFromTx(selfAddress, tx);
+    const transfer = direction ? this.getTransferFromTx(otherSideAddress, tx) : this.getTransferFromTx(selfAddress, tx);
 
     return toCurrency(transfer.amount, this.wallet.decimal);
   }
@@ -91,16 +89,14 @@ class KabutoExplorerV2 extends Explorer {
   /**
    * Return transfer from transaction transfers array
    *
-   * @param {String} Exclusion address. The method will return the address of the other side if the parameter contains its own address
+   *
+   * @param {String} Exclusion address. The method will return the address of
+   * the other side if the parameter contains its own address
    * @param {Object} transaction
    * @return {Object} transfer
    */
   getTransferFromTx(excludedAddress, tx) {
-    const excludeFromOtherside = [
-      excludedAddress,
-      tx.nodeAccountId,
-      HEDERA_ACCOUNT,
-    ];
+    const excludeFromOtherside = [excludedAddress, tx.nodeAccountId, HEDERA_ACCOUNT];
 
     return tx.transfers.find((transfer) => {
       return !excludeFromOtherside.includes(transfer.accountId);

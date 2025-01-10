@@ -19,9 +19,7 @@ class Transaction {
    */
   constructor(fields) {
     if (typeof fields !== 'object') {
-      throw new TypeError(
-        'Transaction: constructor arguments object must be used',
-      );
+      throw new TypeError('Transaction: constructor arguments object must be used');
     }
     if (arguments.length > 1) {
       throw new Error('Transaction: constructor accepts only 1 argument');
@@ -83,9 +81,7 @@ class Transaction {
    * @return {Object} The status.
    */
   getStatus() {
-    return this.confirmations > 1
-      ? { text: 'Confirmed', color: '#06CE91' }
-      : { text: 'Pending' };
+    return this.confirmations > 1 ? { text: 'Confirmed', color: '#06CE91' } : { text: 'Pending' };
   }
 
   /**

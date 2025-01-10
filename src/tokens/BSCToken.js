@@ -17,8 +17,7 @@ class BSCToken extends Token {
   }
 
   async getFee({ amount = 0, isSendAll, gasPrice, gasLimit }) {
-    const gasPriceIncremented =
-      Number(gasPrice.toString()) * Number(this.coefficient);
+    const gasPriceIncremented = Number(gasPrice.toString()) * Number(this.coefficient);
     const estimatedGasLimit = gasLimit || this.gasLimit;
 
     return new this.BN(estimatedGasLimit).mul(new this.BN(gasPriceIncremented));

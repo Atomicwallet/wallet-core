@@ -12,38 +12,20 @@ class TxNotifier {
     this.wallet = wallet;
   }
 
-  notify(
-    type: string,
-    tx: unknown,
-    walletId: string,
-    ticker: string,
-    hash: string,
-  ): void {
+  notify(type: string, tx: unknown, walletId: string, ticker: string, hash: string): void {
     if (type === 'receive') {
-      this.eventEmitter.emit(
-        `${this.wallet.ticker}-${walletId}::new-socket-tx`,
-        {
-          unconfirmedTx: tx,
-        },
-      );
+      this.eventEmitter.emit(`${this.wallet.ticker}-${walletId}::new-socket-tx`, {
+        unconfirmedTx: tx,
+      });
     }
 
     if (type === 'confirm') {
-      this.eventEmitter.emit(
-        `${this.wallet.ticker}::confirmed-socket-tx`,
-        walletId,
-        tx,
-        ticker,
-        hash,
-      );
+      this.eventEmitter.emit(`${this.wallet.ticker}::confirmed-socket-tx`, walletId, tx, ticker, hash);
     }
 
     MESSAGE_TYPES.forEach((message) => {
       if (type === message) {
-        this.eventEmitter.emit(
-          `${this.wallet.ticker}::confirmed-${type}`,
-          tx || {},
-        );
+        this.eventEmitter.emit(`${this.wallet.ticker}::confirmed-${type}`, tx || {});
       }
     });
   }

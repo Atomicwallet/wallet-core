@@ -1,8 +1,4 @@
-import {
-  fromBech32Address,
-  toBech32Address,
-  toChecksumAddress,
-} from '@zilliqa-js/crypto';
+import { fromBech32Address, toBech32Address, toChecksumAddress } from '@zilliqa-js/crypto';
 
 import Explorer from '../Explorer';
 

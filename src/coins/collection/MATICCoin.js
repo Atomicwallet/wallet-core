@@ -1,4 +1,5 @@
 import { ExternalError } from 'src/errors';
+import applyCoefficient from 'src/utils/applyCoefficient';
 
 import { Coin } from '../../abstract';
 // import logger from '../Logger';
@@ -12,7 +13,6 @@ import Web3Explorer from '../../explorers/collection/Web3Explorer';
 import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer';
 import { MATICToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';
-import applyCoefficient from '../../utils/applyCoefficient';
 import { EXTERNAL_ERROR } from '../../utils/const';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
@@ -32,9 +32,7 @@ const DEFAULT_MAX_GAS = '150000';
 /**
  * @class MATICCoin
  */
-class MATICCoin extends Web3Mixin(
-  NftMixin(HasProviders(HasTokensMixin(Coin))),
-) {
+class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   #privateKey;
 
   /** @type {string} */
@@ -81,21 +79,16 @@ class MATICCoin extends Web3Mixin(
     this.gasPriceConfig = null;
     this.bannedTokens = [];
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3BaseUrl = web3Params.baseUrl;
     this.fields.paymentId = false;
     this.tokens = {};
     this.nonce = new this.BN('0');
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   /**
@@ -183,15 +176,10 @@ class MATICCoin extends Web3Mixin(
    * @return {Promise<Object>} The private key.
    */
   async loadWallet(seed) {
-    const [coreLibrary, { hdkey }] = await Promise.all([
-      this.getCoreLibrary(),
-      this.loadLib('hdkey'),
-    ]);
+    const [coreLibrary, { hdkey }] = await Promise.all([this.getCoreLibrary(), this.loadLib('hdkey')]);
     const ethHDKey = hdkey.fromMasterSeed(seed);
     const wallet = ethHDKey.getWallet();
-    const account = await coreLibrary.eth.accounts.privateKeyToAccount(
-      wallet.getPrivateKeyString(),
-    );
+    const account = await coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
     if (!account) {
       throw new Error(`${this.ticker} wallet cannot be loaded`);
@@ -217,8 +205,7 @@ class MATICCoin extends Web3Mixin(
 
     const coreLibrary = await this.getCoreLibrary();
 
-    return coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey)
-      .address;
+    return coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
   }
 
   /**
@@ -252,8 +239,7 @@ class MATICCoin extends Web3Mixin(
     gasLimit,
     multiplier = this.gasPriceCoefficient,
   }) {
-    const gasPrice =
-      userGasPrice || applyCoefficient(await this.getGasPrice(), multiplier);
+    const gasPrice = userGasPrice || applyCoefficient(await this.getGasPrice(), multiplier);
 
     await this.getNonce();
 
@@ -273,10 +259,7 @@ class MATICCoin extends Web3Mixin(
     }
 
     const coreLibrary = await this.getCoreLibrary();
-    const signedTx = await coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
@@ -291,18 +274,9 @@ class MATICCoin extends Web3Mixin(
    * @return {Promise<string>} - Raw transaction
    * @throws {ExternalError}
    */
-  async createNftTransaction({
-    toAddress,
-    contractAddress,
-    data,
-    userOptions = {},
-  }) {
+  async createNftTransaction({ toAddress, contractAddress, data, userOptions = {} }) {
     try {
-      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(toAddress, data, userOptions);
 
       const transaction = {
         to: contractAddress,
@@ -315,10 +289,7 @@ class MATICCoin extends Web3Mixin(
       };
 
       const coreLibrary = await this.getCoreLibrary();
-      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(
-        transaction,
-        this.#privateKey,
-      );
+      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
       return rawTransaction;
     } catch (error) {
@@ -334,15 +305,7 @@ class MATICCoin extends Web3Mixin(
     );
   }
 
-  async createTokenTransaction({
-    address,
-    amount,
-    userGasPrice,
-    gasLimit,
-    contract,
-    multiplier,
-    nonce,
-  }) {
+  async createTokenTransaction({ address, amount, userGasPrice, gasLimit, contract, multiplier, nonce }) {
     const contractData = this.getProvider('send').createSendTokenContract(
       contract,
       this.address,
@@ -365,24 +328,14 @@ class MATICCoin extends Web3Mixin(
   async getNonce() {
     const coreLibrary = await this.getCoreLibrary();
 
-    this.nonce = new this.BN(
-      await coreLibrary.eth.getTransactionCount(this.address),
-    );
+    this.nonce = new this.BN(await coreLibrary.eth.getTransactionCount(this.address));
     return this.nonce;
   }
 
-  async getFee({
-    userGasPrice = null,
-    gasLimit = null,
-    multiplier = this.gasPriceCoefficient,
-  } = {}) {
-    const gasPrice = new this.BN(
-      userGasPrice || (await this.getGasPrice(true)),
-    );
+  async getFee({ userGasPrice = null, gasLimit = null, multiplier = this.gasPriceCoefficient } = {}) {
+    const gasPrice = new this.BN(userGasPrice || (await this.getGasPrice(true)));
 
-    return gasPrice.mul(
-      applyCoefficient(gasLimit || this.gasLimit, multiplier),
-    );
+    return gasPrice.mul(applyCoefficient(gasLimit || this.gasLimit, multiplier));
   }
 
   /**
@@ -397,13 +350,7 @@ class MATICCoin extends Web3Mixin(
    * @return {Promise<BN>} - The fee.
    * @throws {ExternalError}
    */
-  async getNftFee({
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    toAddress,
-    userOptions = {},
-  }) {
+  async getNftFee({ contractAddress, tokenId, tokenStandard, toAddress, userOptions = {} }) {
     try {
       const data = await this.getProvider('nft-send').getNftContractData(
         this,
@@ -412,11 +359,7 @@ class MATICCoin extends Web3Mixin(
         tokenId,
         tokenStandard,
       );
-      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(toAddress, data, userOptions);
 
       return new this.BN(gasPrice).mul(new this.BN(gasLimit));
     } catch (error) {
@@ -437,11 +380,7 @@ class MATICCoin extends Web3Mixin(
    * @param {UserFeeOptions} userOptions - Custom user options.
    * @returns {Promise<{gasLimit: string, gasPrice: string, nonce: number}>}
    */
-  async getNftTransferGasParams(
-    toAddress,
-    data,
-    { userGasPrice, userGasLimit },
-  ) {
+  async getNftTransferGasParams(toAddress, data, { userGasPrice, userGasLimit }) {
     const {
       address,
       nftGasPriceCoefficient,
@@ -453,16 +392,12 @@ class MATICCoin extends Web3Mixin(
     } = this;
 
     /** @type number */
-    const gasPriceCoefficient =
-      nftGasPriceCoefficient || configGasPriceCoefficient;
+    const gasPriceCoefficient = nftGasPriceCoefficient || configGasPriceCoefficient;
     /** @type number */
-    const gasLimitCoefficient =
-      nftGasLimitCoefficient || configGasLimitCoefficient;
+    const gasLimitCoefficient = nftGasLimitCoefficient || configGasLimitCoefficient;
 
     const defaultGasValues = [
-      new this.BN(defaultGasPrice)
-        .mul(new this.BN(gasPriceCoefficient))
-        .toString(),
+      new this.BN(defaultGasPrice).mul(new this.BN(gasPriceCoefficient)).toString(),
       Math.ceil(Number(coinGasLimit) * gasLimitCoefficient).toString(),
     ];
 
@@ -470,19 +405,10 @@ class MATICCoin extends Web3Mixin(
 
     const [gasPrice, gasLimit] = await Promise.allSettled([
       userGasPrice || this.getNftGasPrice(gasPriceCoefficient),
-      userGasLimit ||
-        this.estimateGasForSendNft(
-          address,
-          toAddress,
-          nonce,
-          data,
-          gasLimitCoefficient,
-        ),
+      userGasLimit || this.estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient),
     ]).then((resultList) =>
       resultList.map((result, i) => {
-        return result.status === 'fulfilled'
-          ? result.value
-          : defaultGasValues[i];
+        return result.status === 'fulfilled' ? result.value : defaultGasValues[i];
       }),
     );
 
@@ -500,21 +426,10 @@ class MATICCoin extends Web3Mixin(
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async estimateGasForSendNft(
-    address,
-    toAddress,
-    nonce,
-    data,
-    gasLimitCoefficient = 1,
-  ) {
+  async estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient = 1) {
     try {
       /** @type number */
-      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(
-        address,
-        toAddress,
-        nonce,
-        data,
-      );
+      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(address, toAddress, nonce, data);
 
       return Math.ceil(fetchedGasLimit * gasLimitCoefficient).toString();
     } catch (error) {
@@ -534,9 +449,7 @@ class MATICCoin extends Web3Mixin(
     try {
       const fetchedGasPrice = await this.getProvider('nft-send').getGasPrice();
 
-      return new this.BN(fetchedGasPrice)
-        .mul(new this.BN(gasPriceCoefficient))
-        .toString();
+      return new this.BN(fetchedGasPrice).mul(new this.BN(gasPriceCoefficient)).toString();
     } catch (error) {
       console.warn(error);
       throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
@@ -582,9 +495,7 @@ class MATICCoin extends Web3Mixin(
   }
 
   async estimateGas() {
-    return new this.BN(this.tokenGasLimit)
-      .mul(new this.BN(this.gasLimitCoefficient))
-      .toString();
+    return new this.BN(this.tokenGasLimit).mul(new this.BN(this.gasLimitCoefficient)).toString();
   }
 
   /**
@@ -618,17 +529,12 @@ class MATICCoin extends Web3Mixin(
     this.getNonce();
 
     if (tokenInfo?.isToken) {
-      const tokenBalance = await this.getProvider(
-        'node',
-      ).getTokenBalanceByContractAddress({
+      const tokenBalance = await this.getProvider('node').getTokenBalanceByContractAddress({
         address: this.address,
         contractAddress: tokenInfo.contract.toLowerCase(),
       });
 
-      const contractVariant = [
-        tokenInfo.contract,
-        tokenInfo.contract.toLowerCase(),
-      ];
+      const contractVariant = [tokenInfo.contract, tokenInfo.contract.toLowerCase()];
 
       contractVariant.forEach((contract) => {
         if (this.tokens[contract]) {
@@ -644,10 +550,7 @@ class MATICCoin extends Web3Mixin(
     }
 
     if (!tokenInfo?.onlyCoin) {
-      this.getProvider('node').getTokensInfo(
-        Object.values(this.tokens),
-        this.address,
-      );
+      this.getProvider('node').getTokensInfo(Object.values(this.tokens), this.address);
     }
 
     return { balance: info.balance };

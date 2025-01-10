@@ -42,9 +42,7 @@ class BtgInsightExplorer extends DgbInsightExplorer {
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
     );
 
-    return this.modifyGeneralResponse(
-      this.modifySendTransactionResponse(response),
-    );
+    return this.modifyGeneralResponse(this.modifySendTransactionResponse(response));
   }
 }
 

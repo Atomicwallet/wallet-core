@@ -142,9 +142,7 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
     const info = await this.getProvider('balance').getInfo(this.address);
 
     info.balances = {
-      available: this.toCurrencyUnit(
-        await this.calculateAvailable(info.balance),
-      ),
+      available: this.toCurrencyUnit(await this.calculateAvailable(info.balance)),
       total: new BN(info.balance),
     };
 
@@ -192,18 +190,11 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
     const iScore = await this.getProvider('call').call(queryIScoreCall);
 
     const staked = this.calculateStakedAmount(stakeCallResult);
-    const availableForUnstake =
-      this.calculateAvailableForUnstake(stakeCallResult);
+    const availableForUnstake = this.calculateAvailableForUnstake(stakeCallResult);
     const unstaking = this.calculateUnstakingAmount(stakeCallResult);
     const rewards = this.calculateRewards(iScore);
-    const delegatedVotes = new Amount(
-      new BN(delegation?.totalDelegated.replace('0x', ''), HEX_BASE),
-      this,
-    );
-    const availableVotes = new Amount(
-      new BN(delegation?.votingPower.replace('0x', ''), HEX_BASE),
-      this,
-    );
+    const delegatedVotes = new Amount(new BN(delegation?.totalDelegated.replace('0x', ''), HEX_BASE), this);
+    const availableVotes = new Amount(new BN(delegation?.votingPower.replace('0x', ''), HEX_BASE), this);
     const validators = Object.fromEntries(
       delegation?.delegations.map(({ address, value }) => [
         address,
@@ -227,24 +218,11 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   calculateTotal({ balance, staked, unstaking, rewards }) {
-    return new Amount(
-      balance
-        .toBN()
-        .add(staked.toBN())
-        .add(unstaking.toBN())
-        .add(rewards.toBN()),
-      this,
-    );
+    return new Amount(balance.toBN().add(staked.toBN()).add(unstaking.toBN()).add(rewards.toBN()), this);
   }
 
   async calculateAvailableForStake({ balance }) {
-    return new Amount(
-      this.BN.max(
-        balance.toBN().sub(new this.BN(this.reserveForStake)),
-        new BN(0),
-      ),
-      this,
-    );
+    return new Amount(this.BN.max(balance.toBN().sub(new this.BN(this.reserveForStake)), new BN(0)), this);
   }
 
   calculateAvailableForUnstake(stakeCall) {
@@ -269,20 +247,14 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
 
   calculateStakedAmount(stakeCall) {
     if (stakeCall.stake) {
-      return new Amount(
-        new BN(stakeCall.stake.replace('0x', ''), HEX_BASE),
-        this,
-      );
+      return new Amount(new BN(stakeCall.stake.replace('0x', ''), HEX_BASE), this);
     }
 
     return this.defaultAmount();
   }
 
   calculateRewards(iScoreCall) {
-    return new Amount(
-      new BN(iScoreCall.estimatedICX.replace('0x', ''), HEX_BASE),
-      this,
-    );
+    return new Amount(new BN(iScoreCall.estimatedICX.replace('0x', ''), HEX_BASE), this);
   }
 
   async signTransaction(transaction) {
@@ -295,9 +267,7 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
   async calculateAvailable(balance, fees) {
     const maximumFee = (fees && new this.BN(fees)) || (await this.getFee());
 
-    const available = new this.BN(balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const available = new this.BN(balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     const zero = new this.BN(0);
 
@@ -389,12 +359,7 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
     const txid = await this.vote({ validator, amount });
 
     // schedule balance update
-    delayedRepeatUntilSuccess(
-      this.getInfo.bind(this),
-      [undefined],
-      REPEAT_BALANCE_REFRESH_TIMES,
-      UPDATE_TIMEOUT,
-    );
+    delayedRepeatUntilSuccess(this.getInfo.bind(this), [undefined], REPEAT_BALANCE_REFRESH_TIMES, UPDATE_TIMEOUT);
 
     return txid;
   }
@@ -428,12 +393,7 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
 
     const { txid } = await this.sendTransaction(unstakeTransaction);
 
-    delayedRepeatUntilSuccess(
-      this.getInfo.bind(this),
-      [undefined],
-      REPEAT_BALANCE_REFRESH_TIMES,
-      UPDATE_TIMEOUT,
-    );
+    delayedRepeatUntilSuccess(this.getInfo.bind(this), [undefined], REPEAT_BALANCE_REFRESH_TIMES, UPDATE_TIMEOUT);
 
     return txid;
   }
@@ -460,19 +420,14 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
     let amountInMinimalUnits = new BN(this.toMinimalUnit(amount));
 
     if (currentDelegation) {
-      const delegated = new BN(
-        remove0xPrefix(currentDelegation.value),
-        HEX_BASE,
-      );
+      const delegated = new BN(remove0xPrefix(currentDelegation.value), HEX_BASE);
 
       amountInMinimalUnits = amountInMinimalUnits.add(delegated);
     }
 
     delegations.push({
       address: validatorAddress,
-      value: IconService.IconConverter.toHexNumber(
-        amountInMinimalUnits.toString(),
-      ),
+      value: IconService.IconConverter.toHexNumber(amountInMinimalUnits.toString()),
     });
 
     const voteTx = await this.createCallTransaction('setDelegation', {
@@ -481,12 +436,7 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
 
     const { txid } = await this.sendTransaction(voteTx);
 
-    delayedRepeatUntilSuccess(
-      this.getInfo.bind(this),
-      [undefined],
-      REPEAT_BALANCE_REFRESH_TIMES,
-      UPDATE_TIMEOUT,
-    );
+    delayedRepeatUntilSuccess(this.getInfo.bind(this), [undefined], REPEAT_BALANCE_REFRESH_TIMES, UPDATE_TIMEOUT);
 
     return txid;
   }
@@ -506,12 +456,7 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
 
     const { txid } = await this.sendTransaction(voteTx);
 
-    delayedRepeatUntilSuccess(
-      this.getInfo.bind(this),
-      [undefined],
-      REPEAT_BALANCE_REFRESH_TIMES,
-      UPDATE_TIMEOUT,
-    );
+    delayedRepeatUntilSuccess(this.getInfo.bind(this), [undefined], REPEAT_BALANCE_REFRESH_TIMES, UPDATE_TIMEOUT);
 
     return txid;
   }
@@ -538,12 +483,7 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
 
     const { txid } = await this.sendTransaction(claimIScoreCall);
 
-    delayedRepeatUntilSuccess(
-      this.getInfo.bind(this),
-      [undefined],
-      REPEAT_BALANCE_REFRESH_TIMES,
-      UPDATE_TIMEOUT,
-    );
+    delayedRepeatUntilSuccess(this.getInfo.bind(this), [undefined], REPEAT_BALANCE_REFRESH_TIMES, UPDATE_TIMEOUT);
 
     return txid;
   }
@@ -551,17 +491,13 @@ class ICXCoin extends StakingMixin(HasProviders(Coin)) {
   async getClaimTransactionAmount(txResult) {
     const IconService = await iconServiceLib.get();
 
-    return IconService.IconConverter.toBigNumber(txResult.eventLogs[0].data[1])
-      .div(DECIMAL_E)
-      .toString();
+    return IconService.IconConverter.toBigNumber(txResult.eventLogs[0].data[1]).div(DECIMAL_E).toString();
   }
 
   async getStakeTransactionAmount(txNode) {
     const IconService = await iconServiceLib.get();
 
-    return IconService.IconConverter.toBigNumber(txNode.data.params.value)
-      .div(DECIMAL_E)
-      .toString();
+    return IconService.IconConverter.toBigNumber(txNode.data.params.value).div(DECIMAL_E).toString();
   }
 
   async getTransactions({ offset = 0, limit, address, pageNum }) {

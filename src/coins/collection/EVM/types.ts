@@ -1,9 +1,4 @@
-import type {
-  WalletAlias,
-  WalletId,
-  WalletName,
-  WalletTicker,
-} from '@/abstract';
+import type { WalletAlias, WalletId, WalletName, WalletTicker } from '@/abstract';
 
 export type EVMFeeType = number;
 

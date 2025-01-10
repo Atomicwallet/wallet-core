@@ -7,9 +7,7 @@ import { getStringWithEnsuredEndChar } from '../../utils/convert';
 import Explorer from '../Explorer';
 // import activeWalletsList from '../ActiveWalletsList'
 
-const MymoneroWalletManagerLazyLoaded = new LazyLoadedLib(
-  () => import('@mymonero/mymonero-wallet-manager'),
-);
+const MymoneroWalletManagerLazyLoaded = new LazyLoadedLib(() => import('@mymonero/mymonero-wallet-manager'));
 
 const ATOMIC_ALIAS = 'atomic';
 const MONERO_MAINNET = 'MAINNET';
@@ -92,10 +90,7 @@ class MyMoneroExplorer extends Explorer {
           response: { status },
         } = axiosResponseError;
 
-        if (
-          status === HTTP_STATUS_NOT_FOUND &&
-          MY_MONERO_PROXY_REACTIVATE_URL_TEST_PATTERN.test(url)
-        ) {
+        if (status === HTTP_STATUS_NOT_FOUND && MY_MONERO_PROXY_REACTIVATE_URL_TEST_PATTERN.test(url)) {
           // Do nothing, which means create a new my-monero account by our backend proxy server
           return;
         }
@@ -108,8 +103,7 @@ class MyMoneroExplorer extends Explorer {
       },
     );
 
-    const { default: WalletManager } =
-      await MymoneroWalletManagerLazyLoaded.get();
+    const { default: WalletManager } = await MymoneroWalletManagerLazyLoaded.get();
 
     const walletManager = new WalletManager(MONERO_MAINNET, this.baseUrl);
 
@@ -145,12 +139,9 @@ class MyMoneroExplorer extends Explorer {
   async reactivateMyMonero() {
     const walletManager = await this.#initAndGetMyMoneroWalletManager();
 
-    return walletManager.apiClient.httpClient.post(
-      MY_MONERO_PROXY_REACTIVATE_URL,
-      {
-        atomicId: this.#atomicId,
-      },
-    );
+    return walletManager.apiClient.httpClient.post(MY_MONERO_PROXY_REACTIVATE_URL, {
+      atomicId: this.#atomicId,
+    });
   }
 
   async #ensureInitialization(walletManager, resolve, counter = 1) {
@@ -158,10 +149,7 @@ class MyMoneroExplorer extends Explorer {
 
     if (!walletManager.bridgeClass?.isValidKeys && counter <= MAX_COUNT) {
       await walletManager.init();
-      setTimeout(
-        () => this.#ensureInitialization(walletManager, resolve, counter + 1),
-        10,
-      );
+      setTimeout(() => this.#ensureInitialization(walletManager, resolve, counter + 1), 10);
       return;
     }
     resolve();

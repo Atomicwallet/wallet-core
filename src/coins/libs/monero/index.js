@@ -4,15 +4,11 @@ import keccak256 from 'keccak256';
 
 import cnBase58 from './cnBase58';
 
-const L =
-  7237005577332262213973186563042994240857116359379907606001950938285454250989n;
+const L = 7237005577332262213973186563042994240857116359379907606001950938285454250989n;
 const MONERO_NETWORK = '12';
-const STANDARD_ADDRESS_REG_TEST =
-  /^[4][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{94}$/;
-const SUBADDRESS_REG_TEST =
-  /^[8][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{94}$/;
-const INTEGRATED_ADDRESS_REG_TEST =
-  /^[4][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{105}$/;
+const STANDARD_ADDRESS_REG_TEST = /^[4][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{94}$/;
+const SUBADDRESS_REG_TEST = /^[8][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{94}$/;
+const INTEGRATED_ADDRESS_REG_TEST = /^[4][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{105}$/;
 
 const ADDRESS_TYPE_STANDARD = 'standard';
 const ADDRESS_TYPE_SUBADDRESS = 'subaddress';
@@ -25,15 +21,11 @@ const ADDRESS_CONFIG = {
 
 function scReduce32(hex) {
   if (hex.length !== 32) {
-    throw new Error(
-      `LibMonero: invalid input length: expected input to be length 32, but got ${hex.length}`,
-    );
+    throw new Error(`LibMonero: invalid input length: expected input to be length 32, but got ${hex.length}`);
   }
 
   return Buffer.from(
-    (BigInt(`0x${Buffer.from(hex, 'hex').reverse().toString('hex')}`) % L)
-      .toString(16)
-      .padStart(64, '0'),
+    (BigInt(`0x${Buffer.from(hex, 'hex').reverse().toString('hex')}`) % L).toString(16).padStart(64, '0'),
     'hex',
   ).reverse();
 }
@@ -59,11 +51,7 @@ function getPrivateViewKey(privateSpendKey) {
 }
 
 function getPublicKeyHex(privateKeyHex, ed25519) {
-  return utils.toHex(
-    ed25519.encodePoint(
-      ed25519.curve.g.mul(new BN(privateKeyHex, 'hex', 'le')),
-    ),
-  );
+  return utils.toHex(ed25519.encodePoint(ed25519.curve.g.mul(new BN(privateKeyHex, 'hex', 'le'))));
 }
 
 function getAddress(netbyte, pubsk, pubvk) {
@@ -105,10 +93,7 @@ export function getAccount(seedHex) {
 }
 
 function validateNetwork(decoded, addressType) {
-  return (
-    parseInt(decoded.substr(0, 2), 16).toString() ===
-    ADDRESS_CONFIG[addressType]?.prod[0]
-  );
+  return parseInt(decoded.substr(0, 2), 16).toString() === ADDRESS_CONFIG[addressType]?.prod[0];
 }
 
 function keccak256Checksum(payload) {
@@ -142,9 +127,7 @@ export function validateAddress(address) {
   }
 
   const addrChecksum = decodedAddrStr.slice(-8);
-  const hashChecksum = keccak256Checksum(
-    Buffer.from(decodedAddrStr.slice(0, -8), 'hex'),
-  );
+  const hashChecksum = keccak256Checksum(Buffer.from(decodedAddrStr.slice(0, -8), 'hex'));
 
   return addrChecksum === hashChecksum;
 }

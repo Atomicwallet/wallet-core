@@ -1,19 +1,7 @@
 import { ExplorerRequestError } from 'src/errors';
-import {
-  Server,
-  Networks,
-  Operation,
-  Memo,
-  Keypair,
-  Asset,
-  TransactionBuilder,
-} from 'stellar-sdk';
+import { Server, Networks, Operation, Memo, Keypair, Asset, TransactionBuilder } from 'stellar-sdk';
 
-import {
-  GET_BALANCE_TYPE,
-  GET_TRANSACTIONS_TYPE,
-  SEND_TRANSACTION_TYPE,
-} from '../../utils/const';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 // import logger from '../Logger'
 
@@ -57,24 +45,14 @@ class XlmExplorer extends Explorer {
       if (operation) {
         if (operation.type === 'create_account') {
           return super.modifyTransactionResponse(
-            this.parseCreateAccountOperation(
-              currentLedgerVersion,
-              transaction,
-              operation,
-              selfAddress,
-            ),
+            this.parseCreateAccountOperation(currentLedgerVersion, transaction, operation, selfAddress),
             selfAddress,
           );
         }
 
         if (operation.type === 'payment') {
           return super.modifyTransactionResponse(
-            this.parsePaymentOperation(
-              currentLedgerVersion,
-              transaction,
-              operation,
-              selfAddress,
-            ),
+            this.parsePaymentOperation(currentLedgerVersion, transaction, operation, selfAddress),
             selfAddress,
           );
         }
@@ -268,12 +246,7 @@ class XlmExplorer extends Explorer {
     return this.wallet.toMinimalUnit(totalBalance);
   }
 
-  parseCreateAccountOperation(
-    currentLedgerVersion,
-    tx,
-    operation,
-    selfAddress,
-  ) {
+  parseCreateAccountOperation(currentLedgerVersion, tx, operation, selfAddress) {
     return {
       addressFrom: operation.source_account,
       addressTo: operation.account,
@@ -313,18 +286,8 @@ class XlmExplorer extends Explorer {
     try {
       const [ledgers, transactions, operations] = await Promise.all([
         this.server.ledgers().limit(1).order('desc').call(),
-        this.server
-          .transactions()
-          .forAccount(address)
-          .limit(limit)
-          .order('desc')
-          .call(),
-        this.server
-          .operations()
-          .forAccount(address)
-          .order('desc')
-          .limit(limit)
-          .call(),
+        this.server.transactions().forAccount(address).limit(limit).order('desc').call(),
+        this.server.operations().forAccount(address).order('desc').limit(limit).call(),
       ]);
 
       const currentLedgerVersion = ledgers.records[0].sequence;
@@ -333,31 +296,15 @@ class XlmExplorer extends Explorer {
 
       for (let idx = 0; idx < transactions.records.length; idx += 1) {
         const tx = transactions.records[idx];
-        const txOperations = operations.records.filter(
-          (op) => op.transaction_hash === tx.id,
-        );
+        const txOperations = operations.records.filter((op) => op.transaction_hash === tx.id);
 
         for (let oCounter = 0; oCounter < txOperations.length; oCounter += 1) {
           const operation = txOperations[oCounter];
 
           if (operation.type === 'create_account') {
-            list.push(
-              this.parseCreateAccountOperation(
-                currentLedgerVersion,
-                tx,
-                operation,
-                address,
-              ),
-            );
+            list.push(this.parseCreateAccountOperation(currentLedgerVersion, tx, operation, address));
           } else if (operation.type === 'payment') {
-            list.push(
-              this.parsePaymentOperation(
-                currentLedgerVersion,
-                tx,
-                operation,
-                address,
-              ),
-            );
+            list.push(this.parsePaymentOperation(currentLedgerVersion, tx, operation, address));
           }
         }
       }

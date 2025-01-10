@@ -42,16 +42,12 @@ export default class TerraFCDExplorer extends Explorer {
         const coinReceived = current.events?.find((e) => {
           return (
             e.type === 'coin_received' &&
-            e.attributes.find(
-              ({ key, value }) => key === 'receiver' && value === selfAddress,
-            )
+            e.attributes.find(({ key, value }) => key === 'receiver' && value === selfAddress)
           );
         });
 
         if (coinReceived) {
-          const amounts = coinReceived.attributes?.find(
-            ({ key }) => key === 'amount',
-          )?.value;
+          const amounts = coinReceived.attributes?.find(({ key }) => key === 'amount')?.value;
 
           if (amounts) {
             const res = /(\d*)uluna/.exec(amounts);
@@ -89,12 +85,8 @@ export default class TerraFCDExplorer extends Explorer {
   }
 
   getTxType(tx) {
-    const messages = Array.isArray(tx.tx?.body.messages)
-      ? tx.tx?.body.messages
-      : [];
-    const txType = messages.map(({ '@type': nativeType }) =>
-      nativeType.split('.').pop(),
-    )[0];
+    const messages = Array.isArray(tx.tx?.body.messages) ? tx.tx?.body.messages : [];
+    const txType = messages.map(({ '@type': nativeType }) => nativeType.split('.').pop())[0];
 
     if (COSMOS_MSG_TO_TYPE[txType] === undefined) {
       throw new Error(`[LUNA] txType ${txType} not found`);
@@ -138,11 +130,7 @@ export default class TerraFCDExplorer extends Explorer {
   getTxOtherSideAddress(selfAddress, tx) {
     const type = this.getTxType(tx);
 
-    const {
-      validator_address: validator,
-      from_address: from,
-      to_address: to,
-    } = tx.tx?.body.messages[0] || {};
+    const { validator_address: validator, from_address: from, to_address: to } = tx.tx?.body.messages[0] || {};
 
     switch (type) {
       case COSMOS_MSG_TO_TYPE.MsgDelegate:

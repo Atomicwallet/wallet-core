@@ -14,12 +14,7 @@ const Neo3Mixin = (superclass) =>
 
       const txBuilder = new this.coreLib.api.TransactionBuilder();
 
-      txBuilder.addNep17Transfer(
-        config.from,
-        config.to,
-        config.contractHash,
-        config.integerAmt,
-      );
+      txBuilder.addNep17Transfer(config.from, config.to, config.contractHash, config.integerAmt);
 
       const txn = txBuilder.build();
       const node = await this.getProvider('node').getClient();
@@ -50,17 +45,13 @@ const Neo3Mixin = (superclass) =>
     }
 
     async getInfo() {
-      const { balance, balances } = await this.getProvider('balance').getInfo(
-        this.address,
-      );
+      const { balance, balances } = await this.getProvider('balance').getInfo(this.address);
 
       this.balance = this.toMinimalUnit(balance || 0);
       this.balances = balances;
 
       if (this.tokens.GAS3) {
-        this.tokens.GAS3.balance = this.tokens.GAS3.toMinimalUnit(
-          balances?.GAS ?? '0',
-        );
+        this.tokens.GAS3.balance = this.tokens.GAS3.toMinimalUnit(balances?.GAS ?? '0');
       }
 
       return {
@@ -75,11 +66,7 @@ const Neo3Mixin = (superclass) =>
         this.createTransaction({ address: this.address, amount: sendAmount }),
       ]);
 
-      const result = this.coreLib.api.calculateNetworkFee(
-        tx,
-        feePerByte,
-        executionFeeFactor,
-      );
+      const result = this.coreLib.api.calculateNetworkFee(tx, feePerByte, executionFeeFactor);
 
       return toCurrency(result.toString(), 8);
     }

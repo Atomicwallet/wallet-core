@@ -15,12 +15,7 @@ import FTSORewardsABI from '../../tokens/ABI/ERC-20/FlareRewardsManagerContract'
 import WFLRAbi from '../../tokens/ABI/ERC-20/WFLR';
 import { Amount, LazyLoadedLib } from '../../utils';
 import { EXTERNAL_ERROR } from '../../utils/const';
-import {
-  HasProviders,
-  HasTokensMixin,
-  StakingMixin,
-  Web3Mixin,
-} from '../mixins';
+import { HasProviders, HasTokensMixin, StakingMixin, Web3Mixin } from '../mixins';
 
 const web3LazyLoaded = new LazyLoadedLib(() => import('web3'));
 const hdkeyLazyLoaded = new LazyLoadedLib(() => import('ethereumjs-wallet'));
@@ -45,9 +40,7 @@ const DEFAULT_RESERVE_FOR_STAKE = '50250000000000000';
 /**
  * @class FLRCoin
  */
-class FLRCoin extends StakingMixin(
-  Web3Mixin(HasProviders(HasTokensMixin(Coin))),
-) {
+class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))) {
   #privateKey;
 
   /**
@@ -88,9 +81,7 @@ class FLRCoin extends StakingMixin(
     this.gasPriceConfig = null;
     this.bannedTokens = [];
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3 = new Web3Explorer({
       wallet: this.instance,
@@ -103,12 +94,9 @@ class FLRCoin extends StakingMixin(
     this.fields.paymentId = false;
     this.nonce = new this.BN('0');
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   setFeeData(feeData = {}) {
@@ -120,8 +108,7 @@ class FLRCoin extends StakingMixin(
     this.defaultGasPrice = new this.BN(feeData.defaultGasPrice * GWEI);
     this.defaultMaxGasPrice = feeData.defaultMaxGasPrice;
     this.autoClaimGasLimit = feeData.autoClaimGasLimit || DEFAULT_AUTOCLAIM_GAS;
-    this.reservedForStake =
-      feeData.reservedForStake || DEFAULT_RESERVE_FOR_STAKE;
+    this.reservedForStake = feeData.reservedForStake || DEFAULT_RESERVE_FOR_STAKE;
     this.stakingContract = feeData.stakingContract || WNAT_CONRACT_ADDR;
     this.rewardsContract = feeData.rewardsContract || REWARD_MANAGER_ADDR;
     this.resendTimeout = feeData.resendTimeout;
@@ -173,17 +160,12 @@ class FLRCoin extends StakingMixin(
    * @return {Promise<unknown>} The private key.
    */
   async loadWallet(seed) {
-    const [{ default: Web3 }, { hdkey }] = await Promise.all([
-      web3LazyLoaded.get(),
-      hdkeyLazyLoaded.get(),
-    ]);
+    const [{ default: Web3 }, { hdkey }] = await Promise.all([web3LazyLoaded.get(), hdkeyLazyLoaded.get()]);
 
     this.coreLibrary = new Web3(this.baseUrl);
     const ethHDKey = hdkey.fromMasterSeed(seed);
     const wallet = ethHDKey.getWallet();
-    const account = await this.coreLibrary.eth.accounts.privateKeyToAccount(
-      wallet.getPrivateKeyString(),
-    );
+    const account = await this.coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
     if (!account) {
       throw new Error(`${TICKER} cant get a wallet!`);
@@ -207,9 +189,7 @@ class FLRCoin extends StakingMixin(
    */
   getAddress() {
     try {
-      this.#privateKey = this.coreLibrary.eth.accounts.privateKeyToAccount(
-        this.#privateKey,
-      ).address;
+      this.#privateKey = this.coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
     } catch (error) {
       // logger.error({ instance: this, error });
     }
@@ -270,24 +250,12 @@ class FLRCoin extends StakingMixin(
       transaction.data = paymentData;
     }
 
-    const signedTx = await this.coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await this.coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
 
-  async createTokenTransaction({
-    address,
-    amount,
-    custom,
-    userGasPrice,
-    gasLimit,
-    contract,
-    multiplier,
-    nonce,
-  }) {
+  async createTokenTransaction({ address, amount, custom, userGasPrice, gasLimit, contract, multiplier, nonce }) {
     const contractData = this.getProvider('send').createSendTokenContract(
       contract,
       this.address,
@@ -354,21 +322,10 @@ class FLRCoin extends StakingMixin(
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async estimateGasForSendNft(
-    address,
-    toAddress,
-    nonce,
-    data,
-    gasLimitCoefficient = 1,
-  ) {
+  async estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient = 1) {
     try {
       /** @type number */
-      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(
-        address,
-        toAddress,
-        nonce,
-        data,
-      );
+      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(address, toAddress, nonce, data);
 
       return Math.ceil(fetchedGasLimit * gasLimitCoefficient).toString();
     } catch (error) {
@@ -390,11 +347,7 @@ class FLRCoin extends StakingMixin(
    * @param {UserFeeOptions} userOptions - Custom user options.
    * @returns {Promise<{gasLimit: string, gasPrice: string, nonce: number}>}
    */
-  async getNftTransferGasParams(
-    toAddress,
-    data,
-    { userGasPrice, userGasLimit },
-  ) {
+  async getNftTransferGasParams(toAddress, data, { userGasPrice, userGasLimit }) {
     const {
       address,
       nftGasPriceCoefficient,
@@ -406,11 +359,9 @@ class FLRCoin extends StakingMixin(
     } = this;
 
     /** @type number */
-    const gasPriceCoefficient =
-      nftGasPriceCoefficient || configGasPriceCoefficient;
+    const gasPriceCoefficient = nftGasPriceCoefficient || configGasPriceCoefficient;
     /** @type number */
-    const gasLimitCoefficient =
-      nftGasLimitCoefficient || configGasLimitCoefficient;
+    const gasLimitCoefficient = nftGasLimitCoefficient || configGasLimitCoefficient;
 
     const defaultGasValues = [
       new BN(defaultGasPrice).mul(new BN(gasPriceCoefficient)).toString(),
@@ -421,19 +372,10 @@ class FLRCoin extends StakingMixin(
 
     const [gasPrice, gasLimit] = await Promise.allSettled([
       userGasPrice || this.getMaxFeePerGas(gasPriceCoefficient),
-      userGasLimit ||
-        this.estimateGasForSendNft(
-          address,
-          toAddress,
-          nonce,
-          data,
-          gasLimitCoefficient,
-        ),
+      userGasLimit || this.estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient),
     ]).then((resultList) =>
       resultList.map((result, i) => {
-        return result.status === 'fulfilled'
-          ? result.value
-          : defaultGasValues[i];
+        return result.status === 'fulfilled' ? result.value : defaultGasValues[i];
       }),
     );
 
@@ -452,13 +394,7 @@ class FLRCoin extends StakingMixin(
    * @return {Promise<BN>} - The fee.
    * @throws {ExternalError}
    */
-  async getNftFee({
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    toAddress,
-    userOptions = {},
-  }) {
+  async getNftFee({ contractAddress, tokenId, tokenStandard, toAddress, userOptions = {} }) {
     try {
       const data = await this.getProvider('nft-send').getNftContractData(
         this,
@@ -467,11 +403,7 @@ class FLRCoin extends StakingMixin(
         tokenId,
         tokenStandard,
       );
-      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(toAddress, data, userOptions);
 
       return new BN(gasPrice).mul(new BN(gasLimit));
     } catch (error) {
@@ -489,18 +421,9 @@ class FLRCoin extends StakingMixin(
    * @return {Promise<string>} - Raw transaction
    * @throws {ExternalError}
    */
-  async createNftTransaction({
-    toAddress,
-    contractAddress,
-    data,
-    userOptions = {},
-  }) {
+  async createNftTransaction({ toAddress, contractAddress, data, userOptions = {} }) {
     try {
-      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(toAddress, data, userOptions);
       const transaction = {
         to: contractAddress,
         value: HEX_ZERO,
@@ -511,11 +434,7 @@ class FLRCoin extends StakingMixin(
         maxFeePerGas: gasPrice,
       };
 
-      const { rawTransaction } =
-        await this.coreLibrary.eth.accounts.signTransaction(
-          transaction,
-          this.#privateKey,
-        );
+      const { rawTransaction } = await this.coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
       return rawTransaction;
     } catch (error) {
@@ -525,9 +444,7 @@ class FLRCoin extends StakingMixin(
   }
 
   async getNonce() {
-    this.nonce = new this.BN(
-      await this.coreLibrary.eth.getTransactionCount(this.address),
-    );
+    this.nonce = new this.BN(await this.coreLibrary.eth.getTransactionCount(this.address));
 
     return this.nonce;
   }
@@ -543,9 +460,7 @@ class FLRCoin extends StakingMixin(
   async getFee({ userGasPrice = null, gasLimit = null, multiplier = 1 } = {}) {
     const gasPrice = userGasPrice || (await this.getGasPrice());
 
-    return new BN(String(gasPrice)).mul(
-      new this.BN(gasLimit || this.gasLimit).mul(new this.BN(multiplier)),
-    );
+    return new BN(String(gasPrice)).mul(new this.BN(gasLimit || this.gasLimit).mul(new this.BN(multiplier)));
   }
 
   async getGasPrice(withoutCoeff = false) {
@@ -578,9 +493,7 @@ class FLRCoin extends StakingMixin(
       })
       .catch(() => {});
 
-    return estimateGas
-      ? Math.round(estimateGas * this.gasLimitCoefficient).toString()
-      : defaultGas;
+    return estimateGas ? Math.round(estimateGas * this.gasLimitCoefficient).toString() : defaultGas;
   }
 
   /**
@@ -594,9 +507,7 @@ class FLRCoin extends StakingMixin(
     }
 
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -609,17 +520,12 @@ class FLRCoin extends StakingMixin(
     this.getNonce();
 
     if (tokenInfo && tokenInfo.isToken) {
-      const tokenBalance = await this.getProvider(
-        'node',
-      ).getTokenBalanceByContractAddress({
+      const tokenBalance = await this.getProvider('node').getTokenBalanceByContractAddress({
         address: this.address,
         contractAddress: tokenInfo.contract.toLowerCase(),
       });
 
-      const contractVariant = [
-        tokenInfo.contract,
-        tokenInfo.contract.toLowerCase(),
-      ];
+      const contractVariant = [tokenInfo.contract, tokenInfo.contract.toLowerCase()];
 
       contractVariant.forEach((contract) => {
         if (this.tokens[contract]) {
@@ -742,9 +648,7 @@ class FLRCoin extends StakingMixin(
     try {
       const isUpdateNeeded = !this.gasPriceConfig || force;
 
-      this.gasPriceConfig = isUpdateNeeded
-        ? await this.web3.getGasPriceConfig()
-        : this.gasPriceConfig;
+      this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
       console.error(error);
     }
@@ -755,9 +659,7 @@ class FLRCoin extends StakingMixin(
     // ACT-992: This multiplier needed because 'fastest', 'fast', 'average' params in config contains gwei * 10
     const multiplier = 10;
     const config = await this.getEstimatedTimeCfg();
-    const speed = ['fastest', 'fast', 'average'].find(
-      (key) => config?.[key] <= gasPrice * multiplier,
-    );
+    const speed = ['fastest', 'fast', 'average'].find((key) => config?.[key] <= gasPrice * multiplier);
 
     if (mapping) {
       const TIMES_MAP = {
@@ -892,9 +794,7 @@ class FLRCoin extends StakingMixin(
     const { manager: rewardsManagerInterface, address: rewardsManagerAddress } =
       await this.#getRewardsManagerInterface();
 
-    const epochs = await rewardsManagerInterface.methods
-      .getEpochsWithUnclaimedRewards(address)
-      .call();
+    const epochs = await rewardsManagerInterface.methods.getEpochsWithUnclaimedRewards(address).call();
 
     const latestEpoch = Math.max(...epochs) || 0;
 
@@ -911,10 +811,7 @@ class FLRCoin extends StakingMixin(
   }
 
   calculateTotal({ balance, staked, rewards }) {
-    return new Amount(
-      balance.toBN().add(staked.toBN()).add(rewards.toBN()),
-      this,
-    );
+    return new Amount(balance.toBN().add(staked.toBN()).add(rewards.toBN()), this);
   }
 
   async calculateAvailableForStake({ balance }) {
@@ -926,12 +823,9 @@ class FLRCoin extends StakingMixin(
   }
 
   async createAutoClaimTransaction() {
-    const { manager: rewardsManagerInterface } =
-      await this.#getRewardsManagerInterface();
+    const { manager: rewardsManagerInterface } = await this.#getRewardsManagerInterface();
 
-    const claimContractAddress = await rewardsManagerInterface.methods
-      .claimSetupManager()
-      .call();
+    const claimContractAddress = await rewardsManagerInterface.methods.claimSetupManager().call();
     const executorsList = []; // await configManager.get(ConfigKey.FlareClaimExecutors);
 
     const executorsAddresses = executorsList.map(({ address }) => address);
@@ -943,14 +837,9 @@ class FLRCoin extends StakingMixin(
       }, new this.BN('0'))
       .toString();
 
-    const claimManagerInterface = new this.coreLibrary.eth.Contract(
-      FlareClaimContractABI,
-      claimContractAddress,
-    );
+    const claimManagerInterface = new this.coreLibrary.eth.Contract(FlareClaimContractABI, claimContractAddress);
 
-    const paymentData = claimManagerInterface.methods
-      .setClaimExecutors(executorsAddresses)
-      .encodeABI();
+    const paymentData = claimManagerInterface.methods.setClaimExecutors(executorsAddresses).encodeABI();
 
     return this.createTransaction({
       address: claimContractAddress,
@@ -961,46 +850,29 @@ class FLRCoin extends StakingMixin(
   }
 
   async getActiveAutoClaim() {
-    const { manager: rewardsManagerInterface } =
-      await this.#getRewardsManagerInterface();
+    const { manager: rewardsManagerInterface } = await this.#getRewardsManagerInterface();
 
-    const claimContractAddress = await rewardsManagerInterface.methods
-      .claimSetupManager()
-      .call();
+    const claimContractAddress = await rewardsManagerInterface.methods.claimSetupManager().call();
 
-    const claimManagerInterface = new this.coreLibrary.eth.Contract(
-      FlareClaimContractABI,
-      claimContractAddress,
-    );
+    const claimManagerInterface = new this.coreLibrary.eth.Contract(FlareClaimContractABI, claimContractAddress);
 
     return claimManagerInterface.methods.claimExecutors(this.address).call();
   }
 
   async #getRewardsManagerInterface() {
-    let rewardsManagerInterface = new this.coreLibrary.eth.Contract(
-      FTSORewardsABI,
-      this.rewardsContract,
-    );
+    let rewardsManagerInterface = new this.coreLibrary.eth.Contract(FTSORewardsABI, this.rewardsContract);
 
-    const newContractAddr = await rewardsManagerInterface.methods
-      .newFtsoRewardManager()
-      .call();
+    const newContractAddr = await rewardsManagerInterface.methods.newFtsoRewardManager().call();
 
-    const isNewContractAddressAppears =
-      newContractAddr && Number(newContractAddr) > 0;
+    const isNewContractAddressAppears = newContractAddr && Number(newContractAddr) > 0;
 
     if (isNewContractAddressAppears) {
-      rewardsManagerInterface = new this.coreLibrary.eth.Contract(
-        FTSORewardsABI,
-        newContractAddr,
-      );
+      rewardsManagerInterface = new this.coreLibrary.eth.Contract(FTSORewardsABI, newContractAddr);
     }
 
     return {
       manager: rewardsManagerInterface,
-      address: isNewContractAddressAppears
-        ? newContractAddr
-        : this.rewardsContract,
+      address: isNewContractAddressAppears ? newContractAddr : this.rewardsContract,
     };
   }
 
@@ -1011,12 +883,10 @@ class FLRCoin extends StakingMixin(
    * @return {Promise<{delegatePercentage: any, providers: any}>}
    */
   async fetchDelegations(address = this.address) {
-    const contractInterface = new this.coreLibrary.eth.Contract(
-      WFLRAbi,
-      WNAT_CONRACT_ADDR,
-    ).methods.delegatesOf(address);
-    const { _delegateAddresses: providers, _bips: delegatePercentage } =
-      await contractInterface.call();
+    const contractInterface = new this.coreLibrary.eth.Contract(WFLRAbi, WNAT_CONRACT_ADDR).methods.delegatesOf(
+      address,
+    );
+    const { _delegateAddresses: providers, _bips: delegatePercentage } = await contractInterface.call();
 
     return { providers, delegatePercentage };
   }
@@ -1031,36 +901,24 @@ class FLRCoin extends StakingMixin(
     /**
      * Create smart-contract interface
      */
-    let contractInterface = new this.coreLibrary.eth.Contract(
-      FTSORewardsABI,
-      this.rewardsContract,
-    );
+    let contractInterface = new this.coreLibrary.eth.Contract(FTSORewardsABI, this.rewardsContract);
 
-    const newContractAddr = await contractInterface.methods
-      .newFtsoRewardManager()
-      .call();
+    const newContractAddr = await contractInterface.methods.newFtsoRewardManager().call();
 
     if (newContractAddr && Number(newContractAddr) > 0) {
-      contractInterface = new this.coreLibrary.eth.Contract(
-        FTSORewardsABI,
-        newContractAddr,
-      );
+      contractInterface = new this.coreLibrary.eth.Contract(FTSORewardsABI, newContractAddr);
     }
 
     /**
      * Fetch all unclaimed epochs for given address
      */
-    const rewardsEpochs = await contractInterface.methods
-      .getEpochsWithUnclaimedRewards(address)
-      .call();
+    const rewardsEpochs = await contractInterface.methods.getEpochsWithUnclaimedRewards(address).call();
 
     /**
      * Fetch rewards amount for each unclaimed epoch
      */
     return Promise.all(
-      rewardsEpochs.map((epoch) =>
-        contractInterface.methods.getStateOfRewards(address, epoch).call(),
-      ),
+      rewardsEpochs.map((epoch) => contractInterface.methods.getStateOfRewards(address, epoch).call()),
     );
   }
 
@@ -1108,13 +966,9 @@ class FLRCoin extends StakingMixin(
   }
 
   async fetchStakingInfo() {
-    const staked = new Amount(
-      this.tokens[WNAT_CONRACT_ADDR.toLowerCase()]?.balance ?? '0',
-      this,
-    );
+    const staked = new Amount(this.tokens[WNAT_CONRACT_ADDR.toLowerCase()]?.balance ?? '0', this);
 
-    const { providers = [], delegatePercentage = [] } =
-      await this.fetchDelegations();
+    const { providers = [], delegatePercentage = [] } = await this.fetchDelegations();
     const unclaimedRewards = await this.fetchUnclaimedRewards();
 
     const validators = providers.reduce((acc, next, index) => {
@@ -1133,10 +987,7 @@ class FLRCoin extends StakingMixin(
     }, {});
 
     const autoClaimExecutors = await this.getActiveAutoClaim();
-    const delegatedVotes = new Amount(
-      this.calculateDelegatedVotes(validators),
-      this,
-    );
+    const delegatedVotes = new Amount(this.calculateDelegatedVotes(validators), this);
     const availableVotes = this.calculateAvailableVotes({
       staked,
       delegatedVotes,
@@ -1151,10 +1002,7 @@ class FLRCoin extends StakingMixin(
     return {
       staked,
       validators,
-      availableVotes: new Amount(
-        availableVotes.isNeg() ? '0' : availableVotes,
-        this,
-      ),
+      availableVotes: new Amount(availableVotes.isNeg() ? '0' : availableVotes, this),
       delegatedVotes,
       availableWithdrawals: staked,
       rewards,

@@ -19,10 +19,9 @@ export default class TerraMantleExplorer extends Explorer {
     const tokens = Object.values(await this.getTokenList(isClassic));
 
     const queries = tokens.map(({ token }) => {
-      const queryMsg = JSON.stringify(
-        `{"balance": { "address" : "${userAddress}" } }`,
-      );
+      const queryMsg = JSON.stringify(`{"balance": { "address" : "${userAddress}" } }`);
 
+      // eslint-disable-next-line max-len
       return `${token}: WasmContractsContractAddressStore(ContractAddress: "${token}", QueryMsg : ${queryMsg}) {\n Result\n }\n`;
     });
 

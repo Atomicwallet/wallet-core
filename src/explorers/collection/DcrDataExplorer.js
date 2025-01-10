@@ -48,34 +48,19 @@ class DcrDataExplorer extends Explorer {
     let totalValueOut = new this.wallet.BN(0);
 
     tx.vin.forEach((input) => {
-      if (
-        input.prevOut.addresses &&
-        input.prevOut.addresses.length > 0 &&
-        input.prevOut.addresses[0] === selfAddress
-      ) {
-        valueIn = valueIn.add(
-          new this.wallet.BN(this.wallet.toMinimalUnit(input.amountin)),
-        );
+      if (input.prevOut.addresses && input.prevOut.addresses.length > 0 && input.prevOut.addresses[0] === selfAddress) {
+        valueIn = valueIn.add(new this.wallet.BN(this.wallet.toMinimalUnit(input.amountin)));
       }
-      totalValueIn = totalValueIn.add(
-        new this.wallet.BN(this.wallet.toMinimalUnit(input.amountin)),
-      );
+      totalValueIn = totalValueIn.add(new this.wallet.BN(this.wallet.toMinimalUnit(input.amountin)));
     });
 
     tx.vout.forEach((output) => {
-      if (
-        output.scriptPubKey.addresses &&
-        output.scriptPubKey.addresses.length > 0
-      ) {
+      if (output.scriptPubKey.addresses && output.scriptPubKey.addresses.length > 0) {
         if (output.scriptPubKey.addresses[0] === selfAddress) {
-          valueOut = valueOut.add(
-            new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-          );
+          valueOut = valueOut.add(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)));
         }
       }
-      totalValueOut = totalValueOut.add(
-        new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-      );
+      totalValueOut = totalValueOut.add(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)));
     });
 
     const valueDiff = valueIn.sub(valueOut);
@@ -83,9 +68,7 @@ class DcrDataExplorer extends Explorer {
     const value = valueDiff.abs();
     const fee = totalValueIn.sub(totalValueOut);
 
-    return Number(
-      this.wallet.toCurrencyUnit(isInbound ? value : value.sub(fee)),
-    );
+    return Number(this.wallet.toCurrencyUnit(isInbound ? value : value.sub(fee)));
   }
 
   /**
@@ -98,10 +81,7 @@ class DcrDataExplorer extends Explorer {
     return (
       tx.vin &&
       !tx.vin.find(
-        ({ prevOut }) =>
-          prevOut.addresses &&
-          prevOut.addresses.length > 0 &&
-          prevOut.addresses[0] === selfAddress,
+        ({ prevOut }) => prevOut.addresses && prevOut.addresses.length > 0 && prevOut.addresses[0] === selfAddress,
       )
     );
   }
@@ -118,8 +98,7 @@ class DcrDataExplorer extends Explorer {
     }
 
     if (this.getTxDirection(selfAddress, tx)) {
-      return tx.vin[0].prevOut.addresses &&
-        tx.vin[0].prevOut.addresses.length > 0
+      return tx.vin[0].prevOut.addresses && tx.vin[0].prevOut.addresses.length > 0
         ? tx.vin[0].prevOut.addresses[0]
         : '...';
     }
@@ -130,14 +109,8 @@ class DcrDataExplorer extends Explorer {
     tx.vout.forEach((output) => {
       if (output.scriptPubKey.addresses.length > 0) {
         if (output.scriptPubKey.addresses[0] !== selfAddress) {
-          if (
-            valueOutPrev.lt(
-              new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-            )
-          ) {
-            valueOutPrev = new this.wallet.BN(
-              this.wallet.toMinimalUnit(output.value),
-            );
+          if (valueOutPrev.lt(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)))) {
+            valueOutPrev = new this.wallet.BN(this.wallet.toMinimalUnit(output.value));
             addressTo = output.scriptPubKey.addresses[0];
           }
         }

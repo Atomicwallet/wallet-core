@@ -23,9 +23,7 @@ class TONToken extends Token {
       return this._jettonWalletAddress;
     }
 
-    this._jettonWalletAddress = await this.#parent.getJettonWalletAddress(
-      this.mint,
-    );
+    this._jettonWalletAddress = await this.#parent.getJettonWalletAddress(this.mint);
 
     return this._jettonWalletAddress;
   }
@@ -75,10 +73,7 @@ class TONToken extends Token {
         const tokenTransactions = txs.filter((tx) => tx.walletId === this.id);
 
         // await history.filterAndUpdateTransactions(tokenTransactions)
-        const { topic, payload } = HISTORY_WALLET_UPDATED(
-          this.id,
-          tokenTransactions,
-        );
+        const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions);
 
         this.eventEmitter.emit(topic, payload);
         this.transactions = tokenTransactions;

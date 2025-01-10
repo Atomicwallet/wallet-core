@@ -45,19 +45,14 @@ function positiveNumToMinimal(numStr, precision) {
     if (dotPosition > -1) {
       const beforeDot = numStr.substring(0, dotPosition);
       // get fraction part and cut it to a needed precision if it is exceeded
-      const afterDot = numStr.substring(
-        dotPosition + 1,
-        dotPosition + 1 + remainingShifts,
-      );
+      const afterDot = numStr.substring(dotPosition + 1, dotPosition + 1 + remainingShifts);
 
       numStr = `${beforeDot}${afterDot}`.replace(LEADING_ZEROES_REGEX, '');
       remainingShifts -= afterDot.length;
     }
   }
 
-  return remainingShifts > 0
-    ? numStr.padEnd(remainingShifts + numStr.length, '0')
-    : numStr;
+  return remainingShifts > 0 ? numStr.padEnd(remainingShifts + numStr.length, '0') : numStr;
 }
 
 /**
@@ -68,9 +63,11 @@ function positiveNumToMinimal(numStr, precision) {
  * @return {String}
  */
 export function toMinimal(value, precision) {
-  // WARNING! Don't try to use BigNumber here, it doesn't work with some numbers like 123.000000000000123459991299.
+  // WARNING! Don't try to use BigNumber here, it doesn't work with some numbers
+  // like 123.000000000000123459991299.
   // JavaScript will round this number because of floating point precision limitations.
-  // return new BigNumber(value).times(10 ** decimal).toFixed(0, BigNumber.ROUND_DOWN) // mostly works, but not always
+  // return new BigNumber(value).times(10 ** decimal).toFixed(0, BigNumber.ROUND_DOWN)
+  // mostly works, but not always
   if (!Number.isInteger(precision) || precision < 0) {
     throw new TypeError('toMinimal error: precision is not a positive integer');
   }
@@ -117,9 +114,7 @@ export function toCurrency(value, decimal) {
   }
   const valueString = new BN(value).toString();
 
-  const integerPart =
-    valueString.substring(0, valueString.length - decimal).replace(/^0+/, '') ||
-    0;
+  const integerPart = valueString.substring(0, valueString.length - decimal).replace(/^0+/, '') || 0;
 
   const fractionPart = valueString
     .substring(valueString.length - decimal)
@@ -145,9 +140,7 @@ export function toCurrency(value, decimal) {
  * @returns {Date}
  */
 export function convertTimestampToDateTime(timestamp, timestampsInOneSecond) {
-  return new Date(
-    (timestamp * MILLISECONDS_IN_ONE_SECOND) / timestampsInOneSecond,
-  );
+  return new Date((timestamp * MILLISECONDS_IN_ONE_SECOND) / timestampsInOneSecond);
 }
 
 /**

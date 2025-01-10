@@ -2,9 +2,7 @@ import type { Coin, CoinConfigType } from '@/abstract';
 import { createEVMCoin } from '@/coins/collection/EVM';
 import type { EVMConfig, EVMUserConfig } from '@/coins/collection/EVM/types';
 
-export type CoinDataConfig = CoinConfigType &
-  Partial<EVMUserConfig> &
-  Partial<EVMConfig> & { walletType?: string };
+export type CoinDataConfig = CoinConfigType & Partial<EVMUserConfig> & Partial<EVMConfig> & { walletType?: string };
 
 /**
  * Creates new coin instance

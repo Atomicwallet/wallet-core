@@ -39,12 +39,7 @@ class DASHCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
         xprivkey256bit: 0x0eecf02e, // 'dpms' (dashpay mainnet secret)
         networkMagic: 0xbf0c6bbd,
         port: 9999,
-        dnsSeeds: [
-          'dnsseed.darkcoin.io',
-          'dnsseed.dashdot.io',
-          'dnsseed.masternode.io',
-          'dnsseed.dashpay.io',
-        ],
+        dnsSeeds: ['dnsseed.darkcoin.io', 'dnsseed.dashdot.io', 'dnsseed.masternode.io', 'dnsseed.dashpay.io'],
       });
     };
 

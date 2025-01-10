@@ -10,9 +10,7 @@ class TezosNodeExplorer extends Explorer {
   }
 
   getDelegate(address) {
-    return this.request(
-      `${this.config.baseUrl}/chains/main/blocks/head/context/contracts/${address}/delegate`,
-    );
+    return this.request(`${this.config.baseUrl}/chains/main/blocks/head/context/contracts/${address}/delegate`);
   }
 
   /**
@@ -59,9 +57,7 @@ class TezosNodeExplorer extends Explorer {
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx)
-      ? tx.contents[0].source
-      : tx.contents[0].destination;
+    return this.getTxDirection(selfAddress, tx) ? tx.contents[0].source : tx.contents[0].destination;
   }
 }
 

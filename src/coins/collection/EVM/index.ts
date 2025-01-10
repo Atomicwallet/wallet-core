@@ -1,16 +1,8 @@
 import EVMCoin from '../EVMCoin';
 import { generateId } from './generateId';
-import type {
-  EVMExplorerConfig,
-  EVMFeeConfig,
-  EVMSpecific,
-  EVMUserConfig,
-} from './types';
+import type { EVMExplorerConfig, EVMFeeConfig, EVMSpecific, EVMUserConfig } from './types';
 
-export const generateExplorerConfig = ({
-  chainId,
-  rpcBaseUrl,
-}: EVMSpecific): EVMExplorerConfig => {
+export const generateExplorerConfig = ({ chainId, rpcBaseUrl }: EVMSpecific): EVMExplorerConfig => {
   return {
     className: 'Web3Explorer',
     baseUrl: new URL(rpcBaseUrl).origin,

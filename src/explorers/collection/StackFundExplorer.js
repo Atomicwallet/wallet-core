@@ -21,10 +21,7 @@ class StackFundExplorer extends Explorer {
 
   getTransactionsParams(address, offset = 0) {
     return {
-      page:
-        offset > this.defaultTxLimit
-          ? parseInt(offset / this.defaultTxLimit, 10)
-          : 1,
+      page: offset > this.defaultTxLimit ? parseInt(offset / this.defaultTxLimit, 10) : 1,
     };
   }
 
@@ -32,9 +29,7 @@ class StackFundExplorer extends Explorer {
     return super.modifyTransactionsResponse(
       response.txs.filter(({ msg }) => {
         try {
-          const [{ type }] = JSON.parse(
-            Buffer.from(msg, 'base64').toString('ascii'),
-          );
+          const [{ type }] = JSON.parse(Buffer.from(msg, 'base64').toString('ascii'));
 
           return !!type;
         } catch (error) {
@@ -55,9 +50,7 @@ class StackFundExplorer extends Explorer {
 
   getTxDirection(selfAddress, tx) {
     try {
-      const [txParams] = JSON.parse(
-        Buffer.from(tx.msg, 'base64').toString('ascii'),
-      );
+      const [txParams] = JSON.parse(Buffer.from(tx.msg, 'base64').toString('ascii'));
 
       if (txParams.type !== 'cosmos-sdk/MsgSend') {
         return false;
@@ -71,17 +64,13 @@ class StackFundExplorer extends Explorer {
 
   getTxOtherSideAddress(selfAddress, tx) {
     try {
-      const [txParams] = JSON.parse(
-        Buffer.from(tx.msg, 'base64').toString('ascii'),
-      );
+      const [txParams] = JSON.parse(Buffer.from(tx.msg, 'base64').toString('ascii'));
 
       if (txParams.type !== 'cosmos-sdk/MsgSend') {
         return txParams.value.validator_address;
       }
 
-      return this.getTxDirection(selfAddress, tx)
-        ? txParams.value.from_address
-        : txParams.value.to_address;
+      return this.getTxDirection(selfAddress, tx) ? txParams.value.from_address : txParams.value.to_address;
     } catch (error) {
       // logger.error({ instance: this, error })
 
@@ -91,12 +80,8 @@ class StackFundExplorer extends Explorer {
 
   getTxValue(selfAddress, tx) {
     try {
-      const [txParams] = JSON.parse(
-        Buffer.from(tx.msg, 'base64').toString('ascii'),
-      );
-      const [fee] = JSON.parse(
-        Buffer.from(tx.fees, 'base64').toString('ascii'),
-      );
+      const [txParams] = JSON.parse(Buffer.from(tx.msg, 'base64').toString('ascii'));
+      const [fee] = JSON.parse(Buffer.from(tx.fees, 'base64').toString('ascii'));
 
       let amount = '0'; // withdraw tx has no amount in txParams
 
@@ -104,9 +89,7 @@ class StackFundExplorer extends Explorer {
         // msgSend has `amount` as Array of amounts
         // msgDelegate has `amount` as Object
 
-        amount = Array.isArray(txParams.value.amount)
-          ? txParams.value.amount[0].amount
-          : txParams.value.amount.amount;
+        amount = Array.isArray(txParams.value.amount) ? txParams.value.amount[0].amount : txParams.value.amount.amount;
       }
 
       return Number(

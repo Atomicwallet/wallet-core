@@ -103,8 +103,7 @@ class CardanoliteExplorer extends Explorer {
   getTxOtherSideAddress(selfAddress, tx) {
     return this.getTxDirection(selfAddress, tx)
       ? tx.inputs_address.find((address) => selfAddress !== address)
-      : tx.outputs_address.find((address) => selfAddress !== address) ||
-          selfAddress;
+      : tx.outputs_address.find((address) => selfAddress !== address) || selfAddress;
   }
 
   getTxDate(tx) {
@@ -127,9 +126,7 @@ class CardanoliteExplorer extends Explorer {
       }
     });
 
-    const sentToMyself = tx.inputs_address
-      .concat(tx.outputs_address)
-      .every((address) => address === selfAddress);
+    const sentToMyself = tx.inputs_address.concat(tx.outputs_address).every((address) => address === selfAddress);
 
     let value;
 
@@ -147,10 +144,7 @@ class CardanoliteExplorer extends Explorer {
       value = inputsAmount.sub(outputsAmount).toString();
     } else {
       value = indexes
-        .reduce(
-          (acc, cur) => acc.add(new this.wallet.BN(tx.outputs_amount[cur])),
-          new this.wallet.BN(0),
-        )
+        .reduce((acc, cur) => acc.add(new this.wallet.BN(tx.outputs_amount[cur])), new this.wallet.BN(0))
         .toString();
     }
 

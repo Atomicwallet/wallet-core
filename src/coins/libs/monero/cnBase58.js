@@ -38,8 +38,7 @@ Parts of the project are originally copyright (c) 2014-2017, MyMonero.com
 const cnBase58 = (function () {
   const b58 = {};
 
-  const alphabet_str =
-    '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  const alphabet_str = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
   const alphabet = [];
 
   for (let i = 0; i < alphabet_str.length; i++) {
@@ -168,9 +167,7 @@ const cnBase58 = (function () {
     }
     const full_block_count = Math.floor(data.length / full_block_size);
     const last_block_size = data.length % full_block_size;
-    const res_size =
-      full_block_count * full_encoded_block_size +
-      encoded_block_sizes[last_block_size];
+    const res_size = full_block_count * full_encoded_block_size + encoded_block_sizes[last_block_size];
 
     let res = new Uint8Array(res_size);
     let i;
@@ -180,20 +177,14 @@ const cnBase58 = (function () {
     }
     for (i = 0; i < full_block_count; i++) {
       res = b58.encode_block(
-        data.subarray(
-          i * full_block_size,
-          i * full_block_size + full_block_size,
-        ),
+        data.subarray(i * full_block_size, i * full_block_size + full_block_size),
         res,
         i * full_encoded_block_size,
       );
     }
     if (last_block_size > 0) {
       res = b58.encode_block(
-        data.subarray(
-          full_block_count * full_block_size,
-          full_block_count * full_block_size + last_block_size,
-        ),
+        data.subarray(full_block_count * full_block_size, full_block_count * full_block_size + last_block_size),
         res,
         full_block_count * full_encoded_block_size,
       );
@@ -229,10 +220,7 @@ const cnBase58 = (function () {
       res_num = product;
       order = order.multiply(alphabet_size);
     }
-    if (
-      res_size < full_block_size &&
-      new JSBigInt(2).pow(8 * res_size).compare(res_num) <= 0
-    ) {
+    if (res_size < full_block_size && new JSBigInt(2).pow(8 * res_size).compare(res_num) <= 0) {
       throw 'Overflow 2';
     }
     buf.set(uint64_to_8be(res_num, res_size), index);
@@ -246,22 +234,17 @@ const cnBase58 = (function () {
     }
     const full_block_count = Math.floor(enc.length / full_encoded_block_size);
     const last_block_size = enc.length % full_encoded_block_size;
-    const last_block_decoded_size =
-      encoded_block_sizes.indexOf(last_block_size);
+    const last_block_decoded_size = encoded_block_sizes.indexOf(last_block_size);
 
     if (last_block_decoded_size < 0) {
       throw 'Invalid encoded length';
     }
-    const data_size =
-      full_block_count * full_block_size + last_block_decoded_size;
+    const data_size = full_block_count * full_block_size + last_block_decoded_size;
     let data = new Uint8Array(data_size);
 
     for (let i = 0; i < full_block_count; i++) {
       data = b58.decode_block(
-        enc.subarray(
-          i * full_encoded_block_size,
-          i * full_encoded_block_size + full_encoded_block_size,
-        ),
+        enc.subarray(i * full_encoded_block_size, i * full_encoded_block_size + full_encoded_block_size),
         data,
         i * full_block_size,
       );

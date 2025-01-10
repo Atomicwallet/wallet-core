@@ -42,11 +42,7 @@ class BlockcypherExplorer extends Explorer {
   }
 
   getTxDirection(selfAddress, tx) {
-    return (
-      tx.inputs &&
-      !tx.inputs.find(({ addresses }) => addresses[0] === selfAddress) &&
-      true
-    );
+    return tx.inputs && !tx.inputs.find(({ addresses }) => addresses[0] === selfAddress) && true;
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
@@ -97,11 +93,7 @@ class BlockcypherExplorer extends Explorer {
     const isInbound = valueDiff.lt(new this.wallet.BN(0));
     const value = valueDiff.abs();
 
-    return Number(
-      this.wallet.toCurrencyUnit(
-        isInbound ? value : value.sub(new this.wallet.BN(tx.fees)),
-      ),
-    );
+    return Number(this.wallet.toCurrencyUnit(isInbound ? value : value.sub(new this.wallet.BN(tx.fees))));
   }
 
   getTxDateTime(tx) {

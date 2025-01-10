@@ -51,11 +51,7 @@ class VergeInsightExplorer extends Explorer {
         walletid: this.wallet.id,
         txid: this.getTxHash(tx),
         direction,
-        otherSideAddress: this.getTxOtherSideAddress(
-          selfAddress,
-          tx,
-          direction,
-        ),
+        otherSideAddress: this.getTxOtherSideAddress(selfAddress, tx, direction),
         amount: this.getTxValue(selfAddress, tx, direction),
         datetime: this.getTxDateTime(tx),
         alias: this.wallet.alias,
@@ -143,9 +139,7 @@ class VergeInsightExplorer extends Explorer {
       return tx.inputs[0].address;
     }
 
-    const foreignOutput = tx.outputs.find(
-      (output) => output.address !== selfAddress,
-    );
+    const foreignOutput = tx.outputs.find((output) => output.address !== selfAddress);
 
     return foreignOutput?.address || selfAddress;
   }
@@ -157,10 +151,7 @@ class VergeInsightExplorer extends Explorer {
    * @return {BN} The balance.
    */
   calculateBalance(utxos = []) {
-    return utxos.reduce(
-      (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0'),
-    );
+    return utxos.reduce((acc, { value }) => new this.wallet.BN(value).add(acc), new this.wallet.BN('0'));
   }
 
   /**
@@ -208,21 +199,11 @@ class VergeInsightExplorer extends Explorer {
     return this.request(`${this.getApiPrefix()}tx/${txid}`);
   }
 
-  async getTransactions({
-    address,
-    offset = 0,
-    limit = this.defaultTxLimit,
-    pageNum,
-  }) {
+  async getTransactions({ address, offset = 0, limit = this.defaultTxLimit, pageNum }) {
     const response = await this.request(
       this.getTransactionsUrl(address),
       this.getTransactionsMethod(),
-      this.getTransactionsParams(
-        address,
-        offset || 0,
-        limit || this.defaultTxLimit,
-        pageNum,
-      ),
+      this.getTransactionsParams(address, offset || 0, limit || this.defaultTxLimit, pageNum),
       GET_TRANSACTIONS_TYPE,
       this.getTransactionsOptions(),
     );
@@ -230,16 +211,10 @@ class VergeInsightExplorer extends Explorer {
     const txIds = [];
 
     response.forEach((utxo) => {
-      if (
-        utxo.mintTxid &&
-        txIds.findIndex((tx) => tx === utxo.mintTxid) === -1
-      ) {
+      if (utxo.mintTxid && txIds.findIndex((tx) => tx === utxo.mintTxid) === -1) {
         txIds.push(utxo.mintTxid);
       }
-      if (
-        utxo.spentTxid &&
-        txIds.findIndex((tx) => tx === utxo.spentTxid) === -1
-      ) {
+      if (utxo.spentTxid && txIds.findIndex((tx) => tx === utxo.spentTxid) === -1) {
         txIds.push(utxo.spentTxid);
       }
     });
@@ -249,10 +224,7 @@ class VergeInsightExplorer extends Explorer {
         const tx = await this.getTransaction(txid);
         const coins = await this.getTransactionCoins(txid);
 
-        return this.modifyTransactionResponse(
-          { txid, ...tx, ...coins },
-          address,
-        );
+        return this.modifyTransactionResponse({ txid, ...tx, ...coins }, address);
       }),
     );
   }

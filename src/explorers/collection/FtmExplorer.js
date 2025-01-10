@@ -1,8 +1,4 @@
-import {
-  convertTimestampToDateTime,
-  getStringWithEnsuredEndChar,
-  toCurrency,
-} from '../../utils/convert';
+import { convertTimestampToDateTime, getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 
@@ -50,12 +46,7 @@ class FtmExplorer extends Explorer {
    * @param {number} [pageNum=1] - Page number.
    * @return {GetTransactionParamsResponse} - Here offset used as a limit.
    */
-  getTransactionsParams(
-    address,
-    offset = 0,
-    limit = this.defaultTxLimit,
-    pageNum = 1,
-  ) {
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit, pageNum = 1) {
     return {
       module: TX_MODULE_PARAM,
       action: TX_ACTION_PARAM,
@@ -101,11 +92,7 @@ class FtmExplorer extends Explorer {
    * @param {string} [asset='FTM'] - Basically it's a coin ticker.
    * @returns {Transaction[]}
    */
-  modifyTransactionsResponse(
-    response,
-    selfAddress,
-    asset = this.wallet.ticker,
-  ) {
+  modifyTransactionsResponse(response, selfAddress, asset = this.wallet.ticker) {
     const txs = Array.isArray(response?.result) ? response.result : [];
 
     return txs.reduce((transactionList, tx, index) => {
@@ -158,10 +145,7 @@ class FtmExplorer extends Explorer {
    * @return {Date}
    */
   getTxDateTime(tx) {
-    return convertTimestampToDateTime(
-      Number(tx.timeStamp),
-      TX_TIMESTAMPS_IN_ONE_SECOND,
-    );
+    return convertTimestampToDateTime(Number(tx.timeStamp), TX_TIMESTAMPS_IN_ONE_SECOND);
   }
 
   /**

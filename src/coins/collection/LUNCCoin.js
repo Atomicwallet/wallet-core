@@ -22,8 +22,7 @@ const DECIMAL = 6;
 const UNSPENDABLE_BALANCE = '0';
 const DENOM = 'uluna';
 const MOCK_TERRA_ADDRESS = 'terra1y6z0mzhlgkxr6q0xrykqalce3vhnvujurv96e6';
-const MOCK_TERRA_VALIDATOR =
-  'terravaloper1qqu376azltyc5wnsje5qgwru5mtj2yqdhar97v';
+const MOCK_TERRA_VALIDATOR = 'terravaloper1qqu376azltyc5wnsje5qgwru5mtj2yqdhar97v';
 const FALLBACK_GASLIMIT = {
   [LUNC_SEND_TYPES.SEND]: 120000,
   [LUNC_SEND_TYPES.STAKE]: 800000,
@@ -42,16 +41,7 @@ const TERRA_SDK = 'terraSdk';
 class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   #privateKey;
 
-  constructor({
-    alias,
-    notify,
-    feeData,
-    explorers,
-    txWebUrl,
-    socket,
-    isTestnet,
-    id,
-  }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
     const config = {
       id,
       alias,
@@ -74,11 +64,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      TerraClassicLCDExplorer,
-      TerraClassicFCDExplorer,
-      TerraMantleExplorer,
-    ]);
+    this.setExplorersModules([TerraClassicLCDExplorer, TerraClassicFCDExplorer, TerraMantleExplorer]);
 
     this.loadExplorers(config);
 
@@ -92,12 +78,9 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     this.tokens = {};
     this.nonce = 0;
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   /**
@@ -170,8 +153,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
     return !this.getExcludedTokenList().some(
       ({ denom, contract }) =>
-        (parsedDenom && parsedDenom === denom) ||
-        (parsedContract && parsedContract === contract),
+        (parsedDenom && parsedDenom === denom) || (parsedContract && parsedContract === contract),
     );
   }
 
@@ -196,9 +178,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {string} { description_of_the_return_value }
    */
   getAddress() {
-    return this.#privateKey
-      ? this.address
-      : new Error(`${this.ticker} private key is empty`);
+    return this.#privateKey ? this.address : new Error(`${this.ticker} private key is empty`);
   }
 
   /**
@@ -241,10 +221,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @async
    * @returns {Promise<*>[]|Promise<*>}
    */
-  createMsgsBySendType(
-    sendType,
-    { validator, amount, toAddress, validators, denom },
-  ) {
+  createMsgsBySendType(sendType, { validator, amount, toAddress, validators, denom }) {
     switch (sendType) {
       case LUNC_SEND_TYPES.STAKE:
         return [this.createMsgDelegate({ validator, amount })];
@@ -286,12 +263,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     const { Coin: TerraAmount, MsgBeginRedelegate } = await this.loadLib();
     const terraAmount = new TerraAmount(this.denom, String(amount));
 
-    return new MsgBeginRedelegate(
-      this.address,
-      fromValidator,
-      validator,
-      terraAmount,
-    );
+    return new MsgBeginRedelegate(this.address, fromValidator, validator, terraAmount);
   }
 
   async createMsgUndelegate({ validator, amount }) {
@@ -318,13 +290,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    *
    * @return {Promise<BN>} The fee.
    */
-  async getFee({
-    custom,
-    sendType,
-    sendAmount,
-    denom = this.denom,
-    address = MOCK_TERRA_ADDRESS,
-  } = {}) {
+  async getFee({ custom, sendType, sendAmount, denom = this.denom, address = MOCK_TERRA_ADDRESS } = {}) {
     sendType = sendType?.toLowerCase() || LUNC_SEND_TYPES.SEND;
 
     try {
@@ -347,34 +313,19 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     } catch (error) {
       // logger.error({ instance: this, error });
 
-      const gasLimit =
-        Number(this.gasLimit?.[sendType]) ||
-        FALLBACK_GASLIMIT[sendType] ||
-        FALLBACK_GASLIMIT.max;
-      const gasPrice =
-        Number(this.gasPrices?.uluna) || Number(FALLBACK_GASPRICE.uluna);
+      const gasLimit = Number(this.gasLimit?.[sendType]) || FALLBACK_GASLIMIT[sendType] || FALLBACK_GASLIMIT.max;
+      const gasPrice = Number(this.gasPrices?.uluna) || Number(FALLBACK_GASPRICE.uluna);
 
       return (gasLimit * gasPrice).toFixed(0);
     }
   }
 
-  async estimateFeeAndTax({
-    sendType,
-    gasLimit,
-    amount,
-    gasPrices,
-    msgs,
-    address,
-    denom,
-    memo,
-  }) {
+  async estimateFeeAndTax({ sendType, gasLimit, amount, gasPrices, msgs, address, denom, memo }) {
     if (!msgs) {
       let validators;
 
       if (sendType === LUNC_SEND_TYPES.CLAIM) {
-        [validators] = await this.getProvider('balance').getValidators(
-          this.address,
-        );
+        [validators] = await this.getProvider('balance').getValidators(this.address);
         validators = validators.map(({ operator_address: addr }) => addr);
       }
 
@@ -400,11 +351,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
         memo,
       }),
       sendType === LUNC_SEND_TYPES.SEND
-        ? (
-            await this.getProvider('estimate_fee').calculateTax(
-              new TerraAmount(denom, amount),
-            )
-          ).toAmino()
+        ? (await this.getProvider('estimate_fee').calculateTax(new TerraAmount(denom, amount))).toAmino()
         : { denom, amount: '0' },
     ]);
 
@@ -412,9 +359,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   async getSigners() {
-    const accountInfo = await this.getProvider('node').getAccountInfo(
-      this.address,
-    );
+    const accountInfo = await this.getProvider('node').getAccountInfo(this.address);
 
     return [
       {
@@ -448,13 +393,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @param {number} multiplier coefficient
    * @return {Promise<string>} Raw transaction
    */
-  async createTransaction({
-    memo,
-    amount,
-    address,
-    denom = this.denom,
-    sendType,
-  }) {
+  async createTransaction({ memo, amount, address, denom = this.denom, sendType }) {
     sendType = sendType?.toLowerCase() || LUNC_SEND_TYPES.SEND;
 
     const [sendMsg, gasPrices, { Fee }] = await Promise.all([
@@ -515,13 +454,9 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
         .map((token) => token.ticker)
         .concat(this.ticker);
 
-      return tokens
-        .concat(denoms)
-        .filter((denom) => !existedTickers.includes(denom.symbol));
+      return tokens.concat(denoms).filter((denom) => !existedTickers.includes(denom.symbol));
     } catch (error) {
-      error.message = `[${this.ticker}] getUserTokenList error: ${
-        error.message || 'Unknown error'
-      }.`;
+      error.message = `[${this.ticker}] getUserTokenList error: ${error.message || 'Unknown error'}.`;
       // logger.error({
       //   instance: this,
       //   error,
@@ -614,9 +549,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
     if (!tokenInfo || (!tokenInfo.onlyCoin && tokenInfo.isToken !== false)) {
       const denom = tokenInfo
-        ? Object.values(this.tokens).find(
-            (token) => token.ticker === tokenInfo.ticker,
-          )?.denom
+        ? Object.values(this.tokens).find((token) => token.ticker === tokenInfo.ticker)?.denom
         : null;
 
       const tokensInfo = tokenInfo
@@ -634,31 +567,23 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
             let tokenBalance;
 
             if (info.contract) {
-              tokenBalance = await this.getProvider(
-                'node',
-              ).getTokenBalanceByContractAddress({
+              tokenBalance = await this.getProvider('node').getTokenBalanceByContractAddress({
                 address: this.address,
                 contractAddress: info.contract.toLowerCase(),
               });
             } else if (info.denom) {
-              tokenBalance = await this.getProvider('balance').getBalance(
-                this.address,
-                false,
-                info.denom,
-              );
+              tokenBalance = await this.getProvider('balance').getBalance(this.address, false, info.denom);
             }
 
             if (!tokenBalance) {
               throw new Error(
-                `${this.ticker} can't get balance of token with ${info.contract ? 'contract address' : 'denom'} ${info.contract || info.denom}`,
+                `${this.ticker} can't get balance of token with ${info.contract ? 'contract address' : 'denom'} 
+                ${info.contract || info.denom}`,
               );
             }
 
             [info.contract, info.contract?.toLowerCase(), info.ticker]
-              .filter(
-                (contractOrTicker) =>
-                  contractOrTicker && this.tokens[contractOrTicker],
-              )
+              .filter((contractOrTicker) => contractOrTicker && this.tokens[contractOrTicker])
               .forEach((contractOrTicker) => {
                 this.tokens[contractOrTicker].balance = tokenBalance.toString();
               });
@@ -670,11 +595,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     }
 
     try {
-      const balance = await this.getProvider('balance').getBalance(
-        this.address,
-        false,
-        this.denom,
-      );
+      const balance = await this.getProvider('balance').getBalance(this.address, false, this.denom);
 
       if (typeof balance !== 'string') {
         throw new TypeError(`[${this.ticker}] can't get balance`);
@@ -735,9 +656,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   async createAndSignTx(payload) {
-    return this.getProvider('node')
-      .getLcdWallet(this.rawKey)
-      .createAndSignTx(payload);
+    return this.getProvider('node').getLcdWallet(this.rawKey).createAndSignTx(payload);
   }
 
   async createDelegationTransaction(validator, amount, memo = '') {
@@ -752,12 +671,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     });
   }
 
-  async createRedelegationTransaction(
-    fromValidator,
-    validator,
-    amount,
-    memo = '',
-  ) {
+  async createRedelegationTransaction(fromValidator, validator, amount, memo = '') {
     const msg = await this.createMsgRedelegate({
       fromValidator,
       validator,
@@ -786,9 +700,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   async createWithdrawDelegationTransaction(memo = '') {
-    const [validators] = await this.getProvider('balance').getValidators(
-      this.address,
-    );
+    const [validators] = await this.getProvider('balance').getValidators(this.address);
 
     const msgs = await this.createMsgsWithdraw({
       validators: validators.map(({ operator_address: address }) => address),
@@ -818,14 +730,9 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
     const stakedValidators = {};
     const [staked, rewards, unstaking] = await Promise.all([
-      this.calculateStakedBalance(
-        await explorer.getStakedDelegations(this.address),
-        stakedValidators,
-      ),
+      this.calculateStakedBalance(await explorer.getStakedDelegations(this.address), stakedValidators),
       this.calculateRewards(await explorer.getRewardsBalance(this.address)),
-      this.calculateUnstakingBalance(
-        await explorer.getUnbondingDelegations(this.address),
-      ),
+      this.calculateUnstakingBalance(await explorer.getUnbondingDelegations(this.address)),
     ]);
 
     return {
@@ -838,49 +745,29 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
   async calculateAvailableForStake({ balance }) {
     const fee = (
-      (Number(this.gasLimit?.[LUNC_SEND_TYPES.STAKE]) ||
-        FALLBACK_GASLIMIT[LUNC_SEND_TYPES.STAKE]) *
+      (Number(this.gasLimit?.[LUNC_SEND_TYPES.STAKE]) || FALLBACK_GASLIMIT[LUNC_SEND_TYPES.STAKE]) *
       (Number(this.gasPrices?.uluna) || Number(FALLBACK_GASPRICE.uluna))
     ).toFixed(0);
-    const available = balance
-      .toBN()
-      .sub(new this.BN(fee))
-      .sub(new this.BN(this.reserveForStake));
+    const available = balance.toBN().sub(new this.BN(fee)).sub(new this.BN(this.reserveForStake));
 
     return new Amount(available.isNeg() ? '0' : available, this);
   }
 
   calculateTotal({ balance, staked, unstaking, rewards }) {
-    return new Amount(
-      balance
-        .toBN()
-        .add(staked.toBN())
-        .add(unstaking.toBN())
-        .add(rewards.toBN())
-        .toString(),
-      this,
-    );
+    return new Amount(balance.toBN().add(staked.toBN()).add(unstaking.toBN()).add(rewards.toBN()).toString(), this);
   }
 
   calculateAvailableBalance(available) {
-    return new Amount(
-      available.find((balance) => balance.denom === this.denom)?.amount ?? '0',
-      this,
-    );
+    return new Amount(available.find((balance) => balance.denom === this.denom)?.amount ?? '0', this);
   }
 
   calculateRewards(rewards) {
-    return new Amount(
-      rewards.total?._coins?.uluna?.amount?.toString().split('.')[0] || '0',
-      this,
-    );
+    return new Amount(rewards.total?._coins?.uluna?.amount?.toString().split('.')[0] || '0', this);
   }
 
   calculateStakedBalance(delegations, stakedValidators) {
     return new Amount(
-      delegations?.length > 0
-        ? this.getTotalDelegations(delegations, stakedValidators).toString()
-        : '0',
+      delegations?.length > 0 ? this.getTotalDelegations(delegations, stakedValidators).toString() : '0',
       this,
     );
   }
@@ -889,21 +776,15 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     const unbonding = { validators: {} };
 
     if (delegations?.length > 0) {
-      const totalUnbonding = delegations.reduce(
-        (total, { entries, validator_address: validatorAddress }) => {
-          const moniker = validatorAddress;
+      const totalUnbonding = delegations.reduce((total, { entries, validator_address: validatorAddress }) => {
+        const moniker = validatorAddress;
 
-          unbonding.validators[moniker] = entries
-            .map((entry) => new this.BN(entry.balance.toString()))
-            .reduce(
-              (prev, cur) => prev.add(new this.BN(cur)),
-              new this.BN('0'),
-            );
+        unbonding.validators[moniker] = entries
+          .map((entry) => new this.BN(entry.balance.toString()))
+          .reduce((prev, cur) => prev.add(new this.BN(cur)), new this.BN('0'));
 
-          return total.add(unbonding.validators[moniker]);
-        },
-        new this.BN('0'),
-      );
+        return total.add(unbonding.validators[moniker]);
+      }, new this.BN('0'));
 
       unbonding.total = totalUnbonding;
     }
@@ -912,17 +793,14 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   getTotalDelegations(delegations, stakedValidators) {
-    return delegations.reduce(
-      (total, { validator_address: address, balance }) => {
-        stakedValidators[address] = {
-          address,
-          staked: new Amount(new this.BN(balance.amount.toString()), this),
-        };
+    return delegations.reduce((total, { validator_address: address, balance }) => {
+      stakedValidators[address] = {
+        address,
+        staked: new Amount(new this.BN(balance.amount.toString()), this),
+      };
 
-        return total.add(new this.BN(balance.amount.toString()));
-      },
-      new this.BN('0'),
-    );
+      return total.add(new this.BN(balance.amount.toString()));
+    }, new this.BN('0'));
   }
 
   /**

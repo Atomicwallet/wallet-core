@@ -1,5 +1,6 @@
 // import configManager from '../ConfigManager'
-import { ETHPLORER_API_KEY } from '../../env';
+import { ETHPLORER_API_KEY } from 'src/env';
+
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
 import { GET_BALANCE_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
@@ -42,9 +43,7 @@ class EthplorerExplorer extends Explorer {
 
       return this.modifyInfoResponse(response, address);
     } catch (error) {
-      const balance = address
-        ? await this.wallet.coreLibrary.eth.getBalance(address)
-        : 0;
+      const balance = address ? await this.wallet.coreLibrary.eth.getBalance(address) : 0;
 
       return { balance };
     }
@@ -71,10 +70,7 @@ class EthplorerExplorer extends Explorer {
         tx.contract = tx.contract.toLowerCase();
         const transaction = tx.isEth
           ? this.modifyTransactionResponse(tx)
-          : this.modifyTokenTransactionResponse(
-              tx,
-              this.wallet.tokens[tx.contract],
-            );
+          : this.modifyTokenTransactionResponse(tx, this.wallet.tokens[tx.contract]);
 
         if (tx.isEth) {
           walletTransactions.push(transaction);
@@ -166,9 +162,7 @@ class EthplorerExplorer extends Explorer {
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    return selfAddress.toLowerCase() === tx.from.toLowerCase()
-      ? tx.to
-      : tx.from;
+    return selfAddress.toLowerCase() === tx.from.toLowerCase() ? tx.to : tx.from;
   }
 
   getTxValue(selfAddress, tx) {
@@ -222,11 +216,9 @@ class EthplorerExplorer extends Explorer {
       return [];
     }
 
-    const response = await this.request(
-      this.getUserTokenListUrl(address),
-      this.getInfoMethod(),
-      { apiKey: ETHPLORER_API_KEY },
-    )
+    const response = await this.request(this.getUserTokenListUrl(address), this.getInfoMethod(), {
+      apiKey: ETHPLORER_API_KEY,
+    })
       .then((data) => data.tokens)
       .catch(() => []); // user token list is loaded from db in HasTokensMixin
 

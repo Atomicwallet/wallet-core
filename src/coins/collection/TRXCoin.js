@@ -65,11 +65,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      TronscanExplorer,
-      TrongridExplorer,
-      TronNodeWithBlockscannerExplorer,
-    ]);
+    this.setExplorersModules([TronscanExplorer, TrongridExplorer, TronNodeWithBlockscannerExplorer]);
 
     this.loadExplorers(config);
 
@@ -79,26 +75,23 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     this.tokens = {};
     this.bannedTokens = [];
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.getInfo();
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.getInfo();
 
-        if (unconfirmedTx && unconfirmedTx.direction) {
-          this.eventEmitter.emit('socket::newtx', {
-            id: coinId,
-            ticker,
-            amount: unconfirmedTx.amount,
-            txid: unconfirmedTx.txid,
-          });
-        } else {
-          this.eventEmitter.emit('socket::newtx::outgoing', {
-            id: coinId,
-            ticker,
-          });
-        }
-      },
-    );
+      if (unconfirmedTx && unconfirmedTx.direction) {
+        this.eventEmitter.emit('socket::newtx', {
+          id: coinId,
+          ticker,
+          amount: unconfirmedTx.amount,
+          txid: unconfirmedTx.txid,
+        });
+      } else {
+        this.eventEmitter.emit('socket::newtx::outgoing', {
+          id: coinId,
+          ticker,
+        });
+      }
+    });
   }
 
   setFeeData(feeData = {}) {
@@ -160,9 +153,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       const { default: TronWeb } = await tronwebLib.get();
       const hdPrivateKey = hdkey.fromMasterSeed(seed);
       const key = hdPrivateKey.derive(this.derivation);
-      const addressBytes = TronWeb.utils.crypto.getAddressFromPriKey(
-        key._privateKey,
-      );
+      const addressBytes = TronWeb.utils.crypto.getAddressFromPriKey(key._privateKey);
 
       if (!key) {
         reject(
@@ -244,13 +235,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     return args;
   }
 
-  async sendTransaction({
-    address,
-    amount,
-    contract = null,
-    userFee = null,
-    transfer = false,
-  }) {
+  async sendTransaction({ address, amount, contract = null, userFee = null, transfer = false }) {
     const errors = [];
 
     if (transfer) {
@@ -263,11 +248,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     }
 
     try {
-      const res = await this.tronWeb.trx.send(
-        address,
-        amount,
-        this.#privateKey,
-      );
+      const res = await this.tronWeb.trx.send(address, amount, this.#privateKey);
 
       return {
         txid: res.transaction.txID,
@@ -277,19 +258,14 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     }
 
     try {
-      const builtTx = this.getProvider(
-        'send',
-      ).helper.transactionBuilder.buildTransferTransaction(
+      const builtTx = this.getProvider('send').helper.transactionBuilder.buildTransferTransaction(
         'TRX',
         this.address,
         address,
         amount,
       );
 
-      return this.getProvider('send').sendTransaction(
-        builtTx,
-        this.#privateKey,
-      );
+      return this.getProvider('send').sendTransaction(builtTx, this.#privateKey);
     } catch (error) {
       errors.push(error);
     }
@@ -308,9 +284,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       try {
         const contractObject = await this.tronWeb.contract().at(contract);
 
-        const txid = await contractObject
-          .transfer(address, amount)
-          .send({ feeLimit }, this.#privateKey);
+        const txid = await contractObject.transfer(address, amount).send({ feeLimit }, this.#privateKey);
 
         return {
           txid,
@@ -354,9 +328,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       if (type === 'address') {
         value = value.replace(ADDRESS_PREFIX_REGEX, '0x');
       } else if (type === 'address[]') {
-        value = value.map((val) =>
-          this.tronWeb.address.toHex(val).replace(ADDRESS_PREFIX_REGEX, '0x'),
-        );
+        value = value.map((val) => this.tronWeb.address.toHex(val).replace(ADDRESS_PREFIX_REGEX, '0x'));
       }
       types.push(type);
       values.push(value);
@@ -372,8 +344,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
   async sendRawTransaction(signedTransaction) {
     try {
-      const result =
-        await await this.tronWeb.trx.sendRawTransaction(signedTransaction);
+      const result = await await this.tronWeb.trx.sendRawTransaction(signedTransaction);
 
       return {
         txid: result.transaction.txID,
@@ -388,11 +359,8 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   async estimateDynamicEnergy({ address, amount, contract }) {
-    const defaultMaxEnergyUsage = Number(
-      this.feeData.defaultTrc20TransferEnergy || TRC20_ENERGY,
-    );
-    const defaultEnergy =
-      this.tokens[contract]?.config?.feeData?.energy || defaultMaxEnergyUsage;
+    const defaultMaxEnergyUsage = Number(this.feeData.defaultTrc20TransferEnergy || TRC20_ENERGY);
+    const defaultEnergy = this.tokens[contract]?.config?.feeData?.energy || defaultMaxEnergyUsage;
 
     if (!this.dynamicTrc20EnergyEnabled) {
       return defaultEnergy;
@@ -434,32 +402,24 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     try {
       if (this.isTRC20Token(contract)) {
         const historyProvider = this.getProvider('history');
-        const acc = await historyProvider
-          .getAccount(this.address)
-          .catch(() => ({
-            bandwidth: {
-              energyRemaining: 0,
-              freeNetRemaining: 0,
-            },
-          }));
+        const acc = await historyProvider.getAccount(this.address).catch(() => ({
+          bandwidth: {
+            energyRemaining: 0,
+            freeNetRemaining: 0,
+          },
+        }));
 
         const { energyRemaining, freeNetRemaining } = acc.bandwidth;
 
-        const isFirstTransferTo = address
-          ? await historyProvider.isFirstTransfer(address).catch(() => true)
-          : false;
+        const isFirstTransferTo = address ? await historyProvider.isFirstTransfer(address).catch(() => true) : false;
 
         let requiredEnergy = await this.estimateDynamicEnergy({
           address,
           contract,
           amount,
         });
-        const energyPrice = Number(
-          this.feeData.oneEnergyInTrx || DEFAULT_ENERGY_PRICE,
-        );
-        const netPrice = Number(
-          this.feeData.oneBandwidthInTrx || DEFAULT_NET_PRICE,
-        );
+        const energyPrice = Number(this.feeData.oneEnergyInTrx || DEFAULT_ENERGY_PRICE);
+        const netPrice = Number(this.feeData.oneBandwidthInTrx || DEFAULT_NET_PRICE);
 
         if (isFirstTransferTo) {
           requiredEnergy += TRC20_ACC_CREATION_FEE;
@@ -491,17 +451,13 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   getTRC20Fee(tx) {
-    const txFee = this.transactions.find(
-      (tronTx) => tronTx.txid === tx.transaction_id,
-    );
+    const txFee = this.transactions.find((tronTx) => tronTx.txid === tx.transaction_id);
 
     return txFee?.fee || null;
   }
 
   async getTransactions() {
-    const { transactions = [], transfers = [] } = await this.getProvider(
-      'history',
-    )
+    const { transactions = [], transfers = [] } = await this.getProvider('history')
       .getTransactions({ address: this.address })
       .catch((error) => {
         console.error(error);
@@ -520,12 +476,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
         return (
           token &&
-          this.getProvider('history').modifyTokenTransactionResponse(
-            tx,
-            this.address,
-            token.ticker,
-            token.decimal,
-          )
+          this.getProvider('history').modifyTokenTransactionResponse(tx, this.address, token.ticker, token.decimal)
         );
       })
       .filter(Boolean);
@@ -542,11 +493,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   async getInfo() {
-    const {
-      balance,
-      assetV2 = [],
-      stakingInfo = {},
-    } = await this.getProvider('balance').getInfo(this.address);
+    const { balance, assetV2 = [], stakingInfo = {} } = await this.getProvider('balance').getInfo(this.address);
 
     this.balance = balance;
 
@@ -568,62 +515,40 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
             return;
           }
 
-          const assetInfo = assets.find(
-            (asset) => asset.tokenId.toLowerCase() === key.toLowerCase(),
-          );
+          const assetInfo = assets.find((asset) => asset.tokenId.toLowerCase() === key.toLowerCase());
 
           this.tokens[key].balance = (assetInfo && assetInfo.balance) || 0;
         });
       })
-      .catch((error) =>
-        console.warn(
-          `[${this.ticker}] Tronscan Error: failed to fetch trc20 tokens,`,
-          error,
-        ),
-      );
+      .catch((error) => console.warn(`[${this.ticker}] Tronscan Error: failed to fetch trc20 tokens,`, error));
 
     // additional resources from V2 staking API
     // powerLimit = all votes
     // powerUsed = used votes
     // availableV2 = Limit - Used
 
-    const { tronPowerLimit = 0, tronPowerUsed = 0 } = await this.getProvider(
-      'validators',
-    ).getAccountResource(this.address);
+    const { tronPowerLimit = 0, tronPowerUsed = 0 } = await this.getProvider('validators').getAccountResource(
+      this.address,
+    );
 
     if (stakingInfo) {
-      const validatorsInfo = await this.getProvider('validators').getInfo(
-        this.address,
-      );
+      const validatorsInfo = await this.getProvider('validators').getInfo(this.address);
       const validators =
-        validatorsInfo?.votes?.reduce(
-          (acc, { vote_address: address, vote_count: shares }) => {
-            acc[address] = {
-              address,
-              staked: new Amount(shares, this),
-            };
+        validatorsInfo?.votes?.reduce((acc, { vote_address: address, vote_count: shares }) => {
+          acc[address] = {
+            address,
+            staked: new Amount(shares, this),
+          };
 
-            return acc;
-          },
-          {},
-        ) ?? {};
+          return acc;
+        }, {}) ?? {};
 
-      const { availableWithdrawals, pendingWithdrawals } =
-        this.calculateFrozenForWithdraw(validatorsInfo?.unfrozenV2);
-      const frozenEnergy = new Amount(
-        stakingInfo.frozenBalanceForEnergy.toString(),
-        this,
-      );
-      const { frozenVotesV1 } = this.calculateFrozenVotesV1(
-        stakingInfo.frozen,
-        frozenEnergy,
-      );
+      const { availableWithdrawals, pendingWithdrawals } = this.calculateFrozenForWithdraw(validatorsInfo?.unfrozenV2);
+      const frozenEnergy = new Amount(stakingInfo.frozenBalanceForEnergy.toString(), this);
+      const { frozenVotesV1 } = this.calculateFrozenVotesV1(stakingInfo.frozen, frozenEnergy);
       const { frozenVotes } = this.calculateFrozenVotes(tronPowerLimit);
       const staked = this.calculateStakedAmount(stakingInfo.votes);
-      const availableVotes = this.calculateAvailableVotes(
-        frozenVotes,
-        tronPowerUsed,
-      );
+      const availableVotes = this.calculateAvailableVotes(frozenVotes, tronPowerUsed);
       const rewards = this.calculateRewards(stakingInfo.reward);
 
       const additional = {
@@ -673,28 +598,18 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
   calculateFrozenVotesV1(frozenVotes, frozenEnergy) {
     const amount =
-      frozenVotes.length > 0
-        ? new this.BN(frozenVotes[0].frozen_balance)
-            .add(frozenEnergy.toBN())
-            .toString()
-        : '0';
-    const frozenVotesExpiration =
-      frozenVotes.length > 0 ? frozenVotes[0].expire_time : '0';
+      frozenVotes.length > 0 ? new this.BN(frozenVotes[0].frozen_balance).add(frozenEnergy.toBN()).toString() : '0';
+    const frozenVotesExpiration = frozenVotes.length > 0 ? frozenVotes[0].expire_time : '0';
 
     return { frozenVotesV1: new Amount(amount, this), frozenVotesExpiration };
   }
 
   calculateAvailableVotes(frozenVotes, usedVotes) {
-    return new Amount(
-      frozenVotes.toBN().sub(new this.BN(this.toMinimalUnit(usedVotes))),
-      this,
-    );
+    return new Amount(frozenVotes.toBN().sub(new this.BN(this.toMinimalUnit(usedVotes))), this);
   }
 
   calculateFrozenForWithdraw(unfrozenVotes = []) {
-    const expiration = Math.max(
-      ...unfrozenVotes.map(({ unfreeze_expire_time }) => unfreeze_expire_time),
-    );
+    const expiration = Math.max(...unfrozenVotes.map(({ unfreeze_expire_time }) => unfreeze_expire_time));
 
     const totalAmount = unfrozenVotes.reduce((acc, { unfreeze_amount }) => {
       acc = acc.add(new this.BN(unfreeze_amount));
@@ -703,14 +618,8 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     }, new this.BN('0'));
 
     return {
-      availableWithdrawals:
-        Date.now() >= expiration
-          ? new Amount(totalAmount, this)
-          : new Amount('0', this),
-      pendingWithdrawals:
-        Date.now() < expiration
-          ? new Amount(totalAmount, this)
-          : new Amount('0', this),
+      availableWithdrawals: Date.now() >= expiration ? new Amount(totalAmount, this) : new Amount('0', this),
+      pendingWithdrawals: Date.now() < expiration ? new Amount(totalAmount, this) : new Amount('0', this),
     };
   }
 
@@ -724,10 +633,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   calculateTotal({ balance, frozenVotes, rewards }) {
-    return new Amount(
-      balance.toBN().add(frozenVotes.toBN()).add(rewards.toBN()),
-      this,
-    );
+    return new Amount(balance.toBN().add(frozenVotes.toBN()).add(rewards.toBN()), this);
   }
 
   calculateRewards(reward) {
@@ -763,16 +669,9 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     const errors = [];
 
     try {
-      const transaction = await this.tronWeb.transactionBuilder.freezeBalanceV2(
-        amount,
-        'BANDWIDTH',
-        this.address,
-      );
+      const transaction = await this.tronWeb.transactionBuilder.freezeBalanceV2(amount, 'BANDWIDTH', this.address);
 
-      const signedTransaction = await this.tronWeb.trx.sign(
-        transaction,
-        this.#privateKey,
-      );
+      const signedTransaction = await this.tronWeb.trx.sign(transaction, this.#privateKey);
       const result = await this.sendRawTransaction(signedTransaction);
 
       return result;
@@ -797,10 +696,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
         },
         this.address,
       );
-      const signedTransaction = await this.tronWeb.trx.sign(
-        transaction,
-        this.#privateKey,
-      );
+      const signedTransaction = await this.tronWeb.trx.sign(transaction, this.#privateKey);
 
       return signedTransaction;
     } catch (error) {
@@ -819,21 +715,10 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
     try {
       const transaction = v1
-        ? await this.tronWeb.transactionBuilder.unfreezeBalance(
-            'BANDWIDTH',
-            this.address,
-          )
-        : await this.tronWeb.transactionBuilder.unfreezeBalanceV2(
-            amount,
-            'BANDWIDTH',
-            this.address,
-          );
-      const signedTransaction = await this.tronWeb.trx.sign(
-        transaction,
-        this.#privateKey,
-      );
-      const result =
-        await this.tronWeb.trx.sendRawTransaction(signedTransaction);
+        ? await this.tronWeb.transactionBuilder.unfreezeBalance('BANDWIDTH', this.address)
+        : await this.tronWeb.transactionBuilder.unfreezeBalanceV2(amount, 'BANDWIDTH', this.address);
+      const signedTransaction = await this.tronWeb.trx.sign(transaction, this.#privateKey);
+      const result = await this.tronWeb.trx.sendRawTransaction(signedTransaction);
 
       return {
         txid: result.transaction.txID,
@@ -853,16 +738,9 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     const errors = [];
 
     try {
-      const transaction =
-        await this.tronWeb.transactionBuilder.withdrawExpireUnfreeze(
-          this.address,
-        );
-      const signedTransaction = await this.tronWeb.trx.sign(
-        transaction,
-        this.#privateKey,
-      );
-      const result =
-        await this.tronWeb.trx.sendRawTransaction(signedTransaction);
+      const transaction = await this.tronWeb.transactionBuilder.withdrawExpireUnfreeze(this.address);
+      const signedTransaction = await this.tronWeb.trx.sign(transaction, this.#privateKey);
+      const result = await this.tronWeb.trx.sendRawTransaction(signedTransaction);
 
       return {
         txid: result.transaction.txID,
@@ -879,12 +757,8 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   async createWithdrawRewardTransaction() {
-    const unsignedWithdrawRewardsTx =
-      await this.tronWeb.transactionBuilder.withdrawBlockRewards(this.address);
-    const signedWithdrawRewardsTx = await this.tronWeb.trx.sign(
-      unsignedWithdrawRewardsTx,
-      this.#privateKey,
-    );
+    const unsignedWithdrawRewardsTx = await this.tronWeb.transactionBuilder.withdrawBlockRewards(this.address);
+    const signedWithdrawRewardsTx = await this.tronWeb.trx.sign(unsignedWithdrawRewardsTx, this.#privateKey);
 
     return signedWithdrawRewardsTx;
   }

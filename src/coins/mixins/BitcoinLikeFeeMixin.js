@@ -52,10 +52,7 @@ const BitcoinLikeFeeMixin = (superclass) =>
      * @return {BN} The balance.
      */
     calculateBalance(utxos = []) {
-      return utxos.reduce(
-        (acc, { value }) => new this.BN(value).add(acc),
-        new this.BN('0'),
-      );
+      return utxos.reduce((acc, { value }) => new this.BN(value).add(acc), new this.BN('0'));
     }
   };
 

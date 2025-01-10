@@ -39,9 +39,7 @@ class TezosExplorer extends Explorer {
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    return tx.type.operations[0].destination.tz === selfAddress
-      ? selfAddress
-      : tx.type.operations[0].destination.tz;
+    return tx.type.operations[0].destination.tz === selfAddress ? selfAddress : tx.type.operations[0].destination.tz;
   }
 
   getTxValue(selfAddress, tx) {

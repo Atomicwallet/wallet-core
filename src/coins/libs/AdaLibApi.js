@@ -27,10 +27,9 @@ function getAdaCurrencyMeta() {
   return {
     primaryTicker: 'ADA',
     decimalPlaces,
-    totalSupply: new BigNumber(
-      '45 000 000 000'.replace(/ /g, ''),
-      DECIMAL,
-    ).times(new BigNumber(DECIMAL).pow(decimalPlaces)),
+    totalSupply: new BigNumber('45 000 000 000'.replace(/ /g, ''), DECIMAL).times(
+      new BigNumber(DECIMAL).pow(decimalPlaces),
+    ),
   };
 }
 
@@ -91,9 +90,7 @@ class HaskellShelleyTxSignRequest {
     }
 
     if (!includeChange) {
-      const changeAddrs = this.signRequest.changeAddr.map(
-        (change) => change.address,
-      );
+      const changeAddrs = this.signRequest.changeAddr.map((change) => change.address);
 
       return outputStrings.filter((addr) => !changeAddrs.includes(addr));
     }
@@ -101,9 +98,7 @@ class HaskellShelleyTxSignRequest {
   }
 
   uniqueSenderAddresses() {
-    return Array.from(
-      new Set(this.signRequest.senderUtxos.map((utxo) => utxo.receiver)),
-    );
+    return Array.from(new Set(this.signRequest.senderUtxos.map((utxo) => utxo.receiver)));
   }
 
   isEqual(tx) {
@@ -131,10 +126,7 @@ class HaskellShelleyTxSignRequest {
 }
 
 export function shelleyTxEqual(req1, req2) {
-  return (
-    Buffer.from(req1.build().to_bytes()).toString('hex') ===
-    Buffer.from(req2.build().to_bytes()).toString('hex')
-  );
+  return Buffer.from(req1.build().to_bytes()).toString('hex') === Buffer.from(req2.build().to_bytes()).toString('hex');
 }
 
 export default class AdaLibApi {
@@ -192,11 +184,7 @@ export default class AdaLibApi {
         };
       },
       deriveChildHdNode: (hdNode, childIndex) => {
-        const result = cardanoCrypto.derivePrivate(
-          hdNode.toBuffer(),
-          childIndex,
-          1,
-        );
+        const result = cardanoCrypto.derivePrivate(hdNode.toBuffer(), childIndex, 1);
 
         return this.legacyCrypto.HDNode({
           secretKey: result.slice(0, 64),
@@ -210,15 +198,9 @@ export default class AdaLibApi {
   getCip1852AccountFromMnemonic(mnemonicString) {
     const entropy = bip39.mnemonicToEntropy(mnemonicString);
 
-    const rootKey = this.cardano.Bip32PrivateKey.from_bip39_entropy(
-      Buffer.from(entropy, 'hex'),
-      Buffer.from(''),
-    );
+    const rootKey = this.cardano.Bip32PrivateKey.from_bip39_entropy(Buffer.from(entropy, 'hex'), Buffer.from(''));
 
-    return rootKey
-      .derive(harden(cip1852))
-      .derive(harden(coinType))
-      .derive(harden(0));
+    return rootKey.derive(harden(cip1852)).derive(harden(coinType)).derive(harden(0));
   }
 
   getCip1852AccountFromPrivateKey(privateKey) {
@@ -228,8 +210,7 @@ export default class AdaLibApi {
   }
 
   getLegacyAccountFromMnemonic(mnemonicString) {
-    const entropy =
-      this.legacyLib.Entropy.from_english_mnemonics(mnemonicString);
+    const entropy = this.legacyLib.Entropy.from_english_mnemonics(mnemonicString);
 
     this.legacyAccount = this.legacyLib.DaedalusWallet.recover(entropy);
 
@@ -250,10 +231,7 @@ export default class AdaLibApi {
   }
 
   async getLegacyPrivateKeyByMnemonic(mnemonicString) {
-    const walletSecret = await cardanoCrypto.mnemonicToRootKeypair(
-      mnemonicString,
-      1,
-    );
+    const walletSecret = await cardanoCrypto.mnemonicToRootKeypair(mnemonicString, 1);
 
     return bs58.encode(walletSecret);
   }
@@ -263,44 +241,24 @@ export default class AdaLibApi {
     const walletSecret = bs58.decode(legacyPrivateKey);
 
     const masterHDNode = HDNode({ secret: walletSecret });
-    const xpub = legacyDerivationPath.reduce(
-      deriveChildHdNode,
-      masterHDNode,
-    ).extendedPublicKey;
+    const xpub = legacyDerivationPath.reduce(deriveChildHdNode, masterHDNode).extendedPublicKey;
     const hdPassphrase = this.getHDPassphrase(legacyPrivateKey);
 
-    return cardanoCrypto.packAddress(
-      legacyDerivationPath,
-      xpub,
-      hdPassphrase,
-      1,
-    );
+    return cardanoCrypto.packAddress(legacyDerivationPath, xpub, hdPassphrase, 1);
   }
 
   getHDPassphrase(privateKey) {
     const walletSecret = bs58.decode(privateKey);
     const masterHDNode = this.legacyCrypto.HDNode({ secret: walletSecret });
 
-    return pbkdf2Sync(
-      masterHDNode.extendedPublicKey,
-      'address-hashing',
-      500,
-      32,
-      'sha512',
-    );
+    return pbkdf2Sync(masterHDNode.extendedPublicKey, 'address-hashing', 500, 32, 'sha512');
   }
 
   async getAddressByPrivateKey(cip = undefined) {
     const account = cip || this.cip1852Account;
 
-    const utxoPubKey = account
-      .derive(chainDerivation.EXTERNAL)
-      .derive(0)
-      .to_public();
-    const stakeKey = account
-      .derive(chainDerivation.CHIMERIC)
-      .derive(0)
-      .to_public();
+    const utxoPubKey = account.derive(chainDerivation.EXTERNAL).derive(0).to_public();
+    const stakeKey = account.derive(chainDerivation.CHIMERIC).derive(0).to_public();
 
     const baseAddr = this.cardano.BaseAddress.new(
       MAINNET_ID, // 1 for mainnet, 0 for testnet
@@ -368,15 +326,7 @@ export default class AdaLibApi {
     return this.cardano.Address.from_bech32(addr);
   }
 
-  newAdaUnsignedTx(
-    receiver,
-    amount,
-    changeAdaAddr,
-    allUtxos,
-    slotNo,
-    certs,
-    withdrawals,
-  ) {
+  newAdaUnsignedTx(receiver, amount, changeAdaAddr, allUtxos, slotNo, certs, withdrawals) {
     const ttl = slotNo + defaultTtlOffset;
 
     const addressingMap = new Map();
@@ -409,9 +359,7 @@ export default class AdaLibApi {
       const addressedUtxo = addressingMap.get(utxo);
 
       if (addressedUtxo === null) {
-        throw new Error(
-          '[newAdaUnsignedTx] utxo reference was changed. Should not happen',
-        );
+        throw new Error('[newAdaUnsignedTx] utxo reference was changed. Should not happen');
       }
       return addressedUtxo;
     });
@@ -442,21 +390,14 @@ export default class AdaLibApi {
      * calculate last index of sorted array
      *
      */
-    const sorted = [
-      ...utxo.sort(
-        (first, second) => Number(first.amount) - Number(second.amount),
-      ),
-    ];
+    const sorted = [...utxo.sort((first, second) => Number(first.amount) - Number(second.amount))];
     let lastIndex = sorted.length - 1;
 
     /**
      * While target amount not filled by inputs - iterate thru
      * or if change is less than minimum dust amount
      */
-    while (
-      target.gt(zero) ||
-      (target.lt(zero) && target.times(neg).lt(minOutput))
-    ) {
+    while (target.gt(zero) || (target.lt(zero) && target.times(neg).lt(minOutput))) {
       /**
        * If target amount is not filled
        * And there is no more available inputs
@@ -472,9 +413,7 @@ export default class AdaLibApi {
        * Find suitable input that can cover target amount
        */
 
-      const suitInputIndex = sorted.findIndex((input) =>
-        new BigNumber(input.amount).gte(target),
-      );
+      const suitInputIndex = sorted.findIndex((input) => new BigNumber(input.amount).gte(target));
 
       if (suitInputIndex >= 0) {
         /**
@@ -514,9 +453,7 @@ export default class AdaLibApi {
     const wasmReceiver = this.normalizeToAddress(receiver);
 
     if (wasmReceiver === null) {
-      throw new Error(
-        '[newAdaUnsignedTxFromUtxo] receiver not a valid Shelley address',
-      );
+      throw new Error('[newAdaUnsignedTxFromUtxo] receiver not a valid Shelley address');
     }
 
     const txBuilderConfig = this.cardano.TransactionBuilderConfigBuilder.new()
@@ -537,10 +474,7 @@ export default class AdaLibApi {
 
     if (!isDelegation && !isClaim) {
       txBuilder.add_output(
-        this.cardano.TransactionOutput.new(
-          wasmReceiver,
-          this.cardano.Value.new(this.cardano.BigNum.from_str(amount)),
-        ),
+        this.cardano.TransactionOutput.new(wasmReceiver, this.cardano.Value.new(this.cardano.BigNum.from_str(amount))),
       );
     }
 
@@ -557,20 +491,13 @@ export default class AdaLibApi {
     if (isDelegation) {
       targetAmount = new BigNumber(2500000);
     } else {
-      const outputVal = txBuilder
-        .get_explicit_output()
-        .checked_add(this.cardano.Value.new(txBuilder.min_fee()))
-        .coin();
+      const outputVal = txBuilder.get_explicit_output().checked_add(this.cardano.Value.new(txBuilder.min_fee())).coin();
 
       targetAmount = new BigNumber(outputVal.to_str());
     }
 
     // add utxos until we have enough to send the transaction
-    const suitableInputs = this.findSuitableInputs(
-      utxos,
-      targetAmount,
-      txBuilder,
-    );
+    const suitableInputs = this.findSuitableInputs(utxos, targetAmount, txBuilder);
 
     suitableInputs.forEach((input) => {
       this.addUtxoInput(txBuilder, input);
@@ -582,21 +509,15 @@ export default class AdaLibApi {
         return [];
       }
 
-      const oldOutput = this.cardano.Value.new(
-        this.cardano.BigNum.from_str(targetAmount.toString()),
-      );
+      const oldOutput = this.cardano.Value.new(this.cardano.BigNum.from_str(targetAmount.toString()));
 
       const wasmChange = this.normalizeToAddress(changeAdaAddr);
 
       if (wasmChange === null) {
-        throw new Error(
-          '[newAdaUnsignedTxFromUtxo] change not a valid Shelley address',
-        );
+        throw new Error('[newAdaUnsignedTxFromUtxo] change not a valid Shelley address');
       }
 
-      const changeValue = new BigNumber(
-        txBuilder.get_explicit_input().checked_sub(oldOutput).coin().to_str(),
-      );
+      const changeValue = new BigNumber(txBuilder.get_explicit_input().checked_sub(oldOutput).coin().to_str());
 
       let changeWasAdded = false;
 
@@ -635,9 +556,7 @@ export default class AdaLibApi {
       const byronAddr = this.cardano.ByronAddress.from_address(wasmInput);
 
       if (byronAddr === null) {
-        throw new Error(
-          'Add input should never happen: non-byron address without key hash',
-        );
+        throw new Error('Add input should never happen: non-byron address without key hash');
       }
 
       txBuilder.add_bootstrap_input(
@@ -706,11 +625,7 @@ export default class AdaLibApi {
     throw new Error(' unknown address type');
   }
 
-  signTransaction(
-    signRequest,
-    signingKey = this.cip1852Account,
-    legacyAccount,
-  ) {
+  signTransaction(signRequest, signingKey = this.cip1852Account, legacyAccount) {
     const req = new HaskellShelleyTxSignRequest(
       {
         senderUtxos: signRequest.senderUtxos,
@@ -720,9 +635,7 @@ export default class AdaLibApi {
       this.cardano,
     );
 
-    const checker = this.legacyLib.DaedalusAddressChecker.new(
-      this.legacyAccount || legacyAccount,
-    );
+    const checker = this.legacyLib.DaedalusAddressChecker.new(this.legacyAccount || legacyAccount);
 
     let byronAddr;
 
@@ -775,19 +688,14 @@ export default class AdaLibApi {
     };
 
     if (byronAddr) {
-      keys.byronKey = Buffer.from(
-        checker.check_address(byronAddr).private_key().to_hex(),
-        'hex',
-      );
+      keys.byronKey = Buffer.from(checker.check_address(byronAddr).private_key().to_hex(), 'hex');
     }
 
     const witnessSet = this.addWitnesses({ txBody, uniqueUtxo: deduped, keys });
 
     return {
       rawtx: this.cardano.Transaction.new(txBody, witnessSet).to_bytes(),
-      txid: Buffer.from(
-        this.cardano.hash_transaction(txBody).to_bytes(),
-      ).toString('hex'),
+      txid: Buffer.from(this.cardano.hash_transaction(txBody).to_bytes()).toString('hex'),
     };
   }
 
@@ -819,10 +727,7 @@ export default class AdaLibApi {
         bootstrapWits.add(bootstrapWit);
       } else {
         const vkeyWitness = this.cardano.make_vkey_witness(txHash, shelleyKey);
-        const vkeyStakeWitness = this.cardano.make_vkey_witness(
-          txHash,
-          shelleyStakeKey,
-        );
+        const vkeyStakeWitness = this.cardano.make_vkey_witness(txHash, shelleyStakeKey);
 
         vkeyWits.add(vkeyWitness);
         vkeyWits.add(vkeyStakeWitness);
@@ -873,39 +778,21 @@ export default class AdaLibApi {
     return txBuilder.min_fee().to_str();
   }
 
-  createTransaction({
-    address,
-    amount,
-    changeAddress,
-    utxo,
-    slotNo,
-    legacyAccount,
-    cip,
-  }) {
-    const signRequest = this.newAdaUnsignedTx(
-      address,
-      amount,
-      changeAddress,
-      utxo,
-      slotNo,
-    );
+  createTransaction({ address, amount, changeAddress, utxo, slotNo, legacyAccount, cip }) {
+    const signRequest = this.newAdaUnsignedTx(address, amount, changeAddress, utxo, slotNo);
 
     const signedTx = this.signTransaction(signRequest, cip, legacyAccount);
 
     return signedTx;
   }
 
-  createStakeRegistrationCertificate(
-    stakeCredential /*: Cardano.StakeCredential */,
-  ) {
+  createStakeRegistrationCertificate(stakeCredential /*: Cardano.StakeCredential */) {
     const stakeReg = this.cardano.StakeRegistration.new(stakeCredential);
 
     return this.cardano.Certificate.new_stake_registration(stakeReg);
   }
 
-  createStakeDeregistrationCertificate(
-    stakeCredential /*: Cardano.StakeCredential */,
-  ) {
+  createStakeDeregistrationCertificate(stakeCredential /*: Cardano.StakeCredential */) {
     const stakeDeReg = this.cardano.StakeDeregistration.new(stakeCredential);
 
     return this.cardano.Certificate.new_stake_deregistration(stakeDeReg);
@@ -920,16 +807,9 @@ export default class AdaLibApi {
     return this.cardano.Certificate.new_stake_delegation(stakeReg);
   }
 
-  createDelegationTransaction({
-    paymentAddress,
-    utxo,
-    slotNo,
-    poolId,
-    stakeAddressRegistered,
-  }) {
+  createDelegationTransaction({ paymentAddress, utxo, slotNo, poolId, stakeAddressRegistered }) {
     const cardanoAddress = this.cardano.Address.from_bech32(paymentAddress);
-    const cardanoBaseAddress =
-      this.cardano.BaseAddress.from_address(cardanoAddress);
+    const cardanoBaseAddress = this.cardano.BaseAddress.from_address(cardanoAddress);
     const certs = this.cardano.Certificates.new();
     let poolBytes;
 
@@ -944,18 +824,9 @@ export default class AdaLibApi {
     const edhash = this.cardano.Ed25519KeyHash.from_bytes(poolBytes);
 
     if (!stakeAddressRegistered) {
-      certs.add(
-        this.createStakeRegistrationCertificate(
-          cardanoBaseAddress.stake_cred(),
-        ),
-      );
+      certs.add(this.createStakeRegistrationCertificate(cardanoBaseAddress.stake_cred()));
     }
-    certs.add(
-      this.createStakeDelegationCertificate(
-        cardanoBaseAddress.stake_cred(),
-        edhash,
-      ),
-    );
+    certs.add(this.createStakeDelegationCertificate(cardanoBaseAddress.stake_cred(), edhash));
 
     const signRequest = this.newAdaUnsignedTx(
       paymentAddress /* as reciever - sending to self */,
@@ -971,24 +842,13 @@ export default class AdaLibApi {
   }
 
   getRewardAddressHexFromAddressStr(address) {
-    return Buffer.from(
-      this.getRewardAddress(address).to_address().to_bytes(),
-    ).toString('hex');
+    return Buffer.from(this.getRewardAddress(address).to_address().to_bytes()).toString('hex');
   }
 
-  createWithdrawalTransaction({
-    paymentAddress,
-    utxo,
-    slotNo,
-    rewardAddress,
-    amountToWithdraw,
-  }) {
+  createWithdrawalTransaction({ paymentAddress, utxo, slotNo, rewardAddress, amountToWithdraw }) {
     const withdrawals = this.cardano.Withdrawals.new();
 
-    withdrawals.insert(
-      rewardAddress,
-      this.cardano.BigNum.from_str(amountToWithdraw),
-    );
+    withdrawals.insert(rewardAddress, this.cardano.BigNum.from_str(amountToWithdraw));
 
     const signRequest = this.newAdaUnsignedTx(
       paymentAddress /* as reciever - sending to self */,
@@ -1008,10 +868,7 @@ export default class AdaLibApi {
     const cAddress = this.cardano.Address.from_bech32(address);
     const bAddress = this.cardano.BaseAddress.from_address(cAddress);
     const paymentCred = bAddress.stake_cred();
-    const rewardAddress = this.cardano.RewardAddress.new(
-      MAINNET_ID,
-      paymentCred,
-    );
+    const rewardAddress = this.cardano.RewardAddress.new(MAINNET_ID, paymentCred);
 
     return rewardAddress;
   }

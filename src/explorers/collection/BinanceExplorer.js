@@ -26,9 +26,7 @@ class BinanceExplorer extends Explorer {
   }
 
   async getBalance(address) {
-    const { balance } = await this.request(
-      `${this.config.baseUrl}api/v1/balances/${address}`,
-    );
+    const { balance } = await this.request(`${this.config.baseUrl}api/v1/balances/${address}`);
 
     return balance;
   }
@@ -161,9 +159,7 @@ class BinanceExplorer extends Explorer {
       toFixed = true;
     }
 
-    return toFixed
-      ? tx.value.toFixed(DECIMALS).replace(/(\.\d*[1-9])0+$|\.0*$/, '$1')
-      : value;
+    return toFixed ? tx.value.toFixed(DECIMALS).replace(/(\.\d*[1-9])0+$|\.0*$/, '$1') : value;
   }
 
   getTxDateTime(tx) {

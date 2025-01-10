@@ -1,10 +1,6 @@
 const CosmosNodeTransactionTypeMixin = (superclass) =>
   class extends superclass {
-    getTransactionsModifiedResponse(
-      tx,
-      selfAddress,
-      asset = this.wallet.ticker,
-    ) {
+    getTransactionsModifiedResponse(tx, selfAddress, asset = this.wallet.ticker) {
       return Object.assign(
         {
           txType: this.getTransactionType(tx),
@@ -16,9 +12,7 @@ const CosmosNodeTransactionTypeMixin = (superclass) =>
     getTransactionNativeType(tx) {
       const messages = Array.isArray(tx?.messages) ? tx.messages : [];
 
-      return messages.map(({ '@type': nativeType }) =>
-        nativeType.split('.').pop(),
-      )[0];
+      return messages.map(({ '@type': nativeType }) => nativeType.split('.').pop())[0];
     }
 
     getTransactionType(tx) {

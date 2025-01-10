@@ -74,14 +74,7 @@ class GuardaMoneroProxy extends Explorer {
     });
   }
 
-  async unspent({
-    address,
-    secViewKey,
-    mixin,
-    dustThreshold,
-    useDust = false,
-    amount = '0',
-  }) {
+  async unspent({ address, secViewKey, mixin, dustThreshold, useDust = false, amount = '0' }) {
     return this.request('unspend', 'POST', {
       address,
       viewKey: secViewKey,

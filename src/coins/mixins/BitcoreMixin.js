@@ -17,13 +17,8 @@ const BitcoreMixin = (superclass) =>
     async loadWallet(seed) {
       const bitcoreLib = await this.loadLib(BITCORE);
 
-      const hdPrivateKey = bitcoreLib.HDPrivateKey.fromSeed(
-        seed,
-        await this.getNetwork(),
-      );
-      const { privateKey } = hdPrivateKey[this.getDeriveFunctionName()](
-        this.derivation,
-      );
+      const hdPrivateKey = bitcoreLib.HDPrivateKey.fromSeed(seed, await this.getNetwork());
+      const { privateKey } = hdPrivateKey[this.getDeriveFunctionName()](this.derivation);
 
       if (!privateKey) {
         throw new WalletError({
@@ -75,30 +70,19 @@ const BitcoreMixin = (superclass) =>
     async validateAddress(address) {
       const bitcoreLib = await this.loadLib(BITCORE);
 
-      return bitcoreLib.Address.isValid(
-        address || this.address,
-        await this.getNetwork(),
-      );
+      return bitcoreLib.Address.isValid(address || this.address, await this.getNetwork());
     }
 
     async createTransaction({ address, amount, memo, userFee }) {
       const bitcoreLib = await this.loadLib(BITCORE);
 
       // TODO catch
-      const utxos = await this.getUnspentOutputs(
-        this.address,
-        await this.getScriptPubKey(),
-      );
+      const utxos = await this.getUnspentOutputs(this.address, await this.getScriptPubKey());
 
-      const satoshiFee = userFee
-        ? Number(userFee)
-        : Number(await this.getFee({ amount }));
+      const satoshiFee = userFee ? Number(userFee) : Number(await this.getFee({ amount }));
 
       const BYTE_IN_KB = 1000;
-      const tx = new bitcoreLib.Transaction()
-        .from(utxos)
-        .to(address, Number(amount))
-        .fee(satoshiFee);
+      const tx = new bitcoreLib.Transaction().from(utxos).to(address, Number(amount)).fee(satoshiFee);
 
       if (this.ticker === 'XVG') {
         tx.timestamp = Number(new Date().getTime().toString().slice(0, -3));
@@ -113,9 +97,7 @@ const BitcoreMixin = (superclass) =>
       if (typeof tx.enableRBF === 'function') {
         tx.enableRBF();
       } else {
-        console.warn(
-          `[${this.ticker}] bitcore-lib does not have enableRBF function`,
-        );
+        console.warn(`[${this.ticker}] bitcore-lib does not have enableRBF function`);
       }
 
       return tx.sign(this.#privateKey).serialize();
@@ -140,9 +122,7 @@ const BitcoreMixin = (superclass) =>
       if (typeof tx.enableRBF === 'function') {
         tx.enableRBF();
       } else {
-        console.warn(
-          `[${this.ticker}] bitcore-lib does not have enableRBF function`,
-        );
+        console.warn(`[${this.ticker}] bitcore-lib does not have enableRBF function`);
       }
 
       return tx.sign(this.#privateKey).serialize();
@@ -161,10 +141,7 @@ const BitcoreMixin = (superclass) =>
     }
 
     async getCoins({ address, value, feePerByte }) {
-      const utxo = await this.getUnspentOutputs(
-        this.address,
-        await this.getScriptPubKey(),
-      );
+      const utxo = await this.getUnspentOutputs(this.address, await this.getScriptPubKey());
 
       const mappedUtxo = utxo.map((out) => ({
         ...out,

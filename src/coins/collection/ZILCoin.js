@@ -47,17 +47,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
    * @param {Explorer[]}  explorers the explorers
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({
-    alias,
-    notify,
-    feeData,
-    explorers,
-    txWebUrl,
-    socket,
-    stakingContract,
-    stakingProxyContract,
-    id,
-  }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, stakingContract, stakingProxyContract, id }) {
     const config = {
       id,
       alias,
@@ -81,11 +71,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      ZilliqaAtomicExplorer,
-      ViewblockExplorer,
-      ZilliqaNodeExplorer,
-    ]);
+    this.setExplorersModules([ZilliqaAtomicExplorer, ViewblockExplorer, ZilliqaNodeExplorer]);
 
     this.loadExplorers(config);
 
@@ -104,8 +90,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
     this.stakingProxyContract = feeData.stakingProxyContract;
     this.stakingContract = feeData.stakingContract;
     this.stakingFeeGas = String(feeData.stakingFeeGas) || CONTRACT_GAS_LIMIT;
-    this.unstakingFeeGas =
-      String(feeData.unstakingFeeGas) || CONTRACT_GAS_LIMIT;
+    this.unstakingFeeGas = String(feeData.unstakingFeeGas) || CONTRACT_GAS_LIMIT;
     this.claimFeeGas = String(feeData.claimFeeGas) || CONTRACT_GAS_LIMIT;
     this.tokenFeeGas = String(feeData.tokenFeeGas) || TOKEN_GAS_LIMIT;
     this.sendFeeGas = String(feeData.sendFeeGas) || SEND_GAS_LIMIT;
@@ -131,20 +116,14 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
     const privateKeyLength = 64;
     const prefixLength = 2;
 
-    this.#privateKey = privateKey.slice(
-      prefixLength,
-      prefixLength + privateKeyLength,
-    );
+    this.#privateKey = privateKey.slice(prefixLength, prefixLength + privateKeyLength);
 
     this.zilliqa.wallet.addByPrivateKey(this.#privateKey);
 
-    const { toBech32Address, getAddressFromPrivateKey } =
-      await zilliqaCryptoLib.get();
+    const { toBech32Address, getAddressFromPrivateKey } = await zilliqaCryptoLib.get();
 
     this.address = toBech32Address(getAddressFromPrivateKey(this.#privateKey));
-    this.oldFormatAddressForBalance = getAddressFromPrivateKey(
-      this.#privateKey,
-    ).replace(/^0x/, '');
+    this.oldFormatAddressForBalance = getAddressFromPrivateKey(this.#privateKey).replace(/^0x/, '');
 
     return { id: this.id, privateKey: this.#privateKey, address: this.address };
   }
@@ -167,9 +146,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
       gasLimit = this.tokenFeeGas;
     }
 
-    return new this.BN(userGasPrice).mul(
-      new this.BN(gasLimit || SEND_GAS_LIMIT),
-    );
+    return new this.BN(userGasPrice).mul(new this.BN(gasLimit || SEND_GAS_LIMIT));
   }
 
   /**
@@ -179,8 +156,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
    */
   async getAddress() {
     if (this.#privateKey) {
-      const { toBech32Address, getAddressFromPrivateKey } =
-        await zilliqaCryptoLib.get();
+      const { toBech32Address, getAddressFromPrivateKey } = await zilliqaCryptoLib.get();
 
       return toBech32Address(getAddressFromPrivateKey(this.#privateKey));
     }
@@ -200,8 +176,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
    */
   async validateAddress(address) {
     try {
-      const { isValidChecksumAddress, fromBech32Address } =
-        await zilliqaCryptoLib.get();
+      const { isValidChecksumAddress, fromBech32Address } = await zilliqaCryptoLib.get();
 
       return isValidChecksumAddress(fromBech32Address(address));
     } catch (error) {
@@ -212,8 +187,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
   async toValidChecksumAddress(address) {
     let checksumAddr = '';
 
-    const { toChecksumAddress, fromBech32Address } =
-      await zilliqaCryptoLib.get();
+    const { toChecksumAddress, fromBech32Address } = await zilliqaCryptoLib.get();
 
     try {
       checksumAddr = toChecksumAddress(address);
@@ -246,24 +220,18 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
   }
 
   async getInfo() {
-    const { balance, nonce } = await this.getProvider('balance').getBalance(
-      this.address,
-      this.stakingContract,
-    );
+    const { balance, nonce } = await this.getProvider('balance').getBalance(this.address, this.stakingContract);
 
     try {
-      const { staking, withdrawals } = await this.getProvider(
-        'staking',
-      ).getStakingBalance(this.address, this.stakingContract);
+      const { staking, withdrawals } = await this.getProvider('staking').getStakingBalance(
+        this.address,
+        this.stakingContract,
+      );
 
       this.balances.staking = staking;
       this.balances.withdrawals = withdrawals;
 
-      const reward = await this.getProvider('rewards').getRewards(
-        this.address,
-        this.stakingContract,
-        staking,
-      );
+      const reward = await this.getProvider('rewards').getRewards(this.address, this.stakingContract, staking);
 
       this.balances.rewards = reward;
 
@@ -278,16 +246,11 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
 
       const gasLimit = this.getGasLimit('stake');
       const fee = await this.getFee({ gasLimit: gasLimit || 1 });
-      const availableForStake = new this.BN(balanceBN)
-        .sub(new this.BN(fee))
-        .sub(new this.BN(this.reserveForStake));
+      const availableForStake = new this.BN(balanceBN).sub(new this.BN(fee)).sub(new this.BN(this.reserveForStake));
 
       this.balance = total;
       this.balances.available = available;
-      this.balances.availableForStake =
-        Number(availableForStake) > 0
-          ? units.fromQa(availableForStake, 'zil')
-          : '0';
+      this.balances.availableForStake = Number(availableForStake) > 0 ? units.fromQa(availableForStake, 'zil') : '0';
       this.balances.total = total;
     } catch (error) {
       this.balance = balance;
@@ -297,11 +260,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
     const contracts = Object.keys(this.tokens || {}).filter(Boolean);
 
     if (contracts.length > 0) {
-      const tokensBalance =
-        (await this.getProvider('token').getTokenBalance(
-          this.address,
-          contracts,
-        )) || [];
+      const tokensBalance = (await this.getProvider('token').getTokenBalance(this.address, contracts)) || [];
 
       tokensBalance.forEach((tokenBalance) => {
         this.tokens[tokenBalance.contract].balance = tokenBalance.balance;
@@ -309,8 +268,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
     }
 
     if (nonce) {
-      this.nonce =
-        Number(nonce) > Number(this.nonce) ? Number(nonce) : this.nonce;
+      this.nonce = Number(nonce) > Number(this.nonce) ? Number(nonce) : this.nonce;
     }
 
     return {
@@ -325,21 +283,14 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
 
     const { getAddressFromPrivateKey } = await zilliqaCryptoLib.get();
 
-    this.oldFormatAddressForBalance = getAddressFromPrivateKey(
-      this.#privateKey,
-    ).replace(/^0x/, '');
+    this.oldFormatAddressForBalance = getAddressFromPrivateKey(this.#privateKey).replace(/^0x/, '');
   }
 
   changeProviders(explorers) {
-    const balanceProviderClass = explorers.find(
-      (explorer) => explorer.balanceProvider === true,
-    );
+    const balanceProviderClass = explorers.find((explorer) => explorer.balanceProvider === true);
 
     this.balanceProvider =
-      balanceProviderClass &&
-      balanceProviderClass.className === 'ViewblockExplorer'
-        ? this.explorer
-        : this.node;
+      balanceProviderClass && balanceProviderClass.className === 'ViewblockExplorer' ? this.explorer : this.node;
   }
 
   updateCoinParamsFromServer(data) {
@@ -547,11 +498,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
   }
 
   getGasRange(sendType = 'send') {
-    return (
-      this.feeData[sendType] ||
-      this.feeData.gasSettings ||
-      this.feeDataDefaults.gasSettings
-    );
+    return this.feeData[sendType] || this.feeData.gasSettings || this.feeDataDefaults.gasSettings;
   }
 
   /**

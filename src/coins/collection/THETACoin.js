@@ -32,16 +32,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
   #privateKey;
   #feeTokenWallet;
 
-  constructor({
-    alias,
-    notify,
-    feeData,
-    explorers,
-    txWebUrl,
-    socket,
-    network = THETA_TICKER,
-    id,
-  }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, network = THETA_TICKER, id }) {
     const config = {
       id,
       alias,
@@ -70,12 +61,9 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
     this.tokens = {};
     this.#initFeeTokenWallet();
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   get feeWallet() {
@@ -160,13 +148,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
    * @param {string | number} txData.userFee - Total fee in `TFUEL` minimal units
    * @return {Promise<string>} Raw transaction
    */
-  async createTransaction({
-    address,
-    amount,
-    nonce,
-    ticker = this.ticker,
-    userFee,
-  }) {
+  async createTransaction({ address, amount, nonce, ticker = this.ticker, userFee }) {
     const { provider } = this.getProvider('node');
 
     if (!provider) {
@@ -197,9 +179,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
       return this.createTransaction(payload);
     }
 
-    throw new Error(
-      `${this.ticker} adapter supports only TFUEL and THETA coins`,
-    );
+    throw new Error(`${this.ticker} adapter supports only TFUEL and THETA coins`);
   }
 
   async getTransactions(payload) {
@@ -238,14 +218,10 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
     let availableBalance = new this.BN(wallet.balance);
 
     if (wallet.ticker === this.feeTicker) {
-      availableBalance = availableBalance.sub(
-        fee ? new this.BN(fee) : await wallet.getFee(),
-      );
+      availableBalance = availableBalance.sub(fee ? new this.BN(fee) : await wallet.getFee());
     }
 
-    return availableBalance.gt(new this.BN(0))
-      ? this.toCurrencyUnit(availableBalance)
-      : '0';
+    return availableBalance.gt(new this.BN(0)) ? this.toCurrencyUnit(availableBalance) : '0';
   }
 
   /**
@@ -286,9 +262,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
       throw new Error(`${this.ticker} address not found`);
     }
 
-    const { sequence, coins, emptyAddress } = await this.getProvider(
-      'node',
-    ).getAccount(this.address);
+    const { sequence, coins, emptyAddress } = await this.getProvider('node').getAccount(this.address);
 
     this.nonce = new this.BN(sequence).add(new this.BN(1));
 

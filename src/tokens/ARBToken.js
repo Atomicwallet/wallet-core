@@ -16,15 +16,7 @@ class ARBToken extends Token {
     };
   }
 
-  async createTransaction({
-    address,
-    amount,
-    custom,
-    userGasPrice,
-    gasLimit,
-    multiplier = this.multiplier,
-    nonce,
-  }) {
+  async createTransaction({ address, amount, custom, userGasPrice, gasLimit, multiplier = this.multiplier, nonce }) {
     return {
       address,
       amount,

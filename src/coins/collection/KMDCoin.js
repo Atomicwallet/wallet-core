@@ -109,9 +109,7 @@ class KMDCoin extends HasProviders(BitgoMixin(BitcoinLikeFeeMixin(Coin))) {
   async getTransactionBuilder() {
     const coreLibrary = await this.loadCoreLibrary();
 
-    const txBuilder = new coreLibrary.TransactionBuilder(
-      await this.getNetwork(),
-    );
+    const txBuilder = new coreLibrary.TransactionBuilder(await this.getNetwork());
 
     txBuilder.setVersion(ZCASH_SAPLING_VERSION);
     txBuilder.setLockTime(parseInt(Date.now() / MS_IN_SECOND, 10));
@@ -124,13 +122,7 @@ class KMDCoin extends HasProviders(BitgoMixin(BitcoinLikeFeeMixin(Coin))) {
   async signInput(txBuilder, keyForSign, index, input) {
     const coreLibrary = await this.loadCoreLibrary();
 
-    return txBuilder.sign(
-      index,
-      keyForSign,
-      null,
-      coreLibrary.Transaction.SIGHASH_ALL,
-      input.satoshis,
-    );
+    return txBuilder.sign(index, keyForSign, null, coreLibrary.Transaction.SIGHASH_ALL, input.satoshis);
   }
 
   /**
@@ -146,11 +138,8 @@ class KMDCoin extends HasProviders(BitgoMixin(BitcoinLikeFeeMixin(Coin))) {
    */
   async calculateReward(address) {
     const utxo = await this.getUnspentOutputs(address);
-    const utxoDetail = await Promise.all(
-      utxo.map(({ txid }) => this.getTransaction(txid)),
-    );
-    const { blockHash = undefined } =
-      await this.getProvider('utxo').getLatestBlock();
+    const utxoDetail = await Promise.all(utxo.map(({ txid }) => this.getTransaction(txid)));
+    const { blockHash = undefined } = await this.getProvider('utxo').getLatestBlock();
     const lastBlock = await this.getProvider('utxo').getBlock(blockHash);
 
     utxo.forEach((input) => {
@@ -175,8 +164,7 @@ class KMDCoin extends HasProviders(BitgoMixin(BitcoinLikeFeeMixin(Coin))) {
    * @returns {Promise<void>}
    */
   async createClaimTransaction(rewardObject) {
-    const { inputs = [], reward } =
-      rewardObject || (await this.calculateReward(this.address));
+    const { inputs = [], reward } = rewardObject || (await this.calculateReward(this.address));
 
     if (inputs.length === 0) {
       throw new Error('Claim is unavailable, please try again later.');
@@ -186,10 +174,7 @@ class KMDCoin extends HasProviders(BitgoMixin(BitcoinLikeFeeMixin(Coin))) {
       throw new Error('Current reward is too low. Minimal amount is 0.01 KMD.');
     }
 
-    const balance = inputs.reduce(
-      (acc, { value }) => acc.add(new this.BN(value)),
-      new this.BN(0),
-    );
+    const balance = inputs.reduce((acc, { value }) => acc.add(new this.BN(value)), new this.BN(0));
 
     const tx = await this.buildTx(
       inputs,
@@ -203,9 +188,7 @@ class KMDCoin extends HasProviders(BitgoMixin(BitcoinLikeFeeMixin(Coin))) {
   }
 
   async getInfo() {
-    const { balance, balances } = await this.getProvider('balance').getInfo(
-      this.address,
-    );
+    const { balance, balances } = await this.getProvider('balance').getInfo(this.address);
 
     this.balance = balance;
 

@@ -6,10 +6,7 @@ const TXS_NOT_FOUND_ERROR = 'Transactions not found';
 
 class ZilliqaAtomicExplorer extends ZilliqaAbstractExplorer {
   handleRequestError(error, reqArgs) {
-    if (
-      reqArgs.type === GET_TRANSACTIONS_TYPE &&
-      error.response?.data?.error === TXS_NOT_FOUND_ERROR
-    ) {
+    if (reqArgs.type === GET_TRANSACTIONS_TYPE && error.response?.data?.error === TXS_NOT_FOUND_ERROR) {
       return [];
     }
     return super.handleRequestError(error, reqArgs);
@@ -53,9 +50,7 @@ class ZilliqaAtomicExplorer extends ZilliqaAbstractExplorer {
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    return this.getBech32Address(
-      this.getTxDirection(selfAddress, tx) ? tx.fromAddr : tx.toAddr,
-    );
+    return this.getBech32Address(this.getTxDirection(selfAddress, tx) ? tx.fromAddr : tx.toAddr);
   }
 
   getTxType(tx) {

@@ -14,10 +14,7 @@ class NemNodeExplorer extends Explorer {
   constructor(...args) {
     super(...args);
 
-    this.endpoint = nem.model.objects.create('endpoint')(
-      this.config.baseUrl,
-      nem.model.nodes.defaultPort,
-    );
+    this.endpoint = nem.model.objects.create('endpoint')(this.config.baseUrl, nem.model.nodes.defaultPort);
   }
 
   getAllowedTickers() {
@@ -30,17 +27,11 @@ class NemNodeExplorer extends Explorer {
 
   updateEndpoint(baseUrl) {
     this.config.baseUrl = baseUrl;
-    this.endpoint = nem.model.objects.create('endpoint')(
-      baseUrl,
-      nem.model.nodes.defaultPort,
-    );
+    this.endpoint = nem.model.objects.create('endpoint')(baseUrl, nem.model.nodes.defaultPort);
   }
 
   async getInfo(address) {
-    const response = await nem.com.requests.account.data(
-      this.endpoint,
-      address,
-    );
+    const response = await nem.com.requests.account.data(this.endpoint, address);
 
     return this.modifyInfoResponse(response);
   }
@@ -53,20 +44,14 @@ class NemNodeExplorer extends Explorer {
   }
 
   async getTransaction(txId) {
-    const response = await nem.com.requests.transaction.byHash(
-      this.endpoint,
-      txId,
-    );
+    const response = await nem.com.requests.transaction.byHash(this.endpoint, txId);
 
     return this.modifyTransactionResponse(response);
   }
 
   async getTransactions({ address, offset = 0, limit = this.defaultTxLimit }) {
     this.latestBlock = await this.getLatestBlock();
-    const response = await nem.com.requests.account.transactions.all(
-      this.endpoint,
-      address,
-    );
+    const response = await nem.com.requests.account.transactions.all(this.endpoint, address);
 
     return this.modifyTransactionsResponse(response.data, address);
   }
@@ -110,9 +95,7 @@ class NemNodeExplorer extends Explorer {
       this.wallet.toCurrencyUnit(
         this.getTxDirection(selfAddress, tx)
           ? tx.transaction.amount
-          : new this.wallet.BN(tx.transaction.amount).add(
-              new this.wallet.BN(tx.transaction.fee),
-            ),
+          : new this.wallet.BN(tx.transaction.amount).add(new this.wallet.BN(tx.transaction.fee)),
       ),
     );
   }
@@ -126,10 +109,7 @@ class NemNodeExplorer extends Explorer {
 
   async sendTransaction(rawtx) {
     try {
-      const response = await nem.com.requests.transaction.announce(
-        this.endpoint,
-        rawtx,
-      );
+      const response = await nem.com.requests.transaction.announce(this.endpoint, rawtx);
 
       return this.modifySendTransactionResponse(response);
     } catch (error) {
@@ -151,9 +131,7 @@ class NemNodeExplorer extends Explorer {
   }
 
   getTxFee(tx) {
-    return this.wallet.toCurrencyUnit(
-      (tx && tx.transaction && tx.transaction.fee) || 0,
-    );
+    return this.wallet.toCurrencyUnit((tx && tx.transaction && tx.transaction.fee) || 0);
   }
 }
 

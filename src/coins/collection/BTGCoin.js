@@ -105,8 +105,7 @@ class BTGCoin extends BitcoinJSMixin(BitcoinLikeFeeMixin(Coin)) {
     const bitcoinJs = await this.loadLib(BITCOINJS);
 
     /* eslint no-bitwise: ["error", { "allow": ["|"] }] */
-    const hashType =
-      bitcoinJs.Transaction.SIGHASH_ALL | bitcoinJs.Transaction.SIGHASH_FORKID;
+    const hashType = bitcoinJs.Transaction.SIGHASH_ALL | bitcoinJs.Transaction.SIGHASH_FORKID;
 
     txBuilder.sign(index, keyForSign, null, hashType, input.satoshis);
   }
@@ -121,10 +120,7 @@ class BTGCoin extends BitcoinJSMixin(BitcoinLikeFeeMixin(Coin)) {
     const bitcoinJs = await this.loadLib(BITCOINJS);
 
     return new Promise(async (resolve, reject) => {
-      const hdPrivateKey = bitcoinJs.HDNode.fromSeedBuffer(
-        seed,
-        await this.getNetwork(),
-      );
+      const hdPrivateKey = bitcoinJs.HDNode.fromSeedBuffer(seed, await this.getNetwork());
       const key = hdPrivateKey.derivePath(this.derivation);
 
       if (!key.keyPair) {

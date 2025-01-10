@@ -43,26 +43,21 @@ class DgbInsightExplorer extends Explorer {
   }
 
   modifyUnspentOutputsResponse(response) {
-    return response.map(
-      ({ address, txid, vout, scriptPubKey: script, satoshis: value }) => ({
-        txid,
-        vout,
-        script,
-        value,
-        address,
-      }),
-    );
+    return response.map(({ address, txid, vout, scriptPubKey: script, satoshis: value }) => ({
+      txid,
+      vout,
+      script,
+      value,
+      address,
+    }));
   }
 
   async sendTransaction(rawtx) {
-    const response = await axios.post(
-      `${this.config.baseUrl}${this.getSendTransactionUrl()}`,
-      { [this.getSendTransactionParam()]: rawtx },
-    );
+    const response = await axios.post(`${this.config.baseUrl}${this.getSendTransactionUrl()}`, {
+      [this.getSendTransactionParam()]: rawtx,
+    });
 
-    return this.modifyGeneralResponse(
-      this.modifySendTransactionResponse(response),
-    );
+    return this.modifyGeneralResponse(this.modifySendTransactionResponse(response));
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
@@ -80,14 +75,8 @@ class DgbInsightExplorer extends Explorer {
     tx.vout.forEach((output) => {
       if (output.scriptPubKey.addresses.length > 0) {
         if (output.scriptPubKey.addresses[0] !== selfAddress) {
-          if (
-            valueOutPrev.lt(
-              new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-            )
-          ) {
-            valueOutPrev = new this.wallet.BN(
-              this.wallet.toMinimalUnit(output.value),
-            );
+          if (valueOutPrev.lt(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)))) {
+            valueOutPrev = new this.wallet.BN(this.wallet.toMinimalUnit(output.value));
             addressTo = output.scriptPubKey.addresses[0];
           }
         }
@@ -110,9 +99,7 @@ class DgbInsightExplorer extends Explorer {
     tx.vout.forEach((output) => {
       if (output.scriptPubKey.addresses) {
         if (output.scriptPubKey.addresses[0] === selfAddress) {
-          valueOut = valueOut.add(
-            new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-          );
+          valueOut = valueOut.add(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)));
         }
       }
     });
@@ -122,19 +109,12 @@ class DgbInsightExplorer extends Explorer {
     const value = valueDiff.abs();
 
     return Number(
-      this.wallet.toCurrencyUnit(
-        isInbound
-          ? value
-          : value.sub(new this.wallet.BN(this.wallet.toMinimalUnit(tx.fees))),
-      ),
+      this.wallet.toCurrencyUnit(isInbound ? value : value.sub(new this.wallet.BN(this.wallet.toMinimalUnit(tx.fees)))),
     );
   }
 
   calculateBalance(utxos = []) {
-    return utxos.reduce(
-      (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0'),
-    );
+    return utxos.reduce((acc, { value }) => new this.wallet.BN(value).add(acc), new this.wallet.BN('0'));
   }
 }
 

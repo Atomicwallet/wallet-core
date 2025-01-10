@@ -1,8 +1,5 @@
 import axios from 'axios';
-
-// import configManager from '../ConfigManager'
-// import { ConfigKey } from '../ConfigManager/ConfigManager.const'
-import { DEFAULT_IPFS_GATEWAY } from '../../env';
+import { DEFAULT_IPFS_GATEWAY } from 'src/env';
 
 const IPFS_PROTOCOL = /(^ipfs:\/\/ipfs\/|^ipfs:\/\/)/;
 const HTTP_OK = 200;
@@ -25,16 +22,7 @@ class NftToken {
    * @param {string} [description] - NFT description. Optional.
    * @param {string} imageUrl - URL to NFT image.
    */
-  constructor(
-    contractAddress,
-    tokenId,
-    coinId,
-    blockchain,
-    tokenStandard,
-    name,
-    description = undefined,
-    imageUrl,
-  ) {
+  constructor(contractAddress, tokenId, coinId, blockchain, tokenStandard, name, description = undefined, imageUrl) {
     /** @type string | null */
     this.contractAddress = contractAddress;
     /** @type string */
@@ -106,9 +94,7 @@ class NftToken {
     });
 
     if (response.status !== HTTP_OK) {
-      throw new Error(
-        `NftToken: fetchImageBlob: Could not fetch image blob: Server returned ${response.status}`,
-      );
+      throw new Error(`NftToken: fetchImageBlob: Could not fetch image blob: Server returned ${response.status}`);
     }
 
     return {

@@ -2,16 +2,16 @@ import crypto from 'crypto';
 import util from 'util';
 
 import axios from 'axios';
+import { ATOMIC_HEDERA_ACCOUNTS_SERVICE } from 'src/env';
 import { WalletError } from 'src/errors';
+import { Amount, LazyLoadedLib } from 'src/utils';
+import { WALLET_ERROR } from 'src/utils/const';
 
 import { Coin } from '../../abstract';
-import { ATOMIC_HEDERA_ACCOUNTS_SERVICE } from '../../env';
 import HashnodeExplorer from '../../explorers/collection//HashnodeExplorer';
 import HederaMirrorNodeExplorer from '../../explorers/collection//HederaMirrorNodeExplorer';
 import HederaStakingExplorer from '../../explorers/collection//HederaStakingExplorer';
 import KabutoExplorer from '../../explorers/collection/KabutoExplorer';
-import { Amount, LazyLoadedLib } from '../../utils';
-import { WALLET_ERROR } from '../../utils/const';
 import { HasProviders, StakingMixin } from '../mixins';
 
 const NAME = 'Hedera';
@@ -54,12 +54,7 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      HashnodeExplorer,
-      KabutoExplorer,
-      HederaStakingExplorer,
-      HederaMirrorNodeExplorer,
-    ]);
+    this.setExplorersModules([HashnodeExplorer, KabutoExplorer, HederaStakingExplorer, HederaMirrorNodeExplorer]);
 
     this.loadExplorers(config);
 
@@ -150,11 +145,7 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
     let chainCode = digest.subarray(32);
 
     for (const index of [44, 3030, 0, 0]) {
-      ({ keyBytes, chainCode } = this.#deriveChildKey(
-        keyBytes,
-        chainCode,
-        index,
-      ));
+      ({ keyBytes, chainCode } = this.#deriveChildKey(keyBytes, chainCode, index));
     }
     const { PrivateKey } = await this.loadLib();
     const key = PrivateKey.fromBytes(keyBytes);
@@ -228,9 +219,7 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
     }
 
     try {
-      const { accountId } = await axios.get(
-        ATOMIC_HEDERA_ACCOUNTS_SERVICE + this.publicKey,
-      );
+      const { accountId } = await axios.get(ATOMIC_HEDERA_ACCOUNTS_SERVICE + this.publicKey);
 
       return accountId;
     } catch (error) {
@@ -324,9 +313,7 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
   async createAccountTransaction(publicKey, initialBalance) {
     const { Hbar, PublicKey, AccountCreateTransaction } = await this.loadLib();
     const pubKey = PublicKey.fromString(publicKey);
-    const tx = new AccountCreateTransaction()
-      .setKey(pubKey)
-      .setInitialBalance(Hbar.fromTinybars(initialBalance));
+    const tx = new AccountCreateTransaction().setKey(pubKey).setInitialBalance(Hbar.fromTinybars(initialBalance));
 
     const signedTx = await this.signTransaction(tx);
 
@@ -347,8 +334,9 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   async fetchStakingInfo() {
-    const { pending_reward: pendingReward, staked_node_id: stakedNodeId } =
-      await this.getProvider('staking').getInfo(this.address);
+    const { pending_reward: pendingReward, staked_node_id: stakedNodeId } = await this.getProvider('staking').getInfo(
+      this.address,
+    );
 
     const rewards = this.calculateRewards(pendingReward);
     const staked = this.calculateStakedBalance(stakedNodeId);
@@ -373,10 +361,7 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
   // @TODO `total` param is not passed from `StakingMixin::makeStakingInfoStruct::calculateAvailableForStake`
   // probably it should be `balance`?
   async calculateAvailableForStake({ balance }) {
-    const available = balance
-      .toBN()
-      .sub(new this.BN(this.fee))
-      .sub(new this.BN(this.reserveForStake));
+    const available = balance.toBN().sub(new this.BN(this.fee)).sub(new this.BN(this.reserveForStake));
 
     return new Amount(available.isNeg() ? '0' : available, this);
   }
@@ -386,28 +371,19 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   async claim() {
-    const { staked_node_id: validator } = await this.getProvider(
-      'staking',
-    ).getInfo(this.address);
+    const { staked_node_id: validator } = await this.getProvider('staking').getInfo(this.address);
 
     return this.stake({ validator });
   }
 
   async stake({ validator }) {
-    const { transactionHash } = await this.getProvider('staking').stake(
-      this,
-      validator,
-      this.#privateKey,
-    );
+    const { transactionHash } = await this.getProvider('staking').stake(this, validator, this.#privateKey);
 
     return Buffer.from(transactionHash).toString('hex');
   }
 
   async unstake() {
-    const { transactionHash } = await this.getProvider('staking').unstake(
-      this,
-      this.#privateKey,
-    );
+    const { transactionHash } = await this.getProvider('staking').unstake(this, this.#privateKey);
 
     return Buffer.from(transactionHash).toString('hex');
   }

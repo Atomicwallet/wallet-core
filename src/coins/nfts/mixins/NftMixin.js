@@ -26,10 +26,7 @@ const NftMixin = (superclass) =>
      * @returns {string} - NFT info url.
      */
     getNftInfoUrl(contractAddress, tokenId) {
-      return this.getProvider('nft-mint-url').makeNftInfoUrl(
-        contractAddress,
-        tokenId,
-      );
+      return this.getProvider('nft-mint-url').makeNftInfoUrl(contractAddress, tokenId);
     }
 
     /**

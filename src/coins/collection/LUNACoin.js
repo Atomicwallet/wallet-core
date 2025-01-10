@@ -41,16 +41,7 @@ const TERRA_SDK = 'terraSdk';
 class LUNACoin extends StakingMixin(HasProviders(Coin)) {
   #privateKey;
 
-  constructor({
-    alias,
-    notify,
-    feeData,
-    explorers,
-    txWebUrl,
-    socket,
-    isTestnet,
-    id,
-  }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
     const config = {
       id,
       alias,
@@ -84,12 +75,9 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
     this.isTestnet = isTestnet;
     this.fields.paymentId = true;
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   /**
@@ -168,9 +156,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
    * @return {string} { description_of_the_return_value }
    */
   getAddress() {
-    return this.#privateKey
-      ? this.address
-      : new Error(`${this.ticker} private key is empty`);
+    return this.#privateKey ? this.address : new Error(`${this.ticker} private key is empty`);
   }
 
   /**
@@ -197,15 +183,9 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
 
     bignumber = withoutCoeff
       ? bignumber
-      : bignumber.plus(
-          isToken ? this.tokenGasPriceCoefficient : this.gasPriceCoefficient,
-        );
+      : bignumber.plus(isToken ? this.tokenGasPriceCoefficient : this.gasPriceCoefficient);
 
-    bignumber = bignumber
-      .times(GWEI)
-      .dividedBy(MINIMAL_UNIT)
-      .integerValue(this.BigNumber.ROUND_CEIL)
-      .times(GWEI);
+    bignumber = bignumber.times(GWEI).dividedBy(MINIMAL_UNIT).integerValue(this.BigNumber.ROUND_CEIL).times(GWEI);
 
     return new this.BN(bignumber.toFixed());
   }
@@ -224,9 +204,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
    * @return {Promise<BN>} The fee.
    */
   async getFee({ sendType } = { sendType: LUNA_SEND_TYPES.SEND }) {
-    const amount = (await this.createFee(sendType)).amount
-      .toString()
-      .replace('uluna', '');
+    const amount = (await this.createFee(sendType)).amount.toString().replace('uluna', '');
 
     return new this.BN(amount);
   }
@@ -240,13 +218,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
    * @param {number} multiplier coefficient
    * @return {Promise<string>} Raw transaction
    */
-  async createTransaction({
-    memo,
-    amount,
-    address,
-    denom = this.denom,
-    sendType,
-  }) {
+  async createTransaction({ memo, amount, address, denom = this.denom, sendType }) {
     sendType = sendType?.toLowerCase() || LUNA_SEND_TYPES.SEND;
 
     const [sendMsg, gasPrices] = await Promise.all([
@@ -296,11 +268,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
 
   async getInfo() {
     try {
-      const balance = await this.getProvider('balance').getBalance(
-        this.address,
-        false,
-        this.denom,
-      );
+      const balance = await this.getProvider('balance').getBalance(this.address, false, this.denom);
 
       if (typeof balance !== 'string') {
         throw new TypeError(`[${this.ticker}] can't get balance`);
@@ -359,9 +327,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   async createWithdrawDelegationTransaction(memo = '') {
-    const [validators] = await this.getProvider('balance').getValidators(
-      this.address,
-    );
+    const [validators] = await this.getProvider('balance').getValidators(this.address);
 
     const [msgs, fee] = await Promise.all([
       this.createMsgsWithdraw({
@@ -381,16 +347,9 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
     const explorer = this.getProvider('balance');
 
     const stakedValidators = {};
-    const staked = this.calculateStakedBalance(
-      await explorer.getStakedDelegations(this.address),
-      stakedValidators,
-    );
-    const rewards = this.calculateRewards(
-      await explorer.getRewardsBalance(this.address),
-    );
-    const unstaking = this.calculateUnstakingBalance(
-      await explorer.getUnbondingDelegations(this.address),
-    );
+    const staked = this.calculateStakedBalance(await explorer.getStakedDelegations(this.address), stakedValidators);
+    const rewards = this.calculateRewards(await explorer.getRewardsBalance(this.address));
+    const unstaking = this.calculateUnstakingBalance(await explorer.getUnbondingDelegations(this.address));
 
     return {
       rewards,
@@ -405,10 +364,8 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   async createFee(sendType = LUNA_SEND_TYPES.SEND) {
-    const gas =
-      Number(this.gasLimit?.[sendType]) || FALLBACK_GASLIMIT[sendType];
-    const price =
-      Number(this.gasPrices?.uluna) || Number(FALLBACK_GASPRICE.uluna);
+    const gas = Number(this.gasLimit?.[sendType]) || FALLBACK_GASLIMIT[sendType];
+    const price = Number(this.gasPrices?.uluna) || Number(FALLBACK_GASPRICE.uluna);
 
     const amount = (gas * price).toFixed(0);
 
@@ -429,36 +386,20 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   calculateTotal({ balance, staked, unstaking, rewards }) {
-    return new Amount(
-      balance
-        .toBN()
-        .add(staked.toBN())
-        .add(unstaking.toBN())
-        .add(rewards.toBN())
-        .toString(),
-      this,
-    );
+    return new Amount(balance.toBN().add(staked.toBN()).add(unstaking.toBN()).add(rewards.toBN()).toString(), this);
   }
 
   calculateAvailableBalance(available) {
-    return new Amount(
-      available.find((balance) => balance.denom === this.denom)?.amount ?? '0',
-      this,
-    );
+    return new Amount(available.find((balance) => balance.denom === this.denom)?.amount ?? '0', this);
   }
 
   calculateRewards(rewards) {
-    return new Amount(
-      rewards.total?._coins?.uluna?.amount?.toString().split('.')[0] || '0',
-      this,
-    );
+    return new Amount(rewards.total?._coins?.uluna?.amount?.toString().split('.')[0] || '0', this);
   }
 
   calculateStakedBalance(delegations, stakedValidators) {
     return new Amount(
-      delegations?.length > 0
-        ? this.getTotalDelegations(delegations, stakedValidators).toString()
-        : '0',
+      delegations?.length > 0 ? this.getTotalDelegations(delegations, stakedValidators).toString() : '0',
       this,
     );
   }
@@ -467,21 +408,15 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
     const unbonding = { validators: {} };
 
     if (delegations?.length > 0) {
-      const totalUnbonding = delegations.reduce(
-        (total, { entries, validator_address: validatorAddress }) => {
-          const moniker = validatorAddress;
+      const totalUnbonding = delegations.reduce((total, { entries, validator_address: validatorAddress }) => {
+        const moniker = validatorAddress;
 
-          unbonding.validators[moniker] = entries
-            .map((entry) => new this.BN(entry.balance.toString()))
-            .reduce(
-              (prev, cur) => prev.add(new this.BN(cur)),
-              new this.BN('0'),
-            );
+        unbonding.validators[moniker] = entries
+          .map((entry) => new this.BN(entry.balance.toString()))
+          .reduce((prev, cur) => prev.add(new this.BN(cur)), new this.BN('0'));
 
-          return total.add(unbonding.validators[moniker]);
-        },
-        new this.BN('0'),
-      );
+        return total.add(unbonding.validators[moniker]);
+      }, new this.BN('0'));
 
       unbonding.total = totalUnbonding;
     }
@@ -490,23 +425,17 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   getTotalDelegations(delegations, stakedValidators) {
-    return delegations.reduce(
-      (total, { validator_address: address, balance }) => {
-        stakedValidators[address] = {
-          address,
-          staked: new Amount(new this.BN(balance.amount.toString()), this),
-        };
+    return delegations.reduce((total, { validator_address: address, balance }) => {
+      stakedValidators[address] = {
+        address,
+        staked: new Amount(new this.BN(balance.amount.toString()), this),
+      };
 
-        return total.add(new this.BN(balance.amount.toString()));
-      },
-      new this.BN('0'),
-    );
+      return total.add(new this.BN(balance.amount.toString()));
+    }, new this.BN('0'));
   }
 
-  createMsgsBySendType(
-    sendType,
-    { validator, amount, toAddress, validators, denom },
-  ) {
+  createMsgsBySendType(sendType, { validator, amount, toAddress, validators, denom }) {
     switch (sendType) {
       case LUNA_SEND_TYPES.STAKE:
         return [this.createMsgDelegate({ validator, amount })];
@@ -560,9 +489,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   async createAndSignTx(payload) {
-    return this.getProvider('node')
-      .getLcdWallet(this.rawKey)
-      .createAndSignTx(payload);
+    return this.getProvider('node').getLcdWallet(this.rawKey).createAndSignTx(payload);
   }
 }
 

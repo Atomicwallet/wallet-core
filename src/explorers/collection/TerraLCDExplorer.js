@@ -101,8 +101,7 @@ export default class TerraLCDExplorer extends Explorer {
   }
 
   async getUnbondingDelegations(address) {
-    const [delegations] =
-      await this.lcdClient.staking.unbondingDelegations(address);
+    const [delegations] = await this.lcdClient.staking.unbondingDelegations(address);
 
     return delegations;
   }

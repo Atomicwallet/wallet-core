@@ -53,25 +53,21 @@ class BlockbookExplorer extends Explorer {
   }
 
   modifyUnspentOutputsResponse(response) {
-    return response.map(
-      ({ address, txid, vout, scriptPubKey: script, satoshis: value }) => ({
-        txid,
-        txId: txid, // DGB
-        vout,
-        script,
-        value,
-        address: this.modifyUnspentAddress(address),
-        outputIndex: vout, // BTC
-        satoshis: Number(value),
-      }),
-    );
+    return response.map(({ address, txid, vout, scriptPubKey: script, satoshis: value }) => ({
+      txid,
+      txId: txid, // DGB
+      vout,
+      script,
+      value,
+      address: this.modifyUnspentAddress(address),
+      outputIndex: vout, // BTC
+      satoshis: Number(value),
+    }));
   }
 
   modifyUnspentAddress(address) {
     if (['BCH', 'BSV'].includes(this.wallet.ticker)) {
-      return bitcoinCashAddressTools.isCashAddress(address)
-        ? address
-        : bitcoinCashAddressTools.toCashAddress(address);
+      return bitcoinCashAddressTools.isCashAddress(address) ? address : bitcoinCashAddressTools.toCashAddress(address);
     }
 
     return address;
@@ -90,14 +86,11 @@ class BlockbookExplorer extends Explorer {
   }
 
   async sendTransaction(rawtx) {
-    const response = await axios.post(
-      `${this.config.baseUrl}${this.getSendTransactionUrl()}`,
-      { [this.getSendTransactionParam()]: rawtx },
-    );
+    const response = await axios.post(`${this.config.baseUrl}${this.getSendTransactionUrl()}`, {
+      [this.getSendTransactionParam()]: rawtx,
+    });
 
-    return this.modifyGeneralResponse(
-      this.modifySendTransactionResponse(response),
-    );
+    return this.modifyGeneralResponse(this.modifySendTransactionResponse(response));
   }
 
   /**
@@ -126,22 +119,14 @@ class BlockbookExplorer extends Explorer {
 
     tx.vin.forEach((input) => {
       if (input.addresses.includes(selfAddress)) {
-        valueIn = valueIn.add(
-          new this.wallet.BN(this.wallet.toMinimalUnit(input.value)),
-        );
+        valueIn = valueIn.add(new this.wallet.BN(this.wallet.toMinimalUnit(input.value)));
       }
     });
 
     tx.vout.forEach((output) => {
-      if (
-        output.scriptPubKey &&
-        output.scriptPubKey.addresses &&
-        output.scriptPubKey.addresses.length > 0
-      ) {
+      if (output.scriptPubKey && output.scriptPubKey.addresses && output.scriptPubKey.addresses.length > 0) {
         if (output.scriptPubKey.addresses[0] === selfAddress) {
-          valueOut = valueOut.add(
-            new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-          );
+          valueOut = valueOut.add(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)));
         }
       }
     });
@@ -151,11 +136,7 @@ class BlockbookExplorer extends Explorer {
     const value = valueDiff.abs();
 
     return Number(
-      this.wallet.toCurrencyUnit(
-        isInbound
-          ? value
-          : value.sub(new this.wallet.BN(this.wallet.toMinimalUnit(tx.fees))),
-      ),
+      this.wallet.toCurrencyUnit(isInbound ? value : value.sub(new this.wallet.BN(this.wallet.toMinimalUnit(tx.fees)))),
     );
   }
 
@@ -166,9 +147,7 @@ class BlockbookExplorer extends Explorer {
    * @return {Boolean} The trasaction direction.
    */
   getTxDirection(selfAddress, tx) {
-    return (
-      tx.vin && !tx.vin.find(({ addresses }) => addresses.includes(selfAddress))
-    );
+    return tx.vin && !tx.vin.find(({ addresses }) => addresses.includes(selfAddress));
   }
 
   /**
@@ -190,20 +169,10 @@ class BlockbookExplorer extends Explorer {
     let addressTo = '...';
 
     tx.vout.forEach((output) => {
-      if (
-        output.scriptPubKey &&
-        output.scriptPubKey.addresses &&
-        output.scriptPubKey.addresses.length > 0
-      ) {
+      if (output.scriptPubKey && output.scriptPubKey.addresses && output.scriptPubKey.addresses.length > 0) {
         if (output.scriptPubKey.addresses[0] !== selfAddress) {
-          if (
-            valueOutPrev.lt(
-              new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-            )
-          ) {
-            valueOutPrev = new this.wallet.BN(
-              this.wallet.toMinimalUnit(output.value),
-            );
+          if (valueOutPrev.lt(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)))) {
+            valueOutPrev = new this.wallet.BN(this.wallet.toMinimalUnit(output.value));
             addressTo = output.scriptPubKey.addresses[0];
           }
         }
@@ -220,10 +189,7 @@ class BlockbookExplorer extends Explorer {
    * @return {BN} The balance.
    */
   calculateBalance(utxos = []) {
-    return utxos.reduce(
-      (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0'),
-    );
+    return utxos.reduce((acc, { value }) => new this.wallet.BN(value).add(acc), new this.wallet.BN('0'));
   }
 }
 

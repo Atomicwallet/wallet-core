@@ -1,10 +1,6 @@
 import { ExplorerRequestError, WalletError } from 'src/errors';
 
-import {
-  LazyLoadedLib,
-  SEND_TRANSACTION_TYPE,
-  WALLET_ERROR,
-} from '../../utils';
+import { LazyLoadedLib, SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils';
 
 const CONFIRM_TIMEOUT = 5000;
 const CONFIRM_RETRIES = 5;
@@ -191,9 +187,7 @@ const NeoMixin = (superclass) =>
 
         await this.sendAllToMyself();
 
-        await new Promise((resolve, reject) =>
-          setTimeout(resolve, CONFIRM_TIMEOUT),
-        );
+        await new Promise((resolve, reject) => setTimeout(resolve, CONFIRM_TIMEOUT));
         const coreLib = await this.loadLib('coreLib');
 
         const apiProvider = new coreLib.api.neoscan.instance('MainNet');
@@ -221,16 +215,12 @@ const NeoMixin = (superclass) =>
 
       do {
         try {
-          await new Promise((resolve, reject) =>
-            setTimeout(resolve, CONFIRM_TIMEOUT),
-          );
+          await new Promise((resolve, reject) => setTimeout(resolve, CONFIRM_TIMEOUT));
           await this.getTransaction(txid);
           confirmed = true;
         } catch (error) {
           if (tries >= CONFIRM_RETRIES) {
-            console.error(
-              `[${this.ticker}] waitUntilConfirmed: max tries count reached`,
-            );
+            console.error(`[${this.ticker}] waitUntilConfirmed: max tries count reached`);
             throw error;
           }
         }
@@ -268,10 +258,7 @@ const NeoMixin = (superclass) =>
 
       const account3 = new wallet3.Account(this.#privateKey);
 
-      raw.tx.addAttribute(
-        tx.TxAttrUsage.Remark14,
-        Buffer.from(account3.address).toString('hex'),
-      );
+      raw.tx.addAttribute(tx.TxAttrUsage.Remark14, Buffer.from(account3.address).toString('hex'));
 
       await api.signTx(raw);
 

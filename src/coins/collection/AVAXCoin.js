@@ -31,9 +31,7 @@ const ETHEREUM_JS_WALLET_SDK = 'ethereumJsWalletSdk';
 /**
  * @class AVAXCoin
  */
-class AVAXCoin extends Web3Mixin(
-  NftMixin(HasProviders(HasBlockScanner(Coin))),
-) {
+class AVAXCoin extends Web3Mixin(NftMixin(HasProviders(HasBlockScanner(Coin)))) {
   #privateKey;
 
   /** @type {string} */
@@ -56,20 +54,13 @@ class AVAXCoin extends Web3Mixin(
       chainId: config.chainId || AVAX_CHAIN_ID,
       dependencies: {
         [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(
-          () => import('ethereumjs-wallet'),
-        ),
+        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
       },
     });
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      Web3Explorer,
-      SnowTraceExplorer,
-      ETHNftExplorer,
-      MoralisExplorer,
-    ]);
+    this.setExplorersModules([Web3Explorer, SnowTraceExplorer, ETHNftExplorer, MoralisExplorer]);
 
     this.loadExplorers(config);
 
@@ -77,9 +68,7 @@ class AVAXCoin extends Web3Mixin(
 
     this.setFeeData(feeData);
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3BaseUrl = web3Params.baseUrl;
 
@@ -119,9 +108,7 @@ class AVAXCoin extends Web3Mixin(
     this.gasLimitCoefficient = feeData.gasLimitCoefficient;
     this.gasPriceCoefficient = feeData.gasPriceCoefficient;
     this.defaultGasPrice = new this.BN(feeData.defaultGasPrice);
-    this.defaultMaxGasPrice = new this.BN(feeData.defaultMaxGasPrice).div(
-      new this.BN(nAVAX),
-    );
+    this.defaultMaxGasPrice = new this.BN(feeData.defaultMaxGasPrice).div(new this.BN(nAVAX));
     this.resendTimeout = feeData.resendTimeout;
     this.nftGasLimitCoefficient = feeData.nftGasLimitCoefficient;
     this.nftGasPriceCoefficient = feeData.nftGasPriceCoefficient;
@@ -138,15 +125,10 @@ class AVAXCoin extends Web3Mixin(
    * @return {Promise<Object>} The private key.
    */
   async loadWallet(seed) {
-    const [coreLibrary, { hdkey }] = await Promise.all([
-      this.getCoreLibrary(),
-      this.loadLib(ETHEREUM_JS_WALLET_SDK),
-    ]);
+    const [coreLibrary, { hdkey }] = await Promise.all([this.getCoreLibrary(), this.loadLib(ETHEREUM_JS_WALLET_SDK)]);
     const ethHDKey = hdkey.fromMasterSeed(seed);
     const wallet = ethHDKey.getWallet();
-    const account = coreLibrary.eth.accounts.privateKeyToAccount(
-      wallet.getPrivateKeyString(),
-    );
+    const account = coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
     if (!account) {
       throw new Error(`${this.wallet.ticker} can't get the wallet`);
@@ -194,17 +176,8 @@ class AVAXCoin extends Web3Mixin(
    * @param {number} multiplier coefficient
    * @return {Promise<string>} Raw transaction
    */
-  async createTransaction({
-    address,
-    amount,
-    paymentData = null,
-    userGasPrice,
-    gasLimit = this.gasLimit,
-  }) {
-    const [coreLibrary] = await Promise.all([
-      this.getCoreLibrary(),
-      this.getNonce(),
-    ]);
+  async createTransaction({ address, amount, paymentData = null, userGasPrice, gasLimit = this.gasLimit }) {
+    const [coreLibrary] = await Promise.all([this.getCoreLibrary(), this.getNonce()]);
 
     const transaction = {
       to: address,
@@ -219,10 +192,7 @@ class AVAXCoin extends Web3Mixin(
       transaction.data = paymentData;
     }
 
-    const signedTx = await coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
@@ -245,9 +215,7 @@ class AVAXCoin extends Web3Mixin(
   async getNonce() {
     const coreLibrary = await this.getCoreLibrary();
 
-    this.nonce = new this.BN(
-      await coreLibrary.eth.getTransactionCount(this.address),
-    );
+    this.nonce = new this.BN(await coreLibrary.eth.getTransactionCount(this.address));
 
     return this.nonce;
   }
@@ -258,9 +226,9 @@ class AVAXCoin extends Web3Mixin(
    * @return {Promise<BN>} The fee.
    */
   async getFee({ userGasPrice = null, gasLimit = null } = {}) {
-    return new this.BN(
-      new this.BN(userGasPrice || (await this.getGasPrice())),
-    ).mul(new this.BN(gasLimit !== null ? gasLimit : this.gasLimit));
+    return new this.BN(new this.BN(userGasPrice || (await this.getGasPrice()))).mul(
+      new this.BN(gasLimit !== null ? gasLimit : this.gasLimit),
+    );
   }
 
   async getGasPrice(withoutCoeff = false) {
@@ -283,9 +251,7 @@ class AVAXCoin extends Web3Mixin(
 
       const gasPrice = new this.BN(new this.BN(this.defaultGasPrice));
 
-      return withoutCoeff
-        ? gasPrice
-        : gasPrice.add(new this.BN(this.gasPriceCoefficient));
+      return withoutCoeff ? gasPrice : gasPrice.add(new this.BN(this.gasPriceCoefficient));
     }
   }
 
@@ -300,9 +266,7 @@ class AVAXCoin extends Web3Mixin(
     }
 
     const maximumFee = fee ? new this.BN(fee) : await this.getFee();
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -313,9 +277,7 @@ class AVAXCoin extends Web3Mixin(
 
   async updateBalance() {
     try {
-      const { balance } = await this.getProvider('balance').getInfo(
-        this.address,
-      );
+      const { balance } = await this.getProvider('balance').getInfo(this.address);
 
       if (!balance) {
         throw new Error(`${this.ticker} can't get balance`);
@@ -380,13 +342,7 @@ class AVAXCoin extends Web3Mixin(
    * @return {Promise<BN>} - The fee.
    * @throws {ExternalError}
    */
-  async getNftFee({
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    toAddress,
-    userOptions = {},
-  }) {
+  async getNftFee({ contractAddress, tokenId, tokenStandard, toAddress, userOptions = {} }) {
     try {
       const data = await this.getProvider('nft-send').getNftContractData(
         this,
@@ -395,11 +351,7 @@ class AVAXCoin extends Web3Mixin(
         tokenId,
         tokenStandard,
       );
-      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(toAddress, data, userOptions);
 
       return new BN(gasPrice).mul(new BN(gasLimit));
     } catch (error) {
@@ -420,11 +372,7 @@ class AVAXCoin extends Web3Mixin(
    * @param {UserFeeOptions} userOptions - Custom user options.
    * @returns {Promise<{gasLimit: string, gasPrice: string, nonce: number}>}
    */
-  async getNftTransferGasParams(
-    toAddress,
-    data,
-    { userGasPrice, userGasLimit },
-  ) {
+  async getNftTransferGasParams(toAddress, data, { userGasPrice, userGasLimit }) {
     const {
       address,
       nftGasPriceCoefficient,
@@ -436,11 +384,9 @@ class AVAXCoin extends Web3Mixin(
     } = this;
 
     /** @type number */
-    const gasPriceCoefficient =
-      nftGasPriceCoefficient || configGasPriceCoefficient;
+    const gasPriceCoefficient = nftGasPriceCoefficient || configGasPriceCoefficient;
     /** @type number */
-    const gasLimitCoefficient =
-      nftGasLimitCoefficient || configGasLimitCoefficient;
+    const gasLimitCoefficient = nftGasLimitCoefficient || configGasLimitCoefficient;
 
     const defaultGasValues = [
       new BN(defaultGasPrice).mul(new BN(gasPriceCoefficient)).toString(),
@@ -451,19 +397,10 @@ class AVAXCoin extends Web3Mixin(
 
     const [gasPrice, gasLimit] = await Promise.allSettled([
       userGasPrice || this.getNftGasPrice(gasPriceCoefficient),
-      userGasLimit ||
-        this.estimateGasForSendNft(
-          address,
-          toAddress,
-          nonce,
-          data,
-          gasLimitCoefficient,
-        ),
+      userGasLimit || this.estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient),
     ]).then((resultList) =>
       resultList.map((result, i) => {
-        return result.status === 'fulfilled'
-          ? result.value
-          : defaultGasValues[i];
+        return result.status === 'fulfilled' ? result.value : defaultGasValues[i];
       }),
     );
 
@@ -481,21 +418,10 @@ class AVAXCoin extends Web3Mixin(
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async estimateGasForSendNft(
-    address,
-    toAddress,
-    nonce,
-    data,
-    gasLimitCoefficient = 1,
-  ) {
+  async estimateGasForSendNft(address, toAddress, nonce, data, gasLimitCoefficient = 1) {
     try {
       /** @type number */
-      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(
-        address,
-        toAddress,
-        nonce,
-        data,
-      );
+      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(address, toAddress, nonce, data);
 
       return Math.ceil(fetchedGasLimit * gasLimitCoefficient).toString();
     } catch (error) {
@@ -515,9 +441,7 @@ class AVAXCoin extends Web3Mixin(
     try {
       const fetchedGasPrice = await this.getProvider('nft-send').getGasPrice();
 
-      return new BN(fetchedGasPrice)
-        .mul(new BN(gasPriceCoefficient))
-        .toString();
+      return new BN(fetchedGasPrice).mul(new BN(gasPriceCoefficient)).toString();
     } catch (error) {
       console.warn(error);
       throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
@@ -534,18 +458,9 @@ class AVAXCoin extends Web3Mixin(
    * @return {Promise<string>} - Raw transaction
    * @throws {ExternalError}
    */
-  async createNftTransaction({
-    toAddress,
-    contractAddress,
-    data,
-    userOptions = {},
-  }) {
+  async createNftTransaction({ toAddress, contractAddress, data, userOptions = {} }) {
     try {
-      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(
-        toAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(toAddress, data, userOptions);
 
       const transaction = {
         to: contractAddress,
@@ -558,10 +473,7 @@ class AVAXCoin extends Web3Mixin(
       };
 
       const coreLibrary = await this.getCoreLibrary();
-      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(
-        transaction,
-        this.#privateKey,
-      );
+      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
       return rawTransaction;
     } catch (error) {

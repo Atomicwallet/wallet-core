@@ -19,8 +19,7 @@ if (!wallet) {
 }
 
 jest.spyOn(wallet, 'createTransaction').mockImplementation(({ address }) => {
-  const { bodyBytes, authInfoBytes, signature } =
-    createCosmoMockSignedData(address);
+  const { bodyBytes, authInfoBytes, signature } = createCosmoMockSignedData(address);
 
   return Promise.resolve({
     signed: {

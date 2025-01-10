@@ -1,10 +1,6 @@
 import { WalletError, InsufficientFundsError } from 'src/errors';
 
-import {
-  SEND_TRANSACTION_TYPE,
-  WALLET_ERROR,
-  LIB_NAME_INDEX,
-} from '../../utils/const';
+import { SEND_TRANSACTION_TYPE, WALLET_ERROR, LIB_NAME_INDEX } from '../../utils/const';
 
 const { BITCOINJS } = LIB_NAME_INDEX;
 
@@ -21,10 +17,7 @@ const BitcoinJSMixin = (superclass) =>
     async loadWallet(seed) {
       const bitcoinJs = await this.loadLib(BITCOINJS);
 
-      const hdPrivateKey = bitcoinJs.bip32.fromSeed(
-        seed,
-        await this.getNetwork(),
-      );
+      const hdPrivateKey = bitcoinJs.bip32.fromSeed(seed, await this.getNetwork());
       const keys = hdPrivateKey.derivePath(this.derivation);
 
       if (!keys) {
@@ -177,15 +170,7 @@ const BitcoinJSMixin = (superclass) =>
         });
       }
 
-      const tx = await this.buildTx(
-        inputs,
-        this.address,
-        forkBalance,
-        change,
-        privateKey,
-        forkAddress,
-        1,
-      );
+      const tx = await this.buildTx(inputs, this.address, forkBalance, change, privateKey, forkAddress, 1);
 
       return tx;
     }
@@ -232,28 +217,12 @@ const BitcoinJSMixin = (superclass) =>
         });
       }
 
-      const tx = await this.buildTx(
-        inputs,
-        address,
-        amount,
-        change,
-        undefined,
-        undefined,
-        1,
-      );
+      const tx = await this.buildTx(inputs, address, amount, change, undefined, undefined, 1);
 
       return tx;
     }
 
-    async buildTx(
-      inputs,
-      address,
-      amount,
-      change,
-      privateKey,
-      otherSideAddr = undefined,
-      version,
-    ) {
+    async buildTx(inputs, address, amount, change, privateKey, otherSideAddr = undefined, version) {
       return new Promise(async (resolve, reject) => {
         const txBuilder = await this.getTransactionBuilder();
 
@@ -268,19 +237,14 @@ const BitcoinJSMixin = (superclass) =>
         txBuilder.addOutput(address, parseInt(amount.toString(), 10));
 
         if (change.gt(new this.BN(0))) {
-          txBuilder.addOutput(
-            otherSideAddr || this.address,
-            parseInt(change.toString(), 10),
-          );
+          txBuilder.addOutput(otherSideAddr || this.address, parseInt(change.toString(), 10));
         }
 
         const keyForSign = await this.getKeyForSignFromPrivateKey(privateKey);
 
         // sign transaction
         await Promise.all(
-          inputs.map(async (input, index) =>
-            this.signInput(txBuilder, keyForSign, index, input),
-          ),
+          inputs.map(async (input, index) => this.signInput(txBuilder, keyForSign, index, input)),
         ).catch(reject);
 
         try {
@@ -302,9 +266,7 @@ const BitcoinJSMixin = (superclass) =>
     async getScriptPubKey() {
       const bitcoinJs = await this.loadLib(BITCOINJS);
 
-      return bitcoinJs.address
-        .toOutputScript(this.address, await this.getNetwork())
-        .toString('hex');
+      return bitcoinJs.address.toOutputScript(this.address, await this.getNetwork()).toString('hex');
     }
 
     setPrivateKey(privateKey) {

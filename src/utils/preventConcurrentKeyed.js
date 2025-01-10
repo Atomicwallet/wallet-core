@@ -3,7 +3,8 @@
  * Returns a scoped function with its own keys namespace.
  *
  * @returns {<T>(key: string, cb: () => Promise<T>) => Promise<T>}
- *    will return same promise if called multiple times with the same key while the promise is in pending state
+ * will return same promise if called multiple times with the same key while the promise is in
+ * pending state
  */
 export default () => {
   const pendingPromises = new Map();

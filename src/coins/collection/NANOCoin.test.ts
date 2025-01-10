@@ -38,18 +38,14 @@ jest.spyOn(wallet, 'getWork').mockImplementation(async (frontier) => {
   return work;
 });
 
-jest
-  .spyOn(wallet, 'getAccountPublicKey')
-  .mockImplementation(async (address) => {
-    const { publicKey } = generateMockData(address);
-    return publicKey;
-  });
+jest.spyOn(wallet, 'getAccountPublicKey').mockImplementation(async (address) => {
+  const { publicKey } = generateMockData(address);
+  return publicKey;
+});
 
-jest
-  .spyOn(wallet, 'signSendBlock')
-  .mockImplementation(async (payload, balance) => {
-    const { signature } = generateMockData(wallet.address);
-    return signature;
-  });
+jest.spyOn(wallet, 'signSendBlock').mockImplementation(async (payload, balance) => {
+  const { signature } = generateMockData(wallet.address);
+  return signature;
+});
 
 generateWalletTests(wallet);

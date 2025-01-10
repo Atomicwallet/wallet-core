@@ -124,14 +124,10 @@ class DOGECoin extends BitcoinJSMixin(BitcoinLikeFeeMixin(Coin)) {
     super.updateCoinParamsFromServer(data);
 
     const mainExplorerData = data.explorers.find(
-      ({ className }) =>
-        this.explorer.constructor.name.indexOf(className) !== -1,
+      ({ className }) => this.explorer.constructor.name.indexOf(className) !== -1,
     );
 
-    if (
-      mainExplorerData &&
-      this.explorer.baseUrl !== mainExplorerData.baseUrl
-    ) {
+    if (mainExplorerData && this.explorer.baseUrl !== mainExplorerData.baseUrl) {
       this.explorer.baseUrl = mainExplorerData.baseUrl;
     }
   }

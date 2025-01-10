@@ -34,16 +34,7 @@ const CHECK_TX_UPDATE_TIMEOUT = 3000;
 class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
   #privateKey;
 
-  constructor({
-    alias,
-    notify,
-    feeData,
-    explorers,
-    txWebUrl,
-    socket,
-    isTestnet,
-    id,
-  }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
     const config = {
       id,
       alias,
@@ -72,8 +63,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
     /** @type {string[]} */
     this.bannedTokens = [];
 
-    this.tokenContractTransferFee =
-      feeData?.tokenContractTransferFee ?? TOKEN_CONTRACT_TRANSFER_FEE;
+    this.tokenContractTransferFee = feeData?.tokenContractTransferFee ?? TOKEN_CONTRACT_TRANSFER_FEE;
   }
 
   /**
@@ -90,16 +80,10 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
     this.keys = keys;
     this.#privateKey = TonWeb.utils.bytesToHex(keys.secretKey);
 
-    const tonweb = new TonWeb(
-      this.getProvider(TONWEB_PROVIDER_OPERATION).provider,
-    );
+    const tonweb = new TonWeb(this.getProvider(TONWEB_PROVIDER_OPERATION).provider);
 
     this.wallet = await tonweb.wallet.create({ publicKey: keys.publicKey });
-    this.address = (await this.wallet.getAddress(keys.publicKey)).toString(
-      true,
-      true,
-      true,
-    );
+    this.address = (await this.wallet.getAddress(keys.publicKey)).toString(true, true, true);
 
     return { id: this.id, privateKey: this.#privateKey, address: this.address };
   }
@@ -120,21 +104,18 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
         secretKey: this.keys.secretKey,
         toAddress: address
           ? new TonWeb.utils.Address(address).toString(true, true, false)
-          : 'EQCKj9RrtWJhvbVwIWDYg2MBIEoiy0G2qzotgHhqaJQb6ztu', // needed valid address to create fake transfer for estimation
+          : 'EQCKj9RrtWJhvbVwIWDYg2MBIEoiy0G2qzotgHhqaJQb6ztu',
+        // needed valid address to create fake transfer for estimation
         amount,
         seqno: seqno || 0,
         payload: custom,
       })
       .estimateFee();
 
-    const feeReserve =
-      Number(this.feeData?.reserveForSend) || FALLBACK_FEE_RESERVE;
+    const feeReserve = Number(this.feeData?.reserveForSend) || FALLBACK_FEE_RESERVE;
 
     const result = new this.BN(
-      Object.values(estimation.source_fees).reduce(
-        (prev, cur) => (cur !== 'fees' ? prev + cur : prev),
-        feeReserve,
-      ),
+      Object.values(estimation.source_fees).reduce((prev, cur) => (cur !== 'fees' ? prev + cur : prev), feeReserve),
     );
 
     return result;
@@ -160,9 +141,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
 
     if (!this.state) {
       try {
-        await this.wallet
-          .deploy(TonWeb.utils.hexToBytes(this.#privateKey))
-          .send();
+        await this.wallet.deploy(TonWeb.utils.hexToBytes(this.#privateKey)).send();
       } catch (error) {
         // logger.error({ instance: this, error });
         // console.log(error);
@@ -211,9 +190,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
     }
 
     const { state, balance } =
-      (await this.getProvider(BALANCE_PROVIDER_OPERATION)
-        .getState(this.address)
-        .catch()) ?? {};
+      (await this.getProvider(BALANCE_PROVIDER_OPERATION).getState(this.address).catch()) ?? {};
 
     if (balance) {
       this.balance = balance;
@@ -242,9 +219,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
   }
 
   async sendTransaction(tx) {
-    const response = await this.getProvider(
-      SEND_PROVIDER_OPERATION,
-    ).sendTransaction(tx);
+    const response = await this.getProvider(SEND_PROVIDER_OPERATION).sendTransaction(tx);
 
     return { txid: response?.hash };
   }
@@ -389,8 +364,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
       const jettonMinter = new TonWeb.token.jetton.JettonMinter(provider, {
         address: mint,
       });
-      const jettonWalletAddress =
-        await jettonMinter.getJettonWalletAddress(walletAddress);
+      const jettonWalletAddress = await jettonMinter.getJettonWalletAddress(walletAddress);
       const jettonWallet = new TonWeb.token.jetton.JettonWallet(provider, {
         address: jettonWalletAddress,
       });
@@ -445,9 +419,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
   async getTransactions(args) {
     try {
       if (!this.address) {
-        throw new Error(
-          `[${this.ticker}] getTransactions error: address is not loaded`,
-        );
+        throw new Error(`[${this.ticker}] getTransactions error: address is not loaded`);
       }
 
       return this.getProvider('history').getTransactions({
@@ -468,9 +440,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    */
   getTokenTransactions({ jettonWalletAddress }) {
     if (!jettonWalletAddress) {
-      throw new Error(
-        `${this.ticker}: \`jettonWalletAddress\` parameter should be defined`,
-      );
+      throw new Error(`${this.ticker}: \`jettonWalletAddress\` parameter should be defined`);
     }
 
     return this.getProvider('token').getTokenTransactions({
@@ -486,10 +456,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @returns {Promise<string>} - The jetton wallet address.
    */
   getJettonWalletAddress(jettonMintAddress) {
-    return this.getProvider('token').getJettonWalletAddress(
-      this.address,
-      jettonMintAddress,
-    );
+    return this.getProvider('token').getJettonWalletAddress(this.address, jettonMintAddress);
   }
 }
 

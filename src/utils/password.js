@@ -38,9 +38,7 @@ const rules = [
 ];
 export default (pw) => {
   const str = {
-    contains: rules
-      .filter(({ regex }) => regex.test(pw))
-      .map(({ message }) => message),
+    contains: rules.filter(({ regex }) => regex.test(pw)).map(({ message }) => message),
     length: pw.length,
     value: '',
   };

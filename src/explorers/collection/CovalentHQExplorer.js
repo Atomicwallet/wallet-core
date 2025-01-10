@@ -1,11 +1,7 @@
 import { ExplorerRequestError } from 'src/errors';
 
 import { getTokenId } from '../../utils';
-import {
-  GET_BALANCE_TYPE,
-  GET_TRANSACTIONS_TYPE,
-  HTTP_STATUS_NOT_FOUND,
-} from '../../utils/const';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/const';
 import { toCurrency } from '../../utils/convert';
 import { TxTypes } from '../enum/index.js';
 import Explorer from '../Explorer';
@@ -54,10 +50,7 @@ class CovalentHQExplorer extends Explorer {
    */
   async getUserTokenList(address) {
     try {
-      const response = await this.request(
-        `${this.wallet.chainId}/address/${address}/balances_v2/`,
-        'get',
-      );
+      const response = await this.request(`${this.wallet.chainId}/address/${address}/balances_v2/`, 'get');
 
       if (!response?.data) {
         return [];
@@ -89,12 +82,7 @@ class CovalentHQExplorer extends Explorer {
     return `${this.wallet.chainId}/address/${address}/transactions_v2/`;
   }
 
-  getTransactionsParams(
-    address,
-    offset = 0,
-    limit = this.defaultTxLimit,
-    pageNum,
-  ) {
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit, pageNum) {
     return { 'page-size': limit, 'page-number': pageNum };
   }
 
@@ -245,22 +233,16 @@ class CovalentHQExplorer extends Explorer {
     const selfLowerCased = selfAddress.toLowerCase();
 
     if (!event) {
-      return tx.to_address.toLowerCase() === selfLowerCased
-        ? tx.from_address
-        : tx.to_address;
+      return tx.to_address.toLowerCase() === selfLowerCased ? tx.from_address : tx.to_address;
     }
 
     const { typeName, to, from } = this.#getTxLogEventParams(event);
 
     if (!typeName) {
-      return to.toLowerCase() === selfLowerCased
-        ? tx.from_address
-        : tx.to_address;
+      return to.toLowerCase() === selfLowerCased ? tx.from_address : tx.to_address;
     }
 
-    return typeof to === 'string' && to.toLowerCase() === selfLowerCased
-      ? from
-      : to;
+    return typeof to === 'string' && to.toLowerCase() === selfLowerCased ? from : to;
   }
 
   /**
@@ -277,8 +259,7 @@ class CovalentHQExplorer extends Explorer {
     }
 
     if (this.getTxIsToken(event)) {
-      const { valueOrTokenId: value, decimal } =
-        this.#getTxLogEventParams(event);
+      const { valueOrTokenId: value, decimal } = this.#getTxLogEventParams(event);
 
       return toCurrency(value, decimal);
     }
@@ -324,9 +305,7 @@ class CovalentHQExplorer extends Explorer {
    * @returns {string|null}
    */
   getTxContract(tx, event) {
-    return this.getTxIsToken(event) || this.getTxIsNft(event)
-      ? tx.to_address
-      : null;
+    return this.getTxIsToken(event) || this.getTxIsNft(event) ? tx.to_address : null;
   }
 
   /**

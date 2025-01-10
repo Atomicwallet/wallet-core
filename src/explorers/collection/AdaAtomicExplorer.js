@@ -81,17 +81,13 @@ class AdaAtomicExplorer extends Explorer {
     const outgoing = !this.getTxDirection(selfAddress, tx);
 
     if (outgoing) {
-      const outgoingOutput = tx.outputs.find(
-        ({ address }) => address !== selfAddress,
-      );
+      const outgoingOutput = tx.outputs.find(({ address }) => address !== selfAddress);
 
       if (outgoingOutput) {
         return outgoingOutput.address;
       }
     } else {
-      const incomingOutput = tx.inputs.find(
-        ({ address }) => address !== selfAddress,
-      );
+      const incomingOutput = tx.inputs.find(({ address }) => address !== selfAddress);
 
       return incomingOutput.address;
     }
@@ -102,9 +98,7 @@ class AdaAtomicExplorer extends Explorer {
   getTxValueSatoshis(selfAddress, tx) {
     const incoming = this.getTxDirection(selfAddress, tx);
 
-    const sentToMyself = tx.inputs
-      .concat(tx.outputs)
-      .every(({ address }) => address === selfAddress);
+    const sentToMyself = tx.inputs.concat(tx.outputs).every(({ address }) => address === selfAddress);
 
     if (sentToMyself) {
       return tx.outputs.reduce((acc, out) => {
@@ -146,12 +140,9 @@ class AdaAtomicExplorer extends Explorer {
   }
 
   async getAccountState(address) {
-    return this.request(
-      this.getAccountStateUrl(),
-      'get',
-      { address },
-      this.getInfoOptions(),
-    ).catch((error) => console.warn('Error', error));
+    return this.request(this.getAccountStateUrl(), 'get', { address }, this.getInfoOptions()).catch((error) =>
+      console.warn('Error', error),
+    );
   }
 
   modifyInfoResponse(response) {

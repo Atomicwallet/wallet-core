@@ -1,6 +1,6 @@
+import { POLYSCAN_API_KEY } from 'src/env';
 import { ExplorerRequestError } from 'src/errors';
 
-import { POLYSCAN_API_KEY } from '../../env';
 import { getTokenId } from '../../utils';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE } from '../../utils/const';
 import { toCurrency } from '../../utils/convert';
@@ -40,10 +40,7 @@ class PolyscanExplorer extends Explorer {
 
     // For empty lists of transactions, the external API returns a response:
     // status = 0 and the message "No transactions found" which is not an error.
-    if (
-      status === SUCCESSFUL_RESPONSE ||
-      IGNORED_ERROR_MESSAGES.includes(message)
-    ) {
+    if (status === SUCCESSFUL_RESPONSE || IGNORED_ERROR_MESSAGES.includes(message)) {
       return response.data;
     }
 
@@ -118,9 +115,7 @@ class PolyscanExplorer extends Explorer {
    * @override
    */
   getTxFee(tx) {
-    const fee = new this.wallet.BN(tx.gasPrice).mul(
-      new this.wallet.BN(tx.gasUsed),
-    );
+    const fee = new this.wallet.BN(tx.gasPrice).mul(new this.wallet.BN(tx.gasUsed));
 
     return this.wallet.toCurrencyUnit(fee);
   }
@@ -148,9 +143,7 @@ class PolyscanExplorer extends Explorer {
    * @override
    */
   getTxOtherSideAddress(selfAddress, tx) {
-    return selfAddress.toLowerCase() === tx.from.toLowerCase()
-      ? tx.to
-      : tx.from;
+    return selfAddress.toLowerCase() === tx.from.toLowerCase() ? tx.to : tx.from;
   }
 
   /**

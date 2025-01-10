@@ -68,15 +68,13 @@ class DogeChainExplorer extends Explorer {
   }
 
   modifyUnspentOutputsResponse(response) {
-    return response.unspent_outputs.map(
-      ({ address, tx_hash: txid, tx_output_n: vout, script, value }) => ({
-        txid,
-        vout,
-        script,
-        value,
-        address,
-      }),
-    );
+    return response.unspent_outputs.map(({ address, tx_hash: txid, tx_output_n: vout, script, value }) => ({
+      txid,
+      vout,
+      script,
+      value,
+      address,
+    }));
   }
 
   /**
@@ -86,10 +84,7 @@ class DogeChainExplorer extends Explorer {
    * @return {BN} The balance.
    */
   calculateBalance(utxos = []) {
-    return utxos.reduce(
-      (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0'),
-    );
+    return utxos.reduce((acc, { value }) => new this.wallet.BN(value).add(acc), new this.wallet.BN('0'));
   }
 }
 

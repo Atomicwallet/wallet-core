@@ -1,10 +1,7 @@
 import { CONST, RestClient } from 'ontology-ts-sdk';
 import { ExplorerRequestError } from 'src/errors';
 
-import {
-  GET_TRANSACTIONS_TYPE,
-  SEND_TRANSACTION_TYPE,
-} from '../../utils/const';
+import { GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 
@@ -26,8 +23,7 @@ class OntExplorer extends Explorer {
   modifyGeneralResponse(response) {
     if (
       (typeof response.Error !== 'undefined' && response.Error !== 0) ||
-      (response.data &&
-        (response.data.code !== 0 || response.data.result === null))
+      (response.data && (response.data.code !== 0 || response.data.result === null))
     ) {
       throw new Error(`${response.data.msg}`);
     }
@@ -85,6 +81,7 @@ class OntExplorer extends Explorer {
     const page = 1;
 
     // get last 20 tx
+    // eslint-disable-next-line max-len
     return `${this.getApiPrefix()}/addresses/${address}/${this.wallet.ticker.toLowerCase()}/transactions?page_size=${limit}&page_number=${page}`;
   }
 
@@ -113,20 +110,11 @@ class OntExplorer extends Explorer {
     return [...ontTxs, ...ongTxs];
   }
 
-  async getTokenTransactions({
-    address,
-    offset = 0,
-    limit = this.defaultTxLimit,
-    asset = 'ong',
-  }) {
+  async getTokenTransactions({ address, offset = 0, limit = this.defaultTxLimit, asset = 'ong' }) {
     const response = await this.request(
       this.getTokenTransactionsUrl(address),
       this.getTransactionsMethod(),
-      this.getTransactionsParams(
-        address,
-        offset || 0,
-        limit || this.defaultTxLimit,
-      ),
+      this.getTransactionsParams(address, offset || 0, limit || this.defaultTxLimit),
       GET_TRANSACTIONS_TYPE,
       this.getTransactionsOptions(),
     );
@@ -137,9 +125,7 @@ class OntExplorer extends Explorer {
   modifyTransactionsResponse(response, address, asset = 'ont') {
     const filteredAssetTxs = response
       .map((tx) => {
-        tx.transfers = tx.transfers.filter(
-          (transfer) => transfer.asset_name === asset,
-        );
+        tx.transfers = tx.transfers.filter((transfer) => transfer.asset_name === asset);
 
         return tx;
       })
@@ -186,9 +172,7 @@ class OntExplorer extends Explorer {
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx)
-      ? tx.transfers[0].from_address
-      : tx.transfers[0].to_address;
+    return this.getTxDirection(selfAddress, tx) ? tx.transfers[0].from_address : tx.transfers[0].to_address;
   }
 
   getTxValue(selfAddress, tx) {

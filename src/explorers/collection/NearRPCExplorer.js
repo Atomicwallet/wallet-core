@@ -2,12 +2,10 @@
 import BN from 'bn.js';
 import lodash from 'lodash';
 import * as nearAPI from 'near-api-js';
-
-// import logger from '../Logger'
 import { ExternalError } from 'src/errors';
+import { EXTERNAL_ERROR } from 'src/utils/const';
 
 import { Amount } from '../../utils';
-import { EXTERNAL_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 
 const THROTTLE_INTERVAL = 800;
@@ -45,10 +43,7 @@ class NearRPCExplorer extends Explorer {
   }
 
   async sendTransaction(rawtx) {
-    const { transaction } = await this.provider.sendJsonRpc(
-      'broadcast_tx_commit',
-      [rawtx],
-    );
+    const { transaction } = await this.provider.sendJsonRpc('broadcast_tx_commit', [rawtx]);
 
     return { txid: transaction?.hash };
   }
@@ -82,9 +77,7 @@ class NearRPCExplorer extends Explorer {
         account_id: selfAddress,
       });
 
-      const stateStaked = new this.wallet.BN(info.storage_usage).mul(
-        new this.wallet.BN(storageAmountPerByte),
-      );
+      const stateStaked = new this.wallet.BN(info.storage_usage).mul(new this.wallet.BN(storageAmountPerByte));
       const staked = new this.wallet.BN(info.locked);
       const unspendable = stateStaked.sub(staked);
       const total = new this.wallet.BN(info.amount).add(staked);
@@ -128,9 +121,7 @@ class NearRPCExplorer extends Explorer {
       unstaking: new Amount(unstaking, this.wallet),
       pendingWithdrawals: new Amount(pendingWithdrawals, this.wallet),
       availableWithdrawals: new Amount(
-        new this.wallet.BN(availableWithdrawals).gt(MIN_DISPLAY_YOCTO)
-          ? availableWithdrawals
-          : '0',
+        new this.wallet.BN(availableWithdrawals).gt(MIN_DISPLAY_YOCTO) ? availableWithdrawals : '0',
         this.wallet,
       ),
       validators,
@@ -142,7 +133,14 @@ class NearRPCExplorer extends Explorer {
    *
    * @param address
    * @param validator
-   * @returns {Promise<{unstaking: Amount, total: Amount, availableForWithdraw: Amount, pendingWithdrawals: Amount, staked: Amount, availableWithdrawals: Amount}>}
+   * @returns {Promise<{
+   * unstaking: Amount,
+   * total: Amount,
+   * availableForWithdraw: Amount,
+   * pendingWithdrawals: Amount,
+   * staked: Amount,
+   * availableWithdrawals: Amount}>
+   * }
    */
   async getValidatorInfo(address, validator) {
     const [total, staked, unstaking, availableForWithdraw] = await Promise.all([
@@ -161,22 +159,18 @@ class NearRPCExplorer extends Explorer {
     ]);
 
     /*
-     * Rewards calculating by initial deposit amount subsctracted by the actual total balance fetched by `get_account_staked_balance`.
-     * E.g. initially staked some amount, then after few epochs staking balance will be increased, difference betwen initial and increased is an a reward amount.
+     * Rewards calculating by initial deposit amount subsctracted by the actual total
+     * balance fetched by `get_account_staked_balance`.
+     * E.g. initially staked some amount, then after few epochs staking balance will be increased,
+     * difference betwen initial and increased is an a reward amount.
      */
 
     return {
       total: new Amount(total, this.wallet),
       staked: new Amount(staked, this.wallet),
       unstaking: new Amount(unstaking, this.wallet),
-      availableWithdrawals: new Amount(
-        availableForWithdraw ? unstaking : '0',
-        this.wallet,
-      ),
-      pendingWithdrawals: new Amount(
-        availableForWithdraw ? '0' : unstaking,
-        this.wallet,
-      ),
+      availableWithdrawals: new Amount(availableForWithdraw ? unstaking : '0', this.wallet),
+      pendingWithdrawals: new Amount(availableForWithdraw ? '0' : unstaking, this.wallet),
     };
   }
 
@@ -216,10 +210,7 @@ class NearRPCExplorer extends Explorer {
         finality: 'final',
       });
 
-      return (
-        result?.result?.length > 0 &&
-        this.jsonFromRawResponse(Buffer.from(result.result))
-      );
+      return result?.result?.length > 0 && this.jsonFromRawResponse(Buffer.from(result.result));
     } catch (error) {
       console.warn(error);
       throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });

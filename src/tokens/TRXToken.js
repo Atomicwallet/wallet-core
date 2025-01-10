@@ -20,9 +20,7 @@ class TRXToken extends Token {
   }
 
   getUserTicker() {
-    return this.ticker.indexOf('-') !== -1
-      ? this.ticker.split('-')[1] || this.ticker
-      : this.ticker;
+    return this.ticker.indexOf('-') !== -1 ? this.ticker.split('-')[1] || this.ticker : this.ticker;
   }
 }
 

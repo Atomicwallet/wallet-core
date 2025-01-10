@@ -48,11 +48,7 @@ class PolkadotSidecarExplorer extends Explorer {
   }
 
   getTxMeta() {
-    return this.request(
-      this.getTxMetaUrl(),
-      this.getTxMetaMethod(),
-      this.getTxMetaParams(),
-    );
+    return this.request(this.getTxMetaUrl(), this.getTxMetaMethod(), this.getTxMetaParams());
   }
 
   async sendTransaction({ rawtx }) {
@@ -66,9 +62,7 @@ class PolkadotSidecarExplorer extends Explorer {
 
     const { free, frozen, nonce } = response;
 
-    const balance = new this.wallet.BN(free)
-      .sub(new this.wallet.BN(frozen))
-      .toString();
+    const balance = new this.wallet.BN(free).sub(new this.wallet.BN(frozen)).toString();
     const balances = {
       available: this.wallet.toCurrencyUnit(balance),
       free,

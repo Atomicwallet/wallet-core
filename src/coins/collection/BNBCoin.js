@@ -1,7 +1,7 @@
+import { DEFAULT_BINANCE_NET_URL } from 'src/env';
 import { WalletError } from 'src/errors';
 
 import { Coin } from '../../abstract';
-import { DEFAULT_BINANCE_NET_URL } from '../../env';
 import BinanceBCExplorer from '../../explorers/collection/BinanceBCExplorer';
 import BinanceDex from '../../explorers/collection/BinanceDex';
 import BinanceExplorer from '../../explorers/collection/BinanceExplorer';
@@ -61,9 +61,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       socket,
       feeData,
       dependencies: {
-        [BINANCE_SDK]: new LazyLoadedLib(
-          () => import('@binance-chain/javascript-sdk'),
-        ),
+        [BINANCE_SDK]: new LazyLoadedLib(() => import('@binance-chain/javascript-sdk')),
       },
     };
 
@@ -77,8 +75,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
     this.fee = feeData.fee;
     this.freezeFee = feeData.freezeFee || DEFAULT_RESERVE_AND_FREEZE_FEE;
-    this.reserveForStake =
-      feeData.reserveForStake || DEFAULT_RESERVE_AND_FREEZE_FEE;
+    this.reserveForStake = feeData.reserveForStake || DEFAULT_RESERVE_AND_FREEZE_FEE;
     this.transactions = [];
 
     this.tokens = {};
@@ -118,7 +115,8 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       this.isBncClientInitialized = true;
     } catch (error) {
       console.warn(
-        'BNB coreLibrary load FAILED. It would be attempt to re-initialize during each sendTransaction call. Error thrown:',
+        'BNB coreLibrary load FAILED. It would be attempt to re-initialize during each sendTransaction call. ' +
+          'Error thrown:',
         error,
       );
     }
@@ -136,15 +134,11 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   freezeTokenBalanceOnce(params) {
-    return this.canRun('freezeTokenBalance') && this.freezeTokenBalance
-      ? this.freezeTokenBalance(params)
-      : {};
+    return this.canRun('freezeTokenBalance') && this.freezeTokenBalance ? this.freezeTokenBalance(params) : {};
   }
 
   unfreezeTokenBalanceOnce(params) {
-    return this.canRun('unfreezeTokenBalance') && this.unfreezeTokenBalance
-      ? this.unfreezeTokenBalance(params)
-      : {};
+    return this.canRun('unfreezeTokenBalance') && this.unfreezeTokenBalance ? this.unfreezeTokenBalance(params) : {};
   }
 
   /**
@@ -161,16 +155,10 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {Promise<Object>} The private key.
    */
   async loadWallet(seed, mnemonic) {
-    const [bncClient, { crypto }] = await Promise.all([
-      this.getBncClient(),
-      this.loadLib(BINANCE_SDK),
-    ]);
+    const [bncClient, { crypto }] = await Promise.all([this.getBncClient(), this.loadLib(BINANCE_SDK)]);
 
     this.#privateKey = crypto.getPrivateKeyFromMnemonic(mnemonic);
-    this.address = crypto.getAddressFromPrivateKey(
-      this.#privateKey,
-      bncClient.addressPrefix,
-    );
+    this.address = crypto.getAddressFromPrivateKey(this.#privateKey, bncClient.addressPrefix);
 
     this.initBncClient(bncClient);
 
@@ -208,9 +196,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    */
   async getAddress() {
     if (!this.#privateKey) {
-      throw new Error(
-        'BNB: Could not load address from core library because the privateKey is not set',
-      );
+      throw new Error('BNB: Could not load address from core library because the privateKey is not set');
     }
 
     if (!this.address) {
@@ -245,13 +231,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     return { address, amount, memo, asset };
   }
 
-  createDelegationTransaction({
-    account,
-    toValidator,
-    amount,
-    symbol = 'BNB',
-    sideChainId = 'bsc',
-  }) {
+  createDelegationTransaction({ account, toValidator, amount, symbol = 'BNB', sideChainId = 'bsc' }) {
     return {
       delegateAddress: account,
       validatorAddress: toValidator,
@@ -261,13 +241,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     };
   }
 
-  createUnDelegationTransaction({
-    account,
-    toValidator,
-    amount,
-    symbol = 'BNB',
-    sideChainId = 'bsc',
-  }) {
+  createUnDelegationTransaction({ account, toValidator, amount, symbol = 'BNB', sideChainId = 'bsc' }) {
     return {
       delegateAddress: account,
       validatorAddress: toValidator,
@@ -277,14 +251,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     };
   }
 
-  createReDelegationTransaction({
-    account,
-    fromValidator,
-    toValidator,
-    amount,
-    symbol = 'BNB',
-    sideChainId = 'bsc',
-  }) {
+  createReDelegationTransaction({ account, fromValidator, toValidator, amount, symbol = 'BNB', sideChainId = 'bsc' }) {
     return {
       delegateAddress: account,
       validatorSrcAddress: fromValidator,
@@ -300,9 +267,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     const { status, result } = await bncClient.stake.bscDelegate(delegationTx);
 
     if (status !== 200) {
-      throw new Error(
-        `${this.ticker}: sendDelegationTransaction error: ${JSON.stringify(result)}`,
-      );
+      throw new Error(`${this.ticker}: sendDelegationTransaction error: ${JSON.stringify(result)}`);
     }
 
     const firstTransfer = result[0];
@@ -319,13 +284,10 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
   async sendUnDelegationTransaction(unDelegationTx) {
     const bncClient = await this.getInitializedBncClient();
-    const { status, result } =
-      await bncClient.stake.bscUndelegate(unDelegationTx);
+    const { status, result } = await bncClient.stake.bscUndelegate(unDelegationTx);
 
     if (status !== 200) {
-      throw new Error(
-        `${this.ticker}: sendUnDelegationTransaction error: ${JSON.stringify(result)}`,
-      );
+      throw new Error(`${this.ticker}: sendUnDelegationTransaction error: ${JSON.stringify(result)}`);
     }
 
     const firstTransfer = result[0];
@@ -359,9 +321,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   async signOrder(order) {
     const { crypto } = await this.loadLib(BINANCE_SDK);
 
-    return crypto
-      .generateSignature(this.toHex(JSON.stringify(order)), this.#privateKey)
-      .toString('hex');
+    return crypto.generateSignature(this.toHex(JSON.stringify(order)), this.#privateKey).toString('hex');
   }
 
   /**
@@ -426,9 +386,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     }
 
     for (const token of Object.values(this.tokens)) {
-      const assetBalance = balances.find(
-        (balance) => balance.asset === token.ticker,
-      );
+      const assetBalance = balances.find((balance) => balance.asset === token.ticker);
 
       const total = assetBalance
         ? new this.BN(token.toMinimalUnit(assetBalance.free))
@@ -439,14 +397,10 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       token.balance = total.toString();
       token.balances.frozen = assetBalance ? String(assetBalance.frozen) : '0';
       token.balances.locked = assetBalance ? String(assetBalance.locked) : '0';
-      token.balances.available = assetBalance
-        ? String(assetBalance.free)
-        : token.divisibleBalance;
+      token.balances.available = assetBalance ? String(assetBalance.free) : token.divisibleBalance;
     }
 
-    const coinBalance = balances.find(
-      (balance) => balance.asset === this.ticker,
-    );
+    const coinBalance = balances.find((balance) => balance.asset === this.ticker);
 
     if (!coinBalance) {
       this.balance = '0';
@@ -468,18 +422,10 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     const currencyUnitAmount = this.toCurrencyUnit(amount);
 
     const bncClient = await this.getInitializedBncClient();
-    const { result, status } = await bncClient.transfer(
-      from,
-      address,
-      currencyUnitAmount,
-      asset,
-      memo,
-    );
+    const { result, status } = await bncClient.transfer(from, address, currencyUnitAmount, asset, memo);
 
     if (status !== 200) {
-      throw new Error(
-        `${this.ticker}: sendTransaction error: ${JSON.stringify(result)}`,
-      );
+      throw new Error(`${this.ticker}: sendTransaction error: ${JSON.stringify(result)}`);
     }
 
     const firstTransfer = result[0];
@@ -499,9 +445,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     const { result, status } = await bncClient.multiSend(this.address, outputs);
 
     if (status !== 200) {
-      throw new Error(
-        `${this.ticker}: sendTransaction error: ${JSON.stringify(result)}`,
-      );
+      throw new Error(`${this.ticker}: sendTransaction error: ${JSON.stringify(result)}`);
     }
 
     const firstTransfer = result[0];
@@ -527,23 +471,13 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   ) {
     const bncClient = await this.getInitializedBncClient();
 
-    return bncClient
-      .placeOrder(
-        address,
-        pairSymbol,
-        side,
-        price,
-        quantity,
-        sequence,
-        timeInforce,
-      )
-      .catch((error) => {
-        throw new WalletError({
-          type: SEND_TRANSACTION_TYPE,
-          error: new Error(`place Order failed: ${error.message}`),
-          instance: this,
-        });
+    return bncClient.placeOrder(address, pairSymbol, side, price, quantity, sequence, timeInforce).catch((error) => {
+      throw new WalletError({
+        type: SEND_TRANSACTION_TYPE,
+        error: new Error(`place Order failed: ${error.message}`),
+        instance: this,
       });
+    });
   }
 
   async getPlaceOrderTx(hash) {
@@ -627,9 +561,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @memberof BNBCoin
    */
   async getTransactions({ address = this.address } = {}) {
-    const { transactions = [] } = await this.getProvider(
-      'history',
-    ).getTransactions({ address });
+    const { transactions = [] } = await this.getProvider('history').getTransactions({ address });
     /* Multisend OFF
     const { transactions = [], multisend = [] } = await this.getProvider('history').getTransactions({ address })
 
@@ -676,11 +608,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    */
   async freezeTokenBalance(tokenTicker, amount) {
     const bncClient = await this.getInitializedBncClient();
-    const frozen = await bncClient.tokens.freeze(
-      this.address,
-      tokenTicker,
-      String(amount),
-    );
+    const frozen = await bncClient.tokens.freeze(this.address, tokenTicker, String(amount));
 
     if (frozen.result && frozen.result.length > 0) {
       return frozen.result[0].hash;
@@ -689,9 +617,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     if (frozen.status !== 200) {
       throw new WalletError({
         type: 'Freeze amount',
-        error: new Error(
-          `Freeze amount for ${tokenTicker} is failed: ${frozen.error}`,
-        ),
+        error: new Error(`Freeze amount for ${tokenTicker} is failed: ${frozen.error}`),
         instance: this,
       });
     }
@@ -707,11 +633,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    */
   async unfreezeTokenBalance(tokenTicker, amount) {
     const bncClient = await this.getInitializedBncClient();
-    const unfrozen = await bncClient.tokens.unfreeze(
-      this.address,
-      tokenTicker,
-      String(amount),
-    );
+    const unfrozen = await bncClient.tokens.unfreeze(this.address, tokenTicker, String(amount));
 
     if (unfrozen.result && unfrozen.result.length > 0) {
       return unfrozen.result[0].hash;
@@ -720,9 +642,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     if (unfrozen.status !== 200) {
       throw new WalletError({
         type: 'Freeze amount',
-        error: new Error(
-          `Unfreeze amount for ${tokenTicker} is failed: ${unfrozen.error}`,
-        ),
+        error: new Error(`Unfreeze amount for ${tokenTicker} is failed: ${unfrozen.error}`),
         instance: this,
       });
     }
@@ -748,9 +668,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       const token = tokens.find((tkn) => tkn.ticker === asset);
 
       if (!token) {
-        console.warn(
-          `${asset} is not found in the BNB token list. Balance update skipped.`,
-        );
+        console.warn(`${asset} is not found in the BNB token list. Balance update skipped.`);
         return;
       }
 
@@ -777,9 +695,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     }
 
     const maximumFee = (fees && new this.BN(fees)) || (await this.getFee());
-    const availableBalance = new this.BN(balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -789,16 +705,13 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   calculateTotal({ balance, staked, unstaking }) {
-    return new Amount(
-      balance.toBN().add(staked.toBN()).add(unstaking.toBN()).toString(),
-      this,
-    );
+    return new Amount(balance.toBN().add(staked.toBN()).add(unstaking.toBN()).toString(), this);
   }
 
   async calculateAvailableForStake() {
-    const available = new this.BN(
-      this.toMinimalUnit(await this.availableBalance()),
-    ).sub(new this.BN(this.reserveForStake));
+    const available = new this.BN(this.toMinimalUnit(await this.availableBalance())).sub(
+      new this.BN(this.reserveForStake),
+    );
 
     return new Amount(available.isNeg() ? '0' : available, this);
   }

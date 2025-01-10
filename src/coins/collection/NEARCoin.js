@@ -51,16 +51,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
    * @param  {array}  explorers the explorers
    * @param  {<type>} txWebUrl the transmit web url
    */
-  constructor({
-    alias,
-    notify,
-    feeData,
-    explorers,
-    txWebUrl,
-    socket,
-    network,
-    id,
-  }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, network, id }) {
     const config = {
       id,
       alias,
@@ -102,17 +93,14 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     this.gasLimitCoefficient = feeData.gasLimitCoefficient || 0;
     this.gasPriceCoefficient = feeData.gasPriceCoefficient || 0;
     this.stakingGas = feeData.stakingGasLimit || STAKING_GAS_BASE;
-    this.stakingGasCoefficient =
-      feeData.stakingGasLimitCoefficient || STAKING_GAS_MULTIPLIER;
+    this.stakingGasCoefficient = feeData.stakingGasLimitCoefficient || STAKING_GAS_MULTIPLIER;
     this.defaultGasPrice = this.toMinimalUnit(feeData.defaultGasPrice || '');
     this.resendTimeout = feeData.resendTimeout;
     this.reserveForStake = feeData.reserveForStake ?? DEFAULT_RESERVE_FOR_STAKE;
   }
 
   get stakingGasLimit() {
-    return new this.BN(this.stakingGas)
-      .mul(new this.BN(this.stakingGasCoefficient))
-      .toString();
+    return new this.BN(this.stakingGas).mul(new this.BN(this.stakingGasCoefficient)).toString();
   }
 
   /**
@@ -156,9 +144,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
    * @return {String} { description_of_the_return_value }
    */
   getAddress() {
-    return this.#privateKey
-      ? this.address
-      : new Error(`${this.wallet.ticker} private key is empty`);
+    return this.#privateKey ? this.address : new Error(`${this.wallet.ticker} private key is empty`);
   }
 
   /**
@@ -169,9 +155,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
    */
   validateAddress(address) {
     return (
-      address.length >= ADDRESS_MIN_LENGTH &&
-      address.length <= ADDRESS_MAX_LENGTH &&
-      ADDRESS_PATTERN.test(address)
+      address.length >= ADDRESS_MIN_LENGTH && address.length <= ADDRESS_MAX_LENGTH && ADDRESS_PATTERN.test(address)
     );
   }
 
@@ -191,18 +175,9 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
 
     const accessKey = this.getAccessKey(publicKey);
 
-    const recentBlockHash = nearAPI.utils.serialize.base_decode(
-      accessKey.block_hash,
-    );
+    const recentBlockHash = nearAPI.utils.serialize.base_decode(accessKey.block_hash);
 
-    const actions = [
-      transactions.functionCall(
-        'deposit_and_stake',
-        {},
-        this.stakingGasLimit,
-        amount,
-      ),
-    ];
+    const actions = [transactions.functionCall('deposit_and_stake', {}, this.stakingGasLimit, amount)];
 
     const tx = nearAPI.transactions.createTransaction(
       this.address,
@@ -233,18 +208,9 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
 
     const accessKey = this.getAccessKey(publicKey);
 
-    const recentBlockHash = nearAPI.utils.serialize.base_decode(
-      accessKey.block_hash,
-    );
+    const recentBlockHash = nearAPI.utils.serialize.base_decode(accessKey.block_hash);
 
-    const actions = [
-      transactions.functionCall(
-        'unstake',
-        { amount: amount ?? undefined },
-        this.stakingGasLimit,
-        '0',
-      ),
-    ];
+    const actions = [transactions.functionCall('unstake', { amount: amount ?? undefined }, this.stakingGasLimit, '0')];
 
     const tx = nearAPI.transactions.createTransaction(
       this.address,
@@ -275,13 +241,9 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
 
     const accessKey = this.getAccessKey(publicKey);
 
-    const recentBlockHash = nearAPI.utils.serialize.base_decode(
-      accessKey.block_hash,
-    );
+    const recentBlockHash = nearAPI.utils.serialize.base_decode(accessKey.block_hash);
 
-    const actions = [
-      transactions.functionCall('withdraw_all', {}, this.stakingGasLimit, '0'),
-    ];
+    const actions = [transactions.functionCall('withdraw_all', {}, this.stakingGasLimit, '0')];
 
     const tx = nearAPI.transactions.createTransaction(
       this.address,
@@ -318,9 +280,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
 
     const accessKey = await this.getAccessKey();
 
-    const recentBlockHash = nearAPI.utils.serialize.base_decode(
-      accessKey.block_hash,
-    );
+    const recentBlockHash = nearAPI.utils.serialize.base_decode(accessKey.block_hash);
 
     const actions = [
       new nearAPI.transactions.Action({
@@ -349,10 +309,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
   async serializeTransaction(rawTx) {
     const nearAPI = await nearApiLib.get();
 
-    const serialized = nearAPI.utils.serialize.serialize(
-      nearAPI.transactions.SCHEMA,
-      rawTx,
-    );
+    const serialized = nearAPI.utils.serialize.serialize(nearAPI.transactions.SCHEMA, rawTx);
 
     return {
       txHash: new Uint8Array(sha256(serialized, { asBytes: true })),
@@ -397,15 +354,10 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
    *
    * @return {Promise<BN>} The fee.
    */
-  async getFee({
-    userGasPrice = null,
-    gasLimit = null,
-    contract,
-    address,
-  } = {}) {
-    return new this.BN(
-      gasLimit || (await this.estimateGas(null, address, contract)),
-    ).mul(new this.BN(userGasPrice || (await this.getGasPrice())));
+  async getFee({ userGasPrice = null, gasLimit = null, contract, address } = {}) {
+    return new this.BN(gasLimit || (await this.estimateGas(null, address, contract))).mul(
+      new this.BN(userGasPrice || (await this.getGasPrice())),
+    );
   }
 
   async getGasPrice(withoutCoeff = false, isToken = false) {
@@ -413,41 +365,28 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
 
     return withoutCoeff
       ? new this.BN(node || this.defaultGasPrice)
-      : new this.BN(node || this.defaultGasPrice).add(
-          new this.BN(this.gasPriceCoefficient),
-        );
+      : new this.BN(node || this.defaultGasPrice).add(new this.BN(this.gasPriceCoefficient));
   }
 
   async estimateGas(amount, address, contract) {
     const config = await this.getProvider('node').getNodeConfig();
 
     if (!config) {
-      return new this.BN(this.gasLimit)
-        .add(new this.BN(this.gasLimitCoefficient))
-        .toString();
+      return new this.BN(this.gasLimit).add(new this.BN(this.gasLimitCoefficient)).toString();
     }
 
     const actions = [
       config.runtime_config.transaction_costs.action_receipt_creation_config,
-      config.runtime_config.transaction_costs.action_creation_config[
-        contract ? 'transfer_cost' : 'function_call_cost'
-      ],
+      config.runtime_config.transaction_costs.action_creation_config[contract ? 'transfer_cost' : 'function_call_cost'],
     ];
 
-    const feeTypes = [
-      address === this.address ? 'send_sir' : 'send_not_sir',
-      'execution',
-    ];
+    const feeTypes = [address === this.address ? 'send_sir' : 'send_not_sir', 'execution'];
 
     return actions
       .reduce(
         (summ, action) =>
           summ.add(
-            feeTypes.reduce(
-              (actionSumm, feeType) =>
-                actionSumm.add(new this.BN(action[feeType])),
-              new this.BN(0),
-            ),
+            feeTypes.reduce((actionSumm, feeType) => actionSumm.add(new this.BN(action[feeType])), new this.BN(0)),
           ),
         new this.BN(0),
       )
@@ -464,28 +403,19 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     await this.updateBalance();
 
     const availableBalance = new this.BN(this.balance)
-      .sub(
-        new this.BN(
-          new this.BN(fee).gt(new this.BN(0)) ? fee : await this.getFee(),
-        ),
-      )
+      .sub(new this.BN(new this.BN(fee).gt(new this.BN(0)) ? fee : await this.getFee()))
       .sub(new this.BN(this.unspendableBalance));
 
-    return availableBalance.gt(new this.BN(0))
-      ? this.toCurrencyUnit(availableBalance)
-      : '0';
+    return availableBalance.gt(new this.BN(0)) ? this.toCurrencyUnit(availableBalance) : '0';
   }
 
   async _updateBalance() {
     try {
-      const { balance, unspendable } = await this.getProvider('node').getInfo(
-        this.address,
-        {
-          gasLimit: this.stakingGasLimit,
-          gasPrice: await this.getGasPrice(),
-          reserve: new this.BN(this.reserveForStake),
-        },
-      );
+      const { balance, unspendable } = await this.getProvider('node').getInfo(this.address, {
+        gasLimit: this.stakingGasLimit,
+        gasPrice: await this.getGasPrice(),
+        reserve: new this.BN(this.reserveForStake),
+      });
 
       if (!balance) {
         throw new Error(`${this.ticker} can't get balance`);
@@ -517,12 +447,9 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     if (this.balance === null) {
       await this.updateBalance();
     }
-    const balances = await this.getProvider('node').fetchStakingInfo(
-      this.address,
-      {
-        activeValidators: [], // await configManager.get(this.getPredefineValidatorsConfigName(),),
-      },
-    );
+    const balances = await this.getProvider('node').fetchStakingInfo(this.address, {
+      activeValidators: [], // await configManager.get(this.getPredefineValidatorsConfigName(),),
+    });
 
     this.setBalances(await this.makeStakingInfoStruct(balances));
 
@@ -530,10 +457,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
   }
 
   calculateTotal({ balance, staked, unstaking }) {
-    return new Amount(
-      balance.toBN().add(staked.toBN()).add(unstaking.toBN()).toString(),
-      this,
-    );
+    return new Amount(balance.toBN().add(staked.toBN()).add(unstaking.toBN()).toString(), this);
   }
 
   async calculateAvailableForStake() {

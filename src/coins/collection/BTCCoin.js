@@ -102,9 +102,7 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
 
     const fee = (userFee && new this.BN(userFee)) || (await this.getFee());
 
-    const amountToSend = balanceBN.lt(amountBN.add(fee))
-      ? balanceBN.sub(fee)
-      : amountBN;
+    const amountToSend = balanceBN.lt(amountBN.add(fee)) ? balanceBN.sub(fee) : amountBN;
     const unspend = balanceBN.sub(amountBN).sub(fee);
 
     const tx = new bitcoreLib.Transaction()
@@ -113,9 +111,7 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
       .fee(Number(fee.toString()));
 
     if (unspend.gt(new this.BN(0))) {
-      tx.to([
-        { address: utxos[0].address, satoshis: Number(unspend.toString()) },
-      ]);
+      tx.to([{ address: utxos[0].address, satoshis: Number(unspend.toString()) }]);
     }
 
     tx.enableRBF();
@@ -128,8 +124,7 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
   async getEstimatedTimeCfg(force = true) {
     try {
       if (this.feeRecommended === null || force) {
-        const { feesEstimateUrl } =
-          fees?.find(({ className }) => className === 'BTCCoin') || {};
+        const { feesEstimateUrl } = fees?.find(({ className }) => className === 'BTCCoin') || {};
         const { data } = await axios.get(feesEstimateUrl);
 
         this.feePerByte = data.fastestFee;
@@ -153,9 +148,7 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
     try {
       const feeTimes = await this.getEstimatedTimeCfg();
 
-      timeName = Object.keys(TIME_INTERVALS).find(
-        (tName) => satPerByte >= feeTimes?.[tName],
-      );
+      timeName = Object.keys(TIME_INTERVALS).find((tName) => satPerByte >= feeTimes?.[tName]);
     } finally {
       // eslint-disable-next-line no-unsafe-finally
       return TIME_INTERVALS[timeName || 'hourFee'][fieldName];
@@ -165,9 +158,7 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
   async availableBalance(fee) {
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
 
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -179,10 +170,7 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
   async validateAddress(address) {
     const bitcoreLib = await this.loadLib(BITCORE);
 
-    return bitcoreLib.Address.isValid(
-      address || this.address,
-      bitcoreLib.Networks.livenet.alias,
-    );
+    return bitcoreLib.Address.isValid(address || this.address, bitcoreLib.Networks.livenet.alias);
   }
 }
 

@@ -22,9 +22,7 @@ if (!wallet) {
 
 jest.spyOn(wallet, 'getSeqno').mockReturnValue(42);
 
-jest
-  .spyOn(wallet, 'getTransactionExpirationTimeout')
-  .mockReturnValue(3472834780);
+jest.spyOn(wallet, 'getTransactionExpirationTimeout').mockReturnValue(3472834780);
 
 wallet.state = true;
 

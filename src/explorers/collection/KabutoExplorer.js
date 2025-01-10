@@ -60,9 +60,7 @@ class KabutoExplorer extends Explorer {
       return transfer.amount === tx.value;
     });
 
-    return this.getTxDirection(selfAddress, tx)
-      ? tx.operator
-      : transferTo.account;
+    return this.getTxDirection(selfAddress, tx) ? tx.operator : transferTo.account;
   }
 
   modifyInfoResponse(response) {

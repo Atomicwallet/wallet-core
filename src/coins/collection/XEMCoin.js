@@ -24,15 +24,7 @@ class XEMCoin extends Coin {
    * @param {Explorer[]}  explorers the explorers
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({
-    alias,
-    notify,
-    feeData: { fee },
-    explorers,
-    txWebUrl,
-    socket,
-    id,
-  }) {
+  constructor({ alias, notify, feeData: { fee }, explorers, txWebUrl, socket, id }) {
     const config = {
       id,
       alias,
@@ -90,10 +82,7 @@ class XEMCoin extends Coin {
     const privateKeyGeneratorIterateCount = 6000;
 
     const nem = await this.getNemLib();
-    const privateKey = nem.crypto.helpers.derivePassSha(
-      phrase,
-      privateKeyGeneratorIterateCount,
-    ).priv;
+    const privateKey = nem.crypto.helpers.derivePassSha(phrase, privateKeyGeneratorIterateCount).priv;
     const keyPair = nem.crypto.keyPair.create(privateKey);
     const publicKey = keyPair.publicKey.toString();
 
@@ -134,10 +123,7 @@ class XEMCoin extends Coin {
       const nem = await this.getNemLib();
       const networkId = this.getNetworkId(nem);
 
-      return (
-        nem.model.address.isValid(address) &&
-        nem.model.address.isFromNetwork(address, networkId)
-      );
+      return nem.model.address.isValid(address) && nem.model.address.isFromNetwork(address, networkId);
     } catch (error) {
       throw new Error(`Fail to validate ${this.ticker} address [${address}]`);
     }
@@ -161,12 +147,13 @@ class XEMCoin extends Coin {
       this.toCurrencyUnit(amount),
       memo,
     );
-    const transactionEntity = nem.model.transactions.prepare(
-      'transferTransaction',
-    )(common, transferTransaction, networkId);
+    const transactionEntity = nem.model.transactions.prepare('transferTransaction')(
+      common,
+      transferTransaction,
+      networkId,
+    );
     const keyPair = nem.crypto.keyPair.create(this.#privateKey);
-    const unsignedRawTx =
-      nem.utils.serialization.serializeTransaction(transactionEntity);
+    const unsignedRawTx = nem.utils.serialization.serializeTransaction(transactionEntity);
     const signature = keyPair.sign(unsignedRawTx);
 
     const transaction = {
@@ -185,9 +172,7 @@ class XEMCoin extends Coin {
   updateCoinParamsFromServer(data) {
     super.updateCoinParamsFromServer(data);
 
-    const NemNodeParams = data.explorers.find(
-      ({ className }) => className === 'NemNodeExplorer',
-    );
+    const NemNodeParams = data.explorers.find(({ className }) => className === 'NemNodeExplorer');
 
     if (NemNodeParams) {
       this.explorers[0].updateEndpoint(NemNodeParams.baseUrl);

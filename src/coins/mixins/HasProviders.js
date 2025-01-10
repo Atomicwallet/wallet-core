@@ -45,9 +45,7 @@ const HasProviders = (superclass) =>
     async getTransactions(args) {
       try {
         if (!this.address) {
-          throw new Error(
-            `[${this.ticker}] getTransactions error: address is not loaded`,
-          );
+          throw new Error(`[${this.ticker}] getTransactions error: address is not loaded`);
         }
 
         return this.getProvider('history').getTransactions({

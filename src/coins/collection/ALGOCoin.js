@@ -81,9 +81,7 @@ class ALGOCoin extends HasProviders(Coin) {
   }
 
   async getInfo() {
-    const { balance = null } = await this.getProvider('balance').getInfo(
-      this.address,
-    );
+    const { balance = null } = await this.getProvider('balance').getInfo(this.address);
 
     this.balance = balance;
 

@@ -1,17 +1,9 @@
+import { TONWEB_API_KEY, TONWEB_FALLBACK_INDEX_URL, TONWEB_FALLBACK_V2_URL } from 'src/env';
 import { ExplorerRequestError } from 'src/errors';
 import TonWeb from 'tonweb';
 
-import {
-  TONWEB_API_KEY,
-  TONWEB_FALLBACK_INDEX_URL,
-  TONWEB_FALLBACK_V2_URL,
-} from '../../env';
 import { getTokenId } from '../../utils';
-import {
-  GET_BALANCE_TYPE,
-  GET_TRANSACTIONS_TYPE,
-  ONE_MINUTE,
-} from '../../utils/const';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from '../../utils/const';
 import { toCurrency } from '../../utils/convert';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
@@ -125,10 +117,9 @@ export default class TonwebExplorer extends Explorer {
   constructor({ wallet, config }) {
     super(...arguments);
 
-    this.provider = new TonWeb.HttpProvider(
-      this.config?.baseUrl || TONWEB_FALLBACK_V2_URL,
-      { apiKey: TONWEB_API_KEY },
-    );
+    this.provider = new TonWeb.HttpProvider(this.config?.baseUrl || TONWEB_FALLBACK_V2_URL, {
+      apiKey: TONWEB_API_KEY,
+    });
   }
 
   getAllowedTickers() {
@@ -141,8 +132,7 @@ export default class TonwebExplorer extends Explorer {
     const jettonMinter = new TonWeb.token.jetton.JettonMinter(this.provider, {
       address: jettonMinterAddress,
     });
-    const jettonWalletAddress =
-      await jettonMinter.getJettonWalletAddress(hotWalletAddress);
+    const jettonWalletAddress = await jettonMinter.getJettonWalletAddress(hotWalletAddress);
 
     return jettonWalletAddress.toString(true, true, true);
   }
@@ -155,16 +145,16 @@ export default class TonwebExplorer extends Explorer {
     const tokensList = Object.entries(this.wallet.getTokens());
 
     const jettonsWalletsAddresses = await Promise.all(
-      tokensList.map((token) =>
-        this.getJettonWalletAddress(this.wallet.address, token[1].mint),
-      ),
+      tokensList.map((token) => this.getJettonWalletAddress(this.wallet.address, token[1].mint)),
     );
 
-    TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj =
-      jettonsWalletsAddresses.reduce((obj, jettonWalletAddress, index) => {
+    TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj = jettonsWalletsAddresses.reduce(
+      (obj, jettonWalletAddress, index) => {
         obj[jettonWalletAddress] = tokensList[index][0];
         return obj;
-      }, {});
+      },
+      {},
+    );
 
     return TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj;
   }
@@ -186,16 +176,9 @@ export default class TonwebExplorer extends Explorer {
 
   /** @type {DetectFunction} */
   _getIsOutCoinTx(tx, selfAddress) {
-    const {
-      in_msg: { source = '', destination = '' } = {},
-      out_msgs: outMsgs,
-    } = tx || {};
+    const { in_msg: { source = '', destination = '' } = {}, out_msgs: outMsgs } = tx || {};
 
-    return (
-      source === '' &&
-      destination === selfAddress &&
-      isNoValidOpInMsg(outMsgs[0]?.body)
-    );
+    return source === '' && destination === selfAddress && isNoValidOpInMsg(outMsgs[0]?.body);
   }
 
   /** @type {DetectFunction} */
@@ -277,31 +260,20 @@ export default class TonwebExplorer extends Explorer {
 
   static _getTokenByJettonWalletAddress(jettonWalletAddress, tokens) {
     const tokenUniqueField =
-      TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj[
-        jettonWalletAddress
-      ] ?? null;
+      TonwebExplorer.ownJettonsWalletsAddressesToTokenUniqueFieldObj[jettonWalletAddress] ?? null;
 
     return tokens[tokenUniqueField] ?? {};
   }
 
   /** @type {ParseFunction} */
-  static _parseTokenTx(
-    tx,
-    { selfAddress, tokens },
-    shouldCheckDestination = false,
-  ) {
+  static _parseTokenTx(tx, { selfAddress, tokens }, shouldCheckDestination = false) {
     const { in_msg: inMsg = {} } = tx || {};
     const { destination: jettonWalletAddress, body: inBody } = inMsg;
     const decodedMsg = decodeTokenBodyMsg(inBody);
 
     // Check if properties are defined and not falsy
     const isMsgInvalid = shouldCheckDestination
-      ? !(
-          decodedMsg.source &&
-          decodedMsg.destination &&
-          decodedMsg.amount &&
-          jettonWalletAddress
-        )
+      ? !(decodedMsg.source && decodedMsg.destination && decodedMsg.amount && jettonWalletAddress)
       : !(decodedMsg.source && decodedMsg.amount && jettonWalletAddress);
 
     if (isMsgInvalid) {
@@ -313,16 +285,11 @@ export default class TonwebExplorer extends Explorer {
       name,
       decimal,
       mint,
-    } = TonwebExplorer._getTokenByJettonWalletAddress(
-      jettonWalletAddress,
-      tokens,
-    );
+    } = TonwebExplorer._getTokenByJettonWalletAddress(jettonWalletAddress, tokens);
 
     return {
       source: decodedMsg.source,
-      destination: shouldCheckDestination
-        ? decodedMsg.destination
-        : selfAddress,
+      destination: shouldCheckDestination ? decodedMsg.destination : selfAddress,
       isToken: true,
       amount: decodedMsg.amount,
       decimal,
@@ -380,16 +347,11 @@ export default class TonwebExplorer extends Explorer {
       amount: '0',
     };
 
-    return Object.entries(this.TX_COINS_INSTRUCTIONS_PARSERS).reduce(
-      (instruction, [, { isMatch, parse }]) => {
-        const parsed = isMatch(tx, this.wallet.address)
-          ? parse(tx, { selfAddress: this.wallet.address })
-          : {};
+    return Object.entries(this.TX_COINS_INSTRUCTIONS_PARSERS).reduce((instruction, [, { isMatch, parse }]) => {
+      const parsed = isMatch(tx, this.wallet.address) ? parse(tx, { selfAddress: this.wallet.address }) : {};
 
-        return { ...instruction, ...parsed };
-      },
-      defaultInstruction,
-    );
+      return { ...instruction, ...parsed };
+    }, defaultInstruction);
   }
 
   _getTokenTxInstruction(tx) {
@@ -406,16 +368,11 @@ export default class TonwebExplorer extends Explorer {
     const tokens = this.wallet.getTokens();
     const selfAddress = this.wallet.address;
 
-    return Object.entries(this.TX_TOKENS_INSTRUCTIONS_PARSERS).reduce(
-      (instruction, [, { isMatch, parse }]) => {
-        const parsed = isMatch(tx, selfAddress)
-          ? parse(tx, { selfAddress, tokens })
-          : {};
+    return Object.entries(this.TX_TOKENS_INSTRUCTIONS_PARSERS).reduce((instruction, [, { isMatch, parse }]) => {
+      const parsed = isMatch(tx, selfAddress) ? parse(tx, { selfAddress, tokens }) : {};
 
-        return { ...instruction, ...parsed };
-      },
-      defaultInstruction,
-    );
+      return { ...instruction, ...parsed };
+    }, defaultInstruction);
   }
 
   async modifyTransactionsResponse(txs) {
@@ -423,12 +380,7 @@ export default class TonwebExplorer extends Explorer {
 
     return txs.reduce((list, tx, index) => {
       try {
-        const {
-          source,
-          destination,
-          isToken,
-          amount: txAmount,
-        } = this._getCoinTxInstruction(tx);
+        const { source, destination, isToken, amount: txAmount } = this._getCoinTxInstruction(tx);
 
         const isValidBaseProperties = source && destination && txAmount;
 
@@ -448,8 +400,7 @@ export default class TonwebExplorer extends Explorer {
             explorer: this.constructor.name,
             txid: this.getTxHash(tx),
             direction: destination === selfAddress,
-            otherSideAddress:
-              destination === selfAddress ? source : destination,
+            otherSideAddress: destination === selfAddress ? source : destination,
             amount,
             datetime: this.getTxDateTime(tx),
             memo: this.getTxMemo(tx),
@@ -522,8 +473,7 @@ export default class TonwebExplorer extends Explorer {
             explorer: this.constructor.name,
             txid: this.getTxHash(tx),
             direction: destination === selfAddress,
-            otherSideAddress:
-              destination === selfAddress ? source : destination,
+            otherSideAddress: destination === selfAddress ? source : destination,
             amount,
             datetime: this.getTxDateTime(tx),
             memo: this.getTxMemo(tx),
@@ -604,22 +554,15 @@ export default class TonwebExplorer extends Explorer {
       const jettonMinter = new TonWeb.token.jetton.JettonMinter(this.provider, {
         address: mint,
       });
-      const jettonWalletAddress = await jettonMinter.getJettonWalletAddress(
-        this._getWalletAddress(address),
-      );
+      const jettonWalletAddress = await jettonMinter.getJettonWalletAddress(this._getWalletAddress(address));
 
       const jettonWallet = new TonWeb.token.jetton.JettonWallet(this.provider, {
         address: jettonWalletAddress,
       });
       const jettonData = await jettonWallet.getData();
 
-      if (
-        jettonData.jettonMinterAddress.toString(false) !==
-        new TonWeb.utils.Address(mint).toString(false)
-      ) {
-        throw new Error(
-          'jetton minter address from jetton wallet doesnt match config',
-        );
+      if (jettonData.jettonMinterAddress.toString(false) !== new TonWeb.utils.Address(mint).toString(false)) {
+        throw new Error('jetton minter address from jetton wallet doesnt match config');
       }
 
       return jettonData?.balance?.toString();
@@ -637,16 +580,14 @@ export default class TonwebExplorer extends Explorer {
   async getTokenTransactions({ jettonWalletAddress }) {
     if (
       this.defaultRequestTimeout &&
-      Date.now() - this.defaultRequestTimeout * ONE_MINUTE <
-        this.lastGetTxsRequestTime
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE < this.lastGetTxsRequestTime
     ) {
       return [];
     }
 
     if (
       this.defaultRequestTimeout &&
-      Date.now() - this.defaultRequestTimeout * ONE_MINUTE >
-        this.lastGetTxsRequestTime
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE > this.lastGetTxsRequestTime
     ) {
       this.lastGetTxsRequestTime = Date.now();
     }

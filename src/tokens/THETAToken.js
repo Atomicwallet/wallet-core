@@ -60,13 +60,9 @@ export default class THETAToken extends Token {
    * @return {Promise<boolean>} True if available for send, False otherwise.
    */
   async isAvailableForSend(amount, fee) {
-    const availableBalance = await this.availableBalance(
-      this.toMinimalUnit(fee),
-    );
+    const availableBalance = await this.availableBalance(this.toMinimalUnit(fee));
 
-    return new BN(this.toMinimalUnit(amount)).lte(
-      new BN(this.toMinimalUnit(availableBalance)),
-    );
+    return new BN(this.toMinimalUnit(amount)).lte(new BN(this.toMinimalUnit(availableBalance)));
   }
 
   /**

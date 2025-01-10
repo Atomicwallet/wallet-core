@@ -8,15 +8,9 @@ import { HasProviders } from '../mixins';
 
 const blakeLazyLoaded = new LazyLoadedLib(() => import('blakejs'));
 const bip39LazyLoaded = new LazyLoadedLib(() => import('bip39'));
-const nanoNodeNaclLazyLoaded = new LazyLoadedLib(
-  () => import('nano-node/nacl'),
-);
-const nanoNodeFunctionsLazyLoaded = new LazyLoadedLib(
-  () => import('nano-node/functions'),
-);
-const nanoAddressValidatorLazyLoaded = new LazyLoadedLib(
-  () => import('nano-address-validator'),
-);
+const nanoNodeNaclLazyLoaded = new LazyLoadedLib(() => import('nano-node/nacl'));
+const nanoNodeFunctionsLazyLoaded = new LazyLoadedLib(() => import('nano-node/functions'));
+const nanoAddressValidatorLazyLoaded = new LazyLoadedLib(() => import('nano-address-validator'));
 
 const NAME = 'Nano';
 const TICKER = 'NANO';
@@ -24,12 +18,9 @@ const DERIVATION = "m/44'/165'/0'/0/0";
 const DECIMAL = 30; // !!!!!!!!
 const UNSPENDABLE_BALANCE = '0';
 
-const STATE_BLOCK_PREAMBLE =
-  '0000000000000000000000000000000000000000000000000000000000000006';
-const FRONTIER =
-  '0000000000000000000000000000000000000000000000000000000000000000';
-const DEFAULT_REPRESENTATIVE =
-  'nano_35btiz1mgfwp95c3ckazmzbp5gepduxtijuijd9xebeau8u1gsbea41smjca';
+const STATE_BLOCK_PREAMBLE = '0000000000000000000000000000000000000000000000000000000000000006';
+const FRONTIER = '0000000000000000000000000000000000000000000000000000000000000000';
+const DEFAULT_REPRESENTATIVE = 'nano_35btiz1mgfwp95c3ckazmzbp5gepduxtijuijd9xebeau8u1gsbea41smjca';
 const PENDING_CONFIRMATION_TIMEOUT = 5000;
 const BLOCK_HASH_LENGTH = 64;
 const ERR_ACC_NOT_FOUND = 'Account not found';
@@ -81,9 +72,7 @@ class NANOCoin extends HasProviders(Coin) {
       this.confirmAllPendingBlocks();
     });
 
-    this.eventEmitter.on(`${this.id}-${this.id}::new-socket-tx`, () =>
-      this.getInfo(),
-    );
+    this.eventEmitter.on(`${this.id}-${this.id}::new-socket-tx`, () => this.getInfo());
 
     this.account_state = {};
   }
@@ -114,12 +103,8 @@ class NANOCoin extends HasProviders(Coin) {
       const seedHex = bip39.mnemonicToEntropy(phrase);
       const accountIndex = 0;
       const seedBytes = this.hexToUint8(seedHex);
-      const accountBytes = await this.generateAccountSecretKeyBytes(
-        seedBytes,
-        accountIndex,
-      );
-      const { accountKeyPair, publicKeyHex } =
-        await this.getPublicKeyHexAndAccountKeyPair(accountBytes);
+      const accountBytes = await this.generateAccountSecretKeyBytes(seedBytes, accountIndex);
+      const { accountKeyPair, publicKeyHex } = await this.getPublicKeyHexAndAccountKeyPair(accountBytes);
 
       // change old format prefix xrb > new prefix nano
       this.address = accountFromKey(publicKeyHex).replace('xrb', 'nano');
@@ -219,18 +204,14 @@ class NANOCoin extends HasProviders(Coin) {
       await this.getInfo();
       isFirstReceiveTx = false;
     } catch (error) {
-      console.warn(
-        'NANO: getInfo throws an error, probably trying to receive first tx for a given acc',
-      );
+      console.warn('NANO: getInfo throws an error, probably trying to receive first tx for a given acc');
     }
 
     const [blockInfo, publicKey] = await Promise.all([
       this.getProvider('tx').getBlockInfo(receiveBlockHash),
       this.getAccountPublicKey(this.address),
     ]);
-    const getWorkFor = isFirstReceiveTx
-      ? publicKey
-      : this.account_state.frontier;
+    const getWorkFor = isFirstReceiveTx ? publicKey : this.account_state.frontier;
     const work = await this.getWork(getWorkFor);
 
     if (!work) {
@@ -348,10 +329,7 @@ class NANOCoin extends HasProviders(Coin) {
    * @returns {Promise<{string}>}
    */
   async signSendBlock(payload, remainingBalance) {
-    const [blake, { default: nacl }] = await Promise.all([
-      blakeLazyLoaded.get(),
-      nanoNodeNaclLazyLoaded.get(),
-    ]);
+    const [blake, { default: nacl }] = await Promise.all([blakeLazyLoaded.get(), nanoNodeNaclLazyLoaded.get()]);
 
     const context = blake.blake2bInit(32, null);
 
@@ -361,19 +339,15 @@ class NANOCoin extends HasProviders(Coin) {
       remainingPadded = `0${remainingPadded}`; // Left pad with 0's
     }
 
-    const [accountPublicKeyFromAddress, accountPublicKeyFromAccountState] =
-      await Promise.all([
-        this.getAccountPublicKey(this.address),
-        this.getAccountPublicKey(this.account_state.representative),
-      ]);
+    const [accountPublicKeyFromAddress, accountPublicKeyFromAccountState] = await Promise.all([
+      this.getAccountPublicKey(this.address),
+      this.getAccountPublicKey(this.account_state.representative),
+    ]);
 
     blake.blake2bUpdate(context, this.hexToUint8(STATE_BLOCK_PREAMBLE));
     blake.blake2bUpdate(context, this.hexToUint8(accountPublicKeyFromAddress));
     blake.blake2bUpdate(context, this.hexToUint8(this.account_state.frontier));
-    blake.blake2bUpdate(
-      context,
-      this.hexToUint8(accountPublicKeyFromAccountState),
-    );
+    blake.blake2bUpdate(context, this.hexToUint8(accountPublicKeyFromAccountState));
     blake.blake2bUpdate(context, this.hexToUint8(remainingPadded));
     blake.blake2bUpdate(context, payload);
     const hashBytes = blake.blake2bFinal(context);
@@ -390,9 +364,7 @@ class NANOCoin extends HasProviders(Coin) {
   }
 
   async confirmAllPendingBlocks() {
-    const pending = await this.getProvider('history').getPendingTransactions(
-      this.address,
-    );
+    const pending = await this.getProvider('history').getPendingTransactions(this.address);
 
     if (Array.isArray(pending.blocks)) {
       for (const block of pending.blocks) {
@@ -403,9 +375,7 @@ class NANOCoin extends HasProviders(Coin) {
 
   async confirmPendingBlock(block) {
     if (typeof block !== 'string' || block.length !== BLOCK_HASH_LENGTH) {
-      throw new Error(
-        `[NANO] confirmPendingBlock error: incorrect block hash: ${block}`,
-      );
+      throw new Error(`[NANO] confirmPendingBlock error: incorrect block hash: ${block}`);
     }
     const tx = await this.createReceiveTransaction(block);
 
@@ -421,9 +391,7 @@ class NANOCoin extends HasProviders(Coin) {
   async getTransactions() {
     this.confirmAllPendingBlocks(); // no await, confirm in background
 
-    const pending = this.account_state.pending
-      ? this.account_state.pending.blocks
-      : [];
+    const pending = this.account_state.pending ? this.account_state.pending.blocks : [];
 
     return this.getProvider('history').getTransactions({
       address: this.address,
@@ -473,18 +441,14 @@ class NANOCoin extends HasProviders(Coin) {
     }
 
     // update transactions list
-    const hasTx = this.transactions.find(
-      (walletTx) => walletTx.txid === tx.txid,
-    );
+    const hasTx = this.transactions.find((walletTx) => walletTx.txid === tx.txid);
 
     // websocket can double-send events
     // only push tx to list when there it is not in the list already
     if (!hasTx) {
       // in case we have pending tx we shoul only update tx hash
       const pendingTx = this.transactions.find(
-        (walletTx) =>
-          walletTx.txid === 'pending' &&
-          walletTx.otherSideAddress === tx.otherSideAddress,
+        (walletTx) => walletTx.txid === 'pending' && walletTx.otherSideAddress === tx.otherSideAddress,
       );
 
       // in case there is no pending tx just push it to the list

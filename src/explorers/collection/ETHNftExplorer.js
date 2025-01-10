@@ -1,10 +1,7 @@
 import { ExternalError, InternalError } from 'src/errors';
 import Web3 from 'web3';
 
-import {
-  ERC721_TOKEN_STANDARD,
-  ERC1155_TOKEN_STANDARD,
-} from '../../coins/nfts/ETHNftToken';
+import { ERC721_TOKEN_STANDARD, ERC1155_TOKEN_STANDARD } from '../../coins/nfts/ETHNftToken';
 import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/const';
 import { getStringWithEnsuredEndChar } from '../../utils/convert';
 import Explorer from '../Explorer';
@@ -162,16 +159,8 @@ class ETHNftExplorer extends Explorer {
    * @returns {Promise<string>}
    * @throws {ExternalError}
    */
-  async getNftContractData(
-    coin,
-    toAddress,
-    contractAddress,
-    tokenId,
-    tokenStandard,
-  ) {
-    if (
-      ![ERC721_TOKEN_STANDARD, ERC1155_TOKEN_STANDARD].includes(tokenStandard)
-    ) {
+  async getNftContractData(coin, toAddress, contractAddress, tokenId, tokenStandard) {
+    if (![ERC721_TOKEN_STANDARD, ERC1155_TOKEN_STANDARD].includes(tokenStandard)) {
       throw new InternalError({
         type: INTERNAL_ERROR,
         error: 'Unrecognized nft token standard',
@@ -196,9 +185,7 @@ class ETHNftExplorer extends Explorer {
       [ERC1155_TOKEN_STANDARD]: (from, to, contract, id) => {
         const tokenContract = new this.web3.eth.Contract(erc1155Abi, contract);
 
-        return tokenContract.methods
-          .safeTransferFrom(from, to, id, 1, HEX_ZERO)
-          .encodeABI();
+        return tokenContract.methods.safeTransferFrom(from, to, id, 1, HEX_ZERO).encodeABI();
       },
       [ERC721_TOKEN_STANDARD]: (from, to, contract, id) => {
         const tokenContract = new this.web3.eth.Contract(erc721Abi, contract);
@@ -207,12 +194,7 @@ class ETHNftExplorer extends Explorer {
       },
     };
 
-    return ethTokenStandardSafeTransferFrom[tokenStandard](
-      fromAddress,
-      toAddress,
-      contractAddress,
-      tokenId,
-    );
+    return ethTokenStandardSafeTransferFrom[tokenStandard](fromAddress, toAddress, contractAddress, tokenId);
   }
 
   /**
@@ -231,22 +213,9 @@ class ETHNftExplorer extends Explorer {
    * @throws {ExternalError}
    * @throws {InternalError}
    */
-  async sendNft(
-    coin,
-    toAddress,
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    options,
-  ) {
+  async sendNft(coin, toAddress, contractAddress, tokenId, tokenStandard, options) {
     try {
-      const data = await this.getNftContractData(
-        coin,
-        toAddress,
-        contractAddress,
-        tokenId,
-        tokenStandard,
-      );
+      const data = await this.getNftContractData(coin, toAddress, contractAddress, tokenId, tokenStandard);
 
       const signedRawTransaction = await coin.createNftTransaction({
         toAddress,

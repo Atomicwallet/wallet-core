@@ -65,12 +65,7 @@ class OpenMoneroExplorer extends Explorer {
       generated_locally: true,
     };
 
-    const response = await this.request(
-      'login',
-      'POST',
-      loginParams,
-      OPENMONERO_LOGIN_TYPE,
-    );
+    const response = await this.request('login', 'POST', loginParams, OPENMONERO_LOGIN_TYPE);
 
     return response.status === 'success';
   }
@@ -82,12 +77,7 @@ class OpenMoneroExplorer extends Explorer {
       no_blocks_to_import: String(OPENMONERO_IMPORT_BLOCK_COUNT),
     };
 
-    const response = await this.request(
-      'import_recent_wallet_request ',
-      'POST',
-      importParams,
-      OPENMONERO_IMPORT_TYPE,
-    );
+    const response = await this.request('import_recent_wallet_request ', 'POST', importParams, OPENMONERO_IMPORT_TYPE);
 
     return response.request_fulfilled;
   }
@@ -131,11 +121,9 @@ class OpenMoneroExplorer extends Explorer {
           return true;
         }
 
-        return !this.checkKeyImage(
-          tx.spent_outputs[0].tx_pub_key,
-          tx.spent_outputs[0].out_index,
-          [tx.spent_outputs[0].key_image],
-        );
+        return !this.checkKeyImage(tx.spent_outputs[0].tx_pub_key, tx.spent_outputs[0].out_index, [
+          tx.spent_outputs[0].key_image,
+        ]);
       }),
     );
   }
@@ -157,9 +145,7 @@ class OpenMoneroExplorer extends Explorer {
       this.wallet.toCurrencyUnit(
         this.getTxDirection(tx)
           ? tx.total_received
-          : new this.wallet.BN(tx.total_sent).sub(
-              new this.wallet.BN(tx.total_received),
-            ),
+          : new this.wallet.BN(tx.total_sent).sub(new this.wallet.BN(tx.total_received)),
       ),
     );
   }
@@ -198,9 +184,7 @@ class OpenMoneroExplorer extends Explorer {
   }
 
   modifyUnspentOutputsResponse(response) {
-    return response.outputs.filter((utxo) =>
-      this.checkKeyImage(utxo.tx_pub_key, utxo.index, utxo.spend_key_images),
-    );
+    return response.outputs.filter((utxo) => this.checkKeyImage(utxo.tx_pub_key, utxo.index, utxo.spend_key_images));
   }
 
   async getRawUnspentOutputs(addr = undefined) {
@@ -221,12 +205,7 @@ class OpenMoneroExplorer extends Explorer {
       count: this.wallet.defaultMixin,
     };
 
-    const response = await this.request(
-      'get_random_outs',
-      'POST',
-      randomParams,
-      OPENMONERO_RANDOM_TYPE,
-    );
+    const response = await this.request('get_random_outs', 'POST', randomParams, OPENMONERO_RANDOM_TYPE);
 
     return response;
   }

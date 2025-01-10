@@ -24,10 +24,8 @@ if (!wallet) {
 }
 
 // @todo proper tx mocks should be defined
-jest
-  .spyOn(wallet, 'createTransaction')
-  .mockImplementation(({ address, amount }) => {
-    return { address, amount };
-  });
+jest.spyOn(wallet, 'createTransaction').mockImplementation(({ address, amount }) => {
+  return { address, amount };
+});
 
 generateWalletTests(wallet);

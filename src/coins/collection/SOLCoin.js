@@ -10,10 +10,7 @@ import { SOLToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';
 import { STAKE_ADDR_TYPE } from '../../utils/const';
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
-import {
-  NODE_PROVIDER_OPERATION,
-  TOKEN_PROVIDER_OPERATION,
-} from '../mixins/HasProviders';
+import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from '../mixins/HasProviders';
 
 const NAME = 'Solana';
 const TICKER = 'SOL';
@@ -29,9 +26,7 @@ const solanaWeb3Lib = 'solanaWeb3Lib';
 const hdKeyLib = 'hdKeyLib';
 const tweetnaclLib = 'tweetnaclLib';
 
-class SOLCoin extends NftMixin(
-  HasProviders(HasBlockScanner(HasTokensMixin(Coin))),
-) {
+class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)))) {
   #privateKey;
 
   /**
@@ -87,18 +82,11 @@ class SOLCoin extends NftMixin(
     const { default: nacl } = await this.loadLib(tweetnaclLib);
 
     const hdPrivateKey = derivePath(DERIVATION, seed).key;
-    const { secretKey, publicKey } = this.generateKeys(
-      Keypair,
-      nacl,
-      hdPrivateKey,
-    );
+    const { secretKey, publicKey } = this.generateKeys(Keypair, nacl, hdPrivateKey);
 
     // Convert a Solana secret key to a hex string
     // where each byte of data is represented as a two-character hexadecimal number
-    this.#privateKey = secretKey.reduce(
-      (str, byte) => str + byte.toString(16).padStart(2, '0'),
-      '',
-    );
+    this.#privateKey = secretKey.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
     this.address = publicKey.toString();
 
     return { id: this.id, privateKey: this.#privateKey, address: this.address };
@@ -111,8 +99,7 @@ class SOLCoin extends NftMixin(
    * @returns {Promise<*>} Unsigned transaction
    */
   async createTransaction({ address, amount }) {
-    const { Transaction, SystemProgram, PublicKey } =
-      await this.loadLib(solanaWeb3Lib);
+    const { Transaction, SystemProgram, PublicKey } = await this.loadLib(solanaWeb3Lib);
 
     return new Transaction().add(
       SystemProgram.transfer({
@@ -205,10 +192,7 @@ class SOLCoin extends NftMixin(
   }
 
   async createStakeAccount(address, amount) {
-    const [
-      { Keypair, PublicKey, Authorized, Lockup, StakeProgram },
-      { default: nacl },
-    ] = await Promise.all([
+    const [{ Keypair, PublicKey, Authorized, Lockup, StakeProgram }, { default: nacl }] = await Promise.all([
       this.loadLib(solanaWeb3Lib),
       this.loadLib(tweetnaclLib),
     ]);
@@ -239,15 +223,12 @@ class SOLCoin extends NftMixin(
   }
 
   async createDelegationTransaction({ validator, amount }) {
-    const { PublicKey, StakeProgram, Transaction } =
-      await this.loadLib(solanaWeb3Lib);
+    const { PublicKey, StakeProgram, Transaction } = await this.loadLib(solanaWeb3Lib);
 
-    const {
-      createStakeAccountInstructions,
-      stakePubkey,
-      stakeSeckey,
-      authorized,
-    } = await this.createStakeAccount(this.address, amount);
+    const { createStakeAccountInstructions, stakePubkey, stakeSeckey, authorized } = await this.createStakeAccount(
+      this.address,
+      amount,
+    );
 
     const votePubkey = new PublicKey(validator); // validator pubkey
     const params = {
@@ -258,10 +239,7 @@ class SOLCoin extends NftMixin(
 
     const delegate = StakeProgram.delegate(params);
 
-    const instructions = [
-      ...createStakeAccountInstructions,
-      ...delegate.instructions,
-    ];
+    const instructions = [...createStakeAccountInstructions, ...delegate.instructions];
 
     const transaction = new Transaction();
 
@@ -300,10 +278,7 @@ class SOLCoin extends NftMixin(
    * @param ownerAddress
    * @returns {Promise<Transaction>}
    */
-  async createDeactivateStakeTransaction({
-    stakeAccount,
-    ownerAddress = this.address,
-  }) {
+  async createDeactivateStakeTransaction({ stakeAccount, ownerAddress = this.address }) {
     const { PublicKey, StakeProgram } = await this.loadLib(solanaWeb3Lib);
 
     const stakePubkey = new PublicKey(stakeAccount);
@@ -322,11 +297,7 @@ class SOLCoin extends NftMixin(
    * @param amount
    * @returns {Promise<Buffer>}
    */
-  async createUndelegationTransaction({
-    stakeAccount,
-    ownerAddress = this.address,
-    amount,
-  }) {
+  async createUndelegationTransaction({ stakeAccount, ownerAddress = this.address, amount }) {
     const { PublicKey, StakeProgram } = await this.loadLib(solanaWeb3Lib);
 
     const stakePubkey = new PublicKey(stakeAccount); // staking account pubkey
@@ -358,10 +329,7 @@ class SOLCoin extends NftMixin(
       }
     }
 
-    const balance = await this.getProvider('balance').getBalance(
-      this.address,
-      true,
-    );
+    const balance = await this.getProvider('balance').getBalance(this.address, true);
 
     if (balance) {
       this.balance = balance;
@@ -371,20 +339,13 @@ class SOLCoin extends NftMixin(
       address: this.address,
       ignoreCache: props?.ignoreCache || false,
     };
-    const balances = await this.getProvider('stake').getStakingBalance(
-      getStakingBalanceProps,
-    );
+    const balances = await this.getProvider('stake').getStakingBalance(getStakingBalanceProps);
     const fee = await this.getFee();
     const feeForStake = fee.mul(new this.BN(STAKE_MULTIPLIER));
-    const availableForStake = new this.BN(balance)
-      .sub(new this.BN(feeForStake))
-      .sub(new this.BN(this.reserveForStake));
+    const availableForStake = new this.BN(balance).sub(new this.BN(feeForStake)).sub(new this.BN(this.reserveForStake));
 
     if (balances) {
-      balances.availableForStake =
-        Number(availableForStake) > 0
-          ? this.toCurrencyUnit(availableForStake)
-          : '0';
+      balances.availableForStake = Number(availableForStake) > 0 ? this.toCurrencyUnit(availableForStake) : '0';
 
       this.balances = balances;
     }
@@ -395,9 +356,7 @@ class SOLCoin extends NftMixin(
   async getAccountInfo(address) {
     const { PublicKey } = await this.loadLib(solanaWeb3Lib);
 
-    return this.getProvider('node').getAccountInfo(
-      new PublicKey(address || this.address),
-    );
+    return this.getProvider('node').getAccountInfo(new PublicKey(address || this.address));
   }
 
   /**
@@ -561,10 +520,7 @@ class SOLCoin extends NftMixin(
    */
   getTokenFromUserList(token, source) {
     return {
-      ...this.getTokenFromCommonList(
-        { ...token, decimal: token.decimals },
-        source,
-      ),
+      ...this.getTokenFromCommonList({ ...token, decimal: token.decimals }, source),
       // The 'notify' field is for Atomic's internal use, explorers (the source of the 'user list') does not have it.
       // But we don't need to change this value, as it can be set in the native token list for this token.
       notify: token.notify,
@@ -609,21 +565,13 @@ class SOLCoin extends NftMixin(
    * @return {Promise} A promise that resolves with the transaction result.
    */
   async sendTokenTransaction({ mint, address, amount, decimals }) {
-    return this.getProvider(TOKEN_PROVIDER_OPERATION).sendTokenTransaction(
-      this,
-      mint,
-      address,
-      amount,
-      decimals,
-    );
+    return this.getProvider(TOKEN_PROVIDER_OPERATION).sendTokenTransaction(this, mint, address, amount, decimals);
   }
 
   async getTransactions(args) {
     try {
       if (!this.address) {
-        throw new Error(
-          `[${this.ticker}] getTransactions error: address is not loaded`,
-        );
+        throw new Error(`[${this.ticker}] getTransactions error: address is not loaded`);
       }
 
       return this.getProvider('history').getTransactions({

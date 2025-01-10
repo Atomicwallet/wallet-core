@@ -56,18 +56,11 @@ export default abstract class AbstractWallet {
   abstract get feeWallet(): Coin | Token;
 
   abstract availableBalance(fees?: string): Promise<string>;
-  abstract createTransaction(
-    args: CreateTxParams,
-  ): Promise<RawTxHex | RawTxBinary | RawTxObject>;
+  abstract createTransaction(args: CreateTxParams): Promise<RawTxHex | RawTxBinary | RawTxObject>;
 
-  abstract sendRawTransaction(
-    args: RawTxHex | RawTxBinary | RawTxObject,
-  ): Promise<RawTxHash>;
+  abstract sendRawTransaction(args: RawTxHex | RawTxBinary | RawTxObject): Promise<RawTxHash>;
 
-  abstract getGasPrice(
-    withoutCoeff: boolean,
-    isToken?: boolean,
-  ): Promise<BN | number | string>;
+  abstract getGasPrice(withoutCoeff: boolean, isToken?: boolean): Promise<BN | number | string>;
 
   abstract estimateGas(
     amount: BN | string,
@@ -79,12 +72,7 @@ export default abstract class AbstractWallet {
   abstract getFeePerByte(): BN;
   abstract getUnspentOutputs(): Promise<unknown[]>;
 
-  constructor({
-    name,
-    ticker,
-    decimal,
-    memoRegexp,
-  }: CoinConfigType | TokenCreationArgs) {
+  constructor({ name, ticker, decimal, memoRegexp }: CoinConfigType | TokenCreationArgs) {
     this.#name = name;
     this.#ticker = ticker;
     this.#decimal = decimal;
@@ -166,17 +154,10 @@ export default abstract class AbstractWallet {
     }
 
     if (this.eventEmitter) {
-      this.eventEmitter.emit(
-        `update::${this.deprecatedParent}::token`,
-        this.id,
-      );
+      this.eventEmitter.emit(`update::${this.deprecatedParent}::token`, this.id);
     }
 
-    if (
-      this.eventEmitter &&
-      this.divisibleBalance !== oldBalance &&
-      !!oldBalance
-    ) {
+    if (this.eventEmitter && this.divisibleBalance !== oldBalance && !!oldBalance) {
       this.eventEmitter.emit(WALLETS.BALANCE_UPDATED, { wallet: this });
     }
   }
@@ -211,16 +192,12 @@ export default abstract class AbstractWallet {
     return false;
   }
 
-  async sendTransaction(
-    rawtx: RawTxHex | RawTxBinary | RawTxObject,
-  ): Promise<unknown> {
+  async sendTransaction(rawtx: RawTxHex | RawTxBinary | RawTxObject): Promise<unknown> {
     return this.explorer && this.explorer.sendTransaction(rawtx);
   }
 
   createTransactionOnce(params: CreateTxParams) {
-    return this.canRun('createTransaction')
-      ? this.createTransaction(params)
-      : {};
+    return this.canRun('createTransaction') ? this.createTransaction(params) : {};
   }
 
   sendTransactionOnce(params: RawTxHex | RawTxBinary | RawTxObject) {
@@ -228,9 +205,7 @@ export default abstract class AbstractWallet {
   }
 
   sendRawTransactionOnce(params: CreateTxParams) {
-    return this.canRun('sendRawTransaction')
-      ? this.sendRawTransaction(params)
-      : {};
+    return this.canRun('sendRawTransaction') ? this.sendRawTransaction(params) : {};
   }
 
   /**
@@ -252,9 +227,7 @@ export default abstract class AbstractWallet {
   async isAvailableForSend(amount: string): Promise<boolean> {
     const avaliableBalance = await this.availableBalance();
 
-    return new BN(this.toMinimalUnit(amount)).lte(
-      new BN(this.toMinimalUnit(avaliableBalance)),
-    );
+    return new BN(this.toMinimalUnit(amount)).lte(new BN(this.toMinimalUnit(avaliableBalance)));
   }
 
   /**
@@ -300,14 +273,7 @@ export default abstract class AbstractWallet {
    * @param {string | number} [chainId]
    * @returns {boolean}
    */
-  isMatch({
-    ticker,
-    contract,
-    parent,
-    address,
-    network,
-    chainId,
-  }: WalletIdentifierType): boolean {
+  isMatch({ ticker, contract, parent, address, network, chainId }: WalletIdentifierType): boolean {
     const optional: Partial<WalletIdentifierType> = {
       contract,
       parent,
@@ -327,16 +293,8 @@ export default abstract class AbstractWallet {
         const thisValue = this[key as keyof AbstractWallet];
         const optionalValue = optional[key as keyof WalletIdentifierType];
 
-        if (
-          thisValue &&
-          typeof thisValue !== 'object' &&
-          typeof optionalValue !== 'object'
-        ) {
-          return (
-            result &&
-            thisValue.toString().toLowerCase() ===
-              optionalValue!.toString().toLowerCase()
-          );
+        if (thisValue && typeof thisValue !== 'object' && typeof optionalValue !== 'object') {
+          return result && thisValue.toString().toLowerCase() === optionalValue!.toString().toLowerCase();
         }
       }
       return result;

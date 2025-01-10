@@ -1,10 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
 
-import {
-  GET_BALANCE_TYPE,
-  GET_TRANSACTIONS_TYPE,
-  HTTP_STATUS_NOT_FOUND,
-} from '../../utils/const';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/const';
 import { convertSecondsToDateTime } from '../../utils/convert';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
@@ -112,9 +108,7 @@ class AlgoExplorer extends Explorer {
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx)
-      ? tx.sender
-      : tx[PAYMENT_TRANSACTION].receiver;
+    return this.getTxDirection(selfAddress, tx) ? tx.sender : tx[PAYMENT_TRANSACTION].receiver;
   }
 
   getTxValue(selfAddress, tx) {
@@ -122,9 +116,7 @@ class AlgoExplorer extends Explorer {
       this.wallet.toCurrencyUnit(
         this.getTxDirection(selfAddress, tx)
           ? tx[PAYMENT_TRANSACTION].amount
-          : new this.wallet.BN(tx[PAYMENT_TRANSACTION].amount).add(
-              new this.wallet.BN(tx.fee),
-            ),
+          : new this.wallet.BN(tx[PAYMENT_TRANSACTION].amount).add(new this.wallet.BN(tx.fee)),
       ),
     );
   }

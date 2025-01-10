@@ -22,9 +22,7 @@ export default class StacksExplorer extends Explorer {
   }
 
   async getTransactions({ address }) {
-    const res = await fetch(
-      `${this.config.baseUrl}/extended/v1/address/${address}/transactions`,
-    );
+    const res = await fetch(`${this.config.baseUrl}/extended/v1/address/${address}/transactions`);
     const result = await res.json();
 
     return this.modifyTransactionsResponse(
@@ -46,9 +44,7 @@ export default class StacksExplorer extends Explorer {
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    return this.getTxDirection(selfAddress, tx)
-      ? tx.sender_address
-      : tx.token_transfer.recipient_address;
+    return this.getTxDirection(selfAddress, tx) ? tx.sender_address : tx.token_transfer.recipient_address;
   }
 
   getTxValue(selfAddress, tx) {

@@ -54,21 +54,15 @@ class FETCoin extends CosmosMixinV2(HasBlockScanner(HasProviders(Coin))) {
     this.denom = DENOM_NAME;
 
     this.sendFeeGas = feeData.sendFeeGas?.toString() || SEND_GAS_AMOUNT;
-    this.stakingFeeGas =
-      feeData.stakingFeeGas?.toString() || DELEGATE_GAS_AMOUNT;
-    this.claimFeeGas =
-      feeData.claimFeeGas?.toString() || CLAIM_REWARDS_GAS_AMOUNT;
-    this.reStakingFeeGas =
-      feeData.reStakingFeeGas?.toString() || RE_DELEGATE_GAS_AMOUNT;
+    this.stakingFeeGas = feeData.stakingFeeGas?.toString() || DELEGATE_GAS_AMOUNT;
+    this.claimFeeGas = feeData.claimFeeGas?.toString() || CLAIM_REWARDS_GAS_AMOUNT;
+    this.reStakingFeeGas = feeData.reStakingFeeGas?.toString() || RE_DELEGATE_GAS_AMOUNT;
     this.transactions = [];
     this.minClaimSum = MIN_CLAIM_SUM;
     this.fields.paymentId = true;
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (_, unconfirmedTx) => {
-        this.onConfirmSocketTx(unconfirmedTx);
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (_, unconfirmedTx) => {
+      this.onConfirmSocketTx(unconfirmedTx);
+    });
     this.reserveForStake = feeData.reserveForStake || DEFAULT_RESERVE_FOR_STAKE;
   }
 

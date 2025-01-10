@@ -5,11 +5,7 @@ import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 // import logger from '../Logger'
 
-const DYNAMIC_PARAMETERS = [
-  'getDynamicEnergyThreshold',
-  'getDynamicEnergyIncreaseFactor',
-  'getDynamicEnergyMaxFactor',
-];
+const DYNAMIC_PARAMETERS = ['getDynamicEnergyThreshold', 'getDynamicEnergyIncreaseFactor', 'getDynamicEnergyMaxFactor'];
 
 /**
  * Max tx limit specified by Trongrid
@@ -126,11 +122,7 @@ class TrongridExplorer extends Explorer {
   }
 
   getContractInfo(contract) {
-    return this.request(
-      this.getContractInfoUrl(),
-      this.getContractInfoMethod(),
-      this.getContractInfoParams(contract),
-    );
+    return this.request(this.getContractInfoUrl(), this.getContractInfoMethod(), this.getContractInfoParams(contract));
   }
 
   getChainParameters() {
@@ -165,10 +157,7 @@ class TrongridExplorer extends Explorer {
   }
 
   async getDynamicEnergyParameters() {
-    const { chainParameter = [] } = await this.request(
-      this.getChainParametersUrl(),
-      this.getInfoMethod(),
-    );
+    const { chainParameter = [] } = await this.request(this.getChainParametersUrl(), this.getInfoMethod());
 
     return this.modifyDynamicEnergyParametersResponse(chainParameter);
   }
@@ -193,7 +182,8 @@ class TrongridExplorer extends Explorer {
     const failed = response?.transaction?.ret[0]?.ret === 'FAILED';
 
     if (failed) {
-      // logger.error({ instance: this, error: new Error('[TrongridExplorer]: Failed to call estimate energy, node rejects tx with REVERT opcode, probably invalid tx was passed') })
+      // logger.error({ instance: this, error: new Error('[TrongridExplorer]:
+      // Failed to call estimate energy, node rejects tx with REVERT opcode, probably invalid tx was passed') })
 
       return undefined;
     }

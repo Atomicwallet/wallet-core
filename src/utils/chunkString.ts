@@ -1,17 +1,9 @@
-const DEFAULT_МАХ_STRING_LENGTH = 100;
-
-const chunkString = (
-  strWallets,
-  maxStringLength = DEFAULT_МАХ_STRING_LENGTH,
-) => {
+const chunkString = (strWallets: string, maxStringLength = 100) => {
   const result = [];
 
   while (strWallets.length > maxStringLength) {
     const maxString = strWallets.slice(0, maxStringLength);
-    const maxLength =
-      strWallets[maxStringLength] === ','
-        ? maxStringLength
-        : maxString.lastIndexOf(',');
+    const maxLength = strWallets[maxStringLength] === ',' ? maxStringLength : maxString.lastIndexOf(',');
 
     result.push(strWallets.slice(0, maxLength));
     strWallets = strWallets.slice(maxLength + 1);

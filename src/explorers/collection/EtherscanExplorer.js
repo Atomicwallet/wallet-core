@@ -1,13 +1,8 @@
+import { ETHERSCAN_API_KEY } from 'src/env';
 import { ExplorerRequestError } from 'src/errors';
 
-import { ETHERSCAN_API_KEY } from '../../env';
 import { getTokenId } from '../../utils';
-import {
-  GET_BALANCE_TYPE,
-  GET_TRANSACTIONS_TYPE,
-  ONE_MINUTE,
-  SEND_TRANSACTION_TYPE,
-} from '../../utils/const';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE, SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 
 const getApiKey = (walletId) => (walletId === 'ETH' ? ETHERSCAN_API_KEY : null);
@@ -112,9 +107,7 @@ class EtherscanExplorer extends Explorer {
    * @return {string}
    */
   getTxOtherSideAddress(selfAddress, tx) {
-    return selfAddress.toLowerCase() === tx.from.toLowerCase()
-      ? tx.to
-      : tx.from;
+    return selfAddress.toLowerCase() === tx.from.toLowerCase() ? tx.to : tx.from;
   }
 
   /**
@@ -157,16 +150,14 @@ class EtherscanExplorer extends Explorer {
   async getTokensTransactions({ address, offset, limit, pageNum }) {
     if (
       this.defaultRequestTimeout &&
-      Date.now() - this.defaultRequestTimeout * ONE_MINUTE <
-        this.lastGetTxsRequestTime
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE < this.lastGetTxsRequestTime
     ) {
       return [];
     }
 
     if (
       this.defaultRequestTimeout &&
-      Date.now() - this.defaultRequestTimeout * ONE_MINUTE >
-        this.lastGetTxsRequestTime
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE > this.lastGetTxsRequestTime
     ) {
       this.lastGetTxsRequestTime = Date.now();
     }

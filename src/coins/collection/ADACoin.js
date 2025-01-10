@@ -1,7 +1,7 @@
+import { DEFAULT_ADALITE_SUBMIT_URL } from 'src/env';
 import { WalletError } from 'src/errors';
 
 import Coin from '../../abstract/coin';
-import { DEFAULT_ADALITE_SUBMIT_URL } from '../../env';
 import { AdaAtomicExplorer, YoroExplorer } from '../../explorers/collection';
 import { LazyLoadedLib, preventConcurrent } from '../../utils';
 import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const';
@@ -39,16 +39,7 @@ class ADACoin extends HasProviders(Coin) {
   /** @type {object|null} */
   cardanoWalletV4 = null;
 
-  constructor({
-    alias,
-    notify,
-    feeData,
-    explorers,
-    txWebUrl,
-    submitUrl,
-    socket,
-    id,
-  }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, submitUrl, socket, id }) {
     const config = {
       id,
       alias,
@@ -101,16 +92,9 @@ class ADACoin extends HasProviders(Coin) {
       return this.coreLibrary;
     }
 
-    const [{ default: AdaLibApi }] = await Promise.all([
-      this.loadLib(ADA_LIB_API),
-      this.loadLibsPromise(),
-    ]);
+    const [{ default: AdaLibApi }] = await Promise.all([this.loadLib(ADA_LIB_API), this.loadLibsPromise()]);
 
-    this.coreLibrary = new AdaLibApi(
-      this.cardanoWalletV2,
-      this.cardanoWalletV4,
-      this.feeParams,
-    );
+    this.coreLibrary = new AdaLibApi(this.cardanoWalletV2, this.cardanoWalletV4, this.feeParams);
 
     return this.coreLibrary;
   }
@@ -147,19 +131,11 @@ class ADACoin extends HasProviders(Coin) {
                 arrayBuffer: () => xhr.response,
               });
             } else {
-              reject(
-                new Error(
-                  `[ADA] wasm load error: status ${this.status}: ${xhr.statusText}`,
-                ),
-              );
+              reject(new Error(`[ADA] wasm load error: status ${this.status}: ${xhr.statusText}`));
             }
           });
           xhr.addEventListener('error', function onErrorEvent() {
-            reject(
-              new Error(
-                `[ADA] wasm load error: status ${this.status}: ${xhr.statusText}`,
-              ),
-            );
+            reject(new Error(`[ADA] wasm load error: status ${this.status}: ${xhr.statusText}`));
           });
           xhr.send();
         });
@@ -172,14 +148,8 @@ class ADACoin extends HasProviders(Coin) {
 
     return Promise.all(
       isIOS
-        ? [
-            import('cardano-wallet-asm'),
-            import('@emurgo/cardano-serialization-lib-asmjs'),
-          ]
-        : [
-            import('cardano-wallet-browser'),
-            import('@emurgo/cardano-serialization-lib-browser'),
-          ],
+        ? [import('cardano-wallet-asm'), import('@emurgo/cardano-serialization-lib-asmjs')]
+        : [import('cardano-wallet-browser'), import('@emurgo/cardano-serialization-lib-browser')],
     )
       .then((modules) => {
         this.cardanoWalletV2 = modules[0];
@@ -196,10 +166,7 @@ class ADACoin extends HasProviders(Coin) {
   }
 
   validateStakePoolAddress(poolAddress) {
-    return (
-      poolAddress.length === POOL_ADDRESS_LENGTH &&
-      POOL_ADDRESS_REGEXP.test(poolAddress)
-    );
+    return poolAddress.length === POOL_ADDRESS_LENGTH && POOL_ADDRESS_REGEXP.test(poolAddress);
   }
 
   async setPrivateKey(privateKey, mnemonic = undefined) {
@@ -250,15 +217,10 @@ class ADACoin extends HasProviders(Coin) {
     try {
       const coreLibrary = await this.getCoreLibrary();
 
-      this.#privateKey.shelleyKey =
-        await coreLibrary.getPrivateKeyByMnemonic(mnemonic);
-      this.#privateKey.byronKey =
-        await coreLibrary.getLegacyPrivateKeyByMnemonic(mnemonic);
+      this.#privateKey.shelleyKey = await coreLibrary.getPrivateKeyByMnemonic(mnemonic);
+      this.#privateKey.byronKey = await coreLibrary.getLegacyPrivateKeyByMnemonic(mnemonic);
       this.#legacyAccount = coreLibrary.getLegacyAccountFromMnemonic(mnemonic);
-      this.#privateKey.byronAddress =
-        await coreLibrary.getLegacyAddressByPrivateKeySync(
-          this.#privateKey.byronKey,
-        );
+      this.#privateKey.byronAddress = await coreLibrary.getLegacyAddressByPrivateKeySync(this.#privateKey.byronKey);
 
       this.address = await coreLibrary.getAddressByPrivateKey();
     } catch (error) {
@@ -405,8 +367,7 @@ class ADACoin extends HasProviders(Coin) {
   }
 
   async getFee({ amount = null, address, utxos, changeAddress } = {}) {
-    const addressToSend =
-      address && address.length > 0 ? address : this.address;
+    const addressToSend = address && address.length > 0 ? address : this.address;
 
     const [outputs, lastblock, coreLibrary] = await Promise.all([
       utxos || (await this.getUnspentOutputs(changeAddress || this.address)),
@@ -431,17 +392,10 @@ class ADACoin extends HasProviders(Coin) {
   }
 
   async getInfo() {
-    const [balance, coreLibrary] = await Promise.all([
-      this.getBalance(),
-      this.getCoreLibrary(),
-    ]);
+    const [balance, coreLibrary] = await Promise.all([this.getBalance(), this.getCoreLibrary()]);
 
-    const stakeAddress = coreLibrary
-      .getRewardAddress(this.address)
-      .to_address()
-      .to_bech32();
-    const accountState =
-      await this.getProvider('balance').getAccountState(stakeAddress);
+    const stakeAddress = coreLibrary.getRewardAddress(this.address).to_address().to_bech32();
+    const accountState = await this.getProvider('balance').getAccountState(stakeAddress);
 
     this.balance = balance;
     this.balances = {
@@ -485,23 +439,13 @@ class ADACoin extends HasProviders(Coin) {
 
   async stake(poolId) {
     const coreLibrary = await this.getCoreLibrary();
-    const stakeAddressHex = coreLibrary.getRewardAddressHexFromAddressStr(
-      this.address,
-    );
+    const stakeAddressHex = coreLibrary.getRewardAddressHexFromAddressStr(this.address);
     const { [stakeAddressHex]: regHistory } =
-      await this.getProvider('regHistory').getRegistrationHistory(
-        stakeAddressHex,
-      );
+      await this.getProvider('regHistory').getRegistrationHistory(stakeAddressHex);
 
-    const registered =
-      regHistory &&
-      regHistory[0] &&
-      regHistory[0].certType === 'StakeRegistration';
+    const registered = regHistory && regHistory[0] && regHistory[0].certType === 'StakeRegistration';
 
-    const delegationTx = await this.createDelegationTransaction(
-      poolId,
-      registered,
-    );
+    const delegationTx = await this.createDelegationTransaction(poolId, registered);
 
     return this.sendTransactionOnce(delegationTx);
   }
@@ -515,8 +459,7 @@ class ADACoin extends HasProviders(Coin) {
 
     const rewardAddress = coreLibrary.getRewardAddress(this.address);
     const bech32RewardAddress = rewardAddress.to_address().to_bech32();
-    const accountState =
-      await this.getProvider('balance').getAccountState(bech32RewardAddress);
+    const accountState = await this.getProvider('balance').getAccountState(bech32RewardAddress);
 
     const tx = await coreLibrary.createWithdrawalTransaction({
       paymentAddress: this.address,

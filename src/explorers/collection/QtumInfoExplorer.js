@@ -35,9 +35,7 @@ class QtumInfoExplorer extends Explorer {
   }
 
   modifyTransactionsResponse(response) {
-    return Promise.all(
-      response.transactions.map(async ({ id }) => this.getTransaction(id)),
-    );
+    return Promise.all(response.transactions.map(async ({ id }) => this.getTransaction(id)));
   }
 
   getTxHash(tx) {
@@ -45,9 +43,7 @@ class QtumInfoExplorer extends Explorer {
   }
 
   getTxDirection(selfAddress, tx) {
-    return (
-      tx.inputs && !tx.inputs.find(({ address }) => address === selfAddress)
-    );
+    return tx.inputs && !tx.inputs.find(({ address }) => address === selfAddress);
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
@@ -98,11 +94,7 @@ class QtumInfoExplorer extends Explorer {
     const isInbound = valueDiff.lt(new this.wallet.BN(0));
     const value = valueDiff.abs();
 
-    return Number(
-      this.wallet.toCurrencyUnit(
-        isInbound ? value : value.sub(new this.wallet.BN(tx.fees)),
-      ),
-    );
+    return Number(this.wallet.toCurrencyUnit(isInbound ? value : value.sub(new this.wallet.BN(tx.fees))));
   }
 
   getTxDateTime(tx) {
@@ -114,16 +106,14 @@ class QtumInfoExplorer extends Explorer {
   }
 
   modifyUnspentOutputsResponse(address, response) {
-    return response.map(
-      ({ transactionId, outputIndex, scriptPubKey, value }) => ({
-        txid: transactionId,
-        vout: outputIndex,
-        address,
-        script: scriptPubKey,
-        satoshis: value,
-        value,
-      }),
-    );
+    return response.map(({ transactionId, outputIndex, scriptPubKey, value }) => ({
+      txid: transactionId,
+      vout: outputIndex,
+      address,
+      script: scriptPubKey,
+      satoshis: value,
+      value,
+    }));
   }
 
   getSendTransactionUrl() {
@@ -155,10 +145,7 @@ class QtumInfoExplorer extends Explorer {
    * @return {BN} The balance.
    */
   calculateBalance(utxos = []) {
-    return utxos.reduce(
-      (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0'),
-    );
+    return utxos.reduce((acc, { value }) => new this.wallet.BN(value).add(acc), new this.wallet.BN('0'));
   }
 }
 

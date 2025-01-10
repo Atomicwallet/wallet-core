@@ -30,10 +30,7 @@ export default class TerraClassicLCDExplorer extends Explorer {
   }
 
   isCached(func) {
-    return (
-      this.cache[func]?.time &&
-      new Date().getTime() - this.cache[func].time.getTime() < this.cacheTime
-    );
+    return this.cache[func]?.time && new Date().getTime() - this.cache[func].time.getTime() < this.cacheTime;
   }
 
   putCache(key, value) {
@@ -62,14 +59,11 @@ export default class TerraClassicLCDExplorer extends Explorer {
   }
 
   async getTokenBalanceByContractAddress({ address, contractAddress }) {
-    const tokenBalance = await this.lcdClient.wasm.contractQuery(
-      contractAddress,
-      {
-        balance: {
-          address,
-        },
+    const tokenBalance = await this.lcdClient.wasm.contractQuery(contractAddress, {
+      balance: {
+        address,
       },
-    );
+    });
 
     return tokenBalance.balance || '0';
   }

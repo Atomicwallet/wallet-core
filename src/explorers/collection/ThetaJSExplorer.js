@@ -118,8 +118,6 @@ export default class ThetaJSExplorer extends Explorer {
    * @returns {string} `THETA` / `TFUEL`
    */
   getTickerFromProvider(providerTicker) {
-    return (
-      providerTicker.match(TICKER_FROM_PROVIDER)?.[1] || providerTicker
-    ).toUpperCase();
+    return (providerTicker.match(TICKER_FROM_PROVIDER)?.[1] || providerTicker).toUpperCase();
   }
 }

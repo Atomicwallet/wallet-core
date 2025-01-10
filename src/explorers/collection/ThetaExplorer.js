@@ -39,12 +39,7 @@ export default class ThetaExplorer extends Explorer {
     return `accountTx/${address}`;
   }
 
-  getTransactionsParams(
-    address,
-    offset,
-    limit = this.defaultTxLimit,
-    pageNum = 0,
-  ) {
+  getTransactionsParams(address, offset, limit = this.defaultTxLimit, pageNum = 0) {
     return {
       pageNumber: pageNum + 1,
       limitNumber: limit,
@@ -58,31 +53,21 @@ export default class ThetaExplorer extends Explorer {
       return [];
     }
 
-    const currentBlock = await this.wallet
-      .getProvider('node')
-      .getLatestBlockNumber();
+    const currentBlock = await this.wallet.getProvider('node').getLatestBlockNumber();
 
-    return txs.flatMap((tx) =>
-      this.getTransactionsModifiedResponse(tx, selfAddress, currentBlock),
-    );
+    return txs.flatMap((tx) => this.getTransactionsModifiedResponse(tx, selfAddress, currentBlock));
   }
 
   getTransactionsModifiedResponse(tx, selfAddress, currentBlock) {
     const lcSelfAddress = selfAddress.toLowerCase();
 
-    const matchedOutput =
-      tx.data.outputs?.find((output) => output.address === lcSelfAddress) ||
-      tx.data.outputs?.[0];
-    const matchedInput =
-      tx.data.inputs?.find((input) => input.address === lcSelfAddress) ||
-      tx.data.inputs?.[0];
+    const matchedOutput = tx.data.outputs?.find((output) => output.address === lcSelfAddress) || tx.data.outputs?.[0];
+    const matchedInput = tx.data.inputs?.find((input) => input.address === lcSelfAddress) || tx.data.inputs?.[0];
 
     if (
       !matchedOutput?.coins ||
       !matchedInput ||
-      ![matchedOutput, matchedInput].some(
-        (matched) => matched?.address === lcSelfAddress,
-      )
+      ![matchedOutput, matchedInput].some((matched) => matched?.address === lcSelfAddress)
     ) {
       return [];
     }
@@ -90,9 +75,7 @@ export default class ThetaExplorer extends Explorer {
     const tokens = this.wallet.getTokens();
 
     return Object.entries(matchedOutput.coins).reduce((txs, [coin, amount]) => {
-      const ticker = this.wallet
-        .getProvider('node')
-        .getTickerFromProvider(coin);
+      const ticker = this.wallet.getProvider('node').getTickerFromProvider(coin);
 
       const wallet = tokens[ticker] || this.wallet;
 
@@ -131,9 +114,7 @@ export default class ThetaExplorer extends Explorer {
 
   getTxConfirmations(tx, currentBlock = 0) {
     return tx.status !== 'pending'
-      ? new this.wallet.BN(currentBlock)
-          .sub(new this.wallet.BN(tx.block_height))
-          .toString()
+      ? new this.wallet.BN(currentBlock).sub(new this.wallet.BN(tx.block_height)).toString()
       : '0';
   }
 
@@ -143,18 +124,14 @@ export default class ThetaExplorer extends Explorer {
 
   getTxFee(tx) {
     return this.wallet.toCurrencyUnit(
-      Object.values(tx.data.fee).find((amount) =>
-        new this.wallet.BN(amount).gt(new this.wallet.BN(0)),
-      ),
+      Object.values(tx.data.fee).find((amount) => new this.wallet.BN(amount).gt(new this.wallet.BN(0))),
     );
   }
 
   getTxFeeTicker(tx) {
     const { fee } = tx.data;
 
-    const matchedKey = Object.keys(fee).find((key) =>
-      new this.wallet.BN(fee[key]).gt(new this.wallet.BN(0)),
-    );
+    const matchedKey = Object.keys(fee).find((key) => new this.wallet.BN(fee[key]).gt(new this.wallet.BN(0)));
 
     return this.wallet.getProvider('node').getTickerFromProvider(matchedKey);
   }

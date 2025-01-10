@@ -4,15 +4,9 @@ import { Coin } from '../../abstract';
 import WavesNodeExplorer from '../../explorers/collection/WavesNodeExplorer';
 import { LazyLoadedLib } from '../../utils';
 
-const wavesSignatureAdapterLib = new LazyLoadedLib(
-  () => import('@waves/signature-adapter'),
-);
-const wavesSignatureGeneratorLib = new LazyLoadedLib(
-  () => import('@waves/signature-generator'),
-);
-const wavesTransactionLib = new LazyLoadedLib(
-  () => import('waves-transactions'),
-);
+const wavesSignatureAdapterLib = new LazyLoadedLib(() => import('@waves/signature-adapter'));
+const wavesSignatureGeneratorLib = new LazyLoadedLib(() => import('@waves/signature-generator'));
+const wavesTransactionLib = new LazyLoadedLib(() => import('waves-transactions'));
 const wavesMarshalLib = new LazyLoadedLib(() => import('@waves/marshall'));
 
 const NAME = 'Waves';
@@ -35,15 +29,7 @@ class WAVESCoin extends Coin {
    * @param {Explorer[]}  explorers the explorers
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({
-    alias,
-    notify,
-    feeData: { fee },
-    explorers,
-    txWebUrl,
-    socket,
-    id,
-  }) {
+  constructor({ alias, notify, feeData: { fee }, explorers, txWebUrl, socket, id }) {
     const config = {
       id,
       alias,
@@ -168,9 +154,7 @@ class WAVESCoin extends Coin {
     });
     const rawTx = binary.serializeTx(transaction);
 
-    transaction.proofs.push(
-      utils.crypto.buildTransactionSignature(rawTx, this.#privateKey),
-    );
+    transaction.proofs.push(utils.crypto.buildTransactionSignature(rawTx, this.#privateKey));
 
     return JSON.stringify(transaction);
   }

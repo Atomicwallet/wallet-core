@@ -4,11 +4,7 @@
 
 import BN from 'bn.js';
 import isEqual from 'lodash/isEqual';
-import {
-  ExplorerRequestError,
-  ExternalError,
-  UndeclaredAbstractMethodError,
-} from 'src/errors';
+import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } from 'src/errors';
 
 import { AbstractWallet } from '@/abstract';
 import type {
@@ -89,9 +85,7 @@ abstract class Coin extends AbstractWallet {
   abstract getProvider(usedFor: string): Explorer;
   abstract getTRC20Fee(feeTRC20Object: unknown): string;
   abstract getScriptPubKey(): unknown;
-  abstract createTokenTransaction(
-    args: unknown,
-  ): Promise<RawTxHex | RawTxBinary | RawTxObject>;
+  abstract createTokenTransaction(args: unknown): Promise<RawTxHex | RawTxBinary | RawTxObject>;
 
   abstract getTokenTransactions(args: unknown): Transaction[];
   abstract getTokenInfo(args: unknown): string | null;
@@ -139,10 +133,7 @@ abstract class Coin extends AbstractWallet {
     // this.plugins = [new DomainsPlugin()];
 
     this.txNotifier = new TxNotifier(this);
-    this.features =
-      config.features ??
-      (config.coinData?.features as string[] | undefined) ??
-      [];
+    this.features = config.features ?? (config.coinData?.features as string[] | undefined) ?? [];
 
     // @TODO handle
     // `TypeError: attempted to set private field on non-instance`
@@ -158,10 +149,7 @@ abstract class Coin extends AbstractWallet {
       // @ts-expect-error @TODO define types
       return await this.dependencies[name].get();
     } catch (error) {
-      console.error(
-        `[${this.id}] Error: Could not load "${name}" dependency`,
-        error,
-      );
+      console.error(`[${this.id}] Error: Could not load "${name}" dependency`, error);
       throw error;
     }
   }
@@ -195,10 +183,7 @@ abstract class Coin extends AbstractWallet {
   }
 
   get isCustomTokenSupported() {
-    return (
-      WALLETS_WITH_CUSTOM_TOKENS.includes(this.id) ||
-      this.isFeatureSupported(CoinFeature.CustomTokens)
-    );
+    return WALLETS_WITH_CUSTOM_TOKENS.includes(this.id) || this.isFeatureSupported(CoinFeature.CustomTokens);
   }
 
   /**
@@ -290,8 +275,7 @@ abstract class Coin extends AbstractWallet {
       getFee: (feeObject: unknown) => this.getFee(feeObject),
       getTokens: () => this.tokens,
       getProvider: (usedFor: string) => this.getProvider(usedFor),
-      getTRC20Fee: (feeTRC20Object: unknown) =>
-        this.getTRC20Fee(feeTRC20Object),
+      getTRC20Fee: (feeTRC20Object: unknown) => this.getTRC20Fee(feeTRC20Object),
       BN,
     };
   }
@@ -346,54 +330,47 @@ abstract class Coin extends AbstractWallet {
 
   manageSocket() {
     TxEventTypes.forEach((event) => {
-      this.eventEmitter.on(
-        event,
-        async ({ ticker, address, hash, transaction }): Promise<void> => {
-          if (this.ticker === ticker) {
-            if (transaction !== undefined) {
-              return this.txNotifier.notify(
-                event,
-                {
-                  amount: this.toCurrencyUnit(String(transaction.amount)),
-                  direction:
-                    this.address.toLowerCase() === transaction.to.toLowerCase(),
-                  txid: hash,
-                },
-                this.id,
-                this.ticker,
-                hash,
-              );
-            }
-
-            let scriptPubKey;
-
-            if (typeof this.getScriptPubKey === 'function') {
-              try {
-                scriptPubKey = await this.getScriptPubKey();
-              } catch (error) {
-                console.warn(error);
-              }
-            }
-
-            const explorer = this.getProvider?.('socket') ?? this.explorer;
-
-            if (typeof explorer?.getSocketTransaction !== 'function') {
-              throw new UndeclaredAbstractMethodError(
-                'getSocketTransaction',
-                explorer,
-              );
-            }
-
-            void explorer.getSocketTransaction({
-              address,
+      this.eventEmitter.on(event, async ({ ticker, address, hash, transaction }): Promise<void> => {
+        if (this.ticker === ticker) {
+          if (transaction !== undefined) {
+            return this.txNotifier.notify(
+              event,
+              {
+                amount: this.toCurrencyUnit(String(transaction.amount)),
+                direction: this.address.toLowerCase() === transaction.to.toLowerCase(),
+                txid: hash,
+              },
+              this.id,
+              this.ticker,
               hash,
-              scriptPubKey,
-              tokens: this.tokens,
-              type: event,
-            });
+            );
           }
-        },
-      );
+
+          let scriptPubKey;
+
+          if (typeof this.getScriptPubKey === 'function') {
+            try {
+              scriptPubKey = await this.getScriptPubKey();
+            } catch (error) {
+              console.warn(error);
+            }
+          }
+
+          const explorer = this.getProvider?.('socket') ?? this.explorer;
+
+          if (typeof explorer?.getSocketTransaction !== 'function') {
+            throw new UndeclaredAbstractMethodError('getSocketTransaction', explorer);
+          }
+
+          void explorer.getSocketTransaction({
+            address,
+            hash,
+            scriptPubKey,
+            tokens: this.tokens,
+            type: event,
+          });
+        }
+      });
     });
   }
 
@@ -433,28 +410,22 @@ abstract class Coin extends AbstractWallet {
       },
     );
 
-    this.eventEmitter.on(
-      `${this.id}::new-token-tx`,
-      ({ token, unconfirmedTx }) => {
-        const { ticker, id } = token;
+    this.eventEmitter.on(`${this.id}::new-token-tx`, ({ token, unconfirmedTx }) => {
+      const { ticker, id } = token;
 
-        if (unconfirmedTx && unconfirmedTx.direction) {
-          this.eventEmitter.emit('socket::newtx', {
-            id,
-            ticker,
-            amount: unconfirmedTx.amount,
-            txid: unconfirmedTx.txid,
-          });
-        } else {
-          this.eventEmitter.emit('socket::newtx::outgoing', { id, ticker });
-        }
-      },
-    );
+      if (unconfirmedTx && unconfirmedTx.direction) {
+        this.eventEmitter.emit('socket::newtx', {
+          id,
+          ticker,
+          amount: unconfirmedTx.amount,
+          txid: unconfirmedTx.txid,
+        });
+      } else {
+        this.eventEmitter.emit('socket::newtx::outgoing', { id, ticker });
+      }
+    });
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (walletId, tx) => this.onConfirmSocketTx(tx),
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (walletId, tx) => this.onConfirmSocketTx(tx));
   }
 
   /**
@@ -551,9 +522,10 @@ abstract class Coin extends AbstractWallet {
         return { balance: this.balance };
       }
 
-      const { balance = null, nonce = null } = (await this.explorer.getInfo(
-        this.address,
-      )) as { balance?: string | null; nonce: number | null };
+      const { balance = null, nonce = null } = (await this.explorer.getInfo(this.address)) as {
+        balance?: string | null;
+        nonce: number | null;
+      };
 
       if (balance) {
         this.balance = balance;
@@ -592,19 +564,15 @@ abstract class Coin extends AbstractWallet {
   async getTransactions(args: any) {
     if (this.explorer) {
       if (!this.address) {
-        throw new Error(
-          `[${this.ticker}] getTransactions error: address is not loaded`,
-        );
+        throw new Error(`[${this.ticker}] getTransactions error: address is not loaded`);
       }
-      const txs = await this.explorer
-        .getTransactions({ ...args, address: this.address })
-        .catch((error) => {
-          throw new ExplorerRequestError({
-            type: GET_TRANSACTIONS_TYPE,
-            error,
-            instance: this,
-          });
+      const txs = await this.explorer.getTransactions({ ...args, address: this.address }).catch((error) => {
+        throw new ExplorerRequestError({
+          type: GET_TRANSACTIONS_TYPE,
+          error,
+          instance: this,
         });
+      });
 
       return txs;
     }
@@ -619,20 +587,14 @@ abstract class Coin extends AbstractWallet {
    */
   async availableBalance(fees: any) {
     // @ts-ignore
-    const balance =
-      (this.balances?.available &&
-        this.toMinimalUnit(this.balances?.available)) ||
-      this.balance;
+    const balance = (this.balances?.available && this.toMinimalUnit(this.balances?.available)) || this.balance;
 
     if (!balance) {
       return '';
     }
 
-    const maximumFee =
-      (fees && new this.BN(fees)) || new this.BN(await this.getFee());
-    const availableBalance = new this.BN(balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const maximumFee = (fees && new this.BN(fees)) || new this.BN(await this.getFee());
+    const availableBalance = new this.BN(balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -660,9 +622,7 @@ abstract class Coin extends AbstractWallet {
     }
 
     const satoshiFee = fee ? this.toMinimalUnit(fee) : undefined;
-    const availableBalance = new this.BN(
-      this.toMinimalUnit(await this.availableBalance(satoshiFee)),
-    );
+    const availableBalance = new this.BN(this.toMinimalUnit(await this.availableBalance(satoshiFee)));
     const amountToSpend = new this.BN(this.toMinimalUnit(amount));
 
     if (amountToSpend.isZero() && availableBalance.isZero()) {
@@ -677,12 +637,9 @@ abstract class Coin extends AbstractWallet {
     /**
      * @TODO Remove after fixing moralis class name
      */
-    const moralisHack =
-      config.className === 'ETHNftMoralisExplorer' ? 'MoralisExplorer' : '';
+    const moralisHack = config.className === 'ETHNftMoralisExplorer' ? 'MoralisExplorer' : '';
 
-    const ExplorerModule =
-      this.explorersModules[config.className] ??
-      this.explorersModules[moralisHack];
+    const ExplorerModule = this.explorersModules[config.className] ?? this.explorersModules[moralisHack];
 
     if (!ExplorerModule) {
       throw new ExternalError({
@@ -700,9 +657,7 @@ abstract class Coin extends AbstractWallet {
   }
 
   processExplorerConfig(config: any) {
-    const explorer =
-      this.explorers.find((item) => isEqual(config, item.config)) ??
-      this.createExplorer(config);
+    const explorer = this.explorers.find((item) => isEqual(config, item.config)) ?? this.createExplorer(config);
 
     if (!explorer) {
       return null;
@@ -722,21 +677,14 @@ abstract class Coin extends AbstractWallet {
     this.feeData = feeData;
     Object.entries(feeData).forEach(([key, value]) => {
       // @ts-ignore
-      if (
-        typeof this[key] !== 'undefined' &&
-        typeof value !== 'undefined' &&
-        key !== '__proto__'
-      ) {
+      if (typeof this[key] !== 'undefined' && typeof value !== 'undefined' && key !== '__proto__') {
         // @ts-ignore
         this[key] = value;
       }
     });
   }
 
-  updateConfigValue<K extends keyof CoinConfigType>(
-    key: K,
-    value: CoinConfigType[K],
-  ) {
+  updateConfigValue<K extends keyof CoinConfigType>(key: K, value: CoinConfigType[K]) {
     this.config[key] = value;
   }
 
@@ -800,16 +748,11 @@ abstract class Coin extends AbstractWallet {
       scriptPubKey = await this.getScriptPubKey();
     }
 
-    return (
-      this.explorer &&
-      this.explorer.getUnspentOutputs(this.address, scriptPubKey)
-    );
+    return this.explorer && this.explorer.getUnspentOutputs(this.address, scriptPubKey);
   }
 
   createTokenTransactionOnce(params: any) {
-    return this.canRun('createTokenTransaction')
-      ? this.createTokenTransaction(params)
-      : {};
+    return this.canRun('createTokenTransaction') ? this.createTokenTransaction(params) : {};
   }
 
   /**
@@ -847,9 +790,7 @@ abstract class Coin extends AbstractWallet {
    */
   isFeatureSupported(feature: CoinFeature): boolean {
     if (!Object.values(CoinFeature).includes(feature)) {
-      throw new Error(
-        `Feature '${feature}' does not exist in the CoinFeature enum`,
-      );
+      throw new Error(`Feature '${feature}' does not exist in the CoinFeature enum`);
     }
 
     return this.features.includes(feature);

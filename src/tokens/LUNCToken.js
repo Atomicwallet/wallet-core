@@ -21,15 +21,7 @@ class LUNCToken extends Token {
    * @param {Object} txData transaction data
    * @return {Promise<Object>} Raw transaction
    */
-  async createTransaction({
-    address,
-    amount,
-    userGasPrice,
-    gasLimit,
-    multiplier,
-    feeLimit = FEE_LIMIT,
-    memo,
-  }) {
+  async createTransaction({ address, amount, userGasPrice, gasLimit, multiplier, feeLimit = FEE_LIMIT, memo }) {
     return {
       address,
       amount,
@@ -52,9 +44,7 @@ class LUNCToken extends Token {
    */
   async availableBalance() {
     if (this.divisibleBalance) {
-      const maxStabilityFee = await this.getStabilityFee(
-        this.indivisibleBalance,
-      );
+      const maxStabilityFee = await this.getStabilityFee(this.indivisibleBalance);
       const amount = this.indivisibleBalance.sub(new this.BN(maxStabilityFee));
 
       return amount.gt(0) ? this.toCurrencyUnit(amount.toString()) : '0';

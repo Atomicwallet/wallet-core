@@ -4,11 +4,7 @@ import { createSignedTx, sign } from 'js-cosmos-wallet';
 import { ExplorerRequestError, WalletError } from 'src/errors';
 import wif from 'wif';
 
-import {
-  ATOM_MSG_TYPES,
-  GET_TRANSACTIONS_TYPE,
-  WALLET_ERROR,
-} from '../../utils/const';
+import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from '../../utils/const';
 import { CosmosTxTypes } from '../libs';
 
 const CosmosMixin = (superclass) =>
@@ -95,12 +91,7 @@ const CosmosMixin = (superclass) =>
       return this.getProvider('history').getTransaction(this.address, txId);
     }
 
-    async getTransactions({
-      address = this.address,
-      offset = 0,
-      limit = this.explorer.defaultTxLimit,
-      pageNum = 0,
-    }) {
+    async getTransactions({ address = this.address, offset = 0, limit = this.explorer.defaultTxLimit, pageNum = 0 }) {
       this.transactions = await this.getProvider('history')
         .getTransactions({ address, offset, limit, pageNum })
         .catch((error) => {
@@ -131,9 +122,7 @@ const CosmosMixin = (superclass) =>
 
     async signTransaction(transaction) {
       const wallet = this.getSignKeys();
-      const { sequence = '0', account_number } = await this.getProvider(
-        'send',
-      ).getAuth(this.address);
+      const { sequence = '0', account_number } = await this.getProvider('send').getAuth(this.address);
       const signature = sign(transaction, wallet, {
         sequence,
         account_number,
@@ -188,12 +177,7 @@ const CosmosMixin = (superclass) =>
       };
     }
 
-    async createRedelegationTransaction(
-      fromValidator,
-      validator,
-      amount,
-      memo = '',
-    ) {
+    async createRedelegationTransaction(fromValidator, validator, amount, memo = '') {
       const fee = (await this.getFee()).toString();
       const txBlueprint = await this.getTransactionBlueprint({
         type: ATOM_MSG_TYPES.Redelegate,
@@ -254,9 +238,7 @@ const CosmosMixin = (superclass) =>
     }
 
     async getInfo() {
-      const { balance, balances } = await this.getProvider('balance').getInfo(
-        this.address,
-      );
+      const { balance, balances } = await this.getProvider('balance').getInfo(this.address);
 
       this.balance = balance;
       this.balances = balances;

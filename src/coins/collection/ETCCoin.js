@@ -50,15 +50,11 @@ class ETCCoin extends Coin {
     this.gasLimit = feeData.gasLimit;
     this.coefficient = feeData.coefficient;
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3BaseUrl = web3Params.baseUrl;
 
-    const blockscoutParams = explorers.find(
-      ({ className }) => className === 'BlockscoutExplorer',
-    );
+    const blockscoutParams = explorers.find(({ className }) => className === 'BlockscoutExplorer');
 
     this.blockscout = new BlockscoutExplorer({
       wallet: this.instance,
@@ -95,9 +91,7 @@ class ETCCoin extends Coin {
    */
   async getAddress() {
     return this.#privateKey
-      ? (await this.getWeb3()).eth.accounts.privateKeyToAccount(
-          this.#privateKey,
-        ).address
+      ? (await this.getWeb3()).eth.accounts.privateKeyToAccount(this.#privateKey).address
       : new Error('ETC: Coin could not get privateKey');
   }
 
@@ -108,16 +102,11 @@ class ETCCoin extends Coin {
    * @return {Promise}
    */
   async loadWallet(seed) {
-    const [web3, { hdkey }] = await Promise.all([
-      this.getWeb3(),
-      hdkeyLazyLoaded.get(),
-    ]);
+    const [web3, { hdkey }] = await Promise.all([this.getWeb3(), hdkeyLazyLoaded.get()]);
 
     const ethHDKey = hdkey.fromMasterSeed(seed);
     const wallet = ethHDKey.getWallet();
-    const account = await web3.eth.accounts.privateKeyToAccount(
-      wallet.getPrivateKeyString(),
-    );
+    const account = await web3.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
     if (!account) {
       throw new Error('ETC: Coin could not load wallet');
@@ -151,9 +140,7 @@ class ETCCoin extends Coin {
   async getFee() {
     const gasPrice = await this.getGasPrice();
 
-    return new this.BN(this.coefficient).mul(
-      new this.BN(this.gasLimit).mul(new this.BN(gasPrice)),
-    );
+    return new this.BN(this.coefficient).mul(new this.BN(this.gasLimit).mul(new this.BN(gasPrice)));
   }
 
   /**
@@ -180,10 +167,7 @@ class ETCCoin extends Coin {
     }
 
     const web3 = await this.getWeb3();
-    const signedTx = await web3.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await web3.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
@@ -195,9 +179,7 @@ class ETCCoin extends Coin {
    */
   async updateCoinParamsFromServer(data) {
     super.updateCoinParamsFromServer(data);
-    const web3Params = data.explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = data.explorers.find(({ className }) => className === 'Web3Explorer');
 
     const web3 = await this.getWeb3();
 
@@ -205,14 +187,9 @@ class ETCCoin extends Coin {
       this.web3BaseUrl = web3Params.baseUrl;
       await this.setWeb3();
     }
-    const blockscoutParams = data.explorers.find(
-      ({ className }) => className === 'BlockscoutExplorer',
-    );
+    const blockscoutParams = data.explorers.find(({ className }) => className === 'BlockscoutExplorer');
 
-    if (
-      blockscoutParams &&
-      this.blockscout.config.baseUrl !== blockscoutParams.baseUrl
-    ) {
+    if (blockscoutParams && this.blockscout.config.baseUrl !== blockscoutParams.baseUrl) {
       this.blockscout = new BlockscoutExplorer({
         wallet: this.instance,
         config: blockscoutParams,

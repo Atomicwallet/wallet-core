@@ -2,11 +2,7 @@ import { ExplorerRequestError, WalletError } from 'src/errors';
 
 import StakingMixin from './StakingMixin';
 import { LazyLoadedLib, Amount } from '../../utils';
-import {
-  ATOM_MSG_TYPES,
-  GET_TRANSACTIONS_TYPE,
-  WALLET_ERROR,
-} from '../../utils/const';
+import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from '../../utils/const';
 import { CosmosTxTypes } from '../libs';
 
 const GAS_PRICE = '0.025';
@@ -95,9 +91,7 @@ const CosmosMixinV2 = (superclass) =>
         bech32: new LazyLoadedLib(() => import('bech32')),
         proto: new LazyLoadedLib(() => import('@cosmjs/proto-signing')),
         stargate: new LazyLoadedLib(() => import('@cosmjs/stargate')),
-        tx: new LazyLoadedLib(
-          () => import('cosmjs-types/cosmos/tx/v1beta1/tx'),
-        ),
+        tx: new LazyLoadedLib(() => import('cosmjs-types/cosmos/tx/v1beta1/tx')),
         crypto: new LazyLoadedLib(() => import('@cosmjs/crypto')),
         bitcoinjsLib: new LazyLoadedLib(() => import('bitcoinjs-lib')),
         ...(config.dependencies || {}),
@@ -106,8 +100,7 @@ const CosmosMixinV2 = (superclass) =>
       super(config);
       this.gasPrice = config.feeData.gasPrice || GAS_PRICE;
       this.useGasEstimate = config.feeData.useGasEstimate || false;
-      this.estimatedGasCoefficient =
-        config.feeData.estimatedGasCoefficient || ESTIMATED_GAS_COEFFICIENT;
+      this.estimatedGasCoefficient = config.feeData.estimatedGasCoefficient || ESTIMATED_GAS_COEFFICIENT;
     }
 
     async loadWallet(seed, mnemonic) {
@@ -164,12 +157,7 @@ const CosmosMixinV2 = (superclass) =>
       return this.getProvider('history2').getTransaction(this.address, txId);
     }
 
-    async getTransactions({
-      address = this.address,
-      offset = 0,
-      limit = this.explorer.defaultTxLimit,
-      pageNum = 0,
-    }) {
+    async getTransactions({ address = this.address, offset = 0, limit = this.explorer.defaultTxLimit, pageNum = 0 }) {
       this.transactions = await this.getProvider('history2')
         .getTransactions({ address, offset, limit, pageNum, denom: this.denom })
         .catch((error) => {
@@ -201,19 +189,10 @@ const CosmosMixinV2 = (superclass) =>
     async sign(messages, fee, memo = '') {
       const { SigningStargateClient } = await this.loadLib('stargate');
 
-      this.signer =
-        this.signer || (await SigningStargateClient.offline(this.wallet));
-      const signerData = await this.getProvider('send2').getSignerData(
-        this.address,
-      );
+      this.signer = this.signer || (await SigningStargateClient.offline(this.wallet));
+      const signerData = await this.getProvider('send2').getSignerData(this.address);
 
-      return this.signer.signDirect(
-        this.address,
-        messages,
-        fee,
-        memo,
-        signerData,
-      );
+      return this.signer.signDirect(this.address, messages, fee, memo, signerData);
     }
 
     async createTransaction({ address, amount, memo = '' }) {
@@ -245,12 +224,7 @@ const CosmosMixinV2 = (superclass) =>
       return this.sign(messages, feeObj, memo);
     }
 
-    async createRedelegationTransaction(
-      fromValidator,
-      validator,
-      amount,
-      memo = '',
-    ) {
+    async createRedelegationTransaction(fromValidator, validator, amount, memo = '') {
       const { feeObj, messages } = await this.getFeeObjectWithMessages({
         sendType: SEND_TYPE.REDELEGATE,
         fromValidator,
@@ -273,9 +247,7 @@ const CosmosMixinV2 = (superclass) =>
     }
 
     async createWithdrawDelegationTransaction(unusedValidator) {
-      const validatorsList = await this.getProvider('balance2').getValidators(
-        this.address,
-      );
+      const validatorsList = await this.getProvider('balance2').getValidators(this.address);
 
       const { feeObj, messages } = await this.getFeeObjectWithMessages({
         sendType: SEND_TYPE.CLAIM,
@@ -304,19 +276,12 @@ const CosmosMixinV2 = (superclass) =>
       await explorer.getLatestBlock();
 
       const stakedValidators = {};
-      const staked = this.calculateStakedBalance(
-        await explorer.getStakedDelegations(this.address),
-        stakedValidators,
-      );
+      const staked = this.calculateStakedBalance(await explorer.getStakedDelegations(this.address), stakedValidators);
 
       return {
-        rewards: this.calculateRewards(
-          await explorer.getRewardsBalance(this.address),
-        ),
+        rewards: this.calculateRewards(await explorer.getRewardsBalance(this.address)),
         staked,
-        unstaking: this.calculateUnstakingBalance(
-          await explorer.getUnbondingDelegations(this.address),
-        ),
+        unstaking: this.calculateUnstakingBalance(await explorer.getUnbondingDelegations(this.address)),
         validators: stakedValidators,
       };
     }
@@ -326,48 +291,26 @@ const CosmosMixinV2 = (superclass) =>
     async calculateAvailableForStake({ balance }) {
       const fee = await this.getFee({ sendType: SEND_TYPE.STAKE });
 
-      const available = balance
-        .toBN()
-        .sub(new this.BN(fee))
-        .sub(new this.BN(this.reserveForStake));
+      const available = balance.toBN().sub(new this.BN(fee)).sub(new this.BN(this.reserveForStake));
 
       return new Amount(available.isNeg() ? '0' : available, this);
     }
 
     calculateTotal({ balance, staked, unstaking, rewards }) {
-      return new Amount(
-        balance
-          .toBN()
-          .add(staked.toBN())
-          .add(unstaking.toBN())
-          .add(rewards.toBN())
-          .toString(),
-        this,
-      );
+      return new Amount(balance.toBN().add(staked.toBN()).add(unstaking.toBN()).add(rewards.toBN()).toString(), this);
     }
 
     calculateAvailableBalance(available) {
-      return new Amount(
-        available.find((balance) => balance.denom === this.denom)?.amount ??
-          '0',
-        this,
-      );
+      return new Amount(available.find((balance) => balance.denom === this.denom)?.amount ?? '0', this);
     }
 
     calculateRewards(rewards) {
-      return new Amount(
-        rewards
-          ?.find((reward) => reward.denom === this.denom)
-          ?.amount?.split('.')[0] ?? '0',
-        this,
-      );
+      return new Amount(rewards?.find((reward) => reward.denom === this.denom)?.amount?.split('.')[0] ?? '0', this);
     }
 
     calculateStakedBalance(delegations, stakedValidators) {
       return new Amount(
-        delegations?.length > 0
-          ? this.getTotalDelegations(delegations, stakedValidators).toString()
-          : '0',
+        delegations?.length > 0 ? this.getTotalDelegations(delegations, stakedValidators).toString() : '0',
         this,
       );
     }
@@ -376,21 +319,15 @@ const CosmosMixinV2 = (superclass) =>
       const unbonding = { validators: {} };
 
       if (delegations?.length > 0) {
-        const totalUnbonding = delegations.reduce(
-          (total, { entries, validator_address: validatorAddress }) => {
-            const moniker = validatorAddress;
+        const totalUnbonding = delegations.reduce((total, { entries, validator_address: validatorAddress }) => {
+          const moniker = validatorAddress;
 
-            unbonding.validators[moniker] = entries
-              .map((entry) => new this.BN(entry.balance.split('.')[0]))
-              .reduce(
-                (prev, cur) => prev.add(new this.BN(cur)),
-                new this.BN('0'),
-              );
+          unbonding.validators[moniker] = entries
+            .map((entry) => new this.BN(entry.balance.split('.')[0]))
+            .reduce((prev, cur) => prev.add(new this.BN(cur)), new this.BN('0'));
 
-            return total.add(unbonding.validators[moniker]);
-          },
-          new this.BN('0'),
-        );
+          return total.add(unbonding.validators[moniker]);
+        }, new this.BN('0'));
 
         unbonding.total = totalUnbonding.toString().split('.')[0];
       }
@@ -470,16 +407,11 @@ const CosmosMixinV2 = (superclass) =>
         amount: [{ denom: this.denom, amount: '0' }],
         gas: '0',
       };
-      const [signedRawTx, { TxRaw }] = await Promise.all([
-        this.sign(messages, fee, memo),
-        this.loadLib('tx'),
-      ]);
+      const [signedRawTx, { TxRaw }] = await Promise.all([this.sign(messages, fee, memo), this.loadLib('tx')]);
 
       const txBytes = TxRaw.encode(signedRawTx).finish();
 
-      const estimatedGas = Number(
-        await this.getProvider('send2').getGasEstimation(txBytes),
-      );
+      const estimatedGas = Number(await this.getProvider('send2').getGasEstimation(txBytes));
 
       return String(Math.round(estimatedGas * this.estimatedGasCoefficient));
     }
@@ -597,33 +529,20 @@ const CosmosMixinV2 = (superclass) =>
      * @param {FeeParams} [feeParams={}]
      * @returns Promise<{string}> Number in string
      */
-    async getFee({
-      sendType,
-      address,
-      validator,
-      fromValidator,
-      amount = '1',
-      memo = '',
-    } = {}) {
+    async getFee({ sendType, address, validator, fromValidator, amount = '1', memo = '' } = {}) {
       if (!this.useGasEstimate) {
         return this.fee;
       }
 
-      const validatorsList = await this.getProvider('balance2').getValidators(
-        this.address,
-      );
+      const validatorsList = await this.getProvider('balance2').getValidators(this.address);
 
       let toValidator;
       let fromValidatorForRedelegateOnly;
 
       if (sendType === SEND_TYPE.REDELEGATE) {
-        fromValidatorForRedelegateOnly =
-          fromValidator ?? validator ?? validatorsList[0];
+        fromValidatorForRedelegateOnly = fromValidator ?? validator ?? validatorsList[0];
         toValidator =
-          validatorsList[1] ??
-          (await this.getDifferentFromSpecifiedValidator(
-            fromValidatorForRedelegateOnly,
-          ));
+          validatorsList[1] ?? (await this.getDifferentFromSpecifiedValidator(fromValidatorForRedelegateOnly));
       } else {
         toValidator = validator || validatorsList[0];
       }

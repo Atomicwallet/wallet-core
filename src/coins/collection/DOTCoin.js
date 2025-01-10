@@ -18,12 +18,8 @@ const POLKADOT_ADDRESS_TYPE = 0; // 0 - Mainnet, 42 - WESTEND https://github.com
 const KEY_LENGTH = 32;
 const REWARD_DESTINATION = 'Stash'; // https://wiki.polkadot.network/docs/en/maintain-guides-how-to-nominate-polkadot#step-2-bond-your-dot
 
-const polkadotTypesExtrinsicLib = new LazyLoadedLib(
-  () => import('@polkadot/types/extrinsic/v4/Extrinsic'),
-);
-const substrateTxWrapperPolkadotLib = new LazyLoadedLib(
-  () => import('@substrate/txwrapper-polkadot'),
-);
+const polkadotTypesExtrinsicLib = new LazyLoadedLib(() => import('@polkadot/types/extrinsic/v4/Extrinsic'));
+const substrateTxWrapperPolkadotLib = new LazyLoadedLib(() => import('@substrate/txwrapper-polkadot'));
 const polkadotUtilsLib = new LazyLoadedLib(() => import('@polkadot/util'));
 const UniqueNftLib = new LazyLoadedLib(() => import('@unique-nft/sr25519'));
 
@@ -57,11 +53,7 @@ class DOTCoin extends HasProviders(HasBlockScanner(Coin)) {
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      PolkadotSidecarExplorer,
-      PolkaScanExplorer,
-      PolkadotNodeExplorer,
-    ]);
+    this.setExplorersModules([PolkadotSidecarExplorer, PolkaScanExplorer, PolkadotNodeExplorer]);
 
     this.loadExplorers(config);
 
@@ -180,11 +172,10 @@ class DOTCoin extends HasProviders(HasBlockScanner(Coin)) {
       metadataRpc: metadata,
     };
 
-    const unsignedTx = substrateMethods.balances.transferKeepAlive(
-      { dest: address, value: amount },
-      baseTxInfo,
-      { metadataRpc: metadata, registry },
-    );
+    const unsignedTx = substrateMethods.balances.transferKeepAlive({ dest: address, value: amount }, baseTxInfo, {
+      metadataRpc: metadata,
+      registry,
+    });
 
     const signingPayload = construct.signingPayload(unsignedTx, { registry });
 
@@ -198,19 +189,10 @@ class DOTCoin extends HasProviders(HasBlockScanner(Coin)) {
     });
   }
 
-  async sign({
-    registry,
-    construct,
-    signingPayload,
-    version,
-    unsignedTx,
-    metadata,
-  }) {
+  async sign({ registry, construct, signingPayload, version, unsignedTx, metadata }) {
     const { Sr25519Account } = await UniqueNftLib.get();
 
-    const acc = Sr25519Account.other.fromMiniSecret(
-      Buffer.from(this.#privateKey, 'hex'),
-    );
+    const acc = Sr25519Account.other.fromMiniSecret(Buffer.from(this.#privateKey, 'hex'));
 
     const { u8aConcat } = await polkadotUtilsLib.get();
 

@@ -24,10 +24,7 @@ const OntMixin = (superclass) =>
 
     async loadWallet(seed, mnemonic) {
       const { Crypto } = await ontologySdkLib.get();
-      const privateKey = Crypto.PrivateKey.generateFromMnemonic(
-        mnemonic,
-        this.derivation,
-      );
+      const privateKey = Crypto.PrivateKey.generateFromMnemonic(mnemonic, this.derivation);
 
       if (!privateKey) {
         throw new Error(`${this.ticker} can't get a privateKey`);
@@ -108,8 +105,7 @@ const OntMixin = (superclass) =>
       if (!asset) {
         asset = this.ticker;
       }
-      const { OntAssetTxBuilder, TransactionBuilder, Crypto } =
-        await ontologySdkLib.get();
+      const { OntAssetTxBuilder, TransactionBuilder, Crypto } = await ontologySdkLib.get();
 
       const privateKeyObj = await this.getPrivateKeyObject();
       const addressFromObj = new Crypto.Address(this.address);
@@ -169,19 +165,14 @@ const OntMixin = (superclass) =>
     }
 
     async makeClaim() {
-      const rewards =
-        Number(this.balances.unbonding) + Number(this.balances.rewards);
+      const rewards = Number(this.balances.unbonding) + Number(this.balances.rewards);
 
       if (rewards < CLAIM_THRESHOLD) {
-        throw new Error(
-          `Unbonding + rewards ${rewards} ONG is less then ${CLAIM_THRESHOLD} ONG`,
-        );
+        throw new Error(`Unbonding + rewards ${rewards} ONG is less then ${CLAIM_THRESHOLD} ONG`);
       }
 
       if (Number(this.balances.ong) <= Number(this.fee)) {
-        throw new Error(
-          `${this.balances.ong} ONG is available, but needed ${this.fee} ONG to pay for fee`,
-        );
+        throw new Error(`${this.balances.ong} ONG is available, but needed ${this.fee} ONG to pay for fee`);
       }
       await this.checkUnbondSendTxAndRefreshBalance();
       return this.checkRewardAndClaim();
@@ -194,9 +185,7 @@ const OntMixin = (superclass) =>
       this.balances = balances;
 
       if (this.tokens.ONG) {
-        this.tokens.ONG.balance = this.tokens.ONG.toMinimalUnit(
-          balances?.ong ?? '0',
-        );
+        this.tokens.ONG.balance = this.tokens.ONG.toMinimalUnit(balances?.ong ?? '0');
       }
 
       return {
@@ -206,8 +195,7 @@ const OntMixin = (superclass) =>
     }
 
     async createClaimTransaction(amount) {
-      const { CONST, OntAssetTxBuilder, TransactionBuilder, Crypto } =
-        await ontologySdkLib.get();
+      const { CONST, OntAssetTxBuilder, TransactionBuilder, Crypto } = await ontologySdkLib.get();
 
       const from = new Crypto.Address(this.address);
       const satoshis = this.toMinimalUnit(amount, ONG_DECIMALS);

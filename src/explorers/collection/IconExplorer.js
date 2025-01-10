@@ -34,10 +34,7 @@ class IconExplorer extends Explorer {
   getTransactionsParams(address, offset = 0) {
     return {
       address,
-      page:
-        offset > this.defaultTxLimit
-          ? parseInt(offset / this.defaultTxLimit, 10)
-          : 1,
+      page: offset > this.defaultTxLimit ? parseInt(offset / this.defaultTxLimit, 10) : 1,
       count: this.defaultTxLimit,
     };
   }

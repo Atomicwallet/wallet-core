@@ -100,12 +100,10 @@ class APTCoin extends HasProviders(Coin) {
     super.setFeeData(feeData);
     this.#defaultGasPrice = feeData.defaultGasPrice ?? DEFAULT_GAS_PRICE;
     this.#gasPriceCoefficient = feeData.gasPriceCoefficient ?? 1;
-    this.#defaultMaxGasPrice =
-      feeData.defaultMaxGasPrice ?? DEFAULT_MAX_GAS_PRICE;
+    this.#defaultMaxGasPrice = feeData.defaultMaxGasPrice ?? DEFAULT_MAX_GAS_PRICE;
     this.#gasLimit = feeData.gasLimit ?? DEFAULT_GAS_LIMIT;
     this.#gasLimitCoefficient = feeData.gasLimitCoefficient ?? 1;
-    this.#txExpirationTimeout =
-      feeData.txExpirationTimeout ?? DEFAULT_EXPIRATION_TIMEOUT;
+    this.#txExpirationTimeout = feeData.txExpirationTimeout ?? DEFAULT_EXPIRATION_TIMEOUT;
   }
 
   /**
@@ -124,8 +122,7 @@ class APTCoin extends HasProviders(Coin) {
    * @returns {void}
    */
   #setAccountAndKeys(account) {
-    const { address, publicKeyHex, privateKeyHex } =
-      account.toPrivateKeyObject();
+    const { address, publicKeyHex, privateKeyHex } = account.toPrivateKeyObject();
 
     this.#localAccount.account = account;
     this.address = address;
@@ -193,8 +190,7 @@ class APTCoin extends HasProviders(Coin) {
    */
   async getInfo() {
     try {
-      const { balance, isRegistered } =
-        (await this.getProvider('balance').getInfo(this.address)) ?? {};
+      const { balance, isRegistered } = (await this.getProvider('balance').getInfo(this.address)) ?? {};
 
       if (isRegistered) {
         this.#localAccount.isRegistered = true;
@@ -212,8 +208,7 @@ class APTCoin extends HasProviders(Coin) {
    * @returns {Promise<number>}
    */
   async getGasPrice() {
-    const { gas_estimate: gasPrice } =
-      await this.getProvider('node').getGasPrice();
+    const { gas_estimate: gasPrice } = await this.getProvider('node').getGasPrice();
 
     return parseInt(gasPrice, 10);
   }
@@ -230,23 +225,13 @@ class APTCoin extends HasProviders(Coin) {
    * @param {UserFeeOptions} userOptions
    * @returns {Promise<{gasPrice: number, gasLimit: number}>}
    */
-  async getGasParams({
-    userGasPrice = null,
-    gasLimit: userGasLimit = null,
-  } = {}) {
+  async getGasParams({ userGasPrice = null, gasLimit: userGasLimit = null } = {}) {
     const rawGasPrice = userGasPrice
       ? Number(userGasPrice)
-      : (null ??
-        ((await this.getGasPrice()) ?? this.#defaultGasPrice) *
-          this.#gasPriceCoefficient);
-    const gasPrice =
-      rawGasPrice < this.#defaultMaxGasPrice
-        ? rawGasPrice
-        : this.#defaultMaxGasPrice;
+      : (null ?? ((await this.getGasPrice()) ?? this.#defaultGasPrice) * this.#gasPriceCoefficient);
+    const gasPrice = rawGasPrice < this.#defaultMaxGasPrice ? rawGasPrice : this.#defaultMaxGasPrice;
 
-    const gasLimit = userGasLimit
-      ? Number(userGasLimit)
-      : (null ?? this.#gasLimit * this.#gasLimitCoefficient);
+    const gasLimit = userGasLimit ? Number(userGasLimit) : (null ?? this.#gasLimit * this.#gasLimitCoefficient);
 
     return { gasPrice, gasLimit };
   }
@@ -282,22 +267,11 @@ class APTCoin extends HasProviders(Coin) {
    * @returns {Promise<Uint8Array>} - Signed transaction
    * @throws {ExternalError}
    */
-  async createTransaction({
-    address,
-    amount,
-    userGasPrice,
-    gasLimit: userGasLimit,
-  }) {
+  async createTransaction({ address, amount, userGasPrice, gasLimit: userGasLimit }) {
     const {
       AptosClient,
       BCS,
-      TxnBuilderTypes: {
-        AccountAddress,
-        ChainId,
-        EntryFunction,
-        RawTransaction,
-        TransactionPayloadEntryFunction,
-      },
+      TxnBuilderTypes: { AccountAddress, ChainId, EntryFunction, RawTransaction, TransactionPayloadEntryFunction },
     } = await this.loadLib();
 
     const entryFunctionPayload = new TransactionPayloadEntryFunction(
@@ -305,19 +279,15 @@ class APTCoin extends HasProviders(Coin) {
         APTOS_TRANSFER_MODULE_NAME,
         APTOS_TRANSFER_FUNCTION_NAME,
         [],
-        [
-          BCS.bcsToBytes(AccountAddress.fromHex(address)),
-          BCS.bcsSerializeUint64(BigInt(amount)),
-        ],
+        [BCS.bcsToBytes(AccountAddress.fromHex(address)), BCS.bcsSerializeUint64(BigInt(amount))],
       ),
     );
 
     try {
-      const [{ sequence_number: sequenceNumber }, { gasPrice, gasLimit }] =
-        await Promise.all([
-          this.getAccount(),
-          this.getGasParams({ userGasPrice, gasLimit: userGasLimit }),
-        ]);
+      const [{ sequence_number: sequenceNumber }, { gasPrice, gasLimit }] = await Promise.all([
+        this.getAccount(),
+        this.getGasParams({ userGasPrice, gasLimit: userGasLimit }),
+      ]);
 
       const rawTxn = new RawTransaction(
         AccountAddress.fromHex(this.address),
@@ -327,15 +297,13 @@ class APTCoin extends HasProviders(Coin) {
         BigInt(gasLimit),
         // Gas price per unit
         BigInt(gasPrice),
-        // Expiration timestamp. Transaction is discarded if it is not executed within provided `txExpirationTimeout` seconds from now.
+        // Expiration timestamp. Transaction is discarded if it is not executed within
+        // provided `txExpirationTimeout` seconds from now.
         this.getTransactionExpirationTimeout(),
         new ChainId(APTOS_MAINNET_CHAIN_ID),
       );
 
-      return AptosClient.generateBCSTransaction(
-        this.#localAccount.account,
-        rawTxn,
-      );
+      return AptosClient.generateBCSTransaction(this.#localAccount.account, rawTxn);
     } catch (error) {
       throw new ExternalError({ type: EXTERNAL_ERROR, error, instance: this });
     }

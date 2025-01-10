@@ -44,15 +44,11 @@ class SnowTraceExplorer extends Explorer {
    * @returns {boolean}
    */
   getIsNftTx(tx) {
-    return (tx.functionName ?? '').includes(
-      ERC_721_SAFE_TRANSFER_FROM_METHOD_NAME,
-    );
+    return (tx.functionName ?? '').includes(ERC_721_SAFE_TRANSFER_FROM_METHOD_NAME);
   }
 
   modifyTransactionsResponse(response, address) {
-    const filteredBySuccess = response.result.filter(
-      (rawTx) => rawTx.isError !== '1',
-    );
+    const filteredBySuccess = response.result.filter((rawTx) => rawTx.isError !== '1');
 
     return super.modifyTransactionsResponse(filteredBySuccess, address);
   }
@@ -93,9 +89,7 @@ class SnowTraceExplorer extends Explorer {
   }
 
   getTxValue(selfAddress, tx) {
-    return this.getIsNftTx(tx)
-      ? NFT_FAKE_VALUE
-      : this.wallet.toCurrencyUnit(tx.value);
+    return this.getIsNftTx(tx) ? NFT_FAKE_VALUE : this.wallet.toCurrencyUnit(tx.value);
   }
 
   getTxDateTime(tx) {
@@ -111,9 +105,7 @@ class SnowTraceExplorer extends Explorer {
   }
 
   getTxFee(tx) {
-    return this.wallet.toCurrencyUnit(
-      new this.wallet.BN(tx.gasUsed).mul(new this.wallet.BN(tx.gasPrice)),
-    );
+    return this.wallet.toCurrencyUnit(new this.wallet.BN(tx.gasUsed).mul(new this.wallet.BN(tx.gasPrice)));
   }
 
   getTxFeeTicker() {
@@ -206,14 +198,9 @@ class SnowTraceExplorer extends Explorer {
         // We use erc721 here, but for the first three parameters it will be the same as erc1155
         erc721Abi.forEach((object) => {
           try {
-            const abiMethod =
-              this.wallet.coreLibrary.eth.abi.encodeFunctionSignature(object);
-            const abiTypes = object.inputs
-              ? object.inputs.map((x) => x.type)
-              : [];
-            const attributes = object.inputs
-              ? object.inputs.map((x) => x.name)
-              : [];
+            const abiMethod = this.wallet.coreLibrary.eth.abi.encodeFunctionSignature(object);
+            const abiTypes = object.inputs ? object.inputs.map((x) => x.type) : [];
+            const attributes = object.inputs ? object.inputs.map((x) => x.name) : [];
 
             if (inputMethod === abiMethod) {
               const inputs = this.wallet.coreLibrary.eth.abi.decodeParameters(

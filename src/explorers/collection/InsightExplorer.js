@@ -97,9 +97,7 @@ class InsightExplorer extends Explorer {
 
   modifyTransactionsResponse(response, address) {
     if (this.wallet.ticker === 'DCR') {
-      return Promise.all(
-        response.transactions.map(async (txId) => this.getTransaction(txId)),
-      );
+      return Promise.all(response.transactions.map(async (txId) => this.getTransaction(txId)));
     }
 
     return super.modifyTransactionsResponse(response.txs, address);
@@ -122,50 +120,34 @@ class InsightExplorer extends Explorer {
   modifyUnspentOutputsResponse(selfAddress, response) {
     // In some responses can apper `amount` instead of `value`
     if (this.wallet.ticker === 'YEC') {
-      return response.map(
-        ({ address, mintTxid: txid, mintIndex: vout, script, value }) => ({
-          txid,
-          vout,
-          script,
-          value,
-          address,
-          outputIndex: vout, // BTC
-          satoshis: value,
-        }),
-      );
-    }
-
-    return response.map(
-      ({
-        address,
+      return response.map(({ address, mintTxid: txid, mintIndex: vout, script, value }) => ({
         txid,
-        vout,
-        scriptPubKey: script,
-        satoshis: value,
-        amount,
-      }) => ({
-        txid,
-        txId: txid, // DGB
         vout,
         script,
-        value: value || amount,
-        address: this.modifyUnspentAddress(address),
+        value,
+        address,
         outputIndex: vout, // BTC
-        satoshis:
-          this.wallet.ticker === 'DGB'
-            ? Number(this.wallet.toMinimalUnit(value || amount))
-            : value || amount,
-        // DBG wants utxo amount in satoshis
-        atoms: Number(value), // DCR
-      }),
-    );
+        satoshis: value,
+      }));
+    }
+
+    return response.map(({ address, txid, vout, scriptPubKey: script, satoshis: value, amount }) => ({
+      txid,
+      txId: txid, // DGB
+      vout,
+      script,
+      value: value || amount,
+      address: this.modifyUnspentAddress(address),
+      outputIndex: vout, // BTC
+      satoshis: this.wallet.ticker === 'DGB' ? Number(this.wallet.toMinimalUnit(value || amount)) : value || amount,
+      // DBG wants utxo amount in satoshis
+      atoms: Number(value), // DCR
+    }));
   }
 
   modifyUnspentAddress(address) {
     if (['BCH', 'BSV'].includes(this.wallet.ticker)) {
-      return bitcoinCashAddressTools.isCashAddress(address)
-        ? address
-        : bitcoinCashAddressTools.toCashAddress(address);
+      return bitcoinCashAddressTools.isCashAddress(address) ? address : bitcoinCashAddressTools.toCashAddress(address);
     }
 
     return address;
@@ -185,11 +167,9 @@ class InsightExplorer extends Explorer {
 
     try {
       if (this.wallet.ticker === 'BTG') {
-        response = await axios.post(
-          urlToSend,
-          `${this.getSendTransactionParam()}=${rawtx}`,
-          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
-        );
+        response = await axios.post(urlToSend, `${this.getSendTransactionParam()}=${rawtx}`, {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        });
       } else {
         // const hasWorkaroundSendUrl = Object.keys(sendTransactionTo).includes(this.wallet.ticker)
         // const urlToSend = hasWorkaroundSendUrl
@@ -209,9 +189,7 @@ class InsightExplorer extends Explorer {
       });
     }
 
-    return this.modifyGeneralResponse(
-      this.modifySendTransactionResponse(response),
-    );
+    return this.modifyGeneralResponse(this.modifySendTransactionResponse(response));
   }
 
   /**
@@ -245,14 +223,9 @@ class InsightExplorer extends Explorer {
     });
 
     tx.vout.forEach((output) => {
-      if (
-        output.scriptPubKey.addresses &&
-        output.scriptPubKey.addresses.length > 0
-      ) {
+      if (output.scriptPubKey.addresses && output.scriptPubKey.addresses.length > 0) {
         if (output.scriptPubKey.addresses[0] === selfAddress) {
-          valueOut = valueOut.add(
-            new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-          );
+          valueOut = valueOut.add(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)));
         }
       }
     });
@@ -262,11 +235,7 @@ class InsightExplorer extends Explorer {
     const value = valueDiff.abs();
 
     return Number(
-      this.wallet.toCurrencyUnit(
-        isInbound
-          ? value
-          : value.sub(new this.wallet.BN(this.wallet.toMinimalUnit(tx.fees))),
-      ),
+      this.wallet.toCurrencyUnit(isInbound ? value : value.sub(new this.wallet.BN(this.wallet.toMinimalUnit(tx.fees)))),
     );
   }
 
@@ -299,20 +268,10 @@ class InsightExplorer extends Explorer {
     let addressTo = '...';
 
     tx.vout.forEach((output) => {
-      if (
-        output.scriptPubKey &&
-        output.scriptPubKey.addresses &&
-        output.scriptPubKey.addresses.length > 0
-      ) {
+      if (output.scriptPubKey && output.scriptPubKey.addresses && output.scriptPubKey.addresses.length > 0) {
         if (output.scriptPubKey.addresses[0] !== selfAddress) {
-          if (
-            valueOutPrev.lt(
-              new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-            )
-          ) {
-            valueOutPrev = new this.wallet.BN(
-              this.wallet.toMinimalUnit(output.value),
-            );
+          if (valueOutPrev.lt(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)))) {
+            valueOutPrev = new this.wallet.BN(this.wallet.toMinimalUnit(output.value));
             addressTo = output.scriptPubKey.addresses[0];
           }
         }
@@ -329,10 +288,7 @@ class InsightExplorer extends Explorer {
    * @return {BN} The balance.
    */
   calculateBalance(utxos = []) {
-    return utxos.reduce(
-      (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0'),
-    );
+    return utxos.reduce((acc, { value }) => new this.wallet.BN(value).add(acc), new this.wallet.BN('0'));
   }
 
   /**

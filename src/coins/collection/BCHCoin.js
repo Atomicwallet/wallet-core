@@ -2,12 +2,7 @@ import { Coin } from '../../abstract';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
 import { LazyLoadedLib } from '../../utils';
 import { LIB_NAME_INDEX } from '../../utils/const';
-import {
-  BitcoinLikeFeeMixin,
-  BitcoreBitcoinCashMixin,
-  BitcoreMixin,
-  HasProviders,
-} from '../mixins';
+import { BitcoinLikeFeeMixin, BitcoreBitcoinCashMixin, BitcoreMixin, HasProviders } from '../mixins';
 
 const { BITCORE } = LIB_NAME_INDEX;
 const NAME = 'Bitcoin Cash';
@@ -21,9 +16,7 @@ const UNSPENDABLE_BALANCE = '0';
  *
  * @class BCHCoin
  */
-class BCHCoin extends HasProviders(
-  BitcoreMixin(BitcoreBitcoinCashMixin(BitcoinLikeFeeMixin(Coin))),
-) {
+class BCHCoin extends HasProviders(BitcoreMixin(BitcoreBitcoinCashMixin(BitcoinLikeFeeMixin(Coin)))) {
   /**
    * constructs the object.
    *

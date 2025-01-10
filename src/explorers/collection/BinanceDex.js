@@ -56,14 +56,10 @@ class BinanceDex extends Explorer {
   }
 
   async getTransactions(address, asset = 'BNB') {
-    const { tx } = await this.request(
-      `${this.config.baseUrl}api/v1/transactions?address=${address}`,
-    );
+    const { tx } = await this.request(`${this.config.baseUrl}api/v1/transactions?address=${address}`);
 
     return this.modifyTransactionsResponse(
-      tx
-        .filter((item) => item.type === 'TRANSFER')
-        .filter((item) => item.txAsset === asset),
+      tx.filter((item) => item.type === 'TRANSFER').filter((item) => item.txAsset === asset),
       address,
     );
   }
@@ -73,23 +69,15 @@ class BinanceDex extends Explorer {
 
     const modifiedMultisendTxs = await Promise.all(
       txs.map(async ({ hash, height }) => {
-        const block = await this.getBlock(height).catch((error) =>
-          console.warn('GetBlockError', error),
-        );
+        const block = await this.getBlock(height).catch((error) => console.warn('GetBlockError', error));
 
         if (!block) {
           return undefined;
         }
 
-        const {
-          subTransactions = [],
-          memo,
-          timeStamp,
-        } = block.tx.find((transaction) => transaction.txHash === hash);
+        const { subTransactions = [], memo, timeStamp } = block.tx.find((transaction) => transaction.txHash === hash);
 
-        const selfTx = subTransactions.find((subTx) =>
-          [subTx.toAddr, subTx.fromAddr].includes(selfAddress),
-        );
+        const selfTx = subTransactions.find((subTx) => [subTx.toAddr, subTx.fromAddr].includes(selfAddress));
 
         if (!selfTx) {
           return undefined;
@@ -171,20 +159,14 @@ class BinanceDex extends Explorer {
   }
 
   async getTokenList(userTokenSymbols = []) {
-    const tokens = await this.request(
-      `${this.config.baseUrl}api/v1/tokens?limit=1000`,
-    ).catch(() => TOKENS_CACHE);
+    const tokens = await this.request(`${this.config.baseUrl}api/v1/tokens?limit=1000`).catch(() => TOKENS_CACHE);
 
     return tokens.filter((token) => userTokenSymbols.includes(token.symbol));
   }
 
   setSocketClient(address) {
     if (!this.socket) {
-      this.socket = new ReconnectingWebSocket(
-        `${this.config.websocketUrl}${address}`,
-        undefined,
-        WEBSOCKET_CONFIG,
-      );
+      this.socket = new ReconnectingWebSocket(`${this.config.websocketUrl}${address}`, undefined, WEBSOCKET_CONFIG);
     } else {
       this.socket.reconnect();
     }
@@ -223,10 +205,7 @@ class BinanceDex extends Explorer {
 
             transfers.c.forEach((transfer) => {
               const asset = transfer.a;
-              const amount = String(transfer.A).replace(
-                /(\.\d*[1-9])0+$|\.0*$/,
-                '$1',
-              );
+              const amount = String(transfer.A).replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
 
               const tx = new Transaction({
                 ticker: asset,
@@ -240,12 +219,9 @@ class BinanceDex extends Explorer {
 
               // history.filterAndUpdateTransactions([tx])
 
-              this.eventEmitter.emit(
-                `${this.wallet.parent}-${asset}::new-socket-tx`,
-                {
-                  unconfirmedTx: tx,
-                },
-              );
+              this.eventEmitter.emit(`${this.wallet.parent}-${asset}::new-socket-tx`, {
+                unconfirmedTx: tx,
+              });
             });
           });
         }
@@ -258,10 +234,7 @@ class BinanceDex extends Explorer {
   updateParams(params) {
     super.updateParams(params);
 
-    if (
-      params.websocketUrl &&
-      this.config.websocketUrl !== params.websocketUrl
-    ) {
+    if (params.websocketUrl && this.config.websocketUrl !== params.websocketUrl) {
       this.config.websocketUrl = params.websocketUrl;
       this.disconnectSocket();
       this.connectSocket(this.wallet.address);

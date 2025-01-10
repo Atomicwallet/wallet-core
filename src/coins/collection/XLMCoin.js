@@ -128,15 +128,7 @@ class XLMCoin extends Coin {
   }
 
   async sendTransaction(rawtx) {
-    return (
-      this.explorer &&
-      this.explorer.sendTransaction(
-        rawtx,
-        this.address,
-        this.#privateKey,
-        this.fee,
-      )
-    );
+    return this.explorer && this.explorer.sendTransaction(rawtx, this.address, this.#privateKey, this.fee);
   }
 
   /**
@@ -161,9 +153,7 @@ class XLMCoin extends Coin {
   updateCoinParamsFromServer(data) {
     super.updateCoinParamsFromServer(data);
 
-    const xlmExplorerParams = data.explorers.find(
-      ({ className }) => className === 'XlmExplorer',
-    );
+    const xlmExplorerParams = data.explorers.find(({ className }) => className === 'XlmExplorer');
 
     this.explorers[0].fee = this.fee;
     this.explorers[0].baseUrl = xlmExplorerParams.baseUrl;

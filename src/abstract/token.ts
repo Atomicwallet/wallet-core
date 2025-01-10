@@ -15,15 +15,7 @@ import type Transaction from '@/explorers/Transaction';
 import { getTokenId } from '@/utils';
 import { HISTORY_WALLET_UPDATED } from '@/utils/eventTopics';
 
-const tokensNetworks = new Set([
-  'BNB',
-  'TRX',
-  'ETH',
-  'MATIC',
-  'BSC',
-  'LUNA',
-  'BASE',
-]);
+const tokensNetworks = new Set(['BNB', 'TRX', 'ETH', 'MATIC', 'BSC', 'LUNA', 'BASE']);
 
 abstract class Token extends AbstractWallet {
   #parent: Coin;
@@ -204,9 +196,7 @@ abstract class Token extends AbstractWallet {
     return this.#parent.validateAddress(address);
   }
 
-  createTransaction(
-    args: CreateTxParams,
-  ): Promise<RawTxHex | RawTxBinary | RawTxObject> {
+  createTransaction(args: CreateTxParams): Promise<RawTxHex | RawTxBinary | RawTxObject> {
     return this.#parent.createTokenTransaction({
       ...args,
       contract: this.contract,
@@ -269,10 +259,7 @@ abstract class Token extends AbstractWallet {
     return this.#parent.getFee(args);
   }
 
-  getGasPrice(
-    withoutCoeff: boolean,
-    isToken?: boolean,
-  ): Promise<BN | number | string> {
+  getGasPrice(withoutCoeff: boolean, isToken?: boolean): Promise<BN | number | string> {
     return this.#parent.getGasPrice(withoutCoeff, isToken);
   }
 
@@ -292,15 +279,10 @@ abstract class Token extends AbstractWallet {
       });
 
       if (txs.length > 0) {
-        const tokenTransactions = txs.filter(
-          (tx: any) => tx.walletId === this.#id,
-        );
+        const tokenTransactions = txs.filter((tx: any) => tx.walletId === this.#id);
 
         // await history.filterAndUpdateTransactions(tokenTransactions);
-        const { topic, payload } = HISTORY_WALLET_UPDATED(
-          this.id,
-          tokenTransactions,
-        );
+        const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions);
 
         this.eventEmitter.emit(topic, payload);
         this.transactions = tokenTransactions;
@@ -326,15 +308,10 @@ abstract class Token extends AbstractWallet {
       });
 
       if (txs.length > 0) {
-        const tokenTransactions = txs.filter(
-          (tx: any) => tx.walletId === this.#id,
-        );
+        const tokenTransactions = txs.filter((tx: any) => tx.walletId === this.#id);
 
         // await history.filterAndUpdateTransactions(tokenTransactions);
-        const { topic, payload } = HISTORY_WALLET_UPDATED(
-          this.id,
-          tokenTransactions,
-        );
+        const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions);
 
         this.eventEmitter.emit(topic, payload);
         this.transactions = tokenTransactions as Transaction[];
@@ -346,7 +323,8 @@ abstract class Token extends AbstractWallet {
 
       // @TODO should be implemented for all token types
       // by default returns empty array
-      // throw new Error(`${this.constructor.name}: method \`getTokenTransactions\` should be defined in ${this.#parent.constructor.name}`)
+      // throw new Error(`${this.constructor.name}: method \`getTokenTransactions\`
+      // should be defined in ${this.#parent.constructor.name}`)
     }
   }
 
@@ -391,15 +369,12 @@ abstract class Token extends AbstractWallet {
   }
 
   manageEvents() {
-    this.eventEmitter.on(
-      `${this.#parent.id}-${this.id}::new-socket-tx`,
-      ({ unconfirmedTx }) => {
-        this.eventEmitter.emit(`${this.#parent.id}::new-token-tx`, {
-          token: this,
-          unconfirmedTx,
-        });
-      },
-    );
+    this.eventEmitter.on(`${this.#parent.id}-${this.id}::new-socket-tx`, ({ unconfirmedTx }) => {
+      this.eventEmitter.emit(`${this.#parent.id}::new-token-tx`, {
+        token: this,
+        unconfirmedTx,
+      });
+    });
   }
 
   /**

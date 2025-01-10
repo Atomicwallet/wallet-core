@@ -36,9 +36,7 @@ export default class STXCoin extends HasProviders(Coin) {
       socket,
       dependencies: {
         walletSdk: new LazyLoadedLib(() => import('@stacks/wallet-sdk')),
-        transactionsSdk: new LazyLoadedLib(
-          () => import('@stacks/transactions'),
-        ),
+        transactionsSdk: new LazyLoadedLib(() => import('@stacks/transactions')),
         c32check: new LazyLoadedLib(() => import('c32check')),
       },
     };
@@ -60,8 +58,7 @@ export default class STXCoin extends HasProviders(Coin) {
    * @return {Promise<Coin>} The private key.
    */
   async loadWallet(seed, phrase) {
-    const { generateWallet, generateNewAccount, getStxAddress } =
-      await this.loadLib('walletSdk');
+    const { generateWallet, generateNewAccount, getStxAddress } = await this.loadLib('walletSdk');
     const { TransactionVersion } = await this.loadLib('transactionsSdk');
 
     const wallet = await generateWallet({
@@ -69,7 +66,8 @@ export default class STXCoin extends HasProviders(Coin) {
       password: '',
     });
 
-    const newAccount = generateNewAccount(wallet); // adds a new account to an existing wallet object, immutable, NOT in-place
+    // adds a new account to an existing wallet object, immutable, NOT in-place
+    const newAccount = generateNewAccount(wallet);
     const account = newAccount.accounts[0];
 
     this.address = getStxAddress({
@@ -91,12 +89,9 @@ export default class STXCoin extends HasProviders(Coin) {
     try {
       const { c32addressDecode } = await this.loadLib('c32check');
       const prefix = address.substr(0, 2);
+      const isPrefix = prefix === 'SM' || prefix === 'SP';
 
-      return (
-        (prefix === 'SM' || prefix === 'SP') &&
-        Boolean(c32addressDecode(address)) &&
-        this.address !== address
-      ); // SN and ST for testnet
+      return isPrefix && Boolean(c32addressDecode(address)) && this.address !== address; // SN and ST for testnet
     } catch (error) {
       return false;
     }
@@ -124,8 +119,7 @@ export default class STXCoin extends HasProviders(Coin) {
    * @return {Promise<StacksTransaction>} Raw transaction
    */
   async createTransaction({ address, amount, memo }) {
-    const { AnchorMode, makeSTXTokenTransfer } =
-      await this.loadLib('transactionsSdk');
+    const { AnchorMode, makeSTXTokenTransfer } = await this.loadLib('transactionsSdk');
     const txOptions = {
       recipient: address,
       amount: BigInt(amount),

@@ -14,9 +14,7 @@ import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const';
 import { HasProviders } from '../mixins';
 
 const bs58checkLazyLoaded = new LazyLoadedLib(() => import('bs58check'));
-const libsodiumWrappersLazyLoaded = new LazyLoadedLib(
-  () => import('libsodium-wrappers'),
-);
+const libsodiumWrappersLazyLoaded = new LazyLoadedLib(() => import('libsodium-wrappers'));
 
 const NAME = 'Tezos';
 const TICKER = 'XTZ';
@@ -65,10 +63,7 @@ class XTZCoin extends HasProviders(Coin) {
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      TzktIoV1Explorer,
-      TezosNodeWithBlockscannerExplorer,
-    ]);
+    this.setExplorersModules([TzktIoV1Explorer, TezosNodeWithBlockscannerExplorer]);
 
     this.loadExplorers(config);
 
@@ -81,32 +76,28 @@ class XTZCoin extends HasProviders(Coin) {
       edsig: new Uint8Array([9, 245, 205, 134, 18]),
     };
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.getInfo();
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.getInfo();
 
-        if (unconfirmedTx && unconfirmedTx.direction) {
-          this.eventEmitter.emit('socket::newtx', {
-            id: this.id,
-            ticker,
-            amount: unconfirmedTx.amount,
-            txid: unconfirmedTx.txid,
-          });
-        } else {
-          this.eventEmitter.emit('socket::newtx::outgoing', {
-            id: this.id,
-            ticker,
-          });
-        }
-      },
-    );
+      if (unconfirmedTx && unconfirmedTx.direction) {
+        this.eventEmitter.emit('socket::newtx', {
+          id: this.id,
+          ticker,
+          amount: unconfirmedTx.amount,
+          txid: unconfirmedTx.txid,
+        });
+      } else {
+        this.eventEmitter.emit('socket::newtx::outgoing', {
+          id: this.id,
+          ticker,
+        });
+      }
+    });
   }
 
   async getLibsodiumWrappers() {
     if (!this.libsodiumWrappers) {
-      const { default: libsodiumWrappers } =
-        await libsodiumWrappersLazyLoaded.get();
+      const { default: libsodiumWrappers } = await libsodiumWrappersLazyLoaded.get();
 
       await libsodiumWrappers.ready;
       this.libsodiumWrappers = libsodiumWrappers;
@@ -122,9 +113,7 @@ class XTZCoin extends HasProviders(Coin) {
    */
   async loadWallet(seed) {
     const libsodiumWrappers = await this.getLibsodiumWrappers();
-    const keyPair = libsodiumWrappers.crypto_sign_seed_keypair(
-      seed.slice(0, PK_HASH_LENGTH),
-    );
+    const keyPair = libsodiumWrappers.crypto_sign_seed_keypair(seed.slice(0, PK_HASH_LENGTH));
 
     if (!keyPair) {
       throw new Error(`${this.ticker} can't get a privateKey`);
@@ -132,10 +121,7 @@ class XTZCoin extends HasProviders(Coin) {
 
     const [privateKey, address] = await Promise.all([
       this.bs58EncodeWithPrefix(keyPair.privateKey, this.prefix.edsk),
-      this.bs58EncodeWithPrefix(
-        libsodiumWrappers.crypto_generichash(HASH_LENGTH, keyPair.publicKey),
-        this.prefix.tz1,
-      ),
+      this.bs58EncodeWithPrefix(libsodiumWrappers.crypto_generichash(HASH_LENGTH, keyPair.publicKey), this.prefix.tz1),
     ]);
 
     this.#privateKey = privateKey;
@@ -156,9 +142,7 @@ class XTZCoin extends HasProviders(Coin) {
       return this.bs58EncodeWithPrefix(
         libsodiumWrappers.crypto_generichash(
           HASH_LENGTH,
-          await this.bs58Decode(this.#privateKey, this.prefix.edsk).slice(
-            PK_HASH_LENGTH,
-          ),
+          await this.bs58Decode(this.#privateKey, this.prefix.edsk).slice(PK_HASH_LENGTH),
         ),
         this.prefix.tz1,
       );
@@ -196,9 +180,7 @@ class XTZCoin extends HasProviders(Coin) {
     const [fee, publicKey] = await Promise.all([
       this.getFee(),
       this.bs58EncodeWithPrefix(
-        (await this.bs58Decode(this.#privateKey, this.prefix.edsk)).slice(
-          PK_HASH_LENGTH,
-        ),
+        (await this.bs58Decode(this.#privateKey, this.prefix.edsk)).slice(PK_HASH_LENGTH),
         this.prefix.edpk,
       ),
     ]);
@@ -212,18 +194,10 @@ class XTZCoin extends HasProviders(Coin) {
     const nodeUrl = this.getProvider('send').config.baseUrl;
 
     const [headerInfo, counter, managerKey] = await Promise.all([
+      axios.get(`${nodeUrl}/chains/main/blocks/head/header`).then((res) => res.data),
+      axios.get(`${nodeUrl}/chains/main/blocks/head/context/contracts/${this.address}/counter`).then((res) => res.data),
       axios
-        .get(`${nodeUrl}/chains/main/blocks/head/header`)
-        .then((res) => res.data),
-      axios
-        .get(
-          `${nodeUrl}/chains/main/blocks/head/context/contracts/${this.address}/counter`,
-        )
-        .then((res) => res.data),
-      axios
-        .get(
-          `${nodeUrl}/chains/main/blocks/head/context/contracts/${this.address}/manager_key`,
-        )
+        .get(`${nodeUrl}/chains/main/blocks/head/context/contracts/${this.address}/manager_key`)
         .then((res) => res.data),
     ]);
 
@@ -296,34 +270,21 @@ class XTZCoin extends HasProviders(Coin) {
       });
     }
 
-    const errors = operationObjectResults.data.reduce(
-      (acc, operationObjectResult, index) => {
-        acc.push(
-          ...operationObjectResult.contents.reduce(
-            (opAcc, { destination, metadata }) => {
-              if (
-                operation.kind === 'transaction' &&
-                destination &&
-                destination !== operation.destination
-              ) {
-                opAcc.push('operation is malicious, destination changed');
-              }
-              if (
-                typeof metadata.operation_result !== 'undefined' &&
-                metadata.operation_result.status === 'failed'
-              ) {
-                // operations failed
-                opAcc.push(...metadata.operation_result.errors);
-              }
-              return opAcc;
-            },
-            [],
-          ),
-        );
-        return acc;
-      },
-      [],
-    );
+    const errors = operationObjectResults.data.reduce((acc, operationObjectResult, index) => {
+      acc.push(
+        ...operationObjectResult.contents.reduce((opAcc, { destination, metadata }) => {
+          if (operation.kind === 'transaction' && destination && destination !== operation.destination) {
+            opAcc.push('operation is malicious, destination changed');
+          }
+          if (typeof metadata.operation_result !== 'undefined' && metadata.operation_result.status === 'failed') {
+            // operations failed
+            opAcc.push(...metadata.operation_result.errors);
+          }
+          return opAcc;
+        }, []),
+      );
+      return acc;
+    }, []);
 
     if (errors.length > 0) {
       throw new ExplorerRequestError({
@@ -375,11 +336,7 @@ class XTZCoin extends HasProviders(Coin) {
     const nodeUrl = this.getProvider('send').config.baseUrl;
 
     try {
-      const response = await axios.post(
-        `${nodeUrl}/injection/operation`,
-        JSON.stringify(rawTx),
-        config,
-      );
+      const response = await axios.post(`${nodeUrl}/injection/operation`, JSON.stringify(rawTx), config);
 
       return {
         txid: response.data,
@@ -452,9 +409,7 @@ class XTZCoin extends HasProviders(Coin) {
   }
 
   hex2buf(hex) {
-    return new Uint8Array(
-      hex.match(/[\da-f]{2}/gi).map((char) => parseInt(char, 16)),
-    );
+    return new Uint8Array(hex.match(/[\da-f]{2}/gi).map((char) => parseInt(char, 16)));
   }
 
   mergebuf(b1, b2) {
@@ -482,9 +437,7 @@ class XTZCoin extends HasProviders(Coin) {
   }
 
   async getBalance() {
-    this.balance = this.toMinimalUnit(
-      await this.getProvider('balance').getBalance(this.address),
-    );
+    this.balance = this.toMinimalUnit(await this.getProvider('balance').getBalance(this.address));
 
     const delegate = await this.getProvider('balance')
       .getDelegate(this.address)

@@ -1,13 +1,7 @@
 import BigNumber from 'bignumber.js'; // BN.js does not support floating points operations
 import BN from 'bn.js';
 
-import type {
-  WalletIdentifierType,
-  WalletId,
-  WalletTicker,
-  WalletDecimal,
-  WalletConfirmation,
-} from '@/abstract';
+import type { WalletIdentifierType, WalletId, WalletTicker, WalletDecimal, WalletConfirmation } from '@/abstract';
 import { toCurrency } from '@/utils/convert';
 
 const min = new BigNumber('0.01');
@@ -27,14 +21,9 @@ export default class Amount {
    * @param {string} ticker
    * @param {number} decimal
    */
-  constructor(
-    initialAmount: string,
-    { id, ticker, decimal, confirmed = true }: WalletIdentifierType,
-  ) {
+  constructor(initialAmount: string, { id, ticker, decimal, confirmed = true }: WalletIdentifierType) {
     if (!initialAmount || !ticker || !decimal || !id) {
-      throw new Error(
-        'Initial values should be defined: `amount`, `id`, `ticker`, `decimal`',
-      );
+      throw new Error('Initial values should be defined: `amount`, `id`, `ticker`, `decimal`');
     }
 
     if (initialAmount.toString().includes('.')) {

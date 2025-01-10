@@ -10,8 +10,7 @@ import {
   STAKING_BALANCES_CACHE,
 } from '../../utils/eventTopics';
 
-const undefinedValidatorWarn = (ticker) =>
-  `Probably ${ticker} doesn't have such validator yet\n`;
+const undefinedValidatorWarn = (ticker) => `Probably ${ticker} doesn't have such validator yet\n`;
 
 const StakingMixin = (superclass) =>
   class extends superclass {
@@ -85,9 +84,7 @@ const StakingMixin = (superclass) =>
       try {
         return new Amount(value, this);
       } catch (error) {
-        throw new Error(
-          `${this}: \`transformValidatorsObjectFromJSON\`: Unable to transform value: ${value}`,
-        );
+        throw new Error(`${this}: \`transformValidatorsObjectFromJSON\`: Unable to transform value: ${value}`);
       }
     }
 
@@ -97,29 +94,23 @@ const StakingMixin = (superclass) =>
      * @returns {{}}
      */
     #transformValidatorsObjectFromJSON(validatorsJSONObject) {
-      return Object.entries(validatorsJSONObject).reduce(
-        (validators, [validator, validatorInfo]) => {
-          validators[validator] = Object.entries(validatorInfo).reduce(
-            (acc, [key, value]) => {
-              if (['address', 'contract', 'owner'].includes(key)) {
-                acc[key] = value;
-              } else {
-                try {
-                  acc[key] = this.#transformBalanceFieldFromJSON(value);
-                } catch (error) {
-                  throw new Error(`${error.message}, key: ${key}`);
-                }
-              }
+      return Object.entries(validatorsJSONObject).reduce((validators, [validator, validatorInfo]) => {
+        validators[validator] = Object.entries(validatorInfo).reduce((acc, [key, value]) => {
+          if (['address', 'contract', 'owner'].includes(key)) {
+            acc[key] = value;
+          } else {
+            try {
+              acc[key] = this.#transformBalanceFieldFromJSON(value);
+            } catch (error) {
+              throw new Error(`${error.message}, key: ${key}`);
+            }
+          }
 
-              return acc;
-            },
-            {},
-          );
+          return acc;
+        }, {});
 
-          return validators;
-        },
-        {},
-      );
+        return validators;
+      }, {});
     }
 
     /**
@@ -132,8 +123,7 @@ const StakingMixin = (superclass) =>
         if (key === 'additional') {
           Object.entries(value).forEach(([nestedKey, nestedValue]) => {
             if (nestedKey === 'frozenVotesV1') {
-              value[nestedKey] =
-                this.#transformBalanceFieldFromJSON(nestedValue);
+              value[nestedKey] = this.#transformBalanceFieldFromJSON(nestedValue);
             }
           });
 
@@ -161,10 +151,7 @@ const StakingMixin = (superclass) =>
     setBalances(balances) {
       this.#balances = balances;
 
-      const { topic, payload } = STAKING_BALANCES_UPDATED(
-        this.id,
-        this.balances,
-      );
+      const { topic, payload } = STAKING_BALANCES_UPDATED(this.id, this.balances);
 
       this.#updateCachedBalances(payload);
       this.eventEmitter.emit(topic, payload);
@@ -195,7 +182,18 @@ const StakingMixin = (superclass) =>
      * @param {Amount} rewards
      * @param {{}} validators
      * @param {{}} additional
-     * @returns {Promise<{unstaking: Amount, total: Amount, availableForStake: Amount>, availableVotes: Amount, pendingWithdrawals: Amount, validators: Amount, staked: Amount, delegatedVotes: Amount, availableWithdrawals: Amount, rewards: Amount}>}
+     * @returns {Promise<{
+     * unstaking: Amount,
+     * total: Amount,
+     * availableForStake: Amount>,
+     * availableVotes: Amount,
+     * pendingWithdrawals: Amount,
+     * validators: Amount,
+     * staked: Amount,
+     * delegatedVotes: Amount,
+     * availableWithdrawals: Amount,
+     * rewards: Amount}>
+     * }
      */
     async makeStakingInfoStruct({
       staked = this.defaultAmount(),
@@ -251,7 +249,16 @@ const StakingMixin = (superclass) =>
 
     /**
      * fetch and struct staking balances
-     * @returns {Promise<any | {unstaking: string, total: string, availableForStake: string, pendingWithdrawals: string, validators: {}, staked: string, availableWithdrawals: string, rewards: string} | {}>}
+     * @returns {Promise<any | {
+     * unstaking: string,
+     * total: string,
+     * availableForStake: string,
+     * pendingWithdrawals: string,
+     * validators: {},
+     * staked: string,
+     * availableWithdrawals: string,
+     * rewards: string} | {}>
+     * }
      */
     async getStakingInfo() {
       const stakingInfo = await this.fetchStakingInfo();
@@ -270,14 +277,7 @@ const StakingMixin = (superclass) =>
      * @param pendingWithdrawals
      * @abstract
      */
-    calculateTotal({
-      balance,
-      staked,
-      unstaking,
-      availableWithdrawals,
-      pendingWithdrawals,
-      rewards,
-    }) {
+    calculateTotal({ balance, staked, unstaking, availableWithdrawals, pendingWithdrawals, rewards }) {
       throw new UndeclaredAbstractMethodError('calculateTotal', this);
     }
 
@@ -290,10 +290,7 @@ const StakingMixin = (superclass) =>
      * @abstract
      */
     async calculateAvailableForStake({ balance, staked, unstaking }) {
-      throw new UndeclaredAbstractMethodError(
-        'calculateAvailableForStake',
-        this,
-      );
+      throw new UndeclaredAbstractMethodError('calculateAvailableForStake', this);
     }
 
     /**
@@ -301,10 +298,7 @@ const StakingMixin = (superclass) =>
      * @abstract
      */
     calculateAvailableForUnstake() {
-      throw new UndeclaredAbstractMethodError(
-        'calculateAvailableForUnstake',
-        this,
-      );
+      throw new UndeclaredAbstractMethodError('calculateAvailableForUnstake', this);
     }
 
     /**
@@ -329,10 +323,7 @@ const StakingMixin = (superclass) =>
      * @abstract
      */
     calculateAvailableWithdrawalsAmount() {
-      throw new UndeclaredAbstractMethodError(
-        'calculateAvailableWithdrawalsAmount',
-        this,
-      );
+      throw new UndeclaredAbstractMethodError('calculateAvailableWithdrawalsAmount', this);
     }
 
     /**
@@ -340,10 +331,7 @@ const StakingMixin = (superclass) =>
      * @abstract
      */
     calculatePendingWithdrawalsAmount() {
-      throw new UndeclaredAbstractMethodError(
-        'calculatePendingWithdrawalsAmount',
-        this,
-      );
+      throw new UndeclaredAbstractMethodError('calculatePendingWithdrawalsAmount', this);
     }
 
     /**
@@ -397,10 +385,7 @@ const StakingMixin = (superclass) =>
         try {
           return this.#balances.validators[validatorAddress][balanceType];
         } catch (error) {
-          console.warn(
-            undefinedValidatorWarn(this.ticker, balanceType, validatorAddress),
-            error,
-          );
+          console.warn(undefinedValidatorWarn(this.ticker, balanceType, validatorAddress), error);
           return '0';
         }
       }
@@ -524,10 +509,7 @@ const StakingMixin = (superclass) =>
 
       this.#predefinedValidators = this.getDefaultValidators();
 
-      const { topic, payload } = STAKING_PREDEFINED_VALIDATORS_UPDATED(
-        this.id,
-        this.#predefinedValidators,
-      );
+      const { topic, payload } = STAKING_PREDEFINED_VALIDATORS_UPDATED(this.id, this.#predefinedValidators);
 
       this.eventEmitter.emit(topic, payload);
 
@@ -540,9 +522,7 @@ const StakingMixin = (superclass) =>
      * @returns {*|*[]}
      */
     getDefaultValidators() {
-      const defaultList = defaultValidators.find(
-        ({ currency }) => currency === this.ticker,
-      );
+      const defaultList = defaultValidators.find(({ currency }) => currency === this.ticker);
 
       return defaultList?.validators ?? [];
     }

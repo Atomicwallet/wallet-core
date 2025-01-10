@@ -1,10 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
 
-import {
-  SEND_TRANSACTION_TYPE,
-  GET_UTXO_TYPE,
-  GET_BALANCE_TYPE,
-} from '../../utils/const';
+import { SEND_TRANSACTION_TYPE, GET_UTXO_TYPE, GET_BALANCE_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 
 class YoroExplorer extends Explorer {
@@ -57,12 +53,7 @@ class YoroExplorer extends Explorer {
       .sort((a, b) => b.timestamp - a.timestamp);
   }
 
-  async getTransactionsQueued({
-    blockHash,
-    address,
-    recursion = false,
-    after = undefined,
-  }) {
+  async getTransactionsQueued({ blockHash, address, recursion = false, after = undefined }) {
     if (this.updating && !recursion) {
       return this.txs;
     }
@@ -231,9 +222,7 @@ class YoroExplorer extends Explorer {
     const inputsAddress = tx.inputs.map((input) => input.address);
     const outputsAddress = tx.outputs.map((output) => output.address);
 
-    const sentToMyself = inputsAddress
-      .concat(outputsAddress)
-      .every((address) => address === selfAddress);
+    const sentToMyself = inputsAddress.concat(outputsAddress).every((address) => address === selfAddress);
 
     let value;
 
@@ -251,10 +240,7 @@ class YoroExplorer extends Explorer {
       value = inputsAmount.sub(outputsAmount).toString();
     } else {
       value = indexes
-        .reduce(
-          (acc, cur) => acc.add(new this.wallet.BN(tx.outputs[cur].amount)),
-          new this.wallet.BN(0),
-        )
+        .reduce((acc, cur) => acc.add(new this.wallet.BN(tx.outputs[cur].amount)), new this.wallet.BN(0))
         .toString();
     }
 
@@ -284,10 +270,7 @@ class YoroExplorer extends Explorer {
       });
     });
 
-    const balance = utxo.reduce(
-      (value, { amount }) => value.add(new this.wallet.BN(amount)),
-      new this.wallet.BN(0),
-    );
+    const balance = utxo.reduce((value, { amount }) => value.add(new this.wallet.BN(amount)), new this.wallet.BN(0));
 
     return balance.toString();
   }
@@ -346,8 +329,7 @@ class YoroExplorer extends Explorer {
     if (!response) {
       throw new ExplorerRequestError({
         type: SEND_TRANSACTION_TYPE,
-        error:
-          "ADA: sendTransaction: response.data doesn't have Right property",
+        error: "ADA: sendTransaction: response.data doesn't have Right property",
         url: this.getBroadcastUrl(),
         instance: this,
       });
@@ -357,13 +339,7 @@ class YoroExplorer extends Explorer {
   }
 
   async getTxSummary(txId) {
-    return this.request(
-      this.getTxUrl(txId),
-      'get',
-      {},
-      undefined,
-      this.getInfoOptions(),
-    );
+    return this.request(this.getTxUrl(txId), 'get', {}, undefined, this.getInfoOptions());
   }
 
   async getTxsSummary(txsIds /* Array<txId:string> */) {

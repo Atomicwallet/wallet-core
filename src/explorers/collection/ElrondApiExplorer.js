@@ -22,12 +22,7 @@ class ElrondApiExplorer extends Explorer {
     return `/accounts/${address}/transactions`;
   }
 
-  getTransactionsParams(
-    address,
-    offset = 0,
-    limit = this.defaultTxLimit,
-    pageNum,
-  ) {
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit, pageNum) {
     return { from: offset, to: offset + limit, withScResults: true };
   }
 
@@ -116,9 +111,7 @@ class ElrondApiExplorer extends Explorer {
 
     return ['transfer', 'stake'].includes(txType)
       ? this.wallet.toCurrencyUnit(tx.value)
-      : this.wallet.toCurrencyUnit(
-          this.getValueFromSmartContractResults(selfAddress, tx),
-        );
+      : this.wallet.toCurrencyUnit(this.getValueFromSmartContractResults(selfAddress, tx));
   }
 
   getValueFromSmartContractResults(selfAddress, { results = [] } = {}) {
@@ -142,10 +135,7 @@ class ElrondApiExplorer extends Explorer {
   }
 
   async fetchStakingInfo(address) {
-    const response = await this.request(
-      this.getStakingInfoUrl(address),
-      this.getInfoMethod(),
-    );
+    const response = await this.request(this.getStakingInfoUrl(address), this.getInfoMethod());
 
     return this.modifyFetchStakingInfo(response);
   }

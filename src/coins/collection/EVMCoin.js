@@ -24,10 +24,8 @@ const GWEI = 1e9;
 const EMPTY_OVM_GAS_PRICE_ORACLE_CONTRACT = '0x';
 
 // Public key from a compromised mnemonic used for unit tests in other places
-const FAKE_EVM_ADDRESS_FOR_FEE_EVALUATION =
-  '0x29625E10Cfe090294DC0eC579E322ce87C822745';
-const OVM_GAS_PRICE_ORACLE_CONTRACT_ADDRESS =
-  '0x420000000000000000000000000000000000000F';
+const FAKE_EVM_ADDRESS_FOR_FEE_EVALUATION = '0x29625E10Cfe090294DC0eC579E322ce87C822745';
+const OVM_GAS_PRICE_ORACLE_CONTRACT_ADDRESS = '0x420000000000000000000000000000000000000F';
 const DEFAULT_MAX_GAS = 150000;
 const DEFAULT_BLOCK = 'pending';
 const HEX_ZERO = '0x0';
@@ -116,14 +114,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {boolean} [config.isCustom=false]
    */
   constructor(config) {
-    const {
-      id,
-      isL2,
-      isUseModeratedGasPrice = false,
-      isUseEIP1559 = false,
-      feeData,
-      explorers,
-    } = config;
+    const { id, isL2, isUseModeratedGasPrice = false, isUseEIP1559 = false, feeData, explorers } = config;
 
     super({
       ...config,
@@ -132,9 +123,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       unspendableBalance: feeData.unspendableBalance,
       dependencies: {
         [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(
-          () => import('ethereumjs-wallet'),
-        ),
+        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
       },
     });
 
@@ -188,9 +177,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     }
 
     this.#isUseEIP1559 = isUseEIP1559;
-    this.#gasPriceConfigName = isUseModeratedGasPrice
-      ? `${gasPriceConfigPrefix}-gas-price`
-      : null;
+    this.#gasPriceConfigName = isUseModeratedGasPrice ? `${gasPriceConfigPrefix}-gas-price` : null;
     this.#tokensConfigName = `${tokenConfigPrefix}-tokens`;
     this.#bannedTokensConfigName = `${tokenConfigPrefix}-tokens-banned`;
 
@@ -202,16 +189,11 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     // this.#bannedTokensConfigName &&
     //   configManager.register(this.#bannedTokensConfigName);
 
-    this.web3BaseUrl = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    )?.baseUrl;
+    this.web3BaseUrl = explorers.find(({ className }) => className === 'Web3Explorer')?.baseUrl;
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   /**
@@ -266,14 +248,12 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     this.gasLimit = Number(feeData.gasLimit) || DEFAULT_MIN_GAS;
     this.maxGasLimit = Number(feeData.maxGasLimit) || DEFAULT_MAX_GAS;
     this.gasLimitCoefficient = Number(feeData.gasLimitCoefficient) || 1;
-    this.contractGasLimitCoefficient =
-      Number(feeData.contractGasLimitCoefficient) || 5;
+    this.contractGasLimitCoefficient = Number(feeData.contractGasLimitCoefficient) || 5;
     this.nftGasLimitCoefficient = Number(feeData.nftGasLimitCoefficient) || 1;
     this.resendTimeout = feeData.resendTimeout;
     this.unspendableBalance = feeData.unspendableBalance || UNSPENDABLE_BALANCE;
     this.maxGasLimitL1 = Number(feeData.maxGasLimitL1) || DEFAULT_MAX_GAS_L1;
-    this.maxGasPriceL1 =
-      Number(feeData.maxGasPriceL1) || DEFAULT_MAX_GAS_PRICE_L1;
+    this.maxGasPriceL1 = Number(feeData.maxGasPriceL1) || DEFAULT_MAX_GAS_PRICE_L1;
   }
 
   isFeeDynamic() {
@@ -288,14 +268,13 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
   getTokenTransactions({ contract }) {
     if (!contract) {
-      throw new Error(
-        `${this.ticker}: \`contract\` parameter should be defined`,
-      );
+      throw new Error(`${this.ticker}: \`contract\` parameter should be defined`);
     }
 
-    return this.getProvider(
-      TOKEN_HISTORY_PROVIDER_OPERATION,
-    ).getTokenTransactions({ address: this.address, contract });
+    return this.getProvider(TOKEN_HISTORY_PROVIDER_OPERATION).getTokenTransactions({
+      address: this.address,
+      contract,
+    });
   }
 
   /**
@@ -309,25 +288,21 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     }
 
     const historyProvider = this.getProvider(HISTORY_PROVIDER_OPERATION);
-    const tokensHistoryProvider = this.getProvider(
-      TOKENS_LIST_HISTORY_PROVIDER_OPERATION,
-    );
+    const tokensHistoryProvider = this.getProvider(TOKENS_LIST_HISTORY_PROVIDER_OPERATION);
 
-    const [transactions = [], { rawTokenTransactions = [] }] =
-      await Promise.all(
-        [
-          historyProvider?.getTransactions?.({ address: this.address }) ??
-            Promise.resolve([]),
-          tokensHistoryProvider?.getTokensTransactions?.({
-            address: this.address,
-          }) ?? Promise.resolve({}),
-        ].map((promise) =>
-          promise.catch((error) => {
-            console.error(error);
-            return [];
-          }),
-        ),
-      );
+    const [transactions = [], { rawTokenTransactions = [] }] = await Promise.all(
+      [
+        historyProvider?.getTransactions?.({ address: this.address }) ?? Promise.resolve([]),
+        tokensHistoryProvider?.getTokensTransactions?.({
+          address: this.address,
+        }) ?? Promise.resolve({}),
+      ].map((promise) =>
+        promise.catch((error) => {
+          console.error(error);
+          return [];
+        }),
+      ),
+    );
 
     const tokenTransactions = rawTokenTransactions.reduce((txs, rawTx) => {
       const contract = rawTx.contract.toLowerCase();
@@ -391,16 +366,11 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @throws {Error}
    */
   async loadWallet(seed, mnemonicString) {
-    const [coreLibrary, { hdkey }] = await Promise.all([
-      this.getCoreLibrary(),
-      this.loadLib(ETHEREUM_JS_WALLET_SDK),
-    ]);
+    const [coreLibrary, { hdkey }] = await Promise.all([this.getCoreLibrary(), this.loadLib(ETHEREUM_JS_WALLET_SDK)]);
 
     const ethHDKey = hdkey.fromMasterSeed(seed);
     const wallet = ethHDKey.getWallet();
-    const account = await coreLibrary.eth.accounts.privateKeyToAccount(
-      wallet.getPrivateKeyString(),
-    );
+    const account = await coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
     if (!account) {
       throw new Error(`${this.id} cant get a wallet!`);
@@ -449,8 +419,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     paymentData = null,
   }) {
     // Fallbacks only for coin since gasLimit is always set for contracts
-    const gas =
-      gasLimit || (await this.estimateGas(amount, address)) || this.gasLimit;
+    const gas = gasLimit || (await this.estimateGas(amount, address)) || this.gasLimit;
     const gasPrice = userGasPrice || (await this.getGasPrice(true));
 
     const transaction = {
@@ -479,21 +448,13 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     }
 
     const coreLibrary = await this.getCoreLibrary();
-    const signedTx = await coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
 
   #getTransferTokenContractData(contract, to, amount) {
-    return this.getProvider(SEND_PROVIDER_OPERATION).createSendTokenContract(
-      contract,
-      this.address,
-      to,
-      amount,
-    );
+    return this.getProvider(SEND_PROVIDER_OPERATION).createSendTokenContract(contract, this.address, to, amount);
   }
 
   /**
@@ -508,20 +469,8 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {string} [data.gasLimit] - Custom gas limit.
    * @return {Promise<string>} - Raw signed transaction
    */
-  async createTokenTransaction({
-    address,
-    amount,
-    custom,
-    userGasPrice,
-    gasLimit,
-    contract,
-    multiplier,
-  }) {
-    const contractData = this.#getTransferTokenContractData(
-      contract,
-      address,
-      amount,
-    );
+  async createTokenTransaction({ address, amount, custom, userGasPrice, gasLimit, contract, multiplier }) {
+    const contractData = this.#getTransferTokenContractData(contract, address, amount);
 
     return this.createTransaction({
       address: contract,
@@ -561,9 +510,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     const gasPrice = Number(rawGasPrice) + coefficient * GWEI;
     const defaultMaxGasPriceInGwei = this.defaultMaxGasPrice * GWEI;
 
-    return gasPrice > defaultMaxGasPriceInGwei
-      ? defaultMaxGasPriceInGwei
-      : gasPrice;
+    return gasPrice > defaultMaxGasPriceInGwei ? defaultMaxGasPriceInGwei : gasPrice;
   }
 
   /**
@@ -575,12 +522,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {number} [gasLimitCoefficient = 1] - Custom coefficient for tune gas limit.
    * @returns {Promise<number>}
    */
-  async estimateGasForSendNft(
-    address,
-    toContract,
-    data,
-    gasLimitCoefficient = 1,
-  ) {
+  async estimateGasForSendNft(address, toContract, data, gasLimitCoefficient = 1) {
     const transactionObject = {
       from: address,
       to: toContract,
@@ -589,16 +531,14 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     };
 
     const coreLibrary = await this.getCoreLibrary();
-    const estimatedGas = await coreLibrary.eth
-      .estimateGas(transactionObject)
-      .catch((error) => {
-        // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
-        if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-          // logger.error({ instance: this, error });
-        }
-        // Fallback value
-        return this.maxGasLimit;
-      });
+    const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
+      // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
+      if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
+        // logger.error({ instance: this, error });
+      }
+      // Fallback value
+      return this.maxGasLimit;
+    });
 
     return Math.ceil(estimatedGas * this.nftGasLimitCoefficient);
   }
@@ -616,11 +556,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {UserFeeOptions} userOptions - Custom user options.
    * @returns {Promise<{gasLimit: number, gasPrice: number, nonce: number}>}
    */
-  async getNftTransferGasParams(
-    toContract,
-    data,
-    { userGasPrice, userGasLimit },
-  ) {
+  async getNftTransferGasParams(toContract, data, { userGasPrice, userGasLimit }) {
     const {
       address,
       nftGasPriceCoefficient,
@@ -632,11 +568,9 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     } = this;
 
     /** @type number */
-    const gasPriceCoefficient =
-      nftGasPriceCoefficient || configGasPriceCoefficient;
+    const gasPriceCoefficient = nftGasPriceCoefficient || configGasPriceCoefficient;
     /** @type number */
-    const gasLimitCoefficient =
-      nftGasLimitCoefficient || configGasLimitCoefficient;
+    const gasLimitCoefficient = nftGasLimitCoefficient || configGasLimitCoefficient;
 
     const defaultGasValues = [
       (defaultGasPrice + gasPriceCoefficient) * GWEI,
@@ -647,18 +581,10 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
     const [gasPrice, gasLimit] = await Promise.allSettled([
       userGasPrice || this.getGasPriceForSendNft(gasPriceCoefficient),
-      userGasLimit ||
-        this.estimateGasForSendNft(
-          address,
-          toContract,
-          data,
-          gasLimitCoefficient,
-        ),
+      userGasLimit || this.estimateGasForSendNft(address, toContract, data, gasLimitCoefficient),
     ]).then((resultList) =>
       resultList.map((result, i) => {
-        return result.status === 'fulfilled'
-          ? result.value
-          : defaultGasValues[i];
+        return result.status === 'fulfilled' ? result.value : defaultGasValues[i];
       }),
     );
 
@@ -678,33 +604,21 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {Promise<BN>} - The fee.
    * @throws {ExternalError}
    */
-  async getNftFee({
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    toAddress = null,
-    userOptions = {},
-  }) {
+  async getNftFee({ contractAddress, tokenId, tokenStandard, toAddress = null, userOptions = {} }) {
     const targetAddress =
       !toAddress || toAddress.toLowerCase() === this.address.toLowerCase()
         ? FAKE_EVM_ADDRESS_FOR_FEE_EVALUATION
         : toAddress;
 
     try {
-      const data = await this.getProvider(
-        NFT_SEND_PROVIDER_OPERATION,
-      ).getNftContractData(
+      const data = await this.getProvider(NFT_SEND_PROVIDER_OPERATION).getNftContractData(
         this,
         targetAddress,
         contractAddress,
         tokenId,
         tokenStandard,
       );
-      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(
-        contractAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(contractAddress, data, userOptions);
 
       return new this.BN(gasPrice).mul(new this.BN(gasLimit));
     } catch (error) {
@@ -724,11 +638,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
   async createNftTransaction({ contractAddress, data, userOptions = {} }) {
     try {
-      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(
-        contractAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(contractAddress, data, userOptions);
       const transaction = {
         to: contractAddress,
         value: HEX_ZERO,
@@ -744,10 +654,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       }
 
       const coreLibrary = await this.getCoreLibrary();
-      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(
-        transaction,
-        this.#privateKey,
-      );
+      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
       return rawTransaction;
     } catch (error) {
@@ -759,9 +666,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     try {
       const coreLibrary = await this.getCoreLibrary();
 
-      this.nonce = new this.BN(
-        await coreLibrary.eth.getTransactionCount(this.address, DEFAULT_BLOCK),
-      );
+      this.nonce = new this.BN(await coreLibrary.eth.getTransactionCount(this.address, DEFAULT_BLOCK));
 
       return this.nonce;
     } catch (error) {
@@ -780,34 +685,21 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       l1BaseFee = await this.getCoinFeeL1FromOracle();
     }
 
-    const weightedGasPrice = new this.BN(16)
-      .mul(new this.BN(l1BaseFee))
-      .mul(new this.BN(684))
-      .divn(1000);
+    const weightedGasPrice = new this.BN(16).mul(new this.BN(l1BaseFee)).mul(new this.BN(684)).divn(1000);
 
     return weightedGasPrice.muln(4);
   }
 
   // estimate fee for layer 2 from layer 2
-  async getFeeL2({
-    userGasPrice = null,
-    gasLimit = null,
-    contract = null,
-    amount = 1,
-  } = {}) {
-    let gasPriceL2BN = new this.BN(
-      userGasPrice || (await this.getGasPrice(true)),
-    );
+  async getFeeL2({ userGasPrice = null, gasLimit = null, contract = null, amount = 1 } = {}) {
+    let gasPriceL2BN = new this.BN(userGasPrice || (await this.getGasPrice(true)));
 
     if (this.#isUseEIP1559) {
       gasPriceL2BN = gasPriceL2BN.add(gasPriceL2BN.divn(10));
     }
 
     const requiredGas =
-      gasLimit ||
-      (contract
-        ? await this.estimateGas(amount, null, contract, this.gasLimit)
-        : this.gasLimit);
+      gasLimit || (contract ? await this.estimateGas(amount, null, contract, this.gasLimit) : this.gasLimit);
 
     return gasPriceL2BN.mul(new this.BN(requiredGas));
   }
@@ -823,12 +715,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {string|number} [options.gasLimit=null] - Custom gas limit.
    * @returns {Promise<BN>}
    */
-  async getFee({
-    userGasPrice = null,
-    gasLimit = null,
-    contract = null,
-    amount = 1,
-  } = {}) {
+  async getFee({ userGasPrice = null, gasLimit = null, contract = null, amount = 1 } = {}) {
     let fee = new this.BN(0);
 
     if (this.isL2) {
@@ -867,9 +754,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       .call()
       .catch(async () => {
         const l1GasPriceConfig = await this._getGasPriceL1FromConfig();
-        return new this.BN(this.maxGasLimitL1)
-          .mul(new this.BN(l1GasPriceConfig))
-          .mul(new this.BN(GWEI));
+        return new this.BN(this.maxGasLimitL1).mul(new this.BN(l1GasPriceConfig)).mul(new this.BN(GWEI));
       });
 
     return new this.BN(String(feeL1FromOracle));
@@ -902,11 +787,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<number>}
    */
   getTokenFeeL1FromOracle(contract, amount) {
-    const contractData = this.#getTransferTokenContractData(
-      contract,
-      FAKE_EVM_ADDRESS_FOR_FEE_EVALUATION,
-      amount,
-    );
+    const contractData = this.#getTransferTokenContractData(contract, FAKE_EVM_ADDRESS_FOR_FEE_EVALUATION, amount);
 
     return this._getFeeL1FromOracle(contractData);
   }
@@ -937,22 +818,14 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     } else {
       rawGasPrice = this.#isUseModeratedGasPrice
         ? (await this.getModeratedGasPrice().catch())?.standard
-        : Number(
-            (
-              await this.getProvider(NODE_PROVIDER_OPERATION)
-                .getGasPrice()
-                .catch()
-            )?.node,
-          );
+        : Number((await this.getProvider(NODE_PROVIDER_OPERATION).getGasPrice().catch())?.node);
     }
 
     // @TODO Maybe we should increase gasPrice at once by 25% so as not to hit the limit of the 5-minute interval
     //  of change in gasPrice network
     const gasPrice = rawGasPrice || this.defaultGasPrice * GWEI;
 
-    return withoutCoefficient
-      ? gasPrice
-      : gasPrice + this.gasPriceCoefficient * GWEI;
+    return withoutCoefficient ? gasPrice : gasPrice + this.gasPriceCoefficient * GWEI;
   }
 
   /**
@@ -996,31 +869,20 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     };
 
     if (contractAddress) {
-      transactionObject.data = this.#getTransferTokenContractData(
-        contractAddress,
-        to,
-        amount,
-      );
+      transactionObject.data = this.#getTransferTokenContractData(contractAddress, to, amount);
     }
 
     const coreLibrary = await this.getCoreLibrary();
-    const estimatedGas = await coreLibrary.eth
-      .estimateGas(transactionObject)
-      .catch((error) => {
-        // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
-        if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-          // logger.error({ instance: this, error });
-        }
-        // Fallback value
-        return contractAddress ? this.maxGasLimit : this.gasLimit;
-      });
+    const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
+      // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
+      if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
+        // logger.error({ instance: this, error });
+      }
+      // Fallback value
+      return contractAddress ? this.maxGasLimit : this.gasLimit;
+    });
 
-    return Math.round(
-      estimatedGas *
-        (contractAddress
-          ? this.contractGasLimitCoefficient
-          : this.gasLimitCoefficient),
-    );
+    return Math.round(estimatedGas * (contractAddress ? this.contractGasLimitCoefficient : this.gasLimitCoefficient));
   }
 
   /**
@@ -1035,9 +897,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     }
 
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (availableBalance.lt(new this.BN(0))) {
       return '0';
@@ -1064,17 +924,12 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     await this.getNonce();
 
     if (tokenInfo?.isToken) {
-      const tokenBalance = await this.getProvider(
-        NODE_PROVIDER_OPERATION,
-      ).getTokenBalanceByContractAddress({
+      const tokenBalance = await this.getProvider(NODE_PROVIDER_OPERATION).getTokenBalanceByContractAddress({
         address: this.address,
         contractAddress: tokenInfo.contract.toLowerCase(),
       });
 
-      const contractVariant = [
-        tokenInfo.contract,
-        tokenInfo.contract.toLowerCase(),
-      ];
+      const contractVariant = [tokenInfo.contract, tokenInfo.contract.toLowerCase()];
 
       contractVariant.forEach((contract) => {
         if (this.tokens[contract]) {
@@ -1094,10 +949,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     if (!tokenInfo?.onlyCoin) {
       const tokens = Object.values(this.tokens);
 
-      this.getProvider(NODE_PROVIDER_OPERATION).getTokensInfo(
-        tokens,
-        this.address,
-      );
+      this.getProvider(NODE_PROVIDER_OPERATION).getTokensInfo(tokens, this.address);
     }
 
     return { balance: info.balance };
@@ -1110,9 +962,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<string|number|BN>}
    */
   getTokenInfo({ contract }) {
-    return this.getProvider(
-      NODE_PROVIDER_OPERATION,
-    ).getTokenBalanceByContractAddress({
+    return this.getProvider(NODE_PROVIDER_OPERATION).getTokenBalanceByContractAddress({
       address: this.address,
       contractAddress: contract,
     });
@@ -1173,8 +1023,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
     // Set the balance for found tokens
     userTokens.forEach(({ contract, balance }) => {
-      const userToken =
-        this.tokens[contract] ?? this.tokens[contract.toLowerCase()];
+      const userToken = this.tokens[contract] ?? this.tokens[contract.toLowerCase()];
 
       if (userToken) {
         userToken.balance = balance;

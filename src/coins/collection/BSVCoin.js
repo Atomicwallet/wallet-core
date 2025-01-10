@@ -1,12 +1,7 @@
 import { Coin } from '../../abstract';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
 import { LazyLoadedLib } from '../../utils';
-import {
-  BitcoinLikeFeeMixin,
-  BitcoreBitcoinCashMixin,
-  BitcoreMixin,
-  HasProviders,
-} from '../mixins';
+import { BitcoinLikeFeeMixin, BitcoreBitcoinCashMixin, BitcoreMixin, HasProviders } from '../mixins';
 
 const NAME = 'Bitcoin SV';
 const TICKER = 'BSV';
@@ -19,9 +14,7 @@ const UNSPENDABLE_BALANCE = '0';
  *
  * @class BSVCoin
  */
-class BSVCoin extends BitcoreBitcoinCashMixin(
-  BitcoreMixin(BitcoinLikeFeeMixin(HasProviders(Coin))),
-) {
+class BSVCoin extends BitcoreBitcoinCashMixin(BitcoreMixin(BitcoinLikeFeeMixin(HasProviders(Coin)))) {
   /**
    * constructs the object.
    *

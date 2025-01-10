@@ -20,7 +20,5 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
-jest
-  .spyOn(wallet, 'getIsSendAllByAmount')
-  .mockImplementation((amount) => amount);
+jest.spyOn(wallet, 'getIsSendAllByAmount').mockImplementation((amount) => amount);
 generateWalletTests(wallet);

@@ -58,10 +58,7 @@ class NeoscanExplorer extends Explorer {
   // @FIXME
 
   modifyTransactionsResponse(response, address) {
-    return super.modifyTransactionsResponse(
-      this.filterTransactionList(response, address),
-      address,
-    );
+    return super.modifyTransactionsResponse(this.filterTransactionList(response, address), address);
   }
 
   filterTransactionList(txList, selfAddress) {
@@ -93,9 +90,7 @@ class NeoscanExplorer extends Explorer {
   }
 
   getTxDirection(selfAddress, tx) {
-    const vout =
-      tx.vouts &&
-      tx.vouts.find(({ address_hash }) => address_hash !== selfAddress);
+    const vout = tx.vouts && tx.vouts.find(({ address_hash }) => address_hash !== selfAddress);
 
     return !vout;
   }
@@ -115,18 +110,9 @@ class NeoscanExplorer extends Explorer {
     const asset = this.wallet.ticker.substr(0, 3);
 
     tx.vouts.forEach((output) => {
-      if (
-        output.address_hash !== selfAddress &&
-        output.asset === ASSET_ADDRESS[asset]
-      ) {
-        if (
-          valueOutPrev.lt(
-            new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-          )
-        ) {
-          valueOutPrev = new this.wallet.BN(
-            this.wallet.toMinimalUnit(output.value),
-          );
+      if (output.address_hash !== selfAddress && output.asset === ASSET_ADDRESS[asset]) {
+        if (valueOutPrev.lt(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)))) {
+          valueOutPrev = new this.wallet.BN(this.wallet.toMinimalUnit(output.value));
           addressTo = output.address_hash;
         }
       }
@@ -142,24 +128,14 @@ class NeoscanExplorer extends Explorer {
     const asset = this.wallet.ticker.substr(0, 3);
 
     tx.vin.forEach((input) => {
-      if (
-        input.address_hash === selfAddress &&
-        input.asset === ASSET_ADDRESS[asset]
-      ) {
-        valueIn = valueIn.add(
-          new this.wallet.BN(this.wallet.toMinimalUnit(input.value)),
-        );
+      if (input.address_hash === selfAddress && input.asset === ASSET_ADDRESS[asset]) {
+        valueIn = valueIn.add(new this.wallet.BN(this.wallet.toMinimalUnit(input.value)));
       }
     });
 
     tx.vouts.forEach((output) => {
-      if (
-        output.address_hash === selfAddress &&
-        output.asset === ASSET_ADDRESS[asset]
-      ) {
-        valueOut = valueOut.add(
-          new this.wallet.BN(this.wallet.toMinimalUnit(output.value)),
-        );
+      if (output.address_hash === selfAddress && output.asset === ASSET_ADDRESS[asset]) {
+        valueOut = valueOut.add(new this.wallet.BN(this.wallet.toMinimalUnit(output.value)));
       }
     });
 

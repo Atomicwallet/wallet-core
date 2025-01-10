@@ -1,14 +1,6 @@
 import { ATOM_MSG_TYPES } from '../../utils/const';
 
-export const msgSend = ({
-  fromAddress,
-  toAddress,
-  amount,
-  fee,
-  gas,
-  memo,
-  denom = 'uatom',
-}) => ({
+export const msgSend = ({ fromAddress, toAddress, amount, fee, gas, memo, denom = 'uatom' }) => ({
   msg: [
     {
       type: ATOM_MSG_TYPES.Send,
@@ -27,15 +19,7 @@ export const msgSend = ({
   memo,
 });
 
-export const msgDelegate = ({
-  delegatorAddress,
-  validatorAddress,
-  amount,
-  fee,
-  gas,
-  memo,
-  denom = 'uatom',
-}) => ({
+export const msgDelegate = ({ delegatorAddress, validatorAddress, amount, fee, gas, memo, denom = 'uatom' }) => ({
   msg: [
     {
       type: ATOM_MSG_TYPES.Delegate,

@@ -7,9 +7,7 @@ const VERSION_SPLITTER = /[.-]/;
  * @returns {number[]}
  */
 function getVersionPieces(versionString) {
-  const pieces = versionString
-    .split(VERSION_SPLITTER)
-    .map((piece) => Number(piece));
+  const pieces = versionString.split(VERSION_SPLITTER).map((piece) => Number(piece));
 
   if (pieces.includes(NaN)) {
     return [];
@@ -31,15 +29,10 @@ export function getVersion(platform, value) {
   const pieces = getVersionPieces(value.replace(platform, ''));
 
   if (pieces.length > VERSION_ZEROES.length) {
-    throw new TypeError(
-      `getVersion supports maximum ${VERSION_ZEROES.length} version pieces`,
-    );
+    throw new TypeError(`getVersion supports maximum ${VERSION_ZEROES.length} version pieces`);
   }
 
-  return pieces.reduce(
-    (version, piece, idx) => version + piece * 10 ** VERSION_ZEROES[idx],
-    0,
-  );
+  return pieces.reduce((version, piece, idx) => version + piece * 10 ** VERSION_ZEROES[idx], 0);
 }
 
 /**
@@ -50,9 +43,7 @@ export function getVersion(platform, value) {
  * @returns {number} -1 for first < second, 0 for first = second, 1 for first > second
  */
 export function compareVersions(first, second) {
-  const [firstPieces, secondPieces] = [first, second].map((version) =>
-    getVersionPieces(version),
-  );
+  const [firstPieces, secondPieces] = [first, second].map((version) => getVersionPieces(version));
   const length = Math.max(firstPieces.length, secondPieces.length);
 
   for (let idx = 0; idx < length; idx += 1) {
@@ -74,16 +65,10 @@ export function compareVersions(first, second) {
  * @param {string} supportedPlatformAndVersion
  * @returns {boolean} platform is supported and version is equal or greater than the supported one
  */
-export function isSupportedAppVersion(
-  currentPlatform,
-  currentVersion,
-  supportedPlatformAndVersion,
-) {
+
+export function isSupportedAppVersion(currentPlatform, currentVersion, supportedPlatformAndVersion) {
   return (
     supportedPlatformAndVersion.startsWith(currentPlatform) &&
-    compareVersions(
-      currentVersion,
-      supportedPlatformAndVersion.substring(currentPlatform.length),
-    ) >= 0
+    compareVersions(currentVersion, supportedPlatformAndVersion.substring(currentPlatform.length)) >= 0
   );
 }

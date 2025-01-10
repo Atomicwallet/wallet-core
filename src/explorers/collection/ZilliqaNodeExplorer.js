@@ -68,9 +68,7 @@ class ZilliqaNodeExplorer extends ZilliqaAbstractExplorer {
 
   async getBalance(address, contract) {
     const { balance, nonce = 0 } =
-      (await this.getInfo(this.toValidChecksumAddress(address)).catch((error) =>
-        console.warn(error),
-      )) || {};
+      (await this.getInfo(this.toValidChecksumAddress(address)).catch((error) => console.warn(error))) || {};
 
     return {
       balance,
@@ -81,14 +79,8 @@ class ZilliqaNodeExplorer extends ZilliqaAbstractExplorer {
   async getStakingBalance(address, contract) {
     const ssnContract = this.toValidChecksumAddress(contract);
 
-    const staking = await this.getStakedAmountFromContract(
-      address,
-      ssnContract,
-    );
-    const withdrawals = await this.getWithdrawalsFromContract(
-      address,
-      ssnContract,
-    );
+    const staking = await this.getStakedAmountFromContract(address, ssnContract);
+    const withdrawals = await this.getWithdrawalsFromContract(address, ssnContract);
 
     return { staking, withdrawals };
   }
@@ -96,11 +88,9 @@ class ZilliqaNodeExplorer extends ZilliqaAbstractExplorer {
   async getRewards(address, contract, staking) {
     const ssnContract = this.toValidChecksumAddress(contract);
 
-    const rewards = (await this.getRewardsFromContract(
-      address,
-      ssnContract,
-      staking,
-    )) || { total: '0' };
+    const rewards = (await this.getRewardsFromContract(address, ssnContract, staking)) || {
+      total: '0',
+    };
 
     return rewards;
   }
@@ -121,19 +111,12 @@ class ZilliqaNodeExplorer extends ZilliqaAbstractExplorer {
             id: 'atomic',
             jsonrpc: '2.0',
             method: RPCMethod.GetSmartContractSubState,
-            params: [
-              this.toValidChecksumAddress(contract),
-              'balances',
-              [legacyAddr],
-            ],
+            params: [this.toValidChecksumAddress(contract), 'balances', [legacyAddr]],
           },
           GET_BALANCE_TYPE,
         );
 
-        const balance =
-          contractSubState &&
-          contractSubState.result &&
-          contractSubState.result.balances[legacyAddr];
+        const balance = contractSubState && contractSubState.result && contractSubState.result.balances[legacyAddr];
 
         return { contract, balance };
       })
@@ -229,10 +212,8 @@ class ZilliqaNodeExplorer extends ZilliqaAbstractExplorer {
       GET_BALANCE_TYPE,
     );
 
-    const { deposit_amt_deleg = {} } =
-      (subStateDepositResponse && subStateDepositResponse.result) || {};
-    const { buff_deposit_deleg = {} } =
-      (subStateBufferedResponse && subStateBufferedResponse.result) || {};
+    const { deposit_amt_deleg = {} } = (subStateDepositResponse && subStateDepositResponse.result) || {};
+    const { buff_deposit_deleg = {} } = (subStateBufferedResponse && subStateBufferedResponse.result) || {};
 
     return Object.keys(deposit_amt_deleg[legacyAddr] || {}).reduce(
       (acc, validator) => {
@@ -240,10 +221,8 @@ class ZilliqaNodeExplorer extends ZilliqaAbstractExplorer {
           address: this.getBech32Address(validator),
           amount: deposit_amt_deleg[legacyAddr][validator],
           buffered:
-            Object.keys(buff_deposit_deleg).length > 0 &&
-            buff_deposit_deleg[legacyAddr][validator]
-              ? Object.keys(buff_deposit_deleg[legacyAddr][validator]).length >
-                0
+            Object.keys(buff_deposit_deleg).length > 0 && buff_deposit_deleg[legacyAddr][validator]
+              ? Object.keys(buff_deposit_deleg[legacyAddr][validator]).length > 0
               : false,
         };
         acc.total = new this.wallet.BN(acc.total)
@@ -296,31 +275,22 @@ class ZilliqaNodeExplorer extends ZilliqaAbstractExplorer {
 
       if (blocksRange < STAKING_PENGING_RANGE) {
         withdrawals.pendingWithdrawal[block] = withdrawal;
-        withdrawals.pendingWithdrawal.total = new this.wallet.BN(
-          withdrawals.pendingWithdrawal.total,
-        )
+        withdrawals.pendingWithdrawal.total = new this.wallet.BN(withdrawals.pendingWithdrawal.total)
           .add(new this.wallet.BN(withdrawal))
           .toString();
       } else {
         withdrawals.availableWithdrawal[block] = withdrawal;
-        withdrawals.availableWithdrawal.total = new this.wallet.BN(
-          withdrawals.availableWithdrawal.total,
-        )
+        withdrawals.availableWithdrawal.total = new this.wallet.BN(withdrawals.availableWithdrawal.total)
           .add(new this.wallet.BN(withdrawal))
           .toString();
       }
     });
 
-    const total = Object.keys(withdrawal_pending[legacyAddr] || {}).reduce(
-      (acc, block) => {
-        acc = new this.wallet.BN(acc)
-          .add(new this.wallet.BN(withdrawal_pending[legacyAddr][block]))
-          .toString();
+    const total = Object.keys(withdrawal_pending[legacyAddr] || {}).reduce((acc, block) => {
+      acc = new this.wallet.BN(acc).add(new this.wallet.BN(withdrawal_pending[legacyAddr][block])).toString();
 
-        return acc;
-      },
-      '0',
-    );
+      return acc;
+    }, '0');
 
     return { ...withdrawals, total };
   }
@@ -345,9 +315,7 @@ class ZilliqaNodeExplorer extends ZilliqaAbstractExplorer {
     if (data.error && data.error.code !== ACCOUNT_NOT_CREATED_ERROR_CODE) {
       throw new ExplorerRequestError({
         type: GET_BALANCE_TYPE,
-        error: new Error(
-          `[${this.wallet.ticker}] modifyInfoResponse error: ${JSON.stringify(data.error)}`,
-        ),
+        error: new Error(`[${this.wallet.ticker}] modifyInfoResponse error: ${JSON.stringify(data.error)}`),
         instance: this,
       });
     }

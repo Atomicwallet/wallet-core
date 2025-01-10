@@ -21,9 +21,7 @@ class MATICToken extends Token {
   }
 
   async getFee({ gasPrice, gasLimit }) {
-    const gasPriceIncremented = new this.BN(gasPrice.toString()).mul(
-      new this.BN(this.coefficient),
-    );
+    const gasPriceIncremented = new this.BN(gasPrice.toString()).mul(new this.BN(this.coefficient));
     const estimatedGasLimit = gasLimit || this.gasLimit;
 
     return new this.BN(estimatedGasLimit).mul(new this.BN(gasPriceIncremented));

@@ -14,12 +14,7 @@ class MintscanExplorer extends Explorer {
   }
 
   modifyInfoResponse(response) {
-    const {
-      balance,
-      rewards,
-      delegations,
-      unbonding_delegations: unbondingDelegations,
-    } = response;
+    const { balance, rewards, delegations, unbonding_delegations: unbondingDelegations } = response;
 
     let available = '0';
     const staking = { validators: {}, total: new this.wallet.BN('0') };
@@ -32,9 +27,7 @@ class MintscanExplorer extends Explorer {
 
     if (rewards && rewards.length > 0) {
       rewards.forEach(({ amount }) => {
-        rewardsBalance = rewardsBalance.add(
-          new this.wallet.BN(amount.split('.')[0]),
-        );
+        rewardsBalance = rewardsBalance.add(new this.wallet.BN(amount.split('.')[0]));
       });
     }
 
@@ -66,9 +59,7 @@ class MintscanExplorer extends Explorer {
         total = total.add(unbonding.validators[moniker]);
       });
 
-      unbonding.total = this.wallet.toCurrencyUnit(
-        total.toString().split('.')[0],
-      );
+      unbonding.total = this.wallet.toCurrencyUnit(total.toString().split('.')[0]);
     }
 
     return {

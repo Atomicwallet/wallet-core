@@ -72,9 +72,7 @@ class ONTCoin extends OntMixin(HasTokensMixin(Coin)) {
   async availableBalance() {
     const availableBalance = new this.BN(this.balance);
 
-    return availableBalance.lt(new this.BN(0))
-      ? '0'
-      : this.toCurrencyUnit(availableBalance);
+    return availableBalance.lt(new this.BN(0)) ? '0' : this.toCurrencyUnit(availableBalance);
   }
 
   async isAvailableForFee(userFee) {

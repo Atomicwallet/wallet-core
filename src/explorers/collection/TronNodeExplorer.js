@@ -67,23 +67,15 @@ class TronNodeExplorer extends Explorer {
   }
 
   getTxDirection(selfAddress, tx) {
-    return (
-      TronWeb.address.fromHex(
-        tx.raw_data.contract[0].parameter.value.owner_address,
-      ) !== selfAddress
-    );
+    return TronWeb.address.fromHex(tx.raw_data.contract[0].parameter.value.owner_address) !== selfAddress;
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    const from = TronWeb.address.fromHex(
-      tx.raw_data.contract[0].parameter.value.owner_address,
-    );
+    const from = TronWeb.address.fromHex(tx.raw_data.contract[0].parameter.value.owner_address);
     let to = null;
 
     if (tx.raw_data.contract[0].type === 'VoteWitnessContract') {
-      to = TronWeb.address.fromHex(
-        tx.raw_data.contract[0].parameter.value.votes[0].vote_address,
-      );
+      to = TronWeb.address.fromHex(tx.raw_data.contract[0].parameter.value.votes[0].vote_address);
     } else if (tx.raw_data.contract[0].type === 'FreezeBalanceContract') {
       to = 'Freeze balance';
     } else if (tx.raw_data.contract[0].type === 'UnfreezeBalanceContract') {
@@ -91,9 +83,7 @@ class TronNodeExplorer extends Explorer {
     } else if (tx.raw_data.contract[0].type === 'WithdrawBalanceContract') {
       to = 'Reward';
     } else {
-      to = TronWeb.address.fromHex(
-        tx.raw_data.contract[0].parameter.value.to_address,
-      );
+      to = TronWeb.address.fromHex(tx.raw_data.contract[0].parameter.value.to_address);
     }
 
     return this.getTxDirection(selfAddress, tx) ? from : to;
@@ -109,9 +99,7 @@ class TronNodeExplorer extends Explorer {
 
   getTxAsset(tx, tokens) {
     if (tx.raw_data.contract[0].parameter.value.asset_name) {
-      const contract = TronWeb.toAscii(
-        tx.raw_data.contract[0].parameter.value.asset_name,
-      );
+      const contract = TronWeb.toAscii(tx.raw_data.contract[0].parameter.value.asset_name);
 
       return tokens[contract] && tokens[contract].ticker;
     }
@@ -121,9 +109,7 @@ class TronNodeExplorer extends Explorer {
 
   getTxAssetId(tx) {
     if (tx.raw_data.contract[0].parameter.value.asset_name) {
-      const contract = TronWeb.toAscii(
-        tx.raw_data.contract[0].parameter.value.asset_name,
-      );
+      const contract = TronWeb.toAscii(tx.raw_data.contract[0].parameter.value.asset_name);
 
       return getTokenId({
         ticker: this.wallet.tokens()[contract].ticker,
@@ -160,16 +146,14 @@ class TronNodeExplorer extends Explorer {
     }
     if (
       this.defaultRequestTimeout &&
-      Date.now() - this.defaultRequestTimeout * ONE_MINUTE <
-        this.lastGetInfoRequestTime
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE < this.lastGetInfoRequestTime
     ) {
       return this.modifyInfoResponse(undefined);
     }
 
     if (
       this.defaultRequestTimeout &&
-      Date.now() - this.defaultRequestTimeout * ONE_MINUTE >
-        this.lastGetInfoRequestTime
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE > this.lastGetInfoRequestTime
     ) {
       this.lastGetInfoRequestTime = Date.now();
     }
@@ -210,11 +194,7 @@ class TronNodeExplorer extends Explorer {
       reward = '0',
       assetV2,
     } = response || {};
-    const {
-      frozen_balance_for_energy: {
-        frozen_balance: frozenBalanceForEnergy = 0,
-      } = {},
-    } = accountResource;
+    const { frozen_balance_for_energy: { frozen_balance: frozenBalanceForEnergy = 0 } = {} } = accountResource;
 
     const balanceFormatted = new BN(balance).toString();
 

@@ -1,10 +1,7 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { ExplorerRequestError } from 'src/errors';
 
-import {
-  SEND_TRANSACTION_TYPE,
-  GET_TRANSACTIONS_TYPE,
-} from '../../utils/const';
+import { SEND_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 // import history from '../History'
@@ -245,12 +242,7 @@ class NanonodeExplorer extends Explorer {
    * @param  {} offset=0
    * @param  {} limit=this.defaultTxLimit
    */
-  async getTransactions({
-    address,
-    offset = 0,
-    limit = this.defaultTxLimit,
-    pending,
-  }) {
+  async getTransactions({ address, offset = 0, limit = this.defaultTxLimit, pending }) {
     const response = await this.request(
       this.getBaseUrl(),
       this.getTransactionsMethod(),
@@ -262,20 +254,10 @@ class NanonodeExplorer extends Explorer {
       throw new Error(response.error);
     }
 
-    return this.modifyTransactionsResponse(
-      response.history,
-      this.wallet.address,
-      this.wallet.ticker,
-      pending,
-    );
+    return this.modifyTransactionsResponse(response.history, this.wallet.address, this.wallet.ticker, pending);
   }
 
-  modifyTransactionsResponse(
-    txs,
-    selfAddress,
-    asset = this.wallet.ticker,
-    pending,
-  ) {
+  modifyTransactionsResponse(txs, selfAddress, asset = this.wallet.ticker, pending) {
     if (!Array.isArray(txs)) {
       return [];
     }
@@ -362,11 +344,7 @@ class NanonodeExplorer extends Explorer {
    * @param  {} endpoint
    */
   setSocketClient(endpoint) {
-    this.socket[this.wallet.ticker] = new ReconnectingWebSocket(
-      endpoint,
-      [],
-      WEBSOCKET_CONFIG,
-    );
+    this.socket[this.wallet.ticker] = new ReconnectingWebSocket(endpoint, [], WEBSOCKET_CONFIG);
   }
 
   /**
@@ -380,9 +358,7 @@ class NanonodeExplorer extends Explorer {
     if (!websocketUrl) {
       throw new ExplorerRequestError({
         type: SEND_TRANSACTION_TYPE,
-        error: new Error(
-          `[${ticker}] connectSocket error: no websocket url in coin config`,
-        ),
+        error: new Error(`[${ticker}] connectSocket error: no websocket url in coin config`),
         instance: this,
       });
     }
@@ -433,10 +409,7 @@ class NanonodeExplorer extends Explorer {
   updateParams(params) {
     super.updateParams(params);
 
-    if (
-      params.websocketUrl &&
-      this.config.websocketUrl !== params.websocketUrl
-    ) {
+    if (params.websocketUrl && this.config.websocketUrl !== params.websocketUrl) {
       this.config.websocketUrl = params.websocketUrl;
       this.disconnectSocket();
       this.connectSocket(this.wallet.address);
@@ -468,9 +441,7 @@ class NanonodeExplorer extends Explorer {
       walletid: this.wallet.id,
       txid: treatAsIncoming ? 'pending' : sendEvent.hash,
       direction: treatAsIncoming,
-      otherSideAddress: treatAsIncoming
-        ? sendEvent.account
-        : sendEvent.block.link_as_account,
+      otherSideAddress: treatAsIncoming ? sendEvent.account : sendEvent.block.link_as_account,
       amount: this.wallet.toCurrencyUnit(sendEvent.amount),
       datetime: new Date(),
       alias: this.wallet.alias,
@@ -478,12 +449,9 @@ class NanonodeExplorer extends Explorer {
 
     // await history.updatePendingOrInsert(tx)
 
-    this.eventEmitter.emit(
-      `${this.wallet.parent}-${this.wallet.id}::new-socket-tx`,
-      {
-        unconfirmedTx: tx,
-      },
-    );
+    this.eventEmitter.emit(`${this.wallet.parent}-${this.wallet.id}::new-socket-tx`, {
+      unconfirmedTx: tx,
+    });
   }
 
   /**
@@ -508,12 +476,9 @@ class NanonodeExplorer extends Explorer {
 
     // await history.updatePendingOrInsert(tx)
 
-    this.eventEmitter.emit(
-      `${this.wallet.parent}-${this.wallet.id}::new-socket-tx`,
-      {
-        unconfirmedTx: tx,
-      },
-    );
+    this.eventEmitter.emit(`${this.wallet.parent}-${this.wallet.id}::new-socket-tx`, {
+      unconfirmedTx: tx,
+    });
   }
 
   async getInfo(address) {

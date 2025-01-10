@@ -120,10 +120,7 @@ function deriveChildHdNode(hdNode, childIndex) {
 function getAddressByPrivateKeySync(privateKey) {
   const walletSecret = bs58.decode(privateKey);
   const masterHDNode = HDNode({ secret: walletSecret });
-  const xpub = derivationPath.reduce(
-    deriveChildHdNode,
-    masterHDNode,
-  ).extendedPublicKey;
+  const xpub = derivationPath.reduce(deriveChildHdNode, masterHDNode).extendedPublicKey;
   const hdPassphrase = getHDPassphrase(privateKey);
 
   return core.packAddress(derivationPath, xpub, hdPassphrase, 1);
@@ -162,26 +159,14 @@ function getHDPassphrase(privateKey) {
   const walletSecret = bs58.decode(privateKey);
   const masterHDNode = HDNode({ secret: walletSecret });
 
-  return pbkdf2Sync(
-    masterHDNode.extendedPublicKey,
-    'address-hashing',
-    500,
-    32,
-    'sha512',
-  );
+  return pbkdf2Sync(masterHDNode.extendedPublicKey, 'address-hashing', 500, 32, 'sha512');
 }
 
 function getHDKey(privateKey) {
   const walletSecret = bs58.decode(privateKey);
   const masterHDNode = HDNode({ secret: walletSecret });
 
-  return pbkdf2Sync(
-    Buffer.concat([masterHDNode.secretKey, masterHDNode.chainCode]),
-    '',
-    4096,
-    96,
-    'sha512',
-  );
+  return pbkdf2Sync(Buffer.concat([masterHDNode.secretKey, masterHDNode.chainCode]), '', 4096, 96, 'sha512');
 }
 
 /**
@@ -207,23 +192,13 @@ async function signTxGetStructured(txAux, privateKey) {
 
   const witnesses = await Promise.all(
     txAux.inputs.map(async (input) => {
-      const derivPath = await getDerivationPathFromAddress(
-        input.utxo.receiver,
-        privateKey,
-      );
+      const derivPath = await getDerivationPathFromAddress(input.utxo.receiver, privateKey);
 
       const walletSecret = bs58.decode(privateKey);
       const masterHDNode = HDNode({ secret: walletSecret });
-      const xpub = derivPath.reduce(
-        deriveChildHdNode,
-        masterHDNode,
-      ).extendedPublicKey;
+      const xpub = derivPath.reduce(deriveChildHdNode, masterHDNode).extendedPublicKey;
 
-      const signature = sign(
-        `${TX_SIGN_MESSAGE_PREFIX}${txHash}`,
-        derivPath,
-        masterHDNode,
-      );
+      const signature = sign(`${TX_SIGN_MESSAGE_PREFIX}${txHash}`, derivPath, masterHDNode);
 
       return TxWitness(xpub, signature);
     }),
@@ -232,21 +207,8 @@ async function signTxGetStructured(txAux, privateKey) {
   return SignedTransactionStructured(txAux, witnesses);
 }
 
-async function prepareSignedTx(
-  utxos,
-  address,
-  changeAddress,
-  coins,
-  privateKey,
-  fee,
-) {
-  const txAux = await prepareTxAux(
-    utxos,
-    address,
-    changeAddress,
-    Number(coins),
-    fee,
-  );
+async function prepareSignedTx(utxos, address, changeAddress, coins, privateKey, fee) {
+  const txAux = await prepareTxAux(utxos, address, changeAddress, Number(coins), fee);
 
   const signedTx = signTx(txAux, privateKey);
 
@@ -265,17 +227,11 @@ async function signTx(txAux, privateKey) {
 
 function TxAux(inputs, outputs, attributes) {
   function getId() {
-    return core
-      .blake2b(cbor.encode(TxAux(inputs, outputs, attributes)), 32)
-      .toString('hex');
+    return core.blake2b(cbor.encode(TxAux(inputs, outputs, attributes)), 32).toString('hex');
   }
 
   function encodeCBOR(encoder) {
-    return encoder.pushAny([
-      new CborIndefiniteLengthArray(inputs),
-      new CborIndefiniteLengthArray(outputs),
-      attributes,
-    ]);
+    return encoder.pushAny([new CborIndefiniteLengthArray(inputs), new CborIndefiniteLengthArray(outputs), attributes]);
   }
 
   return {
@@ -292,10 +248,7 @@ function TxWitness(extendedPublicKey, signature) {
   const type = 0;
 
   function encodeCBOR(encoder) {
-    return encoder.pushAny([
-      type,
-      new cbor.Tagged(24, cbor.encode([extendedPublicKey, signature])),
-    ]);
+    return encoder.pushAny([type, new cbor.Tagged(24, cbor.encode([extendedPublicKey, signature]))]);
   }
 
   return {
@@ -313,13 +266,7 @@ function TxInputFromUtxo(utxo) {
   const outputIndex = utxo.tx_index;
 
   function encodeCBOR(encoder) {
-    const result = encoder.pushAny([
-      type,
-      new cbor.Tagged(
-        24,
-        cbor.encode([Buffer.from(txHash, 'hex'), outputIndex]),
-      ),
-    ]);
+    const result = encoder.pushAny([type, new cbor.Tagged(24, cbor.encode([Buffer.from(txHash, 'hex'), outputIndex]))]);
 
     return result;
   }
@@ -375,9 +322,7 @@ function SignedTransactionStructured(txAux, witnesses) {
 }
 
 function estimateTxSize(txInputs, outAddress, coins, hasChange) {
-  const txInputsSize = cbor.encode(
-    new CborIndefiniteLengthArray(txInputs),
-  ).length;
+  const txInputsSize = cbor.encode(new CborIndefiniteLengthArray(txInputs)).length;
   const outAddressSize = outAddress.length;
 
   // size of addresses used by AdaLite
@@ -425,18 +370,13 @@ async function prepareTxInputs(utxos) {
 async function prepareTxAux(utxos, address, changeAddress, coins, fee) {
   const txInputs = await prepareTxInputs(utxos, address, coins);
 
-  const txInputsCoinsSum = txInputs.reduce(
-    (acc, elem) => acc + Number(elem.coins),
-    0,
-  );
+  const txInputsCoinsSum = txInputs.reduce((acc, elem) => acc + Number(elem.coins), 0);
   const changeAmount = txInputsCoinsSum - coins - Number(fee);
 
   if (changeAmount < 0) {
     throw new WalletError({
       type: WALLET_ERROR,
-      error: new Error(
-        `Transaction inputs (sum ${txInputsCoinsSum}) don't cover coins (${coins}) + fee (${fee})`,
-      ),
+      error: new Error(`Transaction inputs (sum ${txInputsCoinsSum}) don't cover coins (${coins}) + fee (${fee})`),
       instance: this,
     });
   }
@@ -453,9 +393,7 @@ async function prepareTxAux(utxos, address, changeAddress, coins, fee) {
 async function getTxFee(utxos, address, coins, feePerByte, constantPart) {
   const txInputs = await prepareTxInputs(utxos, address, coins);
 
-  return Math.ceil(
-    computeTxFee(txInputs, address, coins, feePerByte, constantPart),
-  );
+  return Math.ceil(computeTxFee(txInputs, address, coins, feePerByte, constantPart));
 }
 
 function computeTxFee(txInputs, address, coins, feePerByte, constantPart) {
@@ -470,11 +408,7 @@ function computeTxFee(txInputs, address, coins, feePerByte, constantPart) {
   const txInputsCoinsSum = txInputs.reduce((acc, elem) => acc + elem.coins, 0);
 
   // first we try one output transaction
-  const oneOutputFee = txFeeFunction(
-    estimateTxSize(txInputs, address, coins, false),
-    feePerByte,
-    constantPart,
-  );
+  const oneOutputFee = txFeeFunction(estimateTxSize(txInputs, address, coins, false), feePerByte, constantPart);
 
   /*
    * if (coins+oneOutputFee) is equal to (txInputsCoinsSum) it means there is no change necessary
@@ -486,11 +420,7 @@ function computeTxFee(txInputs, address, coins, feePerByte, constantPart) {
   }
 
   // we try to compute fee for 2 output tx
-  const twoOutputFee = txFeeFunction(
-    estimateTxSize(txInputs, address, coins, true),
-    feePerByte,
-    constantPart,
-  );
+  const twoOutputFee = txFeeFunction(estimateTxSize(txInputs, address, coins, true), feePerByte, constantPart);
 
   if (coins + twoOutputFee > txInputsCoinsSum) {
     // means one output transaction was possible, while 2 output is not

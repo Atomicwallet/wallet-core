@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { MORALIS_API_KEY, MORALIS_NATIVE_API } from 'src/env';
 import { ExternalError, InternalError } from 'src/errors';
 
 import { ETHNftToken } from '../../coins/nfts';
@@ -10,12 +11,7 @@ import {
   UNRECOGNIZED_TOKEN_STANDARD,
 } from '../../coins/nfts/ETHNftToken';
 import { getTransformedTokenUri } from '../../coins/nfts/utils';
-import { MORALIS_API_KEY, MORALIS_NATIVE_API } from '../../env';
-import {
-  GET_TRANSACTIONS_TYPE,
-  EXTERNAL_ERROR,
-  INTERNAL_ERROR,
-} from '../../utils/const';
+import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/const';
 import { getStringWithEnsuredEndChar } from '../../utils/convert';
 import { TxTypes } from '../enum/index.js';
 import Explorer from '../Explorer';
@@ -191,10 +187,7 @@ class MoralisExplorer extends Explorer {
           try {
             const { index, message: errorMessage } = JSON.parse(message);
 
-            console.warn(
-              `Failed to get NFT metadata for tokenUri=${nftList[index]}`,
-              errorMessage,
-            );
+            console.warn(`Failed to get NFT metadata for tokenUri=${nftList[index]}`, errorMessage);
           } catch (error) {
             console.warn(error);
           }
@@ -241,14 +234,7 @@ class MoralisExplorer extends Explorer {
     const rawList = await this.getInfo(coinAddress, isSpamNftsEnabled);
 
     return rawList.map(
-      ({
-        contractAddress,
-        tokenId,
-        tokenStandard,
-        name,
-        description,
-        imageUrl,
-      }) =>
+      ({ contractAddress, tokenId, tokenStandard, name, description, imageUrl }) =>
         new ETHNftToken(
           contractAddress,
           tokenId,
@@ -295,11 +281,7 @@ class MoralisExplorer extends Explorer {
    * @param {string|null} [cursor=null] - Cursor.
    * @return {Promise<RawTokenTransactionsResponse>}
    */
-  async getRawTokenTransactions({
-    address,
-    limit = this.defaultTxLimit,
-    cursor = null,
-  }) {
+  async getRawTokenTransactions({ address, limit = this.defaultTxLimit, cursor = null }) {
     try {
       const response = await this.request(
         this.getTokenTransactionsUrl(address),
@@ -335,10 +317,7 @@ class MoralisExplorer extends Explorer {
    * @return {{chain: string, limit: number, cursor: string}}
    */
   getTokenTransactionsParams(pageLimit, cursor) {
-    const limit =
-      pageLimit > MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST
-        ? MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST
-        : pageLimit;
+    const limit = pageLimit > MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST ? MAX_LIMIT_TOKEN_TRANSACTIONS_REQUEST : pageLimit;
 
     return {
       chain: this.chain,
@@ -355,13 +334,7 @@ class MoralisExplorer extends Explorer {
    * @returns {RawTokenTransactionsResponse}
    */
   modifyRawTokenTransactionsResponse(response, selfAddress) {
-    const {
-      total,
-      page,
-      page_size: pageSize,
-      cursor,
-      result: txs,
-    } = response ?? { result: [] };
+    const { total, page, page_size: pageSize, cursor, result: txs } = response ?? { result: [] };
 
     const rawTokenTransactions = txs.reduce((rawTxs, tx, index) => {
       try {
@@ -490,11 +463,7 @@ class MoralisExplorer extends Explorer {
    * @param {string|null} [cursor=null] - Cursor.
    * @return {Promise<NftTransactionsResponse>}
    */
-  async getNftTransactions({
-    address,
-    limit = this.defaultTxLimit,
-    cursor = null,
-  }) {
+  async getNftTransactions({ address, limit = this.defaultTxLimit, cursor = null }) {
     try {
       const response = await this.request(
         this.getNftTransactionsUrl(address),
@@ -530,10 +499,7 @@ class MoralisExplorer extends Explorer {
    * @return {{chain: string, limit: number, format: 'decimal', direction: 'both', cursor: string}}
    */
   getNftTransactionsParams(pageLimit, cursor) {
-    const limit =
-      pageLimit > MAX_LIMIT_NFT_TRANSACTIONS_REQUEST
-        ? MAX_LIMIT_NFT_TRANSACTIONS_REQUEST
-        : pageLimit;
+    const limit = pageLimit > MAX_LIMIT_NFT_TRANSACTIONS_REQUEST ? MAX_LIMIT_NFT_TRANSACTIONS_REQUEST : pageLimit;
 
     return {
       chain: this.chain,
@@ -552,13 +518,7 @@ class MoralisExplorer extends Explorer {
    * @returns {NftTransactionsResponse}
    */
   modifyNftTransactionsResponse(response, selfAddress) {
-    const {
-      total,
-      page,
-      page_size: pageSize,
-      cursor,
-      result: txs,
-    } = response ?? { result: [] };
+    const { total, page, page_size: pageSize, cursor, result: txs } = response ?? { result: [] };
 
     const nftTransactions = txs.reduce((rawTxs, tx, index) => {
       try {

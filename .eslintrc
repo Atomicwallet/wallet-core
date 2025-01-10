@@ -9,6 +9,7 @@
     "warnOnUnsupportedTypeScriptVersion":false
   },
   "rules": {
+    "semi": ["error", "always"],
     "camelcase": "off",
     "new-cap": "off",
     "@typescript-eslint/no-unused-vars": "off",
@@ -16,6 +17,7 @@
     "no-console": "off",
     "no-async-promise-executor": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "max-len": ["error", { "code": 120, "tabWidth": 2, "ignoreUrls": true }],
 
     "comma-dangle": ["error", "always-multiline"],
     "@typescript-eslint/comma-dangle": ["error", "always-multiline"],

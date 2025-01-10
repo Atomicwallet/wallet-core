@@ -54,36 +54,30 @@ class CROCoin extends CosmosMixinV2(HasProviders(Coin)) {
     this.denom = DENOM_NAME;
 
     this.sendFeeGas = feeData.sendFeeGas?.toString() || SEND_GAS_AMOUNT;
-    this.stakingFeeGas =
-      feeData.stakingFeeGas?.toString() || DELEGATE_GAS_AMOUNT;
-    this.claimFeeGas =
-      feeData.claimFeeGas?.toString() || CLAIM_REWARDS_GAS_AMOUNT;
-    this.reStakingFeeGas =
-      feeData.reStakingFeeGas?.toString() || RE_DELEGATE_GAS_AMOUNT;
+    this.stakingFeeGas = feeData.stakingFeeGas?.toString() || DELEGATE_GAS_AMOUNT;
+    this.claimFeeGas = feeData.claimFeeGas?.toString() || CLAIM_REWARDS_GAS_AMOUNT;
+    this.reStakingFeeGas = feeData.reStakingFeeGas?.toString() || RE_DELEGATE_GAS_AMOUNT;
     this.transactions = [];
     this.minClaimSum = MIN_CLAIM_SUM;
     this.fields.paymentId = true;
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (_, unconfirmedTx) => {
-        this.getInfo();
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (_, unconfirmedTx) => {
+      this.getInfo();
 
-        if (unconfirmedTx && unconfirmedTx.direction) {
-          this.eventEmitter.emit('socket::newtx', {
-            id: this.id,
-            ticker: this.ticker,
-            amount: unconfirmedTx.amount,
-            txid: unconfirmedTx.txid,
-          });
-        } else {
-          this.eventEmitter.emit('socket::newtx::outgoing', {
-            id: this.id,
-            ticker: this.ticker,
-          });
-        }
-      },
-    );
+      if (unconfirmedTx && unconfirmedTx.direction) {
+        this.eventEmitter.emit('socket::newtx', {
+          id: this.id,
+          ticker: this.ticker,
+          amount: unconfirmedTx.amount,
+          txid: unconfirmedTx.txid,
+        });
+      } else {
+        this.eventEmitter.emit('socket::newtx::outgoing', {
+          id: this.id,
+          ticker: this.ticker,
+        });
+      }
+    });
     this.reserveForStake = feeData.reserveForStake || DEFAULT_RESERVE_FOR_STAKE;
   }
 }

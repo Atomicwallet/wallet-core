@@ -4,11 +4,7 @@ import { ExplorerRequestError } from 'src/errors';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
 // import logger from '../Logger'
 import { getTokenId } from '../../utils';
-import {
-  GET_BALANCE_TYPE,
-  GET_TRANSACTIONS_TYPE,
-  UNDEFINED_OPERATION_ERROR,
-} from '../../utils/const';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, UNDEFINED_OPERATION_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 
@@ -19,12 +15,7 @@ class BlockscoutExplorer extends Explorer {
     return ['ETH', 'ETC', 'FLR'];
   }
 
-  async request(
-    url,
-    method = 'get',
-    params = {},
-    type = UNDEFINED_OPERATION_ERROR,
-  ) {
+  async request(url, method = 'get', params = {}, type = UNDEFINED_OPERATION_ERROR) {
     const response = await super.request(url, method, params, type);
 
     if (response.status === '0') {
@@ -145,10 +136,7 @@ class BlockscoutExplorer extends Explorer {
           ).catch(() => [])
         : [];
 
-      const tokenTransfers = this.modifyTokenTransactionsResponse(
-        transfers?.reverse() ?? [],
-        address,
-      );
+      const tokenTransfers = this.modifyTokenTransactionsResponse(transfers?.reverse() ?? [], address);
       const txs = this.modifyTransactionsResponse(
         transactions.filter(({ input }) => input === '0x').reverse(),
         address,
@@ -204,9 +192,7 @@ class BlockscoutExplorer extends Explorer {
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    return selfAddress.toLowerCase() === tx.from.toLowerCase()
-      ? tx.to
-      : tx.from;
+    return selfAddress.toLowerCase() === tx.from.toLowerCase() ? tx.to : tx.from;
   }
 
   getTxValue(selfAddress, tx) {

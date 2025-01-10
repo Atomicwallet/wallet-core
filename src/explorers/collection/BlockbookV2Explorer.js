@@ -2,11 +2,7 @@
 // import history from '../History'
 // import logger from '../Logger'
 import { getTokenId } from '../../utils';
-import {
-  GET_TRANSACTION_TYPE,
-  GET_TRANSACTIONS_TYPE,
-  ONE_MINUTE,
-} from '../../utils/const';
+import { GET_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from '../../utils/const';
 import { toCurrency } from '../../utils/convert';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
@@ -28,13 +24,10 @@ class BlockbookV2Explorer extends Explorer {
 
     // await history.filterAndUpdateTransactions([unconfirmedTx])
 
-    this.eventEmitter.emit(
-      `${this.wallet.parent}-${this.wallet.id}::new-socket-tx`,
-      {
-        unconfirmedTx,
-        unconfirmedBalance,
-      },
-    );
+    this.eventEmitter.emit(`${this.wallet.parent}-${this.wallet.id}::new-socket-tx`, {
+      unconfirmedTx,
+      unconfirmedBalance,
+    });
   }
 
   getAllowedTickers() {
@@ -109,9 +102,7 @@ class BlockbookV2Explorer extends Explorer {
   }
 
   getTransactionsOptions() {
-    return this.wallet.ticker === 'BSC'
-      ? { headers: { 'api-key': 'ypa5Llv3B3fyToNsMkkaiEIIGKdcRYqU' } }
-      : {};
+    return this.wallet.ticker === 'BSC' ? { headers: { 'api-key': 'ypa5Llv3B3fyToNsMkkaiEIIGKdcRYqU' } } : {};
   }
 
   getInfoParams() {
@@ -167,12 +158,7 @@ class BlockbookV2Explorer extends Explorer {
     return `${this.getApiPrefix()}address/${address}`;
   }
 
-  getTransactionsParams(
-    address,
-    offset = 0,
-    limit = this.defaultTxLimit,
-    pageNum,
-  ) {
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit, pageNum) {
     const options = this.getInfoParams();
 
     return {
@@ -192,44 +178,28 @@ class BlockbookV2Explorer extends Explorer {
   async getTokenTransactions({ address, offset, limit, pageNum, contract }) {
     if (
       this.defaultRequestTimeout &&
-      Date.now() - this.defaultRequestTimeout * ONE_MINUTE <
-        this.lastGetTxsRequestTime
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE < this.lastGetTxsRequestTime
     ) {
       return [];
     }
 
     if (
       this.defaultRequestTimeout &&
-      Date.now() - this.defaultRequestTimeout * ONE_MINUTE >
-        this.lastGetTxsRequestTime
+      Date.now() - this.defaultRequestTimeout * ONE_MINUTE > this.lastGetTxsRequestTime
     ) {
       this.lastGetTxsRequestTime = Date.now();
     }
 
     try {
       const response = await this.request(
-        this.getTransactionsUrl(
-          address,
-          offset || 0,
-          limit || this.defaultTxLimit,
-          pageNum,
-        ),
+        this.getTransactionsUrl(address, offset || 0, limit || this.defaultTxLimit, pageNum),
         this.getTransactionsMethod(),
-        this.getTokenTransactionsParams(
-          address,
-          offset || 0,
-          limit || this.defaultTxLimit,
-          pageNum,
-          contract,
-        ),
+        this.getTokenTransactionsParams(address, offset || 0, limit || this.defaultTxLimit, pageNum, contract),
         GET_TRANSACTIONS_TYPE,
         this.getTransactionsOptions(),
       );
 
-      return this.modifyTokenTransactionsResponse(
-        response?.transactions || [],
-        address,
-      );
+      return this.modifyTokenTransactionsResponse(response?.transactions || [], address);
     } catch {
       return [];
     }
@@ -278,11 +248,7 @@ class BlockbookV2Explorer extends Explorer {
           for (const transaction of transactions) {
             const { otherSideAddress } = transaction;
 
-            if (
-              [otherSideAddress.toLowerCase(), address.toLowerCase()].includes(
-                address.toLowerCase(),
-              )
-            ) {
+            if ([otherSideAddress.toLowerCase(), address.toLowerCase()].includes(address.toLowerCase())) {
               return transaction;
             }
           }
@@ -298,10 +264,7 @@ class BlockbookV2Explorer extends Explorer {
 
     const transfers = condition
       ? response.transactions.filter(
-          (tx) =>
-            tx.tokenTransfers &&
-            Array.isArray(tx.tokenTransfers) &&
-            Number(tx.value) === 0,
+          (tx) => tx.tokenTransfers && Array.isArray(tx.tokenTransfers) && Number(tx.value) === 0,
         )
       : [];
     const transactions = condition
@@ -312,9 +275,7 @@ class BlockbookV2Explorer extends Explorer {
         )
       : [];
     const failed = condition
-      ? response.transactions.filter(
-          (tx) => tx.ethereumSpecific && tx.ethereumSpecific.status === 0,
-        )
+      ? response.transactions.filter((tx) => tx.ethereumSpecific && tx.ethereumSpecific.status === 0)
       : [];
 
     const txs = super.modifyTransactionsResponse(transactions, selfAddress);
@@ -323,10 +284,7 @@ class BlockbookV2Explorer extends Explorer {
       return {
         transactions: txs,
         failed,
-        tokenTransactions: this.modifyTokenTransactionsResponse(
-          transfers,
-          selfAddress,
-        ),
+        tokenTransactions: this.modifyTokenTransactionsResponse(transfers, selfAddress),
       };
     }
 
@@ -342,9 +300,7 @@ class BlockbookV2Explorer extends Explorer {
       response
         ?.map((tx) => {
           return tx.tokenTransfers
-            ?.filter((transfer) =>
-              this.filterTokenTransferTransactions(selfAddress, transfer),
-            )
+            ?.filter((transfer) => this.filterTokenTransferTransactions(selfAddress, transfer))
             .map((transfer) =>
               this.getTransactionFromTokenTransfer({
                 transfer,
@@ -359,9 +315,7 @@ class BlockbookV2Explorer extends Explorer {
 
   filterTokenTransferTransactions(selfAddress, transfer) {
     if (
-      ![transfer.to.toLowerCase(), transfer.from.toLowerCase()].includes(
-        selfAddress.toLowerCase(),
-      ) ||
+      ![transfer.to.toLowerCase(), transfer.from.toLowerCase()].includes(selfAddress.toLowerCase()) ||
       !transfer.symbol
     ) {
       return false;
@@ -531,35 +485,26 @@ class BlockbookV2Explorer extends Explorer {
    */
   getTxDirection(selfAddress, tx) {
     if (['ETH', 'BSC'].includes(this.wallet.ticker)) {
-      return (
-        tx.vout[0].addresses &&
-        tx.vout[0].addresses[0].toLowerCase() === selfAddress.toLowerCase()
-      );
+      return tx.vout[0].addresses && tx.vout[0].addresses[0].toLowerCase() === selfAddress.toLowerCase();
     }
 
     const hasIn =
       tx.vin &&
       tx.vin
         .filter(({ addresses }) => Array.isArray(addresses))
-        .some(({ addresses }) =>
-          addresses.some((address) => address === selfAddress),
-        );
+        .some(({ addresses }) => addresses.some((address) => address === selfAddress));
 
     const hasOut =
       tx.vout &&
       tx.vout
         .filter(({ addresses }) => Array.isArray(addresses))
-        .some(({ addresses }) =>
-          addresses.some((address) => address === selfAddress),
-        );
+        .some(({ addresses }) => addresses.some((address) => address === selfAddress));
 
     const hasOtherOut =
       tx.vout &&
       tx.vout
         .filter(({ addresses }) => Array.isArray(addresses))
-        .some(({ addresses }) =>
-          addresses.some((address) => address !== selfAddress),
-        );
+        .some(({ addresses }) => addresses.some((address) => address !== selfAddress));
 
     if (hasOut && !hasIn) {
       return true;
@@ -585,9 +530,7 @@ class BlockbookV2Explorer extends Explorer {
     const isIncoming = this.getTxDirection(selfAddress, tx);
 
     if (['ETH', 'BSC'].includes(this.wallet.ticker)) {
-      return isIncoming
-        ? tx.vin[0].addresses[0]
-        : (tx.vout[0].addresses && tx.vout[0].addresses[0]) || selfAddress;
+      return isIncoming ? tx.vin[0].addresses[0] : (tx.vout[0].addresses && tx.vout[0].addresses[0]) || selfAddress;
     }
 
     if (!tx.vin) {
@@ -610,9 +553,7 @@ class BlockbookV2Explorer extends Explorer {
         tx.vin &&
         tx.vin
           .filter(({ addresses }) => Array.isArray(addresses))
-          .some(({ addresses }) =>
-            addresses.some((address) => address !== selfAddress),
-          );
+          .some(({ addresses }) => addresses.some((address) => address !== selfAddress));
 
       if (!hasOtherIn) {
         // kmd claim
@@ -645,10 +586,7 @@ class BlockbookV2Explorer extends Explorer {
    * @return {BN} The balance.
    */
   calculateBalance(utxos = []) {
-    return utxos.reduce(
-      (acc, { value }) => new this.wallet.BN(value).add(acc),
-      new this.wallet.BN('0'),
-    );
+    return utxos.reduce((acc, { value }) => new this.wallet.BN(value).add(acc), new this.wallet.BN('0'));
   }
 
   /**
@@ -697,9 +635,7 @@ class BlockbookV2Explorer extends Explorer {
 
   getTokenBalanceByContractAddress({ info, tokenTicker }) {
     if (info === 'undefined' && info.tokenBalances === 'undefined') {
-      throw new Error(
-        'BlockbookV2Explorer: getTokenBalanceByContractAddress error: info.tokenBalances must be object',
-      );
+      throw new Error('BlockbookV2Explorer: getTokenBalanceByContractAddress error: info.tokenBalances must be object');
       /* eslint-disable no-unreachable */
       return 0;
       /* eslint-enable */

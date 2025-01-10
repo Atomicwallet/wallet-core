@@ -131,8 +131,7 @@ class EOSCoin extends HasProviders(Coin) {
   }
 
   async validateNewAccountName(account) {
-    const valid =
-      await this.getProvider('checkActivation').checkAccountName(account);
+    const valid = await this.getProvider('checkActivation').checkAccountName(account);
 
     return valid;
   }
@@ -148,10 +147,7 @@ class EOSCoin extends HasProviders(Coin) {
       return false;
     }
 
-    return (
-      address.length <= ADDRESS_LENGTH &&
-      /^[a-z1-5.]{1,11}[a-z1-5]$|^[a-z1-5.]{12}[a-j1-5]$/.test(address)
-    );
+    return address.length <= ADDRESS_LENGTH && /^[a-z1-5.]{1,11}[a-z1-5]$|^[a-z1-5.]{12}[a-j1-5]$/.test(address);
   }
 
   /**
@@ -193,26 +189,14 @@ class EOSCoin extends HasProviders(Coin) {
 
   async getInfo() {
     if (this.address) {
-      const account = await this.getProvider('balance').getAccount(
-        this.address,
-      );
+      const account = await this.getProvider('balance').getAccount(this.address);
 
-      this.balance = account.core_liquid_balance
-        ? this.toMinimalUnit(account.core_liquid_balance.split(' ')[0])
-        : 0;
+      this.balance = account.core_liquid_balance ? this.toMinimalUnit(account.core_liquid_balance.split(' ')[0]) : 0;
 
-      const totalStakedNet = Number(
-        account.total_resources.net_weight.split(' ')[0],
-      );
-      const totalStakedCpu = Number(
-        account.total_resources.cpu_weight.split(' ')[0],
-      );
-      const selfStakedNet = Number(
-        account.self_delegated_bandwidth.net_weight.split(' ')[0],
-      );
-      const selfStakedCpu = Number(
-        account.self_delegated_bandwidth.cpu_weight.split(' ')[0],
-      );
+      const totalStakedNet = Number(account.total_resources.net_weight.split(' ')[0]);
+      const totalStakedCpu = Number(account.total_resources.cpu_weight.split(' ')[0]);
+      const selfStakedNet = Number(account.self_delegated_bandwidth.net_weight.split(' ')[0]);
+      const selfStakedCpu = Number(account.self_delegated_bandwidth.cpu_weight.split(' ')[0]);
       const othersStakedNet = totalStakedNet - selfStakedNet;
       const othersStakedCpu = totalStakedCpu - selfStakedCpu;
 

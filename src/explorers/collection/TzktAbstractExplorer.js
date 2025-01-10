@@ -62,11 +62,7 @@ class TzktAbstractExplorer extends Explorer {
     const txs = await this.request(
       this.getTransactionsUrl(address),
       this.getTransactionsMethod(),
-      this.getTransactionsParams(
-        address,
-        limit,
-        this.getExtraParam(pageNum, limit),
-      ),
+      this.getTransactionsParams(address, limit, this.getExtraParam(pageNum, limit)),
       'txs',
       this.getTransactionsOptions(),
     );

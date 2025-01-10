@@ -52,11 +52,7 @@ class DCRCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      BlockbookV2Explorer,
-      InsightExplorer,
-      DcrDataExplorer,
-    ]);
+    this.setExplorersModules([BlockbookV2Explorer, InsightExplorer, DcrDataExplorer]);
 
     this.loadExplorers(config);
 
@@ -82,9 +78,7 @@ class DCRCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
    * @return {Promise<String>} Raw transaction
    */
   async createTransaction({ address, amount }) {
-    const utxos = (
-      await this.getUnspentOutputs(this.address, this.getScriptPubKey())
-    ).map((out) => ({
+    const utxos = (await this.getUnspentOutputs(this.address, this.getScriptPubKey())).map((out) => ({
       amount: this.toCurrencyUnit(out.value),
       ...out,
     }));
@@ -92,9 +86,7 @@ class DCRCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
     const balanceBN = this.explorer.calculateBalance(utxos);
     const amountBN = new this.BN(String(amount));
     const fee = await this.getFee(amount);
-    const amountToSend = balanceBN.lt(amountBN.add(fee))
-      ? balanceBN.sub(fee)
-      : amountBN;
+    const amountToSend = balanceBN.lt(amountBN.add(fee)) ? balanceBN.sub(fee) : amountBN;
     const unspend = balanceBN.sub(amountBN).sub(fee);
 
     const bitcoreLib = await this.loadLib(BITCORE);

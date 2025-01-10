@@ -43,9 +43,7 @@ export default class TerraClassicFCDExplorer extends Explorer {
 
   getTxType(tx) {
     const messages = Array.isArray(tx.tx?.value?.msg) ? tx.tx?.value?.msg : [];
-    const txType = messages.map(({ type: nativeType }) =>
-      nativeType.split('/').pop(),
-    )[0];
+    const txType = messages.map(({ type: nativeType }) => nativeType.split('/').pop())[0];
 
     if (COSMOS_MSG_TYPES[txType] === undefined) {
       throw new Error(`[LUNC] txType ${txType} not found`);
@@ -66,16 +64,12 @@ export default class TerraClassicFCDExplorer extends Explorer {
         const coinReceived = current.events?.find((e) => {
           return (
             e.type === 'coin_received' &&
-            e.attributes.find(
-              ({ key, value }) => key === 'receiver' && value === selfAddress,
-            )
+            e.attributes.find(({ key, value }) => key === 'receiver' && value === selfAddress)
           );
         });
 
         if (coinReceived) {
-          const amounts = coinReceived.attributes?.find(
-            ({ key }) => key === 'amount',
-          )?.value;
+          const amounts = coinReceived.attributes?.find(({ key }) => key === 'amount')?.value;
 
           if (amounts) {
             const res = /(\d*)uluna/.exec(amounts);
@@ -108,9 +102,7 @@ export default class TerraClassicFCDExplorer extends Explorer {
 
     const walletTokens = this.wallet.tokens();
 
-    const assetInstance = Object.keys(walletTokens).find(
-      (token) => walletTokens[token]?.ticker === asset,
-    );
+    const assetInstance = Object.keys(walletTokens).find((token) => walletTokens[token]?.ticker === asset);
 
     if (!assetInstance) {
       return null;
@@ -142,11 +134,7 @@ export default class TerraClassicFCDExplorer extends Explorer {
   getTxOtherSideAddress(selfAddress, tx) {
     const type = this.getTxType(tx);
 
-    const {
-      validator_address: validator,
-      from_address: from,
-      to_address: to,
-    } = tx.tx.value.msg[0].value;
+    const { validator_address: validator, from_address: from, to_address: to } = tx.tx.value.msg[0].value;
 
     switch (type) {
       case 'stake':
@@ -190,9 +178,7 @@ export default class TerraClassicFCDExplorer extends Explorer {
       latestBlock = await this.getLatestBlock();
     } catch (error) {
       // logger.error({ error, instance: this.wallet })
-      console.warn(
-        '[TerraClassicFCDExplorer] modifyTransactionsResponse error: Could not get latest block',
-      );
+      console.warn('[TerraClassicFCDExplorer] modifyTransactionsResponse error: Could not get latest block');
       return null;
     }
 
@@ -233,10 +219,7 @@ export default class TerraClassicFCDExplorer extends Explorer {
           return convertedTx;
         } catch (error) {
           // logger.error({ error, instance: this.wallet })
-          console.warn(
-            '[TerraClassicFCDExplorer] modifyTransactionsResponse error: Could not parse tx:',
-            tx,
-          );
+          console.warn('[TerraClassicFCDExplorer] modifyTransactionsResponse error: Could not parse tx:', tx);
           return null;
         }
       })

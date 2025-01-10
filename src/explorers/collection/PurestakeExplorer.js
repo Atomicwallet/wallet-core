@@ -1,6 +1,6 @@
 import BN from 'bn.js';
+import { PURESTAKE_EXPLORER_API_KEY } from 'src/env';
 
-import { PURESTAKE_EXPLORER_API_KEY } from '../../env';
 import Explorer from '../Explorer';
 
 class PurestakeExplorer extends Explorer {
@@ -65,10 +65,7 @@ class PurestakeExplorer extends Explorer {
   }
 
   modifyTransactionsResponse(response, address) {
-    return super.modifyTransactionsResponse(
-      response && response.transactions,
-      address,
-    );
+    return super.modifyTransactionsResponse(response && response.transactions, address);
   }
 
   getTxDirection(selfAddress, tx) {
@@ -84,9 +81,7 @@ class PurestakeExplorer extends Explorer {
       this.wallet.toCurrencyUnit(
         this.getTxDirection(selfAddress, tx)
           ? tx.payment.amount
-          : new this.wallet.BN(tx.payment.amount).add(
-              new this.wallet.BN(tx.fee),
-            ),
+          : new this.wallet.BN(tx.payment.amount).add(new this.wallet.BN(tx.fee)),
       ),
     );
   }

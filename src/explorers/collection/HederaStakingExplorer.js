@@ -23,9 +23,7 @@ class HederaStakingExplorer extends Explorer {
    */
   stake(wallet, nodeId, privateKey) {
     return this.#sendTx(
-      this.#createAccountUpdateTx(wallet)
-        .setStakedNodeId(nodeId)
-        .setDeclineStakingReward(false),
+      this.#createAccountUpdateTx(wallet).setStakedNodeId(nodeId).setDeclineStakingReward(false),
       wallet,
       privateKey,
     );
@@ -37,11 +35,7 @@ class HederaStakingExplorer extends Explorer {
    * @return {Promise<string>} the tx hash
    */
   unstake(wallet, privateKey) {
-    return this.#sendTx(
-      this.#createAccountUpdateTx(wallet).clearStakedNodeId(),
-      wallet,
-      privateKey,
-    );
+    return this.#sendTx(this.#createAccountUpdateTx(wallet).clearStakedNodeId(), wallet, privateKey);
   }
 
   #createAccountUpdateTx({ address }) {

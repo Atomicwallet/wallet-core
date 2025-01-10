@@ -19,8 +19,6 @@ if (!wallet) {
 
 wallet.nonce = 1;
 
-jest
-  .spyOn(wallet, 'getGasPrice')
-  .mockReturnValue(Promise.resolve('5000000000'));
+jest.spyOn(wallet, 'getGasPrice').mockReturnValue(Promise.resolve('5000000000'));
 
 generateWalletTests(wallet);

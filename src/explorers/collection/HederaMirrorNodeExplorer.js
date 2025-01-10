@@ -10,13 +10,20 @@ import Explorer from '../Explorer';
  *  amount: number,
  * } } Transfer
  *
- * @typedef { 'CONSENSUSCREATETOPIC' | 'CONSENSUSDELETETOPIC' | 'CONSENSUSSUBMITMESSAGE' | 'CONSENSUSUPDATETOPIC' | 'CONTRACTCALL' |
- *    'CONTRACTCREATEINSTANCE' | 'CONTRACTDELETEINSTANCE' | 'CONTRACTUPDATEINSTANCE' | 'CRYPTOADDLIVEHASH' | 'CRYPTOAPPROVEALLOWANCE' |
- *    'CRYPTOCREATEACCOUNT' | 'CRYPTODELETE' | 'CRYPTODELETEALLOWANCE' | 'CRYPTODELETELIVEHASH' | 'CRYPTOTRANSFER' |
- *    'CRYPTOUPDATEACCOUNT' | 'ETHEREUMTRANSACTION' | 'FILEAPPEND' | 'FILECREATE' | 'FILEDELETE' | 'FILEUPDATE' | 'FREEZE' |
- *    'NODESTAKEUPDATE' | 'SCHEDULECREATE' | 'SCHEDULEDELETE' | 'SCHEDULESIGN' | 'SYSTEMDELETE' | 'SYSTEMUNDELETE' | 'TOKENASSOCIATE' |
- *    'TOKENBURN' | 'TOKENCREATION' | 'TOKENDELETION' | 'TOKENDISSOCIATE' | 'TOKENFEESCHEDULEUPDATE' | 'TOKENFREEZE' |
- *    'TOKENGRANTKYC' | 'TOKENMINT' | 'TOKENPAUSE' | 'TOKENREVOKEKYC' | 'TOKENUNFREEZE' | 'TOKENUNPAUSE' | 'TOKENUPDATE' | 'TOKENWIPE' |
+ * @typedef { 'CONSENSUSCREATETOPIC' | 'CONSENSUSDELETETOPIC' | 'CONSENSUSSUBMITMESSAGE' |
+ * 'CONSENSUSUPDATETOPIC' | 'CONTRACTCALL' |
+ *    'CONTRACTCREATEINSTANCE' | 'CONTRACTDELETEINSTANCE' | 'CONTRACTUPDATEINSTANCE' | 'CRYPTOADDLIVEHASH' |
+ *    'CRYPTOAPPROVEALLOWANCE' |
+ *    'CRYPTOCREATEACCOUNT' | 'CRYPTODELETE' | 'CRYPTODELETEALLOWANCE' | 'CRYPTODELETELIVEHASH' |
+ *    'CRYPTOTRANSFER' |
+ *    'CRYPTOUPDATEACCOUNT' | 'ETHEREUMTRANSACTION' | 'FILEAPPEND' | 'FILECREATE' | 'FILEDELETE' |
+ *    'FILEUPDATE' | 'FREEZE' |
+ *    'NODESTAKEUPDATE' | 'SCHEDULECREATE' | 'SCHEDULEDELETE' | 'SCHEDULESIGN' |
+ *    'SYSTEMDELETE' | 'SYSTEMUNDELETE' | 'TOKENASSOCIATE' |
+ *    'TOKENBURN' | 'TOKENCREATION' | 'TOKENDELETION' | 'TOKENDISSOCIATE' |
+ *    'TOKENFEESCHEDULEUPDATE' | 'TOKENFREEZE' |
+ *    'TOKENGRANTKYC' | 'TOKENMINT' | 'TOKENPAUSE' | 'TOKENREVOKEKYC' | 'TOKENUNFREEZE' |
+ *    'TOKENUNPAUSE' | 'TOKENUPDATE' | 'TOKENWIPE' |
  *    'UNCHECKEDSUBMIT' | 'UNKNOWN' | 'UTILPRNG' } RawTxType
  */
 
@@ -72,9 +79,7 @@ export default class HederaMirrorNodeExplorer extends Explorer {
   getTxDateTime(tx) {
     const [unix, fraction] = tx.consensus_timestamp.split('.');
 
-    return new Date(
-      Number(`${unix}${(fraction || '').substring(0, 3).padEnd(3, '0')}`),
-    );
+    return new Date(Number(`${unix}${(fraction || '').substring(0, 3).padEnd(3, '0')}`));
   }
 
   getTxDirection(selfAddress, tx) {
@@ -102,10 +107,7 @@ export default class HederaMirrorNodeExplorer extends Explorer {
     if (tx.name === 'CRYPTOTRANSFER') {
       return txTypes.TRANSFER;
     }
-    if (
-      tx.name === 'CRYPTOUPDATEACCOUNT' &&
-      tx.staking_reward_transfers?.length
-    ) {
+    if (tx.name === 'CRYPTOUPDATEACCOUNT' && tx.staking_reward_transfers?.length) {
       return txTypes.REWARD;
     }
     return '';
@@ -127,17 +129,11 @@ export default class HederaMirrorNodeExplorer extends Explorer {
   }
 
   modifyTransactionResponse(response, selfAddress, asset = this.wallet.ticker) {
-    return super.modifyTransactionResponse(
-      response.transactions[0],
-      selfAddress,
-      asset,
-    );
+    return super.modifyTransactionResponse(response.transactions[0], selfAddress, asset);
   }
 
   modifyTransactionsResponse(response, selfAddress) {
-    return super
-      .modifyTransactionsResponse(response.transactions, selfAddress)
-      .filter((tx) => tx.txType);
+    return super.modifyTransactionsResponse(response.transactions, selfAddress).filter((tx) => tx.txType);
   }
 
   /**

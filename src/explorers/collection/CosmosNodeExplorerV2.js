@@ -22,9 +22,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
 
   getInitParams() {
     if (!this.config.baseUrl) {
-      throw new Error(
-        `${this.wallet.ticker} ${this.constructor.name}: explorer config have no baseUrl`,
-      );
+      throw new Error(`${this.wallet.ticker} ${this.constructor.name}: explorer config have no baseUrl`);
     }
     return {
       baseURL: this.config.baseUrl,
@@ -43,11 +41,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
   async request() {
     const response = await super.request(...arguments);
 
-    if (
-      response &&
-      response.height &&
-      this.lastKnownHeight < Number(response.height)
-    ) {
+    if (response && response.height && this.lastKnownHeight < Number(response.height)) {
       this.lastKnownHeight = response.height;
     }
 
@@ -60,8 +54,8 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
 
   async getAuth(address) {
     const resp = await this.request(`cosmos/auth/v1beta1/accounts/${address}`);
-
-    return resp.account.base_account || resp.account; // INJ uses account.base_account format, other chains just resp.account
+    // INJ uses account.base_account format, other chains just resp.account
+    return resp.account.base_account || resp.account;
   }
 
   getLatestBlockUrl() {
@@ -94,11 +88,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
   }
 
   async sendDelegationTransaction(address, rawtx) {
-    const response = await this.request(
-      `staking/delegators/${address}/delegations`,
-      'post',
-      rawtx,
-    );
+    const response = await this.request(`staking/delegators/${address}/delegations`, 'post', rawtx);
 
     if (response.value && response.value.account_number === '0') {
       throw new ExplorerRequestError({
@@ -150,10 +140,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
           const feeData = tx.tx?.auth_info?.fee?.amount;
 
           if (feeData && Array.isArray(tx.tx.auth_info.fee.amount)) {
-            fee = tx.tx.auth_info.fee.amount.reduce(
-              (accumulator, item) => accumulator + parseInt(item.amount, 6),
-              0,
-            );
+            fee = tx.tx.auth_info.fee.amount.reduce((accumulator, item) => accumulator + parseInt(item.amount, 6), 0);
           } else {
             fee = tx.tx?.auth_info?.fee?.amount;
           }
@@ -179,17 +166,11 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
           };
         }),
       ])
-      .filter(
-        (tx) => this.getTransactionNativeType(tx) !== 'MsgBeginRedelegate',
-      );
+      .filter((tx) => this.getTransactionNativeType(tx) !== 'MsgBeginRedelegate');
 
-    const filterMessages = ({ '@type': originalType, txhash }) =>
-      `${txhash}/${originalType}`;
+    const filterMessages = ({ '@type': originalType, txhash }) => `${txhash}/${originalType}`;
 
-    return this.modifyTransactionsResponse(
-      uniqBy(txMessages, filterMessages),
-      address,
-    );
+    return this.modifyTransactionsResponse(uniqBy(txMessages, filterMessages), address);
   }
 
   getTxValue(selfAddress, tx) {
@@ -204,16 +185,9 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
     return (tx.logs || [])
       .reduce((allEvents, { events }) => allEvents.concat(events || []), [])
       .filter(({ type: eventType }) => eventType === 'transfer')
-      .reduce(
-        (allAttributes, { attributes }) => allAttributes.concat(attributes),
-        [],
-      )
+      .reduce((allAttributes, { attributes }) => allAttributes.concat(attributes), [])
       .filter(({ key }) => key === 'amount')
-      .reduce(
-        (sum, { value }) =>
-          sum + parseInt((value || '0').replace(/\D/gi, ''), 10),
-        0,
-      );
+      .reduce((sum, { value }) => sum + parseInt((value || '0').replace(/\D/gi, ''), 10), 0);
   }
 
   getTxDirection(selfAddress, tx) {
@@ -250,9 +224,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
 
   async getTotalBalance(address) {
     try {
-      const { balances } = await this.request(
-        `cosmos/bank/v1beta1/balances/${address}`,
-      );
+      const { balances } = await this.request(`cosmos/bank/v1beta1/balances/${address}`);
 
       return balances;
     } catch (error) {
@@ -264,9 +236,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
 
   async getRewardsBalance(address) {
     try {
-      const { total } = await this.request(
-        `cosmos/distribution/v1beta1/delegators/${address}/rewards`,
-      );
+      const { total } = await this.request(`cosmos/distribution/v1beta1/delegators/${address}/rewards`);
 
       return total;
     } catch (error) {
@@ -278,9 +248,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
 
   async getStakedDelegations(address) {
     try {
-      const { delegation_responses: delegations } = await this.request(
-        `cosmos/staking/v1beta1/delegations/${address}`,
-      );
+      const { delegation_responses: delegations } = await this.request(`cosmos/staking/v1beta1/delegations/${address}`);
 
       return delegations;
     } catch (error) {
@@ -308,13 +276,10 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
     if (!response) {
       throw new Error('[CosmosNodeExplorer] wrong latest block response');
     }
-    const blockMetaPropName = Object.hasOwnProperty.call(response, 'block')
-      ? 'block'
-      : 'block_meta';
+    const blockMetaPropName = Object.hasOwnProperty.call(response, 'block') ? 'block' : 'block_meta';
 
     this.chainId = response[blockMetaPropName].header.chain_id;
-    this.lastKnownHeight =
-      Number(response[blockMetaPropName].header.height) || 0;
+    this.lastKnownHeight = Number(response[blockMetaPropName].header.height) || 0;
 
     return response;
   }
@@ -326,8 +291,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
   }
 
   async getSignerData(address) {
-    const { sequence = '0', account_number: accountNumber } =
-      await this.getAuth(address);
+    const { sequence = '0', account_number: accountNumber } = await this.getAuth(address);
 
     const chainId = this.chainId || (await this.getChainId());
 
@@ -339,9 +303,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
   }
 
   async getValidators(address) {
-    const { validators } = await this.request(
-      `cosmos/distribution/v1beta1/delegators/${address}/validators`,
-    );
+    const { validators } = await this.request(`cosmos/distribution/v1beta1/delegators/${address}/validators`);
 
     return validators;
   }
@@ -358,11 +320,7 @@ class CosmosNodeExplorerV2 extends CosmosNodeTransactionTypeMixin(Explorer) {
   async getGasEstimation(rawtx) {
     const {
       gas_info: { gas_used: gasUsed },
-    } = await super.request(
-      'cosmos/tx/v1beta1/simulate',
-      'post',
-      this.getSendTransactionParams(rawtx),
-    );
+    } = await super.request('cosmos/tx/v1beta1/simulate', 'post', this.getSendTransactionParams(rawtx));
 
     return gasUsed;
   }

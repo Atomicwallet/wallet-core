@@ -9,29 +9,22 @@ const DEFAULT_APPROVAL_GAS_LIMIT = 50000;
 const DEFALT_STAKING_GAS_LIMIT = 300000;
 const DEFAULT_CLAIM_REWARDS_GAS_LIMIT = 170000;
 const DEFAULT_STAKING_CONTRACT = '0x5E3EF299FDDF15EAA0432E6E66473ACE8C13D908';
-const MAX_ALLOWED_AMOUNT =
-  '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+const MAX_ALLOWED_AMOUNT = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
 // Minimal amount for claim rewards
 // https://etherscan.io/address/0xf98864DA30a5bd657B13e70A57f5718aBf7BAB31#code#L1461
 
-export default class StakableMaticETHToken extends Web3Mixin(
-  StakingMixin(ETHToken),
-) {
+export default class StakableMaticETHToken extends Web3Mixin(StakingMixin(ETHToken)) {
   constructor({ config, ...args }) {
     super({ config, ...args });
 
     this.stakingContract = config.stakingContract ?? DEFAULT_STAKING_CONTRACT;
     this.stakingGasLimit = config.stakingGasLimit ?? DEFALT_STAKING_GAS_LIMIT;
-    this.unstakingGasLimit =
-      config.unstakingGasLimit ?? DEFALT_STAKING_GAS_LIMIT;
-    this.restakeRewardsGasLimit =
-      config.restakeRewardsGasLimit ?? DEFALT_STAKING_GAS_LIMIT;
-    this.claimRewardsGasLimit =
-      config.claimRewardsGasLimit ?? DEFAULT_CLAIM_REWARDS_GAS_LIMIT;
+    this.unstakingGasLimit = config.unstakingGasLimit ?? DEFALT_STAKING_GAS_LIMIT;
+    this.restakeRewardsGasLimit = config.restakeRewardsGasLimit ?? DEFALT_STAKING_GAS_LIMIT;
+    this.claimRewardsGasLimit = config.claimRewardsGasLimit ?? DEFAULT_CLAIM_REWARDS_GAS_LIMIT;
     this.withdrawGasLimit = config.withdrawGasLimit ?? DEFALT_STAKING_GAS_LIMIT;
-    this.approvalGasLimit =
-      config.approvalGasLimit ?? DEFAULT_APPROVAL_GAS_LIMIT;
+    this.approvalGasLimit = config.approvalGasLimit ?? DEFAULT_APPROVAL_GAS_LIMIT;
   }
 
   async getInfo() {
@@ -43,12 +36,7 @@ export default class StakableMaticETHToken extends Web3Mixin(
   }
 
   calculateTotal({ balance, staked, unstaking, rewards }) {
-    const total = balance
-      .toBN()
-      .add(staked.toBN())
-      .add(rewards.toBN())
-      .add(unstaking.toBN())
-      .toString();
+    const total = balance.toBN().add(staked.toBN()).add(rewards.toBN()).add(unstaking.toBN()).toString();
 
     return new Amount(total, this);
   }
@@ -126,62 +114,29 @@ export default class StakableMaticETHToken extends Web3Mixin(
     const validators = Object.fromEntries(
       await Promise.all(
         this.predefinedValidators.map(async ({ address }) => {
-          const currentEpoch = await this.makeRawCall(
-            MaticStakingManager,
-            this.stakingContract,
-            'currentEpoch',
-          );
-          const unbondNonce = await this.makeRawCall(
-            MaticValidatorsShare,
-            address,
-            'unbondNonces',
-            [this.address],
-          );
-          const { shares, withdrawEpoch } = await this.makeRawCall(
-            MaticValidatorsShare,
-            address,
-            'unbonds_new',
-            [this.address, unbondNonce],
-          );
+          const currentEpoch = await this.makeRawCall(MaticStakingManager, this.stakingContract, 'currentEpoch');
+          const unbondNonce = await this.makeRawCall(MaticValidatorsShare, address, 'unbondNonces', [this.address]);
+          const { shares, withdrawEpoch } = await this.makeRawCall(MaticValidatorsShare, address, 'unbonds_new', [
+            this.address,
+            unbondNonce,
+          ]);
 
           // 82 checkpoints - according to FAQ is unbonding period, approx 9 days
           const isAvailable = Number(currentEpoch) > Number(withdrawEpoch) + 82;
 
-          const pendingWithdrawals = new Amount(
-            isAvailable ? '0' : shares,
-            this,
-          );
-          const availableWithdrawals = new Amount(
-            isAvailable ? shares : '0',
-            this,
-          );
-          const unstaking = new Amount(
-            pendingWithdrawals
-              .toBN()
-              .add(availableWithdrawals.toBN())
-              .toString(),
-            this,
-          );
+          const pendingWithdrawals = new Amount(isAvailable ? '0' : shares, this);
+          const availableWithdrawals = new Amount(isAvailable ? shares : '0', this);
+          const unstaking = new Amount(pendingWithdrawals.toBN().add(availableWithdrawals.toBN()).toString(), this);
 
           return [
             address,
             {
               staked: new Amount(
-                await this.makeRawCall(
-                  MaticValidatorsShare,
-                  address,
-                  'balanceOf',
-                  [this.address],
-                ),
+                await this.makeRawCall(MaticValidatorsShare, address, 'balanceOf', [this.address]),
                 this,
               ),
               rewards: new Amount(
-                await this.makeRawCall(
-                  MaticValidatorsShare,
-                  address,
-                  'getLiquidRewards',
-                  [this.address],
-                ),
+                await this.makeRawCall(MaticValidatorsShare, address, 'getLiquidRewards', [this.address]),
                 this,
               ),
               pendingWithdrawals,
@@ -200,10 +155,7 @@ export default class StakableMaticETHToken extends Web3Mixin(
     const availableWithdrawals = this.calculateAvailableWithdrawals(validators);
 
     const availableVotes = new Amount(
-      await this.makeRawCall(standard, this.contract, 'allowance', [
-        this.address,
-        this.stakingContract,
-      ]),
+      await this.makeRawCall(standard, this.contract, 'allowance', [this.address, this.stakingContract]),
       this,
     );
 
@@ -253,12 +205,7 @@ export default class StakableMaticETHToken extends Web3Mixin(
     return data;
   }
 
-  createApproveTransaction({
-    nonce,
-    userGasPrice,
-    gasLimit = this.approvalGasLimit,
-    multiplier,
-  } = {}) {
+  createApproveTransaction({ nonce, userGasPrice, gasLimit = this.approvalGasLimit, multiplier } = {}) {
     // stake manager 0x5e3ef299fddf15eaa0432e6e66473ace8c13d908
 
     // @TODO maybe check if already have approved tokens, then use `increaseAllowance` instead?
@@ -278,22 +225,10 @@ export default class StakableMaticETHToken extends Web3Mixin(
     });
   }
 
-  createDelegationTransaction({
-    amount,
-    validator,
-    nonce,
-    userGasPrice,
-    gasLimit = this.stakingGasLimit,
-    multiplier,
-  }) {
-    const contractInterface = new this.coreLibrary.eth.Contract(
-      MaticValidatorsShare,
-      validator,
-    );
+  createDelegationTransaction({ amount, validator, nonce, userGasPrice, gasLimit = this.stakingGasLimit, multiplier }) {
+    const contractInterface = new this.coreLibrary.eth.Contract(MaticValidatorsShare, validator);
 
-    const paymentData = contractInterface.methods
-      .buyVoucher(amount, amount)
-      .encodeABI();
+    const paymentData = contractInterface.methods.buyVoucher(amount, amount).encodeABI();
 
     return this.createRawTransactions({
       address: validator,
@@ -306,22 +241,10 @@ export default class StakableMaticETHToken extends Web3Mixin(
     });
   }
 
-  createUnstakeTransaction({
-    amount,
-    validator,
-    nonce,
-    userGasPrice,
-    gasLimit = this.unstakingGasLimit,
-    multiplier,
-  }) {
-    const contractInterface = new this.coreLibrary.eth.Contract(
-      MaticValidatorsShare,
-      validator,
-    );
+  createUnstakeTransaction({ amount, validator, nonce, userGasPrice, gasLimit = this.unstakingGasLimit, multiplier }) {
+    const contractInterface = new this.coreLibrary.eth.Contract(MaticValidatorsShare, validator);
 
-    const paymentData = contractInterface.methods
-      .sellVoucher_new(amount, amount)
-      .encodeABI();
+    const paymentData = contractInterface.methods.sellVoucher_new(amount, amount).encodeABI();
 
     return this.createRawTransactions({
       address: validator,
@@ -334,27 +257,11 @@ export default class StakableMaticETHToken extends Web3Mixin(
     });
   }
 
-  async createWithdrawTransaction({
-    validator,
-    nonce,
-    userGasPrice,
-    gasLimit = this.withdrawGasLimit,
-    multiplier,
-  }) {
-    const contractInterface = new this.coreLibrary.eth.Contract(
-      MaticValidatorsShare,
-      validator,
-    );
-    const unbondNonce = await this.makeRawCall(
-      MaticValidatorsShare,
-      validator,
-      'unbondNonces',
-      [this.address],
-    );
+  async createWithdrawTransaction({ validator, nonce, userGasPrice, gasLimit = this.withdrawGasLimit, multiplier }) {
+    const contractInterface = new this.coreLibrary.eth.Contract(MaticValidatorsShare, validator);
+    const unbondNonce = await this.makeRawCall(MaticValidatorsShare, validator, 'unbondNonces', [this.address]);
 
-    const paymentData = contractInterface.methods
-      .unstakeClaimTokens_new(unbondNonce)
-      .encodeABI();
+    const paymentData = contractInterface.methods.unstakeClaimTokens_new(unbondNonce).encodeABI();
 
     return this.createRawTransactions({
       address: validator,
@@ -367,17 +274,8 @@ export default class StakableMaticETHToken extends Web3Mixin(
     });
   }
 
-  createClaimRewardsTransaction({
-    validator,
-    nonce,
-    userGasPrice,
-    gasLimit = this.claimRewardsGasLimit,
-    multiplier,
-  }) {
-    const contractInterface = new this.coreLibrary.eth.Contract(
-      MaticValidatorsShare,
-      validator,
-    );
+  createClaimRewardsTransaction({ validator, nonce, userGasPrice, gasLimit = this.claimRewardsGasLimit, multiplier }) {
+    const contractInterface = new this.coreLibrary.eth.Contract(MaticValidatorsShare, validator);
 
     const paymentData = contractInterface.methods.withdrawRewards().encodeABI();
 
@@ -399,10 +297,7 @@ export default class StakableMaticETHToken extends Web3Mixin(
     gasLimit = this.restakeRewardsGasLimit,
     multiplier,
   }) {
-    const contractInterface = new this.coreLibrary.eth.Contract(
-      MaticValidatorsShare,
-      validator,
-    );
+    const contractInterface = new this.coreLibrary.eth.Contract(MaticValidatorsShare, validator);
 
     const paymentData = contractInterface.methods.restake().encodeABI();
 

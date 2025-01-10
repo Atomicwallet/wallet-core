@@ -1,8 +1,5 @@
 const transformMap = new Map([
-  [
-    /https:\/\/api\.opensea\.io\/api\/v1\/metadata\/.*\/0x{id}\/?$/,
-    ['0x{id}', ({ tokenId }) => tokenId],
-  ],
+  [/https:\/\/api\.opensea\.io\/api\/v1\/metadata\/.*\/0x{id}\/?$/, ['0x{id}', ({ tokenId }) => tokenId]],
 ]);
 
 /**

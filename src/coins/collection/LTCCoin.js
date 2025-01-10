@@ -88,9 +88,7 @@ class LTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
   async availableBalance(fee) {
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
 
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';

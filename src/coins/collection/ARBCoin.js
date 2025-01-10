@@ -79,9 +79,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       network: config.network ?? NETWORK,
       dependencies: {
         [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(
-          () => import('ethereumjs-wallet'),
-        ),
+        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
       },
     });
 
@@ -106,9 +104,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     this.gasPriceConfig = null;
     this.bannedTokens = [];
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3BaseUrl = web3Params.baseUrl;
 
@@ -116,12 +112,9 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     this.tokens = {};
     this.nonce = new this.BN('0');
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   /**
@@ -154,7 +147,8 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     super.setFeeData(feeData);
     this.unspendableBalance = feeData.unspendableBalance || UNSPENDABLE_BALANCE;
     this.gasLimit = Number(feeData.gasLimit) || DEFAULT_MIN_GAS;
-    this.stakingGasLimit = Number(feeData.stakingGasLimit) || DEFAULT_MAX_GAS; // @TODO replace by estimated gasLimit in future
+    // @TODO replace by estimated gasLimit in future
+    this.stakingGasLimit = Number(feeData.stakingGasLimit) || DEFAULT_MAX_GAS;
     this.maxGasLimit = Number(feeData.maxGasLimit) || DEFAULT_MAX_GAS;
     this.nftGasLimitCoefficient = Number(feeData.nftGasLimitCoefficient) || 1;
     this.nftGasPriceCoefficient = Number(feeData.nftGasPriceCoefficient);
@@ -175,22 +169,21 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     }
 
     // @TODO Check for failed transactions (@see ETHCoin)
-    const [transactions, { tokenTransactions: rawTokenTransactions }] =
-      await Promise.all(
-        [
-          this.getProvider('history').getTransactions({
-            address: this.address,
-          }),
-          this.getProvider('token-history').getTokensTransactions({
-            address: this.address,
-          }),
-        ].map((promise) =>
-          promise.catch((error) => {
-            console.error(error);
-            return [];
-          }),
-        ),
-      );
+    const [transactions, { tokenTransactions: rawTokenTransactions }] = await Promise.all(
+      [
+        this.getProvider('history').getTransactions({
+          address: this.address,
+        }),
+        this.getProvider('token-history').getTokensTransactions({
+          address: this.address,
+        }),
+      ].map((promise) =>
+        promise.catch((error) => {
+          console.error(error);
+          return [];
+        }),
+      ),
+    );
 
     const tokenTransactions = rawTokenTransactions.reduce((txs, rawTx) => {
       const contract = rawTx.contract.toLowerCase();
@@ -253,15 +246,10 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
 
   async loadWallet(seed) {
-    const [coreLibrary, { hdkey }] = await Promise.all([
-      this.getCoreLibrary(),
-      this.loadLib(ETHEREUM_JS_WALLET_SDK),
-    ]);
+    const [coreLibrary, { hdkey }] = await Promise.all([this.getCoreLibrary(), this.loadLib(ETHEREUM_JS_WALLET_SDK)]);
     const ethHDKey = hdkey.fromMasterSeed(seed);
     const wallet = ethHDKey.getWallet();
-    const account = coreLibrary.eth.accounts.privateKeyToAccount(
-      wallet.getPrivateKeyString(),
-    );
+    const account = coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
     if (!account) {
       throw new Error(`${this.wallet.ticker} can't get the wallet`);
@@ -311,8 +299,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     paymentData = null,
   }) {
     // Fallbacks only for coin since gasLimit is always set for contracts
-    const gas =
-      gasLimit || (await this.estimateGas(amount, address)) || this.gasLimit;
+    const gas = gasLimit || (await this.estimateGas(amount, address)) || this.gasLimit;
     const gasPrice = userGasPrice || (await this.getGasPrice());
 
     const transaction = {
@@ -329,37 +316,17 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     }
 
     const coreLibrary = await this.getCoreLibrary();
-    const signedTx = await coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
 
   #getTransferTokenContractData(contract, to, amount) {
-    return this.getProvider('send').createSendTokenContract(
-      contract,
-      this.address,
-      to,
-      amount,
-    );
+    return this.getProvider('send').createSendTokenContract(contract, this.address, to, amount);
   }
 
-  async createTokenTransaction({
-    address,
-    amount,
-    custom,
-    userGasPrice,
-    gasLimit,
-    contract,
-    multiplier,
-  }) {
-    const contractData = this.#getTransferTokenContractData(
-      contract,
-      address,
-      amount,
-    );
+  async createTokenTransaction({ address, amount, custom, userGasPrice, gasLimit, contract, multiplier }) {
+    const contractData = this.#getTransferTokenContractData(contract, address, amount);
 
     return this.createTransaction({
       address: contract,
@@ -455,9 +422,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     const gasPrice = Number(rawGasPrice) + coefficient * GWEI;
     const defaultMaxGasPriceInGwei = this.defaultMaxGasPrice * GWEI;
 
-    return gasPrice > defaultMaxGasPriceInGwei
-      ? defaultMaxGasPriceInGwei
-      : gasPrice;
+    return gasPrice > defaultMaxGasPriceInGwei ? defaultMaxGasPriceInGwei : gasPrice;
   }
 
   /**
@@ -469,12 +434,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {number} [gasLimitCoefficient = 1] - Custom coefficient for tune gas limit.
    * @returns {Promise<number>}
    */
-  async estimateGasForSendNft(
-    address,
-    toContract,
-    data,
-    gasLimitCoefficient = 1,
-  ) {
+  async estimateGasForSendNft(address, toContract, data, gasLimitCoefficient = 1) {
     const transactionObject = {
       from: address,
       to: toContract,
@@ -483,16 +443,14 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     };
 
     const coreLibrary = await this.getCoreLibrary();
-    const estimatedGas = await coreLibrary.eth
-      .estimateGas(transactionObject)
-      .catch((error) => {
-        // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
-        if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-          // logger.error({ instance: this, error });
-        }
-        // Fallback value
-        return this.maxGasLimit;
-      });
+    const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
+      // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
+      if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
+        // logger.error({ instance: this, error });
+      }
+      // Fallback value
+      return this.maxGasLimit;
+    });
 
     return Math.round(estimatedGas * this.nftGasLimitCoefficient);
   }
@@ -510,11 +468,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {UserFeeOptions} userOptions - Custom user options.
    * @returns {Promise<{gasLimit: number, gasPrice: number, nonce: number}>}
    */
-  async getNftTransferGasParams(
-    toContract,
-    data,
-    { userGasPrice, userGasLimit },
-  ) {
+  async getNftTransferGasParams(toContract, data, { userGasPrice, userGasLimit }) {
     const {
       address,
       nftGasPriceCoefficient,
@@ -526,11 +480,9 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     } = this;
 
     /** @type number */
-    const gasPriceCoefficient =
-      nftGasPriceCoefficient || configGasPriceCoefficient;
+    const gasPriceCoefficient = nftGasPriceCoefficient || configGasPriceCoefficient;
     /** @type number */
-    const gasLimitCoefficient =
-      nftGasLimitCoefficient || configGasLimitCoefficient;
+    const gasLimitCoefficient = nftGasLimitCoefficient || configGasLimitCoefficient;
 
     const defaultGasValues = [
       (defaultGasPrice + gasPriceCoefficient) * GWEI,
@@ -541,18 +493,10 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
     const [gasPrice, gasLimit] = await Promise.allSettled([
       userGasPrice || this.getGasPriceForSendNft(gasPriceCoefficient),
-      userGasLimit ||
-        this.estimateGasForSendNft(
-          address,
-          toContract,
-          data,
-          gasLimitCoefficient,
-        ),
+      userGasLimit || this.estimateGasForSendNft(address, toContract, data, gasLimitCoefficient),
     ]).then((resultList) =>
       resultList.map((result, i) => {
-        return result.status === 'fulfilled'
-          ? result.value
-          : defaultGasValues[i];
+        return result.status === 'fulfilled' ? result.value : defaultGasValues[i];
       }),
     );
 
@@ -572,17 +516,9 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {Promise<BN>} - The fee.
    * @throws {ExternalError}
    */
-  async getNftFee({
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    toAddress = null,
-    userOptions = {},
-  }) {
+  async getNftFee({ contractAddress, tokenId, tokenStandard, toAddress = null, userOptions = {} }) {
     const targetAddress =
-      !toAddress || toAddress.toLowerCase() === this.address.toLowerCase()
-        ? MOCKED_ARB_ADDRESS
-        : toAddress;
+      !toAddress || toAddress.toLowerCase() === this.address.toLowerCase() ? MOCKED_ARB_ADDRESS : toAddress;
 
     try {
       const data = await this.getProvider('nft-send').getNftContractData(
@@ -592,11 +528,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         tokenId,
         tokenStandard,
       );
-      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(
-        contractAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(contractAddress, data, userOptions);
 
       return new this.BN(gasPrice).mul(new this.BN(gasLimit));
     } catch (error) {
@@ -616,11 +548,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
   async createNftTransaction({ contractAddress, data, userOptions = {} }) {
     try {
-      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(
-        contractAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(contractAddress, data, userOptions);
       const transaction = {
         to: contractAddress,
         value: HEX_ZERO,
@@ -635,10 +563,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       };
 
       const coreLibrary = await this.getCoreLibrary();
-      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(
-        transaction,
-        this.#privateKey,
-      );
+      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
       return rawTransaction;
     } catch (error) {
@@ -650,9 +575,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   async getNonce() {
     const coreLibrary = await this.getCoreLibrary();
 
-    this.nonce = new this.BN(
-      await coreLibrary.eth.getTransactionCount(this.address, DEFAULT_BLOCK),
-    );
+    this.nonce = new this.BN(await coreLibrary.eth.getTransactionCount(this.address, DEFAULT_BLOCK));
 
     return this.nonce;
   }
@@ -668,16 +591,9 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {string|number} [options.userGasPrice=null] - Custom gas limit.
    * @returns {Promise<BN>}
    */
-  async getFee({
-    amount = 1,
-    address,
-    contract = null,
-    userGasPrice = null,
-    gasLimit = null,
-  } = {}) {
+  async getFee({ amount = 1, address, contract = null, userGasPrice = null, gasLimit = null } = {}) {
     const gasPriceL2 = userGasPrice || (await this.getGasPrice());
-    const requiredGas =
-      gasLimit || (await this.estimateGas(amount, address, contract));
+    const requiredGas = gasLimit || (await this.estimateGas(amount, address, contract));
 
     return new this.BN(gasPriceL2).mul(new this.BN(requiredGas));
   }
@@ -723,24 +639,18 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     };
 
     if (contractAddress) {
-      transactionObject.data = this.#getTransferTokenContractData(
-        contractAddress,
-        to,
-        amount,
-      );
+      transactionObject.data = this.#getTransferTokenContractData(contractAddress, to, amount);
     }
 
     const coreLibrary = await this.getCoreLibrary();
-    const estimatedGas = await coreLibrary.eth
-      .estimateGas(transactionObject)
-      .catch((error) => {
-        // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
-        if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-          // logger.error({ instance: this, error });
-        }
-        // Fallback value
-        return contractAddress ? this.maxGasLimit : this.gasLimit;
-      });
+    const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
+      // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
+      if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
+        // logger.error({ instance: this, error });
+      }
+      // Fallback value
+      return contractAddress ? this.maxGasLimit : this.gasLimit;
+    });
 
     return Math.round(estimatedGas * this.gasLimitCoefficient);
   }
@@ -757,9 +667,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     }
 
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -775,17 +683,12 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     await this.initCoreLibrary();
 
     if (tokenInfo && tokenInfo.isToken) {
-      const tokenBalance = await this.getProvider(
-        'node',
-      ).getTokenBalanceByContractAddress({
+      const tokenBalance = await this.getProvider('node').getTokenBalanceByContractAddress({
         address: this.address,
         contractAddress: tokenInfo.contract.toLowerCase(),
       });
 
-      const contractVariant = [
-        tokenInfo.contract,
-        tokenInfo.contract.toLowerCase(),
-      ];
+      const contractVariant = [tokenInfo.contract, tokenInfo.contract.toLowerCase()];
 
       contractVariant.forEach((contract) => {
         if (this.tokens[contract]) {

@@ -10,11 +10,7 @@ import wif from 'wif';
 import { Coin } from '../../abstract';
 import CosmosNodeExplorerV2 from '../../explorers/collection/CosmosNodeExplorerV2';
 import { Amount } from '../../utils';
-import {
-  ATOM_MSG_TYPES,
-  GET_TRANSACTIONS_TYPE,
-  WALLET_ERROR,
-} from '../../utils/const';
+import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from '../../utils/const';
 import { CosmosTxTypes } from '../libs';
 import { HasBlockScanner, HasProviders, StakingMixin } from '../mixins';
 
@@ -74,12 +70,9 @@ class COSMOSCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     this.transactions = [];
     this.fields.paymentId = true;
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (_, unconfirmedTx) => {
-        this.onConfirmSocketTx(unconfirmedTx);
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (_, unconfirmedTx) => {
+      this.onConfirmSocketTx(unconfirmedTx);
+    });
 
     this.setExplorersModules([CosmosNodeExplorerV2]);
     this.loadExplorers(config);
@@ -158,12 +151,7 @@ class COSMOSCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     return this.getProvider('history2').getTransaction(this.address, txId);
   }
 
-  async getTransactions({
-    address = this.address,
-    offset = 0,
-    limit = this.explorer.defaultTxLimit,
-    pageNum = 0,
-  }) {
+  async getTransactions({ address = this.address, offset = 0, limit = this.explorer.defaultTxLimit, pageNum = 0 }) {
     this.transactions = await this.getProvider('history2')
       .getTransactions({ address, offset, limit, pageNum, denom: this.denom })
       .catch((error) => {
@@ -193,19 +181,10 @@ class COSMOSCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
   }
 
   async sign(messages, fee, memo = '') {
-    this.signer =
-      this.signer || (await SigningStargateClient.offline(this.wallet));
-    const signerData = await this.getProvider('send2').getSignerData(
-      this.address,
-    );
+    this.signer = this.signer || (await SigningStargateClient.offline(this.wallet));
+    const signerData = await this.getProvider('send2').getSignerData(this.address);
 
-    return this.signer.signDirect(
-      this.address,
-      messages,
-      fee,
-      memo,
-      signerData,
-    );
+    return this.signer.signDirect(this.address, messages, fee, memo, signerData);
   }
 
   createTransaction({ address, amount, memo = '' }) {
@@ -296,9 +275,7 @@ class COSMOSCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
   }
 
   async createWithdrawDelegationTransaction(unusedValidator) {
-    const withdrawValidators = await this.getProvider('balance2').getValidators(
-      this.address,
-    );
+    const withdrawValidators = await this.getProvider('balance2').getValidators(this.address);
 
     const messages = withdrawValidators.map((validator) => ({
       typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
@@ -335,19 +312,12 @@ class COSMOSCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     await explorer.getLatestBlock();
 
     const stakedValidators = {};
-    const staked = this.calculateStakedBalance(
-      await explorer.getStakedDelegations(this.address),
-      stakedValidators,
-    );
+    const staked = this.calculateStakedBalance(await explorer.getStakedDelegations(this.address), stakedValidators);
 
     return {
-      rewards: this.calculateRewards(
-        await explorer.getRewardsBalance(this.address),
-      ),
+      rewards: this.calculateRewards(await explorer.getRewardsBalance(this.address)),
       staked,
-      unstaking: this.calculateUnstakingBalance(
-        await explorer.getUnbondingDelegations(this.address),
-      ),
+      unstaking: this.calculateUnstakingBalance(await explorer.getUnbondingDelegations(this.address)),
       validators: stakedValidators,
     };
   }
@@ -355,47 +325,26 @@ class COSMOSCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
   // @TODO `total` param is not passed from `StakingMixin::makeStakingInfoStruct::calculateAvailableForStake`
   // probably it should be `balance`?
   async calculateAvailableForStake({ balance }) {
-    const available = balance
-      .toBN()
-      .sub(new this.BN(this.fee))
-      .sub(new this.BN(this.reserveForStake));
+    const available = balance.toBN().sub(new this.BN(this.fee)).sub(new this.BN(this.reserveForStake));
 
     return new Amount(available.isNeg() ? '0' : available, this);
   }
 
   calculateTotal({ balance, staked, unstaking, rewards }) {
-    return new Amount(
-      balance
-        .toBN()
-        .add(staked.toBN())
-        .add(unstaking.toBN())
-        .add(rewards.toBN())
-        .toString(),
-      this,
-    );
+    return new Amount(balance.toBN().add(staked.toBN()).add(unstaking.toBN()).add(rewards.toBN()).toString(), this);
   }
 
   calculateAvailableBalance(available) {
-    return new Amount(
-      available.find((balance) => balance.denom === this.denom)?.amount ?? '0',
-      this,
-    );
+    return new Amount(available.find((balance) => balance.denom === this.denom)?.amount ?? '0', this);
   }
 
   calculateRewards(rewards) {
-    return new Amount(
-      rewards
-        ?.find((reward) => reward.denom === this.denom)
-        ?.amount?.split('.')[0] ?? '0',
-      this,
-    );
+    return new Amount(rewards?.find((reward) => reward.denom === this.denom)?.amount?.split('.')[0] ?? '0', this);
   }
 
   calculateStakedBalance(delegations, stakedValidators) {
     return new Amount(
-      delegations?.length > 0
-        ? this.getTotalDelegations(delegations, stakedValidators).toString()
-        : '0',
+      delegations?.length > 0 ? this.getTotalDelegations(delegations, stakedValidators).toString() : '0',
       this,
     );
   }
@@ -404,21 +353,15 @@ class COSMOSCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     const unbonding = { validators: {} };
 
     if (delegations?.length > 0) {
-      const totalUnbonding = delegations.reduce(
-        (total, { entries, validator_address: validatorAddress }) => {
-          const moniker = validatorAddress;
+      const totalUnbonding = delegations.reduce((total, { entries, validator_address: validatorAddress }) => {
+        const moniker = validatorAddress;
 
-          unbonding.validators[moniker] = entries
-            .map((entry) => new this.BN(entry.balance.split('.')[0]))
-            .reduce(
-              (prev, cur) => prev.add(new this.BN(cur)),
-              new this.BN('0'),
-            );
+        unbonding.validators[moniker] = entries
+          .map((entry) => new this.BN(entry.balance.split('.')[0]))
+          .reduce((prev, cur) => prev.add(new this.BN(cur)), new this.BN('0'));
 
-          return total.add(unbonding.validators[moniker]);
-        },
-        new this.BN('0'),
-      );
+        return total.add(unbonding.validators[moniker]);
+      }, new this.BN('0'));
 
       unbonding.total = totalUnbonding.toString().split('.')[0];
     }

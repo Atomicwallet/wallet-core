@@ -70,20 +70,13 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       unspendableBalance: UNSPENDABLE_BALANCE,
       dependencies: {
         [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(
-          () => import('ethereumjs-wallet'),
-        ),
+        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
       },
     });
 
     this.derivation = DERIVATION;
 
-    this.setExplorersModules([
-      Web3Explorer,
-      FtmExplorer,
-      MoralisExplorer,
-      ETHNftExplorer,
-    ]);
+    this.setExplorersModules([Web3Explorer, FtmExplorer, MoralisExplorer, ETHNftExplorer]);
 
     this.loadExplorers(config);
 
@@ -95,9 +88,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     this.gasPriceConfig = null;
     this.bannedTokens = [];
 
-    const web3Params = explorers.find(
-      ({ className }) => className === 'Web3Explorer',
-    );
+    const web3Params = explorers.find(({ className }) => className === 'Web3Explorer');
 
     this.web3 = new Web3Explorer({
       wallet: this.instance,
@@ -109,12 +100,9 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     this.tokens = {};
     this.nonce = new this.BN('0');
 
-    this.eventEmitter.on(
-      `${this.ticker}::confirmed-socket-tx`,
-      (coinId, unconfirmedTx, ticker) => {
-        this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
-      },
-    );
+    this.eventEmitter.on(`${this.ticker}::confirmed-socket-tx`, (coinId, unconfirmedTx, ticker) => {
+      this.eventEmitter.emit('socket::tx::confirmed', { id: coinId, ticker });
+    });
   }
 
   /**
@@ -146,7 +134,8 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   setFeeData(feeData = {}) {
     super.setFeeData(feeData);
     this.gasLimit = Number(feeData.gasLimit);
-    this.stakingGasLimit = Number(feeData.stakingGasLimit) || DEFAULT_MAX_GAS; // @TODO replace by estimated gasLimit in future
+    // @TODO replace by estimated gasLimit in future
+    this.stakingGasLimit = Number(feeData.stakingGasLimit) || DEFAULT_MAX_GAS;
     this.nftGasLimitCoefficient = Number(feeData.nftGasLimitCoefficient);
     this.nftGasPriceCoefficient = Number(feeData.nftGasPriceCoefficient);
     this.gasLimitCoefficient = Number(feeData.gasLimitCoefficient);
@@ -166,11 +155,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     }
 
     // @TODO Check for failed transactions (@see ETHCoin)
-    const [
-      transactions,
-      { nftTransactions = [] },
-      { rawTokenTransactions = [] },
-    ] = await Promise.all(
+    const [transactions, { nftTransactions = [] }, { rawTokenTransactions = [] }] = await Promise.all(
       [
         this.getProvider('history').getTransactions({ address: this.address }),
         this.getProvider('nft-history').getNftTransactions({
@@ -195,9 +180,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
           ticker,
           name: token?.name ?? rawTx.name,
           walletid: getTokenId({ ticker, contract, parent: this.ticker }),
-          amount: isKnownToken
-            ? toCurrency(rawTx.value, Number(token.decimal))
-            : null,
+          amount: isKnownToken ? toCurrency(rawTx.value, Number(token.decimal)) : null,
         }),
       );
       return txs;
@@ -257,15 +240,10 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {Promise<object>}
    */
   async loadWallet(seed) {
-    const [coreLibrary, { hdkey }] = await Promise.all([
-      this.getCoreLibrary(),
-      this.loadLib(ETHEREUM_JS_WALLET_SDK),
-    ]);
+    const [coreLibrary, { hdkey }] = await Promise.all([this.getCoreLibrary(), this.loadLib(ETHEREUM_JS_WALLET_SDK)]);
     const ethHDKey = hdkey.fromMasterSeed(seed);
     const wallet = ethHDKey.getWallet();
-    const account = coreLibrary.eth.accounts.privateKeyToAccount(
-      wallet.getPrivateKeyString(),
-    );
+    const account = coreLibrary.eth.accounts.privateKeyToAccount(wallet.getPrivateKeyString());
 
     if (!account) {
       throw new Error(`${this.wallet.ticker} can't get the wallet`);
@@ -317,10 +295,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     let gasPriceIncremented;
 
     if (!userGasPrice) {
-      const gasPrice =
-        isSendAll && userFee
-          ? Number(userFee) / Number(this.gasLimit)
-          : await this.getGasPrice();
+      const gasPrice = isSendAll && userFee ? Number(userFee) / Number(this.gasLimit) : await this.getGasPrice();
 
       // @TODO Possible wrong implementation which uses multiplication instead of addition.
       // @See discussion in Slack: https://atomicwallet.slack.com/archives/CGYJCPNBY/p1674047528806719?thread_ts=1674046796.998489&cid=CGYJCPNBY
@@ -333,10 +308,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     // To send FTM coins, we must use exactly 21000 units of gas, otherwise it will break the "send all".
     const gas = paymentData ? gasLimit || this.gasLimit : DEFAULT_MIN_GAS;
 
-    const [coreLibrary] = await Promise.all([
-      this.getCoreLibrary(),
-      this.getNonce(),
-    ]);
+    const [coreLibrary] = await Promise.all([this.getCoreLibrary(), this.getNonce()]);
     const transaction = {
       to: address,
       value: amount,
@@ -350,24 +322,12 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       transaction.data = paymentData;
     }
 
-    const signedTx = await coreLibrary.eth.accounts.signTransaction(
-      transaction,
-      this.#privateKey,
-    );
+    const signedTx = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
     return signedTx.rawTransaction;
   }
 
-  async createTokenTransaction({
-    address,
-    amount,
-    custom,
-    userGasPrice,
-    gasLimit,
-    contract,
-    multiplier,
-    nonce,
-  }) {
+  async createTokenTransaction({ address, amount, custom, userGasPrice, gasLimit, contract, multiplier, nonce }) {
     const contractData = this.getProvider('send').createSendTokenContract(
       contract,
       this.address,
@@ -468,14 +428,11 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<number>} - Gas price in WEI
    */
   async getGasPriceForSendNft(coefficient) {
-    const { node: rawGasPrice } =
-      (await this.getProvider('node').getGasPrice()) ?? {};
+    const { node: rawGasPrice } = (await this.getProvider('node').getGasPrice()) ?? {};
     const gasPrice = Number(rawGasPrice) + coefficient * GWEI;
     const defaultMaxGasPriceInGwei = this.defaultMaxGasPrice * GWEI;
 
-    return gasPrice > defaultMaxGasPriceInGwei
-      ? defaultMaxGasPriceInGwei
-      : gasPrice;
+    return gasPrice > defaultMaxGasPriceInGwei ? defaultMaxGasPriceInGwei : gasPrice;
   }
 
   /**
@@ -488,20 +445,10 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<number>}
    * @throws {ExternalError}
    */
-  async estimateGasForSendNft(
-    address,
-    toContract,
-    data,
-    gasLimitCoefficient = 1,
-  ) {
+  async estimateGasForSendNft(address, toContract, data, gasLimitCoefficient = 1) {
     try {
       /** @type number */
-      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(
-        address,
-        toContract,
-        null,
-        data,
-      );
+      const fetchedGasLimit = await this.getProvider('nft-send').estimateGas(address, toContract, null, data);
 
       return Math.ceil(fetchedGasLimit * gasLimitCoefficient);
     } catch (error) {
@@ -523,11 +470,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {UserFeeOptions} userOptions - Custom user options.
    * @returns {Promise<{gasLimit: number, gasPrice: number, nonce: number}>}
    */
-  async getNftTransferGasParams(
-    toContract,
-    data,
-    { userGasPrice, userGasLimit },
-  ) {
+  async getNftTransferGasParams(toContract, data, { userGasPrice, userGasLimit }) {
     const {
       address,
       nftGasPriceCoefficient,
@@ -539,11 +482,9 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     } = this;
 
     /** @type number */
-    const gasPriceCoefficient =
-      nftGasPriceCoefficient || configGasPriceCoefficient;
+    const gasPriceCoefficient = nftGasPriceCoefficient || configGasPriceCoefficient;
     /** @type number */
-    const gasLimitCoefficient =
-      nftGasLimitCoefficient || configGasLimitCoefficient;
+    const gasLimitCoefficient = nftGasLimitCoefficient || configGasLimitCoefficient;
 
     const defaultGasValues = [
       (defaultGasPrice + gasPriceCoefficient) * GWEI,
@@ -554,18 +495,10 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
     const [gasPrice, gasLimit] = await Promise.allSettled([
       userGasPrice || this.getGasPriceForSendNft(gasPriceCoefficient),
-      userGasLimit ||
-        this.estimateGasForSendNft(
-          address,
-          toContract,
-          data,
-          gasLimitCoefficient,
-        ),
+      userGasLimit || this.estimateGasForSendNft(address, toContract, data, gasLimitCoefficient),
     ]).then((resultList) =>
       resultList.map((result, i) => {
-        return result.status === 'fulfilled'
-          ? result.value
-          : defaultGasValues[i];
+        return result.status === 'fulfilled' ? result.value : defaultGasValues[i];
       }),
     );
 
@@ -585,17 +518,9 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {Promise<BN>} - The fee.
    * @throws {ExternalError}
    */
-  async getNftFee({
-    contractAddress,
-    tokenId,
-    tokenStandard,
-    toAddress = null,
-    userOptions = {},
-  }) {
+  async getNftFee({ contractAddress, tokenId, tokenStandard, toAddress = null, userOptions = {} }) {
     const targetAddress =
-      !toAddress || toAddress.toLowerCase() === this.address.toLowerCase()
-        ? MOCKED_FTM_ADDRESS
-        : toAddress;
+      !toAddress || toAddress.toLowerCase() === this.address.toLowerCase() ? MOCKED_FTM_ADDRESS : toAddress;
 
     try {
       const data = await this.getProvider('nft-send').getNftContractData(
@@ -605,11 +530,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         tokenId,
         tokenStandard,
       );
-      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(
-        contractAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice } = await this.getNftTransferGasParams(contractAddress, data, userOptions);
 
       return new this.BN(gasPrice).mul(new this.BN(gasLimit));
     } catch (error) {
@@ -629,11 +550,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
   async createNftTransaction({ contractAddress, data, userOptions = {} }) {
     try {
-      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(
-        contractAddress,
-        data,
-        userOptions,
-      );
+      const { gasLimit, gasPrice, nonce } = await this.getNftTransferGasParams(contractAddress, data, userOptions);
       const transaction = {
         to: contractAddress,
         value: HEX_ZERO,
@@ -648,10 +565,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       };
 
       const coreLibrary = await this.getCoreLibrary();
-      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(
-        transaction,
-        this.#privateKey,
-      );
+      const { rawTransaction } = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
 
       return rawTransaction;
     } catch (error) {
@@ -663,9 +577,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   async getNonce() {
     const coreLibrary = await this.getCoreLibrary();
 
-    this.nonce = new this.BN(
-      await coreLibrary.eth.getTransactionCount(this.address),
-    );
+    this.nonce = new this.BN(await coreLibrary.eth.getTransactionCount(this.address));
     return this.nonce;
   }
 
@@ -685,9 +597,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   async getFee({ userGasPrice = null, gasLimit = null } = {}) {
     const gasPrice = userGasPrice || (await this.getGasPrice());
 
-    return new this.BN(String(gasPrice)).mul(
-      new this.BN(gasLimit || this.gasLimit),
-    );
+    return new this.BN(String(gasPrice)).mul(new this.BN(gasLimit || this.gasLimit));
   }
 
   /**
@@ -704,10 +614,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         console.warn(`rawGasPrice for ${NAME} error:`, error);
       });
 
-    return (
-      Number(rawGasPrice ?? this.defaultGasPrice * GWEI) +
-      this.gasPriceCoefficient * GWEI
-    );
+    return Number(rawGasPrice ?? this.defaultGasPrice * GWEI) + this.gasPriceCoefficient * GWEI;
   }
 
   /**
@@ -762,9 +669,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       })
       .catch(() => {});
 
-    return estimateGas
-      ? Math.round(estimateGas * this.gasLimitCoefficient).toString()
-      : defaultGas;
+    return estimateGas ? Math.round(estimateGas * this.gasLimitCoefficient).toString() : defaultGas;
   }
 
   /**
@@ -779,9 +684,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     }
 
     const maximumFee = (fee && new this.BN(fee)) || (await this.getFee());
-    const availableBalance = new this.BN(this.balance)
-      .sub(maximumFee)
-      .sub(new this.BN(this.unspendableBalance));
+    const availableBalance = new this.BN(this.balance).sub(maximumFee).sub(new this.BN(this.unspendableBalance));
 
     if (new this.BN(availableBalance).lt(new this.BN(0))) {
       return '0';
@@ -799,17 +702,12 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     this.getNonce();
 
     if (tokenInfo && tokenInfo.isToken) {
-      const tokenBalance = await this.getProvider(
-        'node',
-      ).getTokenBalanceByContractAddress({
+      const tokenBalance = await this.getProvider('node').getTokenBalanceByContractAddress({
         address: this.address,
         contractAddress: tokenInfo.contract.toLowerCase(),
       });
 
-      const contractVariant = [
-        tokenInfo.contract,
-        tokenInfo.contract.toLowerCase(),
-      ];
+      const contractVariant = [tokenInfo.contract, tokenInfo.contract.toLowerCase()];
 
       contractVariant.forEach((contract) => {
         if (this.tokens[contract]) {
@@ -844,9 +742,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
     // filter existing tokens with predefined smart contract addresses
     const tokens = Object.values(this.tokens).filter(({ contract }) =>
-      stakingContracts.some(
-        ({ address }) => address.toLowerCase() === contract.toLowerCase(),
-      ),
+      stakingContracts.some(({ address }) => address.toLowerCase() === contract.toLowerCase()),
     );
 
     await this.getProvider('stake').getTokensInfo(tokens, this.address);
@@ -859,10 +755,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
          * But at this point we ensure that every staking smart-contract have same decimals as FTM
          * and their value is 1:1 to FTM
          */
-        acc.staked = new Amount(
-          acc.staked.toBN().add(new this.BN(balance)),
-          this,
-        );
+        acc.staked = new Amount(acc.staked.toBN().add(new this.BN(balance)), this);
 
         acc.validators[contract] = {
           address: contract,
@@ -933,8 +826,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       address,
       amount,
       paymentData: data,
-      gasLimit:
-        this.stakingGasLimit || (await this.estimateGas(amount, address)),
+      gasLimit: this.stakingGasLimit || (await this.estimateGas(amount, address)),
     }); // @TODO replace by estimated gasLimit in future
 
     return tx;
@@ -1078,9 +970,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     try {
       const isUpdateNeeded = !this.gasPriceConfig || force;
 
-      this.gasPriceConfig = isUpdateNeeded
-        ? await this.web3.getGasPriceConfig()
-        : this.gasPriceConfig;
+      this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
       console.error(error);
     }
@@ -1091,9 +981,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     // ACT-992: This multiplier needed because 'fastest', 'fast', 'average' params in config contains gwei * 10
     const multiplier = 10;
     const config = await this.getEstimatedTimeCfg();
-    const speed = ['fastest', 'fast', 'average'].find(
-      (key) => config?.[key] <= gasPrice * multiplier,
-    );
+    const speed = ['fastest', 'fast', 'average'].find((key) => config?.[key] <= gasPrice * multiplier);
 
     if (mapping) {
       const TIMES_MAP = {

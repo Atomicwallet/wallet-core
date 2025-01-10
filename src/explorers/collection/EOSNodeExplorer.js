@@ -2,11 +2,7 @@ import { Api, JsonRpc } from 'eosjs';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 import { ExplorerRequestError, WalletError } from 'src/errors';
 
-import {
-  SEND_TRANSACTION_TYPE,
-  LOAD_WALLET_ERROR,
-  PUBLIC_KEY_TO_ADDRESS_ERROR,
-} from '../../utils/const';
+import { SEND_TRANSACTION_TYPE, LOAD_WALLET_ERROR, PUBLIC_KEY_TO_ADDRESS_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 
 const TX_CONFIRMATIONS = 10;
@@ -34,9 +30,7 @@ class EOSNodeExplorer extends Explorer {
     if (!response.account_names) {
       throw new WalletError({
         type: LOAD_WALLET_ERROR,
-        error: new Error(
-          `${PUBLIC_KEY_TO_ADDRESS_ERROR}${this.config.baseUrl}`,
-        ),
+        error: new Error(`${PUBLIC_KEY_TO_ADDRESS_ERROR}${this.config.baseUrl}`),
         instance: this,
       });
     }
@@ -125,11 +119,7 @@ class EOSNodeExplorer extends Explorer {
           );
         })
         .reduce((unique, object) => {
-          if (
-            !unique.some(
-              (obj) => obj.action_trace.trx_id === object.action_trace.trx_id,
-            )
-          ) {
+          if (!unique.some((obj) => obj.action_trace.trx_id === object.action_trace.trx_id)) {
             unique.push(object);
           }
           return unique;
@@ -148,9 +138,7 @@ class EOSNodeExplorer extends Explorer {
   }
 
   getTxOtherSideAddress(selfAddress, tx) {
-    return tx.action_trace.act.data.to === selfAddress
-      ? tx.action_trace.act.data.from
-      : tx.action_trace.act.data.to;
+    return tx.action_trace.act.data.to === selfAddress ? tx.action_trace.act.data.from : tx.action_trace.act.data.to;
   }
 
   getTxValue(selfAddress, tx) {
@@ -175,9 +163,7 @@ class EOSNodeExplorer extends Explorer {
     const transaction = JSON.parse(rawtx);
     const eos = new Api({
       rpc: new JsonRpc(this.config.baseUrl.replace(/\/$/, ''), { fetch }),
-      signatureProvider: new JsSignatureProvider([
-        JSON.parse(privateKey).active.privateKey,
-      ]),
+      signatureProvider: new JsSignatureProvider([JSON.parse(privateKey).active.privateKey]),
       textDecoder: new TextDecoder(),
       textEncoder: new TextEncoder(),
     });

@@ -1,10 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
 
-import {
-  SEND_TRANSACTION_TYPE,
-  GET_TRANSACTION_TYPE,
-  UNDEFINED_OPERATION_ERROR,
-} from '../../utils/const';
+import { SEND_TRANSACTION_TYPE, GET_TRANSACTION_TYPE, UNDEFINED_OPERATION_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 
 const RIPPLE_START_DATE = 946684800;
@@ -74,9 +70,7 @@ class RippleExplorer extends Explorer {
     this.currentLedgerVersion = response.ledger_index_max;
 
     // return super.modifyTransactionsResponse(response.transactions)
-    return response.transactions.map(({ tx }) =>
-      this.modifyTransactionResponse(tx, address),
-    );
+    return response.transactions.map(({ tx }) => this.modifyTransactionResponse(tx, address));
   }
 
   getTransactionUrl(txId) {
@@ -205,16 +199,14 @@ class RippleExplorer extends Explorer {
       params: [data],
       id: this.requestId,
     };
-    const response = await this.client
-      .post('', JSON.stringify(params))
-      .catch((error) => {
-        throw new ExplorerRequestError({
-          type,
-          error,
-          url,
-          instance: this,
-        });
+    const response = await this.client.post('', JSON.stringify(params)).catch((error) => {
+      throw new ExplorerRequestError({
+        type,
+        error,
+        url,
+        instance: this,
       });
+    });
 
     // hook for not activated acc
     if (response.data.result.error === 'actNotFound') {

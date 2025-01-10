@@ -24,16 +24,7 @@ class XMRCoin extends HasProviders(Coin) {
    * @param {Explorer[]}  explorers the explorers
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({
-    alias,
-    notify,
-    feeData,
-    explorers,
-    txWebUrl,
-    socket,
-    id,
-    atomicId,
-  }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id, atomicId }) {
     const config = {
       id,
       alias,
@@ -168,10 +159,7 @@ class XMRCoin extends HasProviders(Coin) {
    * @returns {Promise<boolean>}
    */
   async getIsSendAllByAmount(amount) {
-    const [balance, fee] = await Promise.all([
-      this.getBalance(),
-      this.getFee(),
-    ]);
+    const [balance, fee] = await Promise.all([this.getBalance(), this.getFee()]);
 
     return amount === new BN(balance).sub(new BN(fee)).toString();
   }
@@ -193,15 +181,9 @@ class XMRCoin extends HasProviders(Coin) {
    * @returns {Promise<MyMoneroTransactionOptions>} - Raw transaction options
    * @throws {ExternalError}
    */
-  async createTransaction({
-    address,
-    amount,
-    memo,
-    isSendAll: isSendAllRequested = false,
-  }) {
+  async createTransaction({ address, amount, memo, isSendAll: isSendAllRequested = false }) {
     try {
-      const isSendAll =
-        isSendAllRequested || (await this.getIsSendAllByAmount(amount));
+      const isSendAll = isSendAllRequested || (await this.getIsSendAllByAmount(amount));
 
       return {
         destinations: [

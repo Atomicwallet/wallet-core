@@ -24,12 +24,7 @@ class NearblocksExplorer extends Explorer {
   /**
    * @returns {string} An url one can use to return list of transactions by given address.
    */
-  getTransactionsUrl(
-    address,
-    offsetUnused,
-    limit = this.defaultTxLimit,
-    pageNum = 0,
-  ) {
+  getTransactionsUrl(address, offsetUnused, limit = this.defaultTxLimit, pageNum = 0) {
     return `account/${address}/txns?page=${pageNum + 1}&per_page=${limit}&order=desc`;
   }
 
@@ -58,9 +53,7 @@ class NearblocksExplorer extends Explorer {
    * @returns <Array<Transaction>> modified response
    */
   modifyTransactionsResponse(response, address) {
-    return super
-      .modifyTransactionsResponse(response.txns, address)
-      .filter(Boolean);
+    return super.modifyTransactionsResponse(response.txns, address).filter(Boolean);
   }
 
   /**
@@ -81,11 +74,7 @@ class NearblocksExplorer extends Explorer {
         explorer: this.constructor.name,
         txid: this.getTxHash(tx),
         direction,
-        otherSideAddress: this.getTxOtherSideAddress(
-          selfAddress,
-          tx,
-          direction,
-        ),
+        otherSideAddress: this.getTxOtherSideAddress(selfAddress, tx, direction),
         amount: this.getTxValue(selfAddress, tx),
         fee: this.getTxFee(tx),
         feeTicker: this.wallet.parent,
@@ -106,9 +95,7 @@ class NearblocksExplorer extends Explorer {
    * @returns <true|false> true - incoming, false - outgoing
    */
   getTxDirection(selfAddress, tx) {
-    return tx.actions[0].action === TX_TYPE_UNSTAKE
-      ? true
-      : tx.receiver_account_id === selfAddress;
+    return tx.actions[0].action === TX_TYPE_UNSTAKE ? true : tx.receiver_account_id === selfAddress;
   }
 
   /**
@@ -144,9 +131,7 @@ class NearblocksExplorer extends Explorer {
    */
   getTxValue(selfAddress, tx) {
     try {
-      return this.wallet.toCurrencyUnit(
-        getNumberStringWithoutENotation(tx.actions_agg.deposit),
-      );
+      return this.wallet.toCurrencyUnit(getNumberStringWithoutENotation(tx.actions_agg.deposit));
     } catch (error) {
       console.error(error);
       return '0';
@@ -169,9 +154,7 @@ class NearblocksExplorer extends Explorer {
    */
   getTxFee(tx) {
     try {
-      return this.wallet.toCurrencyUnit(
-        getNumberStringWithoutENotation(tx.outcomes_agg.transaction_fee),
-      );
+      return this.wallet.toCurrencyUnit(getNumberStringWithoutENotation(tx.outcomes_agg.transaction_fee));
     } catch (error) {
       console.error(error);
       return '0';

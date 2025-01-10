@@ -1,15 +1,8 @@
 import { AptosClient, CoinClient } from 'aptos';
 import { ExternalError } from 'src/errors';
 
-import {
-  EXTERNAL_ERROR,
-  GET_TRANSACTIONS_TYPE,
-  HTTP_STATUS_NOT_FOUND,
-} from '../../utils/const';
-import {
-  convertTimestampToDateTime,
-  getStringWithEnsuredEndChar,
-} from '../../utils/convert';
+import { EXTERNAL_ERROR, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/const';
+import { convertTimestampToDateTime, getStringWithEnsuredEndChar } from '../../utils/convert';
 import Explorer from '../Explorer';
 
 const ACCOUNT_NOT_FOUND_ERROR_CODE = 'account_not_found';
@@ -61,8 +54,7 @@ class AptExplorer extends Explorer {
    */
   async sendTransaction(bcsTxn) {
     try {
-      const { hash } =
-        await this.aptosClient.submitSignedBCSTransaction(bcsTxn);
+      const { hash } = await this.aptosClient.submitSignedBCSTransaction(bcsTxn);
 
       return { txid: hash };
     } catch (error) {
@@ -92,10 +84,7 @@ class AptExplorer extends Explorer {
     } catch (error) {
       const { status, errorCode } = error ?? {};
 
-      if (
-        status === HTTP_STATUS_NOT_FOUND &&
-        errorCode === ACCOUNT_NOT_FOUND_ERROR_CODE
-      ) {
+      if (status === HTTP_STATUS_NOT_FOUND && errorCode === ACCOUNT_NOT_FOUND_ERROR_CODE) {
         return {
           balance: null,
           isRegistered: false,
@@ -106,10 +95,7 @@ class AptExplorer extends Explorer {
   }
 
   handleRequestError(error, reqArgs) {
-    if (
-      reqArgs.type === GET_TRANSACTIONS_TYPE &&
-      error.response?.status === HTTP_STATUS_NOT_FOUND
-    ) {
+    if (reqArgs.type === GET_TRANSACTIONS_TYPE && error.response?.status === HTTP_STATUS_NOT_FOUND) {
       return [];
     }
     return super.handleRequestError(error, reqArgs);
@@ -133,12 +119,7 @@ class AptExplorer extends Explorer {
    * @param {number} [pageNum]
    * @return {start: string, limit: string}
    */
-  getTransactionsParams(
-    address,
-    offset = 0,
-    limit = this.defaultTxLimit,
-    pageNum,
-  ) {
+  getTransactionsParams(address, offset = 0, limit = this.defaultTxLimit, pageNum) {
     return { start: String(offset), limit: String(limit) };
   }
 
@@ -225,10 +206,7 @@ class AptExplorer extends Explorer {
    * @return {Date}
    */
   getTxDateTime(tx) {
-    return convertTimestampToDateTime(
-      Number(tx.timestamp),
-      TX_TIMESTAMPS_IN_ONE_SECOND,
-    );
+    return convertTimestampToDateTime(Number(tx.timestamp), TX_TIMESTAMPS_IN_ONE_SECOND);
   }
 
   /**

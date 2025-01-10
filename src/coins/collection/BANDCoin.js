@@ -54,12 +54,9 @@ class BANDCoin extends CosmosMixinV2(HasBlockScanner(HasProviders(Coin))) {
     this.denom = DENOM_NAME;
 
     this.sendFeeGas = feeData.sendFeeGas?.toString() || SEND_GAS_AMOUNT;
-    this.stakingFeeGas =
-      feeData.stakingFeeGas?.toString() || DELEGATE_GAS_AMOUNT;
-    this.claimFeeGas =
-      feeData.claimFeeGas?.toString() || CLAIM_REWARDS_GAS_AMOUNT;
-    this.reStakingFeeGas =
-      feeData.reStakingFeeGas?.toString() || RE_DELEGATE_GAS_AMOUNT;
+    this.stakingFeeGas = feeData.stakingFeeGas?.toString() || DELEGATE_GAS_AMOUNT;
+    this.claimFeeGas = feeData.claimFeeGas?.toString() || CLAIM_REWARDS_GAS_AMOUNT;
+    this.reStakingFeeGas = feeData.reStakingFeeGas?.toString() || RE_DELEGATE_GAS_AMOUNT;
     this.transactions = [];
     this.fields.paymentId = true;
     this.reserveForStake = feeData.reserveForStake || DEFAULT_RESERVE_FOR_STAKE;

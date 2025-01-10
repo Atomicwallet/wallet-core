@@ -7,9 +7,7 @@ import RippleExplorer from '../../explorers/collection/RippleExplorer';
 import { LazyLoadedLib } from '../../utils';
 import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 
-const racodecLazyLoaded = new LazyLoadedLib(
-  () => import('ripple-address-codec'),
-);
+const racodecLazyLoaded = new LazyLoadedLib(() => import('ripple-address-codec'));
 const KeypairsLazyLoaded = new LazyLoadedLib(() => import('ripple-keypairs'));
 const RippleApiLazyLoaded = new LazyLoadedLib(() => import('ripple-lib'));
 const BitcoinJSLazyLoaded = new LazyLoadedLib(() => import('bitcoinjs-lib'));
@@ -72,9 +70,7 @@ class XRPCoin extends Coin {
     const { RippleAPI } = await RippleApiLazyLoaded.get();
 
     this.rippleApi = new RippleAPI({
-      server: this.explorer.config.baseUrl
-        .replace('https', 'wss')
-        .replace(/:\d+/, ''),
+      server: this.explorer.config.baseUrl.replace('https', 'wss').replace(/:\d+/, ''),
     });
     return this.rippleApi;
   }
@@ -86,10 +82,7 @@ class XRPCoin extends Coin {
    * @return {Promise<Object>} The private key.
    */
   async loadWallet(seed) {
-    const [{ default: Keypairs }, BitcoinJS] = await Promise.all([
-      KeypairsLazyLoaded.get(),
-      BitcoinJSLazyLoaded.get(),
-    ]);
+    const [{ default: Keypairs }, BitcoinJS] = await Promise.all([KeypairsLazyLoaded.get(), BitcoinJSLazyLoaded.get()]);
 
     const root = BitcoinJS.bip32.fromSeed(seed); // fromBase58
     const node = root.derivePath(this.derivation);
@@ -153,9 +146,7 @@ class XRPCoin extends Coin {
     if (submit && successedCode.includes(submit.engine_result)) {
       return { txid: submit.tx_json.hash };
     }
-    const statusTx = await this.explorer.checkStatusTransaction(
-      submit?.tx_json.hash,
-    );
+    const statusTx = await this.explorer.checkStatusTransaction(submit?.tx_json.hash);
 
     if (statusTx === 'success') {
       return { txid: submit.tx_json.hash };
@@ -244,10 +235,7 @@ class XRPCoin extends Coin {
     };
 
     const rippleApi = await this.getRippleApi();
-    const signedTx = rippleApi.sign(
-      JSON.stringify(accountSet),
-      this.#privateKey,
-    );
+    const signedTx = rippleApi.sign(JSON.stringify(accountSet), this.#privateKey);
 
     return signedTx.signedTransaction;
   }
@@ -291,17 +279,12 @@ class XRPCoin extends Coin {
 
       rippleApi.connection.on('transaction', async ({ transaction }) => {
         try {
-          const statusTx = await this.explorer.checkStatusTransaction(
-            transaction.hash,
-          );
+          const statusTx = await this.explorer.checkStatusTransaction(transaction.hash);
 
           if (statusTx !== 'success') {
             return;
           }
-          const confirmedTx = await this.explorer.getTransaction(
-            this.address,
-            transaction.hash,
-          );
+          const confirmedTx = await this.explorer.getTransaction(this.address, transaction.hash);
 
           // await history.filterAndUpdateTransactions([confirmedTx]);
 

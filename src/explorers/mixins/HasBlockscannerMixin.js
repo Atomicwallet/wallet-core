@@ -10,29 +10,18 @@ const HasBlockscannerMixin = (superclass) =>
       // await history.filterAndUpdateTransactions([newTx])
 
       if (type === 'receive') {
-        this.eventEmitter.emit(
-          `${this.wallet.parent}-${newTx.walletid}::new-socket-tx`,
-          {
-            unconfirmedTx: newTx,
-          },
-        );
+        this.eventEmitter.emit(`${this.wallet.parent}-${newTx.walletid}::new-socket-tx`, {
+          unconfirmedTx: newTx,
+        });
       }
 
       if (type === 'confirm') {
-        this.eventEmitter.emit(
-          `${this.wallet.parent}::confirmed-socket-tx`,
-          newTx.walletid,
-          newTx,
-          newTx.ticker,
-        );
+        this.eventEmitter.emit(`${this.wallet.parent}::confirmed-socket-tx`, newTx.walletid, newTx, newTx.ticker);
       }
 
       MESSAGE_TYPES.forEach((message) => {
         if (type === message) {
-          this.eventEmitter.emit(
-            `${this.wallet.parent}::confirmed-${type}`,
-            newTx || {},
-          );
+          this.eventEmitter.emit(`${this.wallet.parent}::confirmed-${type}`, newTx || {});
         }
       });
     }
