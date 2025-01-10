@@ -73,6 +73,10 @@ const BitcoreMixin = (superclass) =>
       return bitcoreLib.Address.isValid(address || this.address, await this.getNetwork());
     }
 
+    getTimestamp() {
+      return Number(new Date().getTime().toString().slice(0, -3));
+    }
+
     async createTransaction({ address, amount, memo, userFee }) {
       const bitcoreLib = await this.loadLib(BITCORE);
 
@@ -85,7 +89,7 @@ const BitcoreMixin = (superclass) =>
       const tx = new bitcoreLib.Transaction().from(utxos).to(address, Number(amount)).fee(satoshiFee);
 
       if (this.ticker === 'XVG') {
-        tx.timestamp = Number(new Date().getTime().toString().slice(0, -3));
+        tx.timestamp = this.getTimestamp();
       }
 
       if (Number(this.feePerByte) > 0) {

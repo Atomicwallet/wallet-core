@@ -143,20 +143,26 @@ class WAVESCoin extends Coin {
   async createTransaction({ address, amount }) {
     const fee = (await this.getFee()).toNumber();
     const { transfer } = await wavesTransactionLib.get();
-    const { binary } = await wavesMarshalLib.get();
-    const { utils } = await wavesSignatureGeneratorLib.get();
 
-    const transaction = transfer({
+    const unsignedTransaction = transfer({
       amount: Number(amount),
       recipient: address,
       fee,
       senderPublicKey: await this.getPublicAddress(),
     });
-    const rawTx = binary.serializeTx(transaction);
 
-    transaction.proofs.push(utils.crypto.buildTransactionSignature(rawTx, this.#privateKey));
+    return this.signTransaction(unsignedTransaction);
+  }
 
-    return JSON.stringify(transaction);
+  async signTransaction(unsignedTransaction) {
+    const { binary } = await wavesMarshalLib.get();
+    const { utils } = await wavesSignatureGeneratorLib.get();
+
+    const rawTx = binary.serializeTx(unsignedTransaction);
+
+    unsignedTransaction.proofs.push(utils.crypto.buildTransactionSignature(rawTx, this.#privateKey));
+
+    return JSON.stringify(unsignedTransaction);
   }
 
   setPrivateKey(privateKey) {

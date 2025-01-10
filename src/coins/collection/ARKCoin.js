@@ -152,14 +152,18 @@ class ARKCoin extends Coin {
     const { nonce } = await this.getInfo();
     const senderNonce = new this.BN(nonce).addn(1);
 
-    return Transactions.BuilderFactory.transfer()
+    const unsignedTx = Transactions.BuilderFactory.transfer()
       .version(TX_VERSION)
       .nonce(senderNonce.toString())
       .recipientId(address)
       .amount(amount)
-      .fee(this.fee)
-      .signWithWif(this.#privateKey)
-      .getStruct(); // returns signed transaction object
+      .fee(this.fee);
+
+    return this.signTransaction(unsignedTx);
+  }
+
+  signTransaction(unsignedTx) {
+    return unsignedTx.signWithWif(this.#privateKey).getStruct();
   }
 
   setPrivateKey(privateKey) {

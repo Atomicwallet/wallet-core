@@ -147,13 +147,21 @@ class XEMCoin extends Coin {
       this.toCurrencyUnit(amount),
       memo,
     );
-    const transactionEntity = nem.model.transactions.prepare('transferTransaction')(
+
+    const unsignedTransaction = nem.model.transactions.prepare('transferTransaction')(
       common,
       transferTransaction,
       networkId,
     );
+
+    return this.signTransaction(unsignedTransaction);
+  }
+
+  async signTransaction(unsignedTransaction) {
+    const nem = await this.getNemLib();
+
     const keyPair = nem.crypto.keyPair.create(this.#privateKey);
-    const unsignedRawTx = nem.utils.serialization.serializeTransaction(transactionEntity);
+    const unsignedRawTx = nem.utils.serialization.serializeTransaction(unsignedTransaction);
     const signature = keyPair.sign(unsignedRawTx);
 
     const transaction = {

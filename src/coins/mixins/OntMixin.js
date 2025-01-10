@@ -105,9 +105,8 @@ const OntMixin = (superclass) =>
       if (!asset) {
         asset = this.ticker;
       }
-      const { OntAssetTxBuilder, TransactionBuilder, Crypto } = await ontologySdkLib.get();
+      const { OntAssetTxBuilder, Crypto } = await ontologySdkLib.get();
 
-      const privateKeyObj = await this.getPrivateKeyObject();
       const addressFromObj = new Crypto.Address(this.address);
       const addressToObj = new Crypto.Address(address);
 
@@ -120,6 +119,13 @@ const OntMixin = (superclass) =>
         GAS_LIMIT,
       );
 
+      return this.signTransaction(transaction);
+    }
+
+    async signTransaction(transaction) {
+      const { TransactionBuilder } = await ontologySdkLib.get();
+
+      const privateKeyObj = await this.getPrivateKeyObject();
       TransactionBuilder.signTransaction(transaction, privateKeyObj);
 
       return transaction.serialize();
