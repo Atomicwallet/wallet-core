@@ -499,8 +499,9 @@ abstract class Coin extends AbstractWallet {
    * Sets the private key.
    *
    * @param {String} privateKey The private key WIF
+   * @param {String} mnemonic
    */
-  setPrivateKey(privateKey: string, seed?: string) {
+  async setPrivateKey(privateKey: string, mnemonic?: string) {
     throw new UndeclaredAbstractMethodError('async setPrivateKey', this);
   }
 
