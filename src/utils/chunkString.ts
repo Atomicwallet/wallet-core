@@ -1,5 +1,5 @@
-const chunkString = (strWallets: string, maxStringLength = 100) => {
-  const result = [];
+const chunkString = (strWallets: string, maxStringLength = 100): string[] => {
+  const result: string[] = [];
 
   while (strWallets.length > maxStringLength) {
     const maxString = strWallets.slice(0, maxStringLength);
