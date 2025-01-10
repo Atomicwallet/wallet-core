@@ -95,7 +95,7 @@ export function toCurrency(value: number | string | BN, decimal: number) {
 
   const valueBN = new BN(value);
 
-  if (valueBN.lte(new BN(0))) {
+  if (valueBN.lt(new BN(0))) {
     throw new Error('negative');
   }
   const valueString = new BN(value).toString();
