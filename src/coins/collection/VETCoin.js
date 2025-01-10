@@ -216,6 +216,14 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
   }
 
   /**
+   *
+   * @return {Promise<{}>}
+   */
+  getLatestBlock() {
+    return this.getProvider('block').getLatestBlock();
+  }
+
+  /**
    * Creates a transaction.
    *
    * @param {String} address The destination address
@@ -228,7 +236,7 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
     const { Transaction, cry } = await thorDevKitLib.get();
     const hexBase = 16;
     const blockRefLen = 18;
-    const lastBlockInfo = await this.getProvider('block').getLatestBlock();
+    const lastBlockInfo = await this.getLatestBlock();
     const privateKeyBuffer = Buffer.from(
       this.#privateKey.substring(TWO),
       'hex',
