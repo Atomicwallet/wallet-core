@@ -124,6 +124,18 @@ class DOTCoin extends HasProviders(HasBlockScanner(Coin)) {
     return { balance, balances: this.balances };
   }
 
+  getLatestBlock() {
+    return this.getProvider('meta').getLatestBlock();
+  }
+
+  getTxMeta() {
+    return this.getProvider('meta').getTxMeta();
+  }
+
+  getMetadata() {
+    return this.getProvider('meta').getMetadata();
+  }
+
   async createTransaction({ address, amount }) {
     if (!address || !address.length === 0) {
       throw new WalletError({
@@ -140,9 +152,9 @@ class DOTCoin extends HasProviders(HasBlockScanner(Coin)) {
       { EXTRINSIC_VERSION },
       { getRegistry, construct, methods: substrateMethods },
     ] = await Promise.all([
-      this.getProvider('meta').getLatestBlock(),
-      this.getProvider('meta').getTxMeta(),
-      this.getProvider('meta').getMetadata(),
+      this.getLatestBlock(),
+      this.getTxMeta(),
+      this.getMetadata(),
       polkadotTypesExtrinsicLib.get(),
       substrateTxWrapperPolkadotLib.get(),
     ]);
@@ -175,6 +187,24 @@ class DOTCoin extends HasProviders(HasBlockScanner(Coin)) {
 
     const signingPayload = construct.signingPayload(unsignedTx, { registry });
 
+    return this.sign({
+      registry,
+      construct,
+      signingPayload,
+      version: EXTRINSIC_VERSION,
+      unsignedTx,
+      metadata,
+    });
+  }
+
+  async sign({
+    registry,
+    construct,
+    signingPayload,
+    version,
+    unsignedTx,
+    metadata,
+  }) {
     const { Sr25519Account } = await UniqueNftLib.get();
 
     const acc = Sr25519Account.other.fromMiniSecret(
@@ -185,7 +215,7 @@ class DOTCoin extends HasProviders(HasBlockScanner(Coin)) {
 
     const { signature } = registry
       .createType('ExtrinsicPayload', signingPayload, {
-        version: EXTRINSIC_VERSION,
+        version,
       })
       .sign({
         sign: (message) => {
