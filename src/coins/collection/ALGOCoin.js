@@ -125,8 +125,12 @@ class ALGOCoin extends HasProviders(Coin) {
     return algosdk.isValidAddress(address);
   }
 
+  getLatestBlock() {
+    return this.getProvider('send').getLatestBlock();
+  }
+
   async createTransaction({ address, amount }) {
-    const lastBlockInfo = await this.getProvider('send').getLatestBlock();
+    const lastBlockInfo = await this.getLatestBlock();
     const signedTxn = await this.signTransaction({
       from: this.address,
       to: address,
