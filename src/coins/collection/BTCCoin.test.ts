@@ -17,4 +17,8 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
+jest
+  .spyOn(wallet, 'getFee')
+  .mockReturnValue(Promise.resolve(new wallet.BN('45630')));
+
 generateWalletTests(wallet);
