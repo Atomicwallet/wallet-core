@@ -1,4 +1,3 @@
-// import configManager from '../ConfigManager'
 import { Token } from '../abstract';
 
 class FLRToken extends Token {
