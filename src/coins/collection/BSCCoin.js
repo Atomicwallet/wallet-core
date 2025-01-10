@@ -568,12 +568,6 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
     this.bannedTokens = await this.getBannedTokenList();
     let tokens;
 
-    // try {
-    //   tokens = await configManager.get(ConfigKey.BscTokens);
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    // }
-
     return tokens || TOKENS_CACHE;
   }
 
@@ -583,12 +577,6 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
    */
   async getBannedTokenList() {
     let banned;
-
-    // try {
-    //   banned = await configManager.get('bsc-tokens-banned');
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    // }
 
     return banned || BANNED_TOKENS_CACHE;
   }

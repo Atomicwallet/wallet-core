@@ -6,12 +6,6 @@ import TezosNodeWithBlockscannerExplorer from 'src/explorers/extended/TezosNodeW
 import { LazyLoadedLib } from 'src/utils';
 import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-// import configManager from '../ConfigManager';
-// import { coinStakings } from '../Stakings';
-// import logger from '../Logger';
-
-// import predefinedValidators from 'src/resources/staking/validators.json';
-// import validators from 'src/resources/staking/validators.json';
 import { HasProviders } from '../mixins';
 
 const bs58checkLazyLoaded = new LazyLoadedLib(() => import('bs58check'));
@@ -56,9 +50,6 @@ class XTZCoin extends HasProviders(Coin) {
       socket,
       feeData,
     };
-
-    // TODO remove when StakingMixin will be used!
-    // configManager.register('stake_validators_tezos');
 
     super(config);
 
@@ -464,39 +455,6 @@ class XTZCoin extends HasProviders(Coin) {
     return this.getProvider('history').getTransaction(this.address, txid);
   }
 
-  /**
-   * @deprecated
-   *
-   * Should be migrated to `StakingMixin`
-   * @return {Promise<void>}
-   */
-  // async getPredefinedValidators() {
-  //   const coinStaking = coinStakings.find(
-  //     (item) => item.getName().toLowerCase() === this.ticker.toLowerCase(),
-  //   );
-  //
-  //   if (!coinStaking || coinStaking.validators?.length > 0) {
-  //     return;
-  //   }
-  //
-  //   // configManager.register('stake_validators_tezos');
-  //   // const validators = await configManager
-  //   //   .get('stake_validators_tezos')
-  //   //   .catch((error) => {
-  //   //     // logger.error(error);
-  //   //     return predefinedValidators.find(
-  //   //       (item) => item.currency === this.ticker,
-  //   //     );
-  //   //   });
-  //
-  //   const predefinedValidatros = validators.find(({ currency }) => currency === 'XTZ') ?? {}
-  //
-  //   coinStaking.modifyPredefinedValidators(
-  //     predefinedValidatros.filter(
-  //       (validator) => validator.stakingCapacity > validator.stakingBalance,
-  //     ),
-  //   );
-  // }
 
   setPrivateKey(privateKey) {
     this.#privateKey = privateKey;

@@ -238,7 +238,6 @@ class AVAXCoin extends Web3Mixin(NftMixin(HasProviders(HasBlockScanner(Coin)))) 
       }
 
       const { fastest } = await this.getProvider('gas_price').getGasPrice();
-      // (await configManager.get('avax-c-gas-price')) ||
 
       return new this.BN(fastest).mul(new this.BN(nAVAX));
     } catch (error) {
