@@ -547,7 +547,8 @@ class BSCCoin extends Web3Mixin(
         to: contract,
         data: tokenSendData,
       })
-      .catch((error) => {}
+      .catch(
+        (error) => {},
         // logger.error({
         //   instance: this,
         //   error,
