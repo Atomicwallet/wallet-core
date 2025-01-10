@@ -1,10 +1,10 @@
+import MaticStakingManager from 'src/tokens/ABI/ERC-20/MaticStakingManager';
+import MaticValidatorsShare from 'src/tokens/ABI/ERC-20/MaticValidatorsShare';
+import standard from 'src/tokens/ABI/ERC-20/standard';
 import { Amount } from 'src/utils';
 
-import { StakingMixin, Web3Mixin } from '../coins/mixins';
-import MaticStakingManager from './ABI/ERC-20/MaticStakingManager';
-import MaticValidatorsShare from './ABI/ERC-20/MaticValidatorsShare';
-import standard from './ABI/ERC-20/standard';
 import ETHToken from './ETHToken';
+import { StakingMixin, Web3Mixin } from '../coins/mixins';
 
 const DEFAULT_APPROVAL_GAS_LIMIT = 50000;
 const DEFALT_STAKING_GAS_LIMIT = 300000;

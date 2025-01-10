@@ -1,6 +1,5 @@
 import { Transaction } from 'hedera-sdk-v2';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 const HEDERA_SUCCESS_CODE = 22;
 

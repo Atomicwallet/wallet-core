@@ -1,8 +1,7 @@
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { GET_BALANCE_TYPE } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 
 const HEDERA_ACCOUNT = '0.0.98';
 

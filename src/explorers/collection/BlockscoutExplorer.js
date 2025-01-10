@@ -1,12 +1,12 @@
 // import configManager from '../ConfigManager'
 import { ExplorerRequestError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import TOKENS_CACHE from 'src/resources/eth/tokens.json';
 import { getTokenId } from 'src/utils';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, UNDEFINED_OPERATION_ERROR } from 'src/utils/const';
 
 // import logger from '../Logger'
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 
 const GET_USER_TOKENS_TYPE = 'GetUserTokens';
 

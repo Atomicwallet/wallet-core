@@ -1,7 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
 
 class NanocrawlerExplorer extends Explorer {
   getAllowedTickers() {

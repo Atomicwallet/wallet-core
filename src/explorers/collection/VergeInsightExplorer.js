@@ -1,7 +1,6 @@
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { GET_TRANSACTIONS_TYPE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 
 class VergeInsightExplorer extends Explorer {
   constructor(...args) {

@@ -1,6 +1,5 @@
 import { providers, networks } from '@thetalabs/theta-js';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 // import logger from '../Logger'
 
 const INIT_PROVIDER_TIMEOUT = 10000;

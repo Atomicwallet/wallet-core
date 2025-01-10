@@ -1,6 +1,5 @@
 import { StacksMainnet } from '@stacks/network';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 export default class StacksExplorer extends Explorer {
   constructor(...args) {

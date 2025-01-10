@@ -3,7 +3,7 @@ import * as coins from 'src/coins/collection';
 import createCoin from 'src/coins/createCoin';
 import walletsConfig from 'src/resources/wallets_fee.json';
 
-const createWallets = async (arg?: { id: string }) => {
+export const createWallets = async (arg?: { id: string }) => {
   const config = arg ? walletsConfig.filter(({ id: coinId }) => coinId === arg.id) : walletsConfig;
 
   return config.reduce((accum: Coin[], coinData: any) => {
@@ -17,5 +17,3 @@ const createWallets = async (arg?: { id: string }) => {
     return accum;
   }, []);
 };
-
-export { createWallets };

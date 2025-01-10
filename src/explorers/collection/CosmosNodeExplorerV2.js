@@ -1,8 +1,8 @@
 import { pick, uniqBy } from 'lodash';
 import { ExplorerRequestError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import Explorer from '../Explorer';
 import { CosmosNodeTransactionTypeMixin } from '../mixins/index.js';
 
 const DEFAULT_TX_LIMIT = 50;

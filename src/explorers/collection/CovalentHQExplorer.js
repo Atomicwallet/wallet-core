@@ -1,10 +1,9 @@
 import { ExplorerRequestError } from 'src/errors';
+import { TxTypes } from 'src/explorers/enum';
+import Explorer from 'src/explorers/explorer';
 import { getTokenId } from 'src/utils';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from 'src/utils/const';
-
-import { TxTypes } from '../enum/index.js';
-import Explorer from '../Explorer';
-import { toCurrency } from '@/utils/convert';
+import { toCurrency } from 'src/utils/convert';
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 

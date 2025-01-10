@@ -1,9 +1,8 @@
 import { CONST, RestClient } from 'ontology-ts-sdk';
 import { ExplorerRequestError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 
 class OntExplorer extends Explorer {
   constructor(...args) {

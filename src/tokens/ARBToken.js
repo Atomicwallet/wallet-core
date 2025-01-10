@@ -1,6 +1,6 @@
 import { Token } from '../abstract';
 
-class ARBToken extends Token {
+export default class ARBToken extends Token {
   constructor(...args) {
     super(...args);
 
@@ -29,5 +29,3 @@ class ARBToken extends Token {
     };
   }
 }
-
-export default ARBToken;

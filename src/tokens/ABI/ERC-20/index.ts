@@ -1,8 +1,8 @@
-import FlareRewardsManager from './FlareRewardsManagerContract';
-import MaticValidatorsShare from './MaticValidatorsShare';
-import standard from './standard';
-import stETH from './stETH';
-import WFLR from './WFLR';
+import FlareRewardsManager from 'src/tokens/ABI/ERC-20/FlareRewardsManagerContract';
+import MaticValidatorsShare from 'src/tokens/ABI/ERC-20/MaticValidatorsShare';
+import standard from 'src/tokens/ABI/ERC-20/standard';
+import stETH from 'src/tokens/ABI/ERC-20/stETH';
+import WFLR from 'src/tokens/ABI/ERC-20/WFLR';
 
 export default {
   standard: {
@@ -76,4 +76,4 @@ export default {
     },
     abi: stETH,
   },
-};
+} as const;

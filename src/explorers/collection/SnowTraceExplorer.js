@@ -1,9 +1,10 @@
 import lodash from 'lodash';
+import { TxTypes } from 'src/explorers/enum';
+import Explorer from 'src/explorers/explorer';
 
-import { TxTypes } from '../enum/index.js';
-import Explorer from '../Explorer';
-// import logger from '../Logger'
 import { erc721Abi } from './ETHNftExplorer.js';
+
+// import logger from '../Logger'
 
 const GAS_PRICE_INTERVAL = 1000;
 const GAS_PRICES_URL = 'https://gavax.blockscan.com/gasapi.ashx';

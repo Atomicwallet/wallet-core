@@ -1,4 +1,4 @@
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 const URL_TRANSACTIONS = 'v1/addr/{address}/transactions';
 

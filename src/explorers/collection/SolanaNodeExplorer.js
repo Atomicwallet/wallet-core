@@ -9,11 +9,11 @@ import BN from 'bn.js';
 import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz';
 import { SOLNftToken } from 'src/coins/nfts';
 import { ExternalError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils/const';
 import { getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
 
 import AddrCacheDb from '../AddrCacheDb';
-import Explorer from '../Explorer';
 // import history from '../History'
 
 const STAKE_DATA_LENGTH = 200;

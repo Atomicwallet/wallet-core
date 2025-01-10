@@ -1,7 +1,6 @@
 import { JsonRpcProvider, Connection, RawSigner } from '@mysten/sui.js';
 import BN from 'bn.js';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 const FALLBACK_BASEURL = 'https://fullnode.mainnet.sui.io';
 const COIN_TYPE_SUI = '0x2::sui::SUI';

@@ -1,4 +1,4 @@
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 /**
  * Algorand node REST-API explorer

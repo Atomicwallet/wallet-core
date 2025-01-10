@@ -1,5 +1,5 @@
 // import logger from '../Logger'
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 const COSMOS_MSG_TYPES = {
   MsgWithdrawDelegationReward: 'reward',

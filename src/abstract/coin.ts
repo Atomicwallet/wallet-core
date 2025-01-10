@@ -16,7 +16,7 @@ import type {
 } from 'src/abstract';
 import { CoinFeature } from 'src/coins/constants';
 import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } from 'src/errors';
-import type Explorer from 'src/explorers/Explorer';
+import type Explorer from 'src/explorers/explorer';
 import type Transaction from 'src/explorers/Transaction';
 import { TxNotifier } from 'src/utils';
 import { type LazyLoadedLib } from 'src/utils';

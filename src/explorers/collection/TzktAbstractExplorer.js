@@ -1,4 +1,4 @@
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 class TzktAbstractExplorer extends Explorer {
   getAllowedTickers() {

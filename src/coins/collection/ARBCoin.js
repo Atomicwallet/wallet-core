@@ -12,11 +12,11 @@ import Transaction from 'src/explorers/Transaction';
 import { ARBToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
+import { toCurrency } from 'src/utils/convert';
 
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
-import { toCurrency } from '@/utils/convert';
 
 const NAME = 'Ethereum ARB';
 const TICKER = 'ETHARB';

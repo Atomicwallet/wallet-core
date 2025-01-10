@@ -1,9 +1,8 @@
 import { Api, JsonRpc } from 'eosjs';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 import { ExplorerRequestError, WalletError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { SEND_TRANSACTION_TYPE, LOAD_WALLET_ERROR, PUBLIC_KEY_TO_ADDRESS_ERROR } from 'src/utils/const';
-
-import Explorer from '../Explorer';
 
 const TX_CONFIRMATIONS = 10;
 

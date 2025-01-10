@@ -10,11 +10,10 @@ import {
 import { getTransformedTokenUri } from 'src/coins/nfts/utils';
 import { MORALIS_API_KEY, MORALIS_NATIVE_API } from 'src/env';
 import { ExternalError, InternalError } from 'src/errors';
+import { TxTypes } from 'src/explorers/enum';
+import Explorer from 'src/explorers/explorer';
 import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR, INTERNAL_ERROR } from 'src/utils/const';
-
-import { TxTypes } from '../enum/index.js';
-import Explorer from '../Explorer';
-import { getStringWithEnsuredEndChar } from '@/utils/convert';
+import { getStringWithEnsuredEndChar } from 'src/utils/convert';
 
 const convertPairs = [
   [erc721StandardTest, ERC721_TOKEN_STANDARD],

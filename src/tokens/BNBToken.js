@@ -1,6 +1,6 @@
 import { Token } from '../abstract';
 
-class BNBToken extends Token {
+export default class BNBToken extends Token {
   constructor(args) {
     super(args);
     this.fields.paymentId = true;
@@ -79,5 +79,3 @@ class BNBToken extends Token {
   //   }
   // }
 }
-
-export default BNBToken;

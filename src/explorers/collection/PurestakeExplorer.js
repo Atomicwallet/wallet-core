@@ -1,7 +1,6 @@
 import BN from 'bn.js';
 import { PURESTAKE_EXPLORER_API_KEY } from 'src/env';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 class PurestakeExplorer extends Explorer {
   getAllowedTickers() {

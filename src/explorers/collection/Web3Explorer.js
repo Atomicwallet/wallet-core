@@ -1,9 +1,8 @@
 // import configManager from '../ConfigManager'
 import { ExplorerRequestError, InternalError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { GET_BALANCE_TYPE, INTERNAL_ERROR } from 'src/utils/const';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 
 const balanceABItoken = [
   {

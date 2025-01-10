@@ -1,8 +1,8 @@
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
 import TronWeb from 'tronweb';
 
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 // import logger from '../Logger'
 
 const DYNAMIC_PARAMETERS = ['getDynamicEnergyThreshold', 'getDynamicEnergyIncreaseFactor', 'getDynamicEnergyMaxFactor'];

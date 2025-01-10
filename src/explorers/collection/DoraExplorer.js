@@ -1,5 +1,5 @@
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 
 const MS = 1000;
 

@@ -1,6 +1,5 @@
 import BN from 'bn.js';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 class CardanoRestExplorer extends Explorer {
   getAllowedTickers() {

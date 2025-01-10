@@ -14,11 +14,10 @@ import type {
   TokenCreationArgs,
   CoinConfigType,
 } from 'src/abstract';
-import type Explorer from 'src/explorers/Explorer';
+import type Explorer from 'src/explorers/explorer';
 import { Emitter } from 'src/utils';
 import { WALLETS } from 'src/utils/const';
-
-import { toMinimal, toCurrency } from '@/utils/convert';
+import { toMinimal, toCurrency } from 'src/utils/convert';
 
 const SEND_TIMEOUT = 5000;
 const delayed = {};

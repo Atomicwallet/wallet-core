@@ -1,12 +1,11 @@
 // import configManager from '../ConfigManager'
 // import history from '../History'
 // import logger from '../Logger'
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
 import { GET_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
-import { toCurrency } from '@/utils/convert';
+import { toCurrency } from 'src/utils/convert';
 
 const EXPLORER_VERSION = 2;
 

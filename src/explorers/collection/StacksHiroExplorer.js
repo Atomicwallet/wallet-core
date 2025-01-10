@@ -1,4 +1,4 @@
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 export default class StacksHiroExplorer extends Explorer {
   async getInfo(address) {

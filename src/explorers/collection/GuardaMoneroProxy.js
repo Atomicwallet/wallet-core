@@ -1,7 +1,6 @@
 import BN from 'bn.js';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 
 class GuardaMoneroProxy extends Explorer {
   getAllowedTickers() {

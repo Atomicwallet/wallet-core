@@ -1,7 +1,7 @@
+import { TxTypes } from 'src/explorers/enum';
 import { GET_TRANSACTIONS_TYPE } from 'src/utils/const';
 
 import ZilliqaAbstractExplorer from './ZilliqaAbstractExplorer.js';
-import { TxTypes } from '../enum/index.js';
 
 const TXS_NOT_FOUND_ERROR = 'Transactions not found';
 

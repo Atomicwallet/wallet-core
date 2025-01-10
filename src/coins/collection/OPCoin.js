@@ -13,11 +13,12 @@ import { EXTERNAL_ERROR } from 'src/utils/const';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 // import { ConfigKey } from '../ConfigManager/ConfigManager.const';
+import { toCurrency } from 'src/utils/convert';
+
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
-import { toCurrency } from '@/utils/convert';
 
 const NAME = 'Ethereum OP';
 const TICKER = 'ETHOP';

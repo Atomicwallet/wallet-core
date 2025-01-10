@@ -1,7 +1,6 @@
 import axios from 'axios';
 import bitcoinCashAddressTools from 'bchaddrjs';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 class BlockbookExplorer extends Explorer {
   constructor(args) {

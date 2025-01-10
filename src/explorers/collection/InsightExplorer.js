@@ -1,10 +1,9 @@
 import axios from 'axios';
 import bitcoinCashAddressTools from 'bchaddrjs';
 import { ExplorerRequestError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 
 // workaround to send signed transaction to specific url by currency
 // const sendTransactionTo = {

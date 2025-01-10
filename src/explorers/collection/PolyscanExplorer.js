@@ -1,11 +1,10 @@
 import { POLYSCAN_API_KEY } from 'src/env';
 import { ExplorerRequestError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
-import { toCurrency } from '@/utils/convert';
+import { toCurrency } from 'src/utils/convert';
 
 const SECONDS_TO_MILLISECONDS = 1000;
 const MODULE_FOR_REQUESTS = 'account';

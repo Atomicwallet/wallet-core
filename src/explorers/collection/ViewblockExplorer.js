@@ -1,6 +1,5 @@
 import { VIEWBLOCK_API_KEY } from 'src/env';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 const DEFAULT_TX_LIMIT = 25;
 

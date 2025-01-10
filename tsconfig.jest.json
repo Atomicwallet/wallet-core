@@ -9,11 +9,6 @@
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "baseUrl": "./",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
     "rootDir": "./src",
     "outDir": "./dist"
   },

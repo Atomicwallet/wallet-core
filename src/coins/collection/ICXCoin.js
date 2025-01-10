@@ -5,9 +5,9 @@ import IconExplorer from 'src/explorers/collection/IconExplorer';
 import IconNodeExplorer from 'src/explorers/collection/IconNodeExplorer';
 import { Amount, LazyLoadedLib } from 'src/utils';
 import { WALLET_ERROR } from 'src/utils/const';
+import { delayedRepeatUntilSuccess } from 'src/utils/funcs';
 
 import { HasProviders, StakingMixin } from '../mixins';
-import { delayedRepeatUntilSuccess } from '@/utils/funcs';
 
 const bitcoinjsLib = new LazyLoadedLib(() => import('bitcoinjs-lib'));
 const iconServiceLib = new LazyLoadedLib(() => import('icon-sdk-js'));

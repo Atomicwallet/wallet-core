@@ -1,9 +1,8 @@
 import { AptosClient, CoinClient } from 'aptos';
 import { ExternalError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { EXTERNAL_ERROR, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from 'src/utils/const';
-
-import Explorer from '../Explorer';
-import { convertTimestampToDateTime, getStringWithEnsuredEndChar } from '@/utils/convert';
+import { convertTimestampToDateTime, getStringWithEnsuredEndChar } from 'src/utils/convert';
 
 const ACCOUNT_NOT_FOUND_ERROR_CODE = 'account_not_found';
 const TX_TIMESTAMPS_IN_ONE_SECOND = 1e6;

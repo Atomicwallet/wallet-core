@@ -1,9 +1,8 @@
 import { ExplorerRequestError } from 'src/errors';
+import { TxTypes } from 'src/explorers/enum';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { GET_TRANSACTIONS_TYPE } from 'src/utils/const';
-
-import { TxTypes } from '../enum/index.js';
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 
 // https://testnet-dex.binance.org/api/v1/fees
 

@@ -1,7 +1,6 @@
 import { ExplorerRequestError, WalletError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { GET_UTXO_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
 
 /**
  * @deprecated constructor signature is not supported

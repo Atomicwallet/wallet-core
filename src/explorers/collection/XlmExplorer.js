@@ -1,8 +1,8 @@
 import { ExplorerRequestError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 import { Server, Networks, Operation, Memo, Keypair, Asset, TransactionBuilder } from 'stellar-sdk';
 
-import Explorer from '../Explorer';
 // import logger from '../Logger'
 
 const TX_SEND_TIMEOUT = 30;

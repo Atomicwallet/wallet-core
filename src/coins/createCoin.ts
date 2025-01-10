@@ -10,7 +10,7 @@ export type CoinDataConfig = CoinConfigType & Partial<EVMUserConfig> & Partial<E
  * @param coinData
  * @return {Coin}
  */
-function createCoin(CoinClass: unknown, coinData: CoinDataConfig): Coin {
+export default function createCoin(CoinClass: unknown, coinData: CoinDataConfig): Coin {
   if (coinData.walletType === 'EVM') {
     // @todo define proper return type
     return createEVMCoin(coinData) as unknown as Coin;
@@ -45,5 +45,3 @@ function createCoin(CoinClass: unknown, coinData: CoinDataConfig): Coin {
     decimal: coinData.decimal,
   });
 }
-
-export default createCoin;

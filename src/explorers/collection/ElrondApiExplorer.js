@@ -1,7 +1,6 @@
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { Amount } from 'src/utils';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 
 const TX_TYPE = {
   delegate: 'stake',

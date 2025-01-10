@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import lodash from 'lodash';
 
 // import configManager from '../ConfigManager'
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 // import logger from '../Logger'
 
 const TOKENS_LIST_URL = 'https://assets.terra.money/cw20/tokens.json';

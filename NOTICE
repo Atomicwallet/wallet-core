@@ -2186,6 +2186,12 @@ This project includes software developed by third parties.
    - Publisher: Christian Johansen
    - Email: N/A
 
+ (vsocket.io/component-emitter)
+   - License: MIT
+   - Repository: https://github.com/socketio/emitter
+   - Publisher: N/A
+   - Email: N/A
+
  (vsolana/buffer-layout-utils)
    - License: Apache-2.0
    - Repository: https://github.com/solana-labs/buffer-layout-utils
@@ -2458,7 +2464,7 @@ This project includes software developed by third parties.
 
  (vtypes/axios)
    - License: MIT
-   - Repository: https://github.com/mzabriskie/axios
+   - Repository: N/A
    - Publisher: N/A
    - Email: N/A
 
@@ -2789,6 +2795,12 @@ This project includes software developed by third parties.
  (vtypes/semver)
    - License: MIT
    - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+   - Publisher: N/A
+   - Email: N/A
+
+ (vtypes/socket.io-client)
+   - License: MIT
+   - Repository: N/A
    - Publisher: N/A
    - Email: N/A
 
@@ -5372,6 +5384,12 @@ debug (v4.3.4)
    - Publisher: Josh Junon
    - Email: josh.junon@protonmail.com
 
+debug (v4.3.7)
+   - License: MIT
+   - Repository: https://github.com/debug-js/debug
+   - Publisher: Josh Junon
+   - Email: N/A
+
 debug (v4.4.0)
    - License: MIT
    - Repository: https://github.com/debug-js/debug
@@ -5816,9 +5834,21 @@ engine.io-client (v3.3.3)
    - Publisher: N/A
    - Email: N/A
 
+engine.io-client (v6.6.2)
+   - License: MIT
+   - Repository: https://github.com/socketio/socket.io
+   - Publisher: N/A
+   - Email: N/A
+
 engine.io-parser (v2.1.3)
    - License: MIT
    - Repository: https://github.com/socketio/engine.io-parser
+   - Publisher: N/A
+   - Email: N/A
+
+engine.io-parser (v5.2.3)
+   - License: MIT
+   - Repository: https://github.com/socketio/socket.io
    - Publisher: N/A
    - Email: N/A
 
@@ -10784,9 +10814,21 @@ socket.io-client (v2.2.0)
    - Publisher: N/A
    - Email: N/A
 
+socket.io-client (v4.8.1)
+   - License: MIT
+   - Repository: https://github.com/socketio/socket.io
+   - Publisher: N/A
+   - Email: N/A
+
 socket.io-parser (v3.3.4)
    - License: MIT
    - Repository: https://github.com/Automattic/socket.io-parser
+   - Publisher: N/A
+   - Email: N/A
+
+socket.io-parser (v4.2.4)
+   - License: MIT
+   - Repository: https://github.com/socketio/socket.io-parser
    - Publisher: N/A
    - Email: N/A
 
@@ -12237,6 +12279,12 @@ xhr (v2.6.0)
    - Email: raynos2@gmail.com
 
 xmlhttprequest-ssl (v1.6.3)
+   - License: MIT
+   - Repository: https://github.com/mjwwit/node-XMLHttpRequest
+   - Publisher: Michael de Wit
+   - Email: N/A
+
+xmlhttprequest-ssl (v2.1.2)
    - License: MIT
    - Repository: https://github.com/mjwwit/node-XMLHttpRequest
    - Publisher: Michael de Wit

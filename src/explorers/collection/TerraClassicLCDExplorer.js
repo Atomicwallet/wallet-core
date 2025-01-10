@@ -1,6 +1,5 @@
 import { LCDClient } from '@terra-money/terra.js';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 const BALANCES_BY_COINS = 0;
 const FALLBACK_CHAIN_ID = 'columbus-5';

@@ -1,7 +1,6 @@
 import { ExternalError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { EXTERNAL_ERROR, GET_UTXO_TYPE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
 
 const OPENMONERO_LOGIN_TYPE = 'OpenMoneroLogin';
 const OPENMONERO_IMPORT_TYPE = 'OpenMoneroImport';

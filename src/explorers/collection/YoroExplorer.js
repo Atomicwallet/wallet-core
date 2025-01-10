@@ -1,7 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { SEND_TRANSACTION_TYPE, GET_UTXO_TYPE, GET_BALANCE_TYPE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
 
 class YoroExplorer extends Explorer {
   constructor(...args) {

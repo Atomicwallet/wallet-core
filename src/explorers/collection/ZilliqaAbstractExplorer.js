@@ -1,6 +1,5 @@
 import { fromBech32Address, toBech32Address, toChecksumAddress } from '@zilliqa-js/crypto';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 class ZilliqaAbstractExplorer extends Explorer {
   getAllowedTickers() {

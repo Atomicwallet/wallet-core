@@ -2,7 +2,7 @@
  * Official NEAR Wallet reference:
  * https://github.com/near/near-wallet/blob/0da7e823492fb9411717d62a3363849ab7e02e15/packages/frontend/src/utils/explorer-api.js#L7
  */
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 // import logger from '../Logger'
 
 const TRANSFER_ACTION = 'TRANSFER';

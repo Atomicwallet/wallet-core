@@ -9,12 +9,12 @@ import ETHToken from 'src/tokens/ETHToken';
 import StakableMaticETHToken from 'src/tokens/StakableMaticETHToken';
 import { Amount } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
+import LazyLoadedLib from 'src/utils/lazyLoadedLib.ts';
 
 import { StakingMixin, NftMixin } from '../mixins';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
-import LazyLoadedLib from '@/utils/lazyLoadedLib.ts';
 
 const NAME = 'Ethereum';
 const TICKER = 'ETH';

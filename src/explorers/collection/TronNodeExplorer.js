@@ -1,11 +1,10 @@
 import BN from 'bn.js';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
 import { GET_BALANCE_TYPE, ONE_MINUTE } from 'src/utils/const';
+import { toCurrency } from 'src/utils/convert';
 import TronWeb from 'tronweb';
-
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
-import { toCurrency } from '@/utils/convert';
 
 /**
  * Full tron node api

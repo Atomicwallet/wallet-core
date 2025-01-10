@@ -9,14 +9,14 @@ import BN from 'bn.js';
 import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz';
 import { SOLNftToken } from 'src/coins/nfts';
 import { ExternalError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import { chunkArray, getTokenId } from 'src/utils';
 import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils/const';
 import { convertSecondsToDateTime, getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
 
-import Explorer from '../Explorer';
 // import history from '../History'
 // import AddrCacheDb from '../AddrCacheDb'
-import Transaction from '../Transaction';
 
 const STAKE_DATA_LENGTH = 200;
 

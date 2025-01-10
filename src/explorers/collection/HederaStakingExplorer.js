@@ -1,6 +1,5 @@
 import { AccountUpdateTransaction, PrivateKey } from 'hedera-sdk-v2';
-
-import Explorer from '../Explorer';
+import Explorer from 'src/explorers/explorer';
 
 class HederaStakingExplorer extends Explorer {
   getAllowedTickers() {

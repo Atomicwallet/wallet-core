@@ -7,7 +7,7 @@ export { default as randomElementFromArray } from 'src/utils/randomElementFromAr
 export { default as Amount } from './amount';
 export { default as preventConcurrent } from 'src/utils/preventConcurrent';
 export { default as LazyLoadedLib } from 'src/utils/lazyLoadedLib';
-export { REQUEST_TYPE, requestQueueState } from './requestQueueState';
+export { REQUEST_TYPE, requestQueueState } from 'src/utils/requestQueueState';
 export { sleepFor } from './sleepFor';
 export { getTokenId } from './token';
 export { PROMISE_STATE, getPromiseState } from 'src/utils/promiseState';

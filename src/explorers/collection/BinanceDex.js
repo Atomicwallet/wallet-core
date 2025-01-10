@@ -1,8 +1,8 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import Explorer from 'src/explorers/explorer';
+import Transaction from 'src/explorers/Transaction';
 import TOKENS_CACHE from 'src/resources/binance/tokens.json';
 
-import Explorer from '../Explorer';
-import Transaction from '../Transaction';
 // import history from '../History'
 
 const WEBSOCKET_CONFIG = {

@@ -1,9 +1,8 @@
 import { ETHERSCAN_API_KEY } from 'src/env';
 import { ExplorerRequestError } from 'src/errors';
+import Explorer from 'src/explorers/explorer';
 import { getTokenId } from 'src/utils';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
-
-import Explorer from '../Explorer';
 
 const getApiKey = (walletId) => (walletId === 'ETH' ? ETHERSCAN_API_KEY : null);
 
