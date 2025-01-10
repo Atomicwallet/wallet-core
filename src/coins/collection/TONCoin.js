@@ -110,7 +110,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    */
   async getFee({ address, sendAmount, custom = '' } = {}) {
     const { default: TonWeb } = await tonwebLib.get();
-    const seqno = await this.wallet.methods.seqno().call();
+    const seqno = await this.getSeqno();
 
     const amount = sendAmount || this.balance.toString();
 
@@ -139,6 +139,14 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
     return result;
   }
 
+  getTransactionExpirationTimeout() {
+    return Math.floor(Date.now() / 1000) + 360;
+  }
+
+  getSeqno() {
+    return this.wallet.methods.seqno().call();
+  }
+
   /**
    * Creates a transaction.
    *
@@ -156,15 +164,16 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
           .send();
       } catch (error) {
         // logger.error({ instance: this, error });
+        // console.log(error);
       }
     }
 
-    let seqno = await this.wallet.methods.seqno().call();
+    let seqno = await this.getSeqno();
 
     while (!this.state && !seqno) {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      seqno = await this.wallet.methods.seqno().call();
+      seqno = await this.getSeqno();
     }
 
     const transfer = this.wallet.methods.transfer({
@@ -173,9 +182,11 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
       amount,
       seqno,
       payload: memo,
+      expireAt: this.getTransactionExpirationTimeout(),
     });
 
     const query = await transfer.getQuery();
+
     const boc = TonWeb.utils.bytesToBase64(await query.toBoc(false));
 
     return boc;
@@ -264,7 +275,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
     //   }
     //   return [];
     // });
-    return []
+    return [];
   }
 
   /**
@@ -283,7 +294,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
     //   }
     //   return [];
     // });
-    return []
+    return [];
   }
 
   /**
@@ -382,7 +393,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
       const jettonWallet = new TonWeb.token.jetton.JettonWallet(provider, {
         address: jettonWalletAddress,
       });
-      const seqno = (await wallet.methods.seqno().call()) || 0;
+      const seqno = (await this.getSeqno()) || 0;
       const payload = await jettonWallet.createTransferBody({
         queryId: seqno,
         jettonAmount: amount,
