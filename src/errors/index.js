@@ -8,3 +8,4 @@ export { default as UndeclaredAbstractMethodError } from './UndeclaredAbstractMe
 export { default as AjvValidationError } from './AjvValidationError';
 export { default as UnknownConfigKeyError } from './UnknownConfigKeyError';
 export { default as DuplicatedConfigRegistrationError } from './DuplicatedConfigRegistrationError';
+export { default as AtomicError } from './AtomicError';

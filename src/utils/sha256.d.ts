@@ -16,6 +16,4 @@ interface Sha256WithX2 extends Sha256 {
   x2: Sha256;
 }
 
-const sha256: Sha256WithX2;
-
-export = sha256;
+export const sha256: Sha256WithX2;

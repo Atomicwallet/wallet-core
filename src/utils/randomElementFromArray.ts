@@ -1,4 +1,4 @@
-export default (array) => {
+export default <T>(array: T[]): T | undefined => {
   if (!Array.isArray(array)) {
     throw new TypeError('Invalid Array');
   }

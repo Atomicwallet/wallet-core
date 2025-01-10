@@ -3,7 +3,7 @@ export { default as hex2a } from './hex2a';
 export { default as chunkArray } from './chunkArray';
 export { default as chunkString } from './chunkString';
 export { default as arrayToObject } from './arrayToObject';
-export { default as randomElementFromArray } from './randomElementFromArray';
+export { default as randomElementFromArray } from 'src/utils/randomElementFromArray';
 export { default as Amount } from './amount';
 export { default as preventConcurrent } from './preventConcurrent';
 export { default as LazyLoadedLib } from './lazyLoadedLib';
