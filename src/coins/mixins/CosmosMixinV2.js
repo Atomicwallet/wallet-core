@@ -6,7 +6,7 @@ import {
 } from '../../utils/const';
 import { CosmosTxTypes } from '../libs';
 
-import { LazyLoadedLib, Amount} from '../../utils';
+import { LazyLoadedLib, Amount } from '../../utils';
 import StakingMixin from './StakingMixin';
 
 const GAS_PRICE = '0.025';
