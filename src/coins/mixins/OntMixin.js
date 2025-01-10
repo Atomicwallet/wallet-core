@@ -3,7 +3,6 @@ import base58check from 'base58check';
 import { ExplorerRequestError } from '../../errors';
 import { LazyLoadedLib } from '../../utils';
 
-
 const ontologySdkLib = new LazyLoadedLib(() => import('ontology-ts-sdk'));
 
 const GAS_LIMIT = '25000';
@@ -252,7 +251,6 @@ const OntMixin = (superclass) =>
     }
 
     setPrivateKey(privateKey) {
-      super.setPrivateKey(privateKey);
       this.#privateKey = privateKey;
     }
   };
