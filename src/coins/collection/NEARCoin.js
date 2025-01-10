@@ -190,10 +190,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     const { transactions } = nearAPI;
     const publicKey = this.keyPair.getPublicKey();
 
-    const accessKey = await this.getProvider('node').getAccessKey(
-      this.address,
-      publicKey,
-    );
+    const accessKey = this.getAccessKey(publicKey);
 
     const recentBlockHash = nearAPI.utils.serialize.base_decode(
       accessKey.block_hash,
@@ -235,10 +232,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     const { transactions } = nearAPI;
     const publicKey = this.keyPair.getPublicKey();
 
-    const accessKey = await this.getProvider('node').getAccessKey(
-      this.address,
-      publicKey,
-    );
+    const accessKey = this.getAccessKey(publicKey);
 
     const recentBlockHash = nearAPI.utils.serialize.base_decode(
       accessKey.block_hash,
@@ -280,10 +274,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     const { transactions } = nearAPI;
     const publicKey = this.keyPair.getPublicKey();
 
-    const accessKey = await this.getProvider('node').getAccessKey(
-      this.address,
-      publicKey,
-    );
+    const accessKey = this.getAccessKey(publicKey);
 
     const recentBlockHash = nearAPI.utils.serialize.base_decode(
       accessKey.block_hash,
@@ -305,6 +296,10 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     return this.serializeAndSignTransaction(tx);
   }
 
+  getAccessKey(publicKey) {
+    return this.getProvider('node').getAccessKey(this.address, publicKey);
+  }
+
   /**
    * Creates a transaction.
    *
@@ -322,10 +317,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
 
     const publicKey = this.keyPair.getPublicKey();
 
-    const accessKey = await this.getProvider('node').getAccessKey(
-      this.address,
-      publicKey,
-    );
+    const accessKey = await this.getAccessKey();
 
     const recentBlockHash = nearAPI.utils.serialize.base_decode(
       accessKey.block_hash,
@@ -529,7 +521,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
     const balances = await this.getProvider('node').fetchStakingInfo(
       this.address,
       {
-        activeValidators: [] //await configManager.get(this.getPredefineValidatorsConfigName(),),
+        activeValidators: [], //await configManager.get(this.getPredefineValidatorsConfigName(),),
       },
     );
 
