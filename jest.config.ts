@@ -8,6 +8,6 @@ export default {
   moduleNameMapper: {
     '@/(.*)$': '<rootDir>/src/$1',
   },
-  testMatch: ['**/__tests__/**/*.test.ts'],
+  testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
   transformIgnorePatterns: ['/node_modules/'],
 };
