@@ -9,7 +9,6 @@ import TOKENS_CACHE from 'src/resources/op/tokens.json';
 import { OPToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
-import { toCurrency } from 'src/utils/convert';
 
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
@@ -18,6 +17,7 @@ import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
+import { toCurrency } from '@/utils/convert';
 
 const NAME = 'Ethereum OP';
 const TICKER = 'ETHOP';

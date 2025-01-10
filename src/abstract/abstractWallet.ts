@@ -17,7 +17,8 @@ import type {
 import type Explorer from 'src/explorers/Explorer';
 import { Emitter } from 'src/utils';
 import { WALLETS } from 'src/utils/const';
-import { toMinimal, toCurrency } from 'src/utils/convert';
+
+import { toMinimal, toCurrency } from '@/utils/convert';
 
 const SEND_TIMEOUT = 5000;
 const delayed = {};

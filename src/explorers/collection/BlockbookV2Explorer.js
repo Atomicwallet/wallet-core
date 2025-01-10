@@ -3,10 +3,10 @@
 // import logger from '../Logger'
 import { getTokenId } from 'src/utils';
 import { GET_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from 'src/utils/const';
-import { toCurrency } from 'src/utils/convert';
 
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
+import { toCurrency } from '@/utils/convert';
 
 const EXPLORER_VERSION = 2;
 

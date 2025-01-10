@@ -4,7 +4,7 @@ const NOT_INITIALIZED_PROMISE: Promise<unknown> | null = null;
  * LazyLoadedLib - Loads library components on request
  */
 export default class LazyLoadedLib<TModule> {
-  private importLib: () => Promise<TModule>;
+  private readonly importLib: () => Promise<TModule>;
   private promise: Promise<TModule> | null;
 
   /**

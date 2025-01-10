@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'; // BN.js does not support floating points operations
 import BN from 'bn.js';
 import type { WalletIdentifierType, WalletId, WalletTicker, WalletDecimal, WalletConfirmation } from 'src/abstract';
-import { toCurrency } from 'src/utils/convert';
+
+import { toCurrency } from '@/utils/convert';
 
 const min = new BigNumber('0.01');
 const dust = new BigNumber('0.000001');

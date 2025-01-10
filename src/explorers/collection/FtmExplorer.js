@@ -1,7 +1,6 @@
-import { convertTimestampToDateTime, getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
-
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
+import { convertTimestampToDateTime, getStringWithEnsuredEndChar, toCurrency } from '@/utils/convert';
 
 const TX_TIMESTAMPS_IN_ONE_SECOND = 1;
 const TX_MODULE_PARAM = 'account';

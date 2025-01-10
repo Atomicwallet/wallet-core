@@ -1,7 +1,6 @@
-import { toCurrency } from 'src/utils/convert';
-
 import txTypes from '../enum/txTypes.js';
 import Explorer from '../Explorer';
+import { toCurrency } from '@/utils/convert';
 
 /**
  * @see https://mainnet-public.mirrornode.hedera.com/api/v1/docs/

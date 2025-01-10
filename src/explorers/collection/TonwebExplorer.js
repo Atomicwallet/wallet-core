@@ -2,11 +2,11 @@ import { TONWEB_API_KEY, TONWEB_FALLBACK_INDEX_URL, TONWEB_FALLBACK_V2_URL } fro
 import { ExplorerRequestError } from 'src/errors';
 import { getTokenId } from 'src/utils';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from 'src/utils/const';
-import { toCurrency } from 'src/utils/convert';
 import TonWeb from 'tonweb';
 
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
+import { toCurrency } from '@/utils/convert';
 
 const IN_TRANSFER_COIN = 'IN_TRANSFER_COIN';
 const OUT_TRANSFER_COIN = 'OUT_TRANSFER_COIN';

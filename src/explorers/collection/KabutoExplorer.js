@@ -1,8 +1,8 @@
 import { GET_BALANCE_TYPE } from 'src/utils/const';
-import { toCurrency } from 'src/utils/convert';
 
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
+import { toCurrency } from '@/utils/convert';
 
 class KabutoExplorer extends Explorer {
   getAllowedTickers() {

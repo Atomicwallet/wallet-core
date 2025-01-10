@@ -1,7 +1,6 @@
-import { getNumberWithoutENotation as getNumberStringWithoutENotation } from 'src/utils/convert';
-
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
+import { getNumberWithoutENotation as getNumberStringWithoutENotation } from '@/utils/convert';
 
 const TX_TYPE_UNSTAKE = 'UNSTAKE';
 

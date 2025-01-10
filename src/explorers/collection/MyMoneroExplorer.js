@@ -2,9 +2,10 @@ import axios from 'axios';
 import { ExternalError } from 'src/errors';
 import { LazyLoadedLib, Emitter as emitter } from 'src/utils';
 import { WALLETS } from 'src/utils/const';
-import { getStringWithEnsuredEndChar } from 'src/utils/convert';
 
 import Explorer from '../Explorer';
+import { getStringWithEnsuredEndChar } from '@/utils/convert';
+
 // import activeWalletsList from '../ActiveWalletsList'
 
 const MymoneroWalletManagerLazyLoaded = new LazyLoadedLib(() => import('@mymonero/mymonero-wallet-manager'));

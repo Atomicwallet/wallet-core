@@ -5,24 +5,18 @@ const LEADING_ZEROES_REGEX = /^0+/;
 
 /**
  * Converts a positive number string to coin minimal units.
- *
- * @param {string} numStr
- * @param {number} precision
- * @returns {string}
  */
-function positiveNumToMinimal(numStr, precision) {
+function positiveNumToMinimal(numStr: string, precision: number): string {
   numStr = numStr.replace(LEADING_ZEROES_REGEX, '');
 
-  if (!numStr) {
-    return '0';
-  }
+  if (!numStr) return '0';
 
   // number of shifts to move decimal point to right and pad result with zeroes
   let remainingShifts = precision;
 
   // handle exponential notation
   if (numStr.includes('e')) {
-    const [base, expStr] = numStr.split('e', 2);
+    const [base, expStr] = numStr.split('e', 2) as [string, string];
 
     numStr = base;
     remainingShifts += Number(expStr);
@@ -33,7 +27,7 @@ function positiveNumToMinimal(numStr, precision) {
 
   // we don't care about fraction when precision is 0
   if (precision === 0) {
-    numStr = numStr.split('.', 2)[0];
+    numStr = numStr.split('.', 2)[0] as string;
 
     if (numStr === '' || numStr === '0') {
       return '0';
@@ -57,12 +51,8 @@ function positiveNumToMinimal(numStr, precision) {
 
 /**
  * To quants satoshi, wei, etc...
- *
- * @param {Number|String|BN} value
- * @param {number} precision
- * @return {String}
  */
-export function toMinimal(value, precision) {
+export function toMinimal(value: number | string | BN, precision: number) {
   // WARNING! Don't try to use BigNumber here, it doesn't work with some numbers
   // like 123.000000000000123459991299.
   // JavaScript will round this number because of floating point precision limitations.
@@ -86,12 +76,8 @@ export function toMinimal(value, precision) {
 
 /**
  * To currency unit.
- *
- * @param {String|Number|BN} value
- * @param {number} decimal
- * @return {String}
  */
-export function toCurrency(value, decimal) {
+export function toCurrency(value: number | string | BN, decimal: number) {
   if (value === null) {
     throw new Error('value must not be null'); // instead this will cause BN to crash with "out of memory"
   }
@@ -109,7 +95,7 @@ export function toCurrency(value, decimal) {
 
   const valueBN = new BN(value);
 
-  if (valueBN.lte(0)) {
+  if (valueBN.lte(new BN(0))) {
     throw new Error('negative');
   }
   const valueString = new BN(value).toString();
@@ -134,53 +120,38 @@ export function toCurrency(value, decimal) {
 
 /**
  * Convert timestamp to DateTime
- *
- * @param {number} timestamp - Timestamp.
- * @param {number} timestampsInOneSecond - Determines how many timestamp units are in one second.
- * @returns {Date}
  */
-export function convertTimestampToDateTime(timestamp, timestampsInOneSecond) {
+export function convertTimestampToDateTime(timestamp: number, timestampsInOneSecond: number): Date {
   return new Date((timestamp * MILLISECONDS_IN_ONE_SECOND) / timestampsInOneSecond);
 }
 
 /**
  * Convert seconds to DateTime
- *
- * @param {number} seconds - Seconds.
- * @returns {Date}
  */
-export function convertSecondsToDateTime(seconds) {
+export function convertSecondsToDateTime(seconds: number): Date {
   return convertTimestampToDateTime(seconds, 1);
 }
 
 /**
  * Gets a string with a guaranteed character at the end of the string
- *
- * @param {string} str
- * @param {string} charAtEnd
- * @returns {string}
  */
-export function getStringWithEnsuredEndChar(str, charAtEnd) {
+export function getStringWithEnsuredEndChar(str: string, charAtEnd: string): string {
   return str.endsWith(charAtEnd) ? str : str.concat(charAtEnd);
 }
 
 /**
  * Convert value with scientific notation to value without one
- * @param {string|number} value value in scientific notation, but normal value is safe
- * @returns {string} value without scientific notation
  */
-export function getNumberWithoutENotation(numStr) {
+export function getNumberWithoutENotation(numStr: string | number): string {
   numStr = numStr.toString().replace(LEADING_ZEROES_REGEX, '').toLowerCase();
 
-  if (!numStr) {
-    return '0';
-  }
+  if (!numStr) return '0';
 
   if (!numStr.includes('e')) {
     return numStr;
   }
 
-  const [base, expStr] = numStr.split('e', 2);
+  const [base, expStr] = numStr.split('e', 2) as [string, string];
 
   numStr = base;
   const shifts = Number(expStr);
@@ -192,7 +163,7 @@ export function getNumberWithoutENotation(numStr) {
   const dotPosition = numStr.indexOf('.');
 
   if (dotPosition > -1) {
-    const [beforeDot, afterDot] = numStr.split('.');
+    const [beforeDot, afterDot] = numStr.split('.') as [string, string];
 
     if (shifts > 0) {
       if (shifts < afterDot.length) {
