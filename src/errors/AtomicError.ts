@@ -3,7 +3,7 @@
 class AtomicError extends Error {
   defaultType = 'Unknown';
 
-  constructor(args) {
+  constructor(args: any) {
     if (args.error.data) {
       args.error = Object.values(args.error.data).toString();
     }
@@ -40,6 +40,7 @@ class AtomicError extends Error {
       currency,
       instance: args.instance,
       stack: this.stack,
+      url: undefined,
     };
 
     if (args.url) {

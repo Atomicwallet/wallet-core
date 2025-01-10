@@ -1,10 +1,11 @@
-import AtomicError from './AtomicError';
+import AtomicError from 'src/errors/AtomicError';
+
 import { INTERNAL_ERROR } from '../utils/const';
 
 class InternalError extends AtomicError {
   defaultType = INTERNAL_ERROR;
 
-  constructor(args) {
+  constructor(args: unknown) {
     super(args);
     this.name = this.constructor.name;
   }

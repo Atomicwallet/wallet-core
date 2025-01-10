@@ -1,5 +1,3 @@
-export { default as ExchangeConnectionError } from './ExchangeConnectionError';
-export { default as ExchangeValidationError } from './ExchangeValidationError';
 export { default as ExplorerRequestError } from './ExplorerRequestError';
 export { default as InternalError } from './InternalError';
 export { default as ExternalError } from './ExternalError';
@@ -10,4 +8,3 @@ export { default as UndeclaredAbstractMethodError } from './UndeclaredAbstractMe
 export { default as AjvValidationError } from './AjvValidationError';
 export { default as UnknownConfigKeyError } from './UnknownConfigKeyError';
 export { default as DuplicatedConfigRegistrationError } from './DuplicatedConfigRegistrationError';
-export { default as ExchangeConfirmsCalculationError } from './ExchangeConfirmsCalculationError';
