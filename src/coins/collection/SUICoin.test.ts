@@ -17,4 +17,6 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
+jest.spyOn(wallet, 'createTransaction').mockImplementation((args) => Promise.resolve(args));
+
 generateWalletTests(wallet);
