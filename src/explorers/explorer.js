@@ -1,6 +1,7 @@
 import axios from 'axios';
 import io from 'socket.io-client';
 import { UndeclaredAbstractMethodError, ExplorerRequestError } from 'src/errors';
+import { Emitter, TxNotifier } from 'src/utils';
 import {
   ONE_MINUTE,
   GET_BLOCK_TYPE,
@@ -12,11 +13,10 @@ import {
   SEND_TRANSACTION_TYPE,
   UNDEFINED_OPERATION_ERROR,
 } from 'src/utils/const';
+import { toCurrency } from 'src/utils/convert';
 
-import { Emitter, TxNotifier } from '../utils';
 import { TxTypes } from './enum';
 import Transaction from './Transaction';
-import { toCurrency } from '../utils/convert';
 
 const DEFAULT_TX_LIMIT = 100;
 

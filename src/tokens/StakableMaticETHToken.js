@@ -1,5 +1,6 @@
+import { Amount } from 'src/utils';
+
 import { StakingMixin, Web3Mixin } from '../coins/mixins';
-import { Amount } from '../utils';
 import MaticStakingManager from './ABI/ERC-20/MaticStakingManager';
 import MaticValidatorsShare from './ABI/ERC-20/MaticValidatorsShare';
 import standard from './ABI/ERC-20/standard';
