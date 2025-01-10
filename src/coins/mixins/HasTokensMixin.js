@@ -1,10 +1,9 @@
 // import logger from '../../Logger';
+import { Token } from 'src/abstract';
 import { UndeclaredAbstractMethodError } from 'src/errors';
 import InternalError from 'src/errors/InternalError';
-
-import { Token } from '../../abstract';
-import { db, getTokenId } from '../../utils';
-import { INTERNAL_ERROR } from '../../utils/const';
+import { db, getTokenId } from 'src/utils';
+import { INTERNAL_ERROR } from 'src/utils/const';
 
 const MAX_TICKER_LENGTH = 9;
 const MAX_NAME_LENGTH = 30;

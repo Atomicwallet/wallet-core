@@ -1,11 +1,10 @@
 // import history from '../History';
 
+import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
-
-import { Coin } from '../../abstract';
-import RippleExplorer from '../../explorers/collection/RippleExplorer';
-import { LazyLoadedLib } from '../../utils';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
+import RippleExplorer from 'src/explorers/collection/RippleExplorer';
+import { LazyLoadedLib } from 'src/utils';
+import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
 const racodecLazyLoaded = new LazyLoadedLib(() => import('ripple-address-codec'));
 const KeypairsLazyLoaded = new LazyLoadedLib(() => import('ripple-keypairs'));

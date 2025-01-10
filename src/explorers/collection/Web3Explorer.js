@@ -1,7 +1,7 @@
 // import configManager from '../ConfigManager'
 import { ExplorerRequestError, InternalError } from 'src/errors';
+import { GET_BALANCE_TYPE, INTERNAL_ERROR } from 'src/utils/const';
 
-import { GET_BALANCE_TYPE, INTERNAL_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

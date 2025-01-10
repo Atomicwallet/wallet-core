@@ -1,5 +1,6 @@
-import { GET_TRANSACTIONS_TYPE } from '../../utils/const';
-import { toCurrency } from '../../utils/convert';
+import { GET_TRANSACTIONS_TYPE } from 'src/utils/const';
+import { toCurrency } from 'src/utils/convert';
+
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

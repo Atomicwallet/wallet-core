@@ -1,12 +1,12 @@
 import BN from 'bn.js';
+import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
+import IconExplorer from 'src/explorers/collection/IconExplorer';
+import IconNodeExplorer from 'src/explorers/collection/IconNodeExplorer';
+import { Amount, LazyLoadedLib } from 'src/utils';
+import { WALLET_ERROR } from 'src/utils/const';
+import { delayedRepeatUntilSuccess } from 'src/utils/funcs';
 
-import { Coin } from '../../abstract';
-import IconExplorer from '../../explorers/collection/IconExplorer';
-import IconNodeExplorer from '../../explorers/collection/IconNodeExplorer';
-import { Amount, LazyLoadedLib } from '../../utils';
-import { WALLET_ERROR } from '../../utils/const';
-import { delayedRepeatUntilSuccess } from '../../utils/funcs';
 import { HasProviders, StakingMixin } from '../mixins';
 
 const bitcoinjsLib = new LazyLoadedLib(() => import('bitcoinjs-lib'));

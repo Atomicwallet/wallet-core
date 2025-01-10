@@ -1,8 +1,8 @@
 import { ExplorerRequestError, WalletError } from 'src/errors';
+import { LazyLoadedLib, Amount } from 'src/utils';
+import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from 'src/utils/const';
 
 import StakingMixin from './StakingMixin';
-import { LazyLoadedLib, Amount } from '../../utils';
-import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from '../../utils/const';
 import { CosmosTxTypes } from '../libs';
 
 const GAS_PRICE = '0.025';

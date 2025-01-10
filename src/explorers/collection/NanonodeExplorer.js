@@ -1,7 +1,7 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { ExplorerRequestError } from 'src/errors';
+import { SEND_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE } from 'src/utils/const';
 
-import { SEND_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 // import history from '../History'

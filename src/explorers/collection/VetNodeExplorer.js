@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
+import { getTokenId } from 'src/utils';
+import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 import { abi } from 'thor-devkit';
 
-import { getTokenId } from '../../utils';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

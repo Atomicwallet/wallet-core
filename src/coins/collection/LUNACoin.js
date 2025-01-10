@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js';
+import { Coin } from 'src/abstract';
+import TerraFCDExplorer from 'src/explorers/collection/TerraFCDExplorer';
+import TerraLCDExplorer from 'src/explorers/collection/TerraLCDExplorer';
+import { Amount, LazyLoadedLib } from 'src/utils';
 
-import { Coin } from '../../abstract';
-// import logger from '../Logger';
-import TerraFCDExplorer from '../../explorers/collection/TerraFCDExplorer';
-import TerraLCDExplorer from '../../explorers/collection/TerraLCDExplorer';
-import { Amount, LazyLoadedLib } from '../../utils';
 import { HasProviders, StakingMixin } from '../mixins';
 
 export const LUNA_SEND_TYPES = {

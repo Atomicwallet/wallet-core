@@ -1,9 +1,8 @@
+import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
-
-import { Coin } from '../../abstract';
-import ArkExplorer from '../../explorers/collection/ArkExplorer';
-import { LazyLoadedLib } from '../../utils';
-import { WALLET_ERROR } from '../../utils/const';
+import ArkExplorer from 'src/explorers/collection/ArkExplorer';
+import { LazyLoadedLib } from 'src/utils';
+import { WALLET_ERROR } from 'src/utils/const';
 
 const arkecosystemCryptoLazyLoaded = new LazyLoadedLib(() => import('@arkecosystem/crypto'));
 

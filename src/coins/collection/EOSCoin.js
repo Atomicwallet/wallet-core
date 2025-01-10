@@ -1,7 +1,8 @@
-import { Coin } from '../../abstract';
-import EOSApiExplorer from '../../explorers/collection/EOSApiExplorer';
-import EOSNodeExplorer from '../../explorers/collection/EOSNodeExplorer';
-import { LazyLoadedLib } from '../../utils';
+import { Coin } from 'src/abstract';
+import EOSApiExplorer from 'src/explorers/collection/EOSApiExplorer';
+import EOSNodeExplorer from 'src/explorers/collection/EOSNodeExplorer';
+import { LazyLoadedLib } from 'src/utils';
+
 import { HasProviders } from '../mixins';
 
 const eccLazyLoaded = new LazyLoadedLib(() => import('eosjs-ecc'));

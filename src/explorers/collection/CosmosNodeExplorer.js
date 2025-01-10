@@ -1,7 +1,7 @@
 import { ExplorerRequestError } from 'src/errors';
+import validators from 'src/resources/staking/validators.json';
+import { SEND_TRANSACTION_TYPE, EXTERNAL_ERROR } from 'src/utils/const';
 
-import validators from '../../resources/staking/validators.json';
-import { SEND_TRANSACTION_TYPE, EXTERNAL_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 import { CosmosNodeTransactionTypeMixin } from '../mixins/index.js';
 

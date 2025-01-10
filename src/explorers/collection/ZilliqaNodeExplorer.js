@@ -1,11 +1,11 @@
 import { Transaction } from '@zilliqa-js/account';
 import { RPCMethod } from '@zilliqa-js/core';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
+import RewardCalculator from 'src/coins/libs/ZilliqaRewardCalculator';
 import { ExplorerRequestError } from 'src/errors';
+import { SEND_TRANSACTION_TYPE, GET_BALANCE_TYPE } from 'src/utils/const';
 
 import ZilliqaAbstractExplorer from './ZilliqaAbstractExplorer.js';
-import RewardCalculator from '../../coins/libs/ZilliqaRewardCalculator';
-import { SEND_TRANSACTION_TYPE, GET_BALANCE_TYPE } from '../../utils/const';
 
 const STAKING_PENGING_RANGE = 30800; // 50 testnet, 30800 mainnet
 const ACCOUNT_NOT_CREATED_ERROR_CODE = -5;

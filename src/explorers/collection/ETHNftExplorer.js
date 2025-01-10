@@ -1,9 +1,9 @@
+import { ERC721_TOKEN_STANDARD, ERC1155_TOKEN_STANDARD } from 'src/coins/nfts/ETHNftToken';
 import { ExternalError, InternalError } from 'src/errors';
+import { EXTERNAL_ERROR, INTERNAL_ERROR } from 'src/utils/const';
+import { getStringWithEnsuredEndChar } from 'src/utils/convert';
 import Web3 from 'web3';
 
-import { ERC721_TOKEN_STANDARD, ERC1155_TOKEN_STANDARD } from '../../coins/nfts/ETHNftToken';
-import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/const';
-import { getStringWithEnsuredEndChar } from '../../utils/convert';
 import Explorer from '../Explorer';
 
 const TRANSACTION_RECEIPT = 'transactionHash';

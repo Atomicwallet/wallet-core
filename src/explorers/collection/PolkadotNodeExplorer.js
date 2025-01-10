@@ -1,7 +1,7 @@
 import { ExplorerRequestError } from 'src/errors';
+import { LazyLoadedLib } from 'src/utils';
+import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import { LazyLoadedLib } from '../../utils';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 
 const polkaDotApi = new LazyLoadedLib(() => import('@polkadot/api'));

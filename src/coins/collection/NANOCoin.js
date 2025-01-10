@@ -1,9 +1,9 @@
+import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
+import NanonodeExplorer from 'src/explorers/collection/NanonodeExplorer';
+import { LazyLoadedLib } from 'src/utils';
+import { WALLET_ERROR } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
-import NanonodeExplorer from '../../explorers/collection/NanonodeExplorer';
-import { LazyLoadedLib } from '../../utils';
-import { WALLET_ERROR } from '../../utils/const';
 import { HasProviders } from '../mixins';
 
 const blakeLazyLoaded = new LazyLoadedLib(() => import('blakejs'));

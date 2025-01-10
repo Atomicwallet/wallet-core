@@ -1,14 +1,13 @@
 // import configManager from '../ConfigManager';
 // import logger from '../Logger';
 import { UndeclaredAbstractMethodError } from 'src/errors';
-
-import defaultValidators from '../../resources/staking/validators.json';
-import { Amount } from '../../utils';
+import defaultValidators from 'src/resources/staking/validators.json';
+import { Amount } from 'src/utils';
 import {
   STAKING_PREDEFINED_VALIDATORS_UPDATED,
   STAKING_BALANCES_UPDATED,
   STAKING_BALANCES_CACHE,
-} from '../../utils/eventTopics';
+} from 'src/utils/eventTopics';
 
 const undefinedValidatorWarn = (ticker) => `Probably ${ticker} doesn't have such validator yet\n`;
 

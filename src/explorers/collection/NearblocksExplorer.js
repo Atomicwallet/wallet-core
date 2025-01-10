@@ -1,4 +1,5 @@
-import { getNumberWithoutENotation as getNumberStringWithoutENotation } from '../../utils/convert';
+import { getNumberWithoutENotation as getNumberStringWithoutENotation } from 'src/utils/convert';
+
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

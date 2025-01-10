@@ -1,14 +1,14 @@
 import { bytes, Long, units } from '@zilliqa-js/util';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
+import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
+import ViewblockExplorer from 'src/explorers/collection//ViewblockExplorer';
+import ZilliqaAtomicExplorer from 'src/explorers/collection//ZilliqaAtomicExplorer';
+import ZilliqaNodeExplorer from 'src/explorers/collection//ZilliqaNodeExplorer';
+import { ZILToken } from 'src/tokens';
+import { LazyLoadedLib } from 'src/utils';
+import { LOAD_WALLET_ERROR, WALLET_ERROR } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
-import ViewblockExplorer from '../../explorers/collection//ViewblockExplorer';
-import ZilliqaAtomicExplorer from '../../explorers/collection//ZilliqaAtomicExplorer';
-import ZilliqaNodeExplorer from '../../explorers/collection//ZilliqaNodeExplorer';
-import { ZILToken } from '../../tokens';
-import { LazyLoadedLib } from '../../utils';
-import { LOAD_WALLET_ERROR, WALLET_ERROR } from '../../utils/const';
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
 
 const bitcoinJsLib = new LazyLoadedLib(() => import('bitcoinjs-lib'));

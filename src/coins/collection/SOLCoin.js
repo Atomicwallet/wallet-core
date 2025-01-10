@@ -1,14 +1,15 @@
+import { Coin } from 'src/abstract';
+import { NftMixin } from 'src/coins/nfts/mixins';
 import { UnknownConfigKeyError } from 'src/errors';
+import SolanaNodeExplorer from 'src/explorers/collection/SolanaNodeExplorer';
+import SolanaTritonExplorer from 'src/explorers/collection/SolanaTritonExplorer';
+import { SOLToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
 import { STAKE_ADDR_TYPE } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
 // import configManager, { ConfigKey } from '../ConfigManager';
 // import AddrCacheDb from '../AddrCacheDb';
-import { NftMixin } from '../../coins/nfts/mixins';
-import SolanaNodeExplorer from '../../explorers/collection/SolanaNodeExplorer';
-import SolanaTritonExplorer from '../../explorers/collection/SolanaTritonExplorer';
-import { SOLToken } from '../../tokens';
+
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
 import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from '../mixins/HasProviders';
 

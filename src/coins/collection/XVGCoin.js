@@ -1,6 +1,7 @@
-import { Coin } from '../../abstract';
-import VergeInsightExplorer from '../../explorers/collection//VergeInsightExplorer';
-import { LazyLoadedLib } from '../../utils';
+import { Coin } from 'src/abstract';
+import VergeInsightExplorer from 'src/explorers/collection//VergeInsightExplorer';
+import { LazyLoadedLib } from 'src/utils';
+
 import { BitcoinLikeFeeMixin, BitcoreMixin, HasProviders } from '../mixins';
 
 const NAME = 'Verge';

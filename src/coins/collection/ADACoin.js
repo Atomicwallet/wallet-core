@@ -1,12 +1,12 @@
+import Coin from 'src/abstract/coin';
 import { DEFAULT_ADALITE_SUBMIT_URL } from 'src/env';
 import { WalletError } from 'src/errors';
+import { AdaAtomicExplorer, YoroExplorer } from 'src/explorers/collection';
+import { LazyLoadedLib, preventConcurrent } from 'src/utils';
+import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import Coin from '../../abstract/coin';
-import { AdaAtomicExplorer, YoroExplorer } from '../../explorers/collection';
-import { LazyLoadedLib, preventConcurrent } from '../../utils';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const';
 import { HasProviders } from '../mixins';
-// import validators from '../../resources/staking/validators.json'
+// import validators from 'src/resources/staking/validators.json'
 
 const NAME = 'Cardano';
 const TICKER = 'ADA';

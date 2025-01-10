@@ -1,4 +1,5 @@
-import { IcxTxTypes } from '../../utils/const';
+import { IcxTxTypes } from 'src/utils/const';
+
 import Explorer from '../Explorer';
 
 class IconExplorer extends Explorer {

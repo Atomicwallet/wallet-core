@@ -1,8 +1,8 @@
 import TronscanClient from '@tronscan/client';
 import { ExplorerRequestError } from 'src/errors';
+import { getTokenId } from 'src/utils';
+import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import { getTokenId } from '../../utils';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

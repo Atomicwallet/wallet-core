@@ -1,8 +1,8 @@
 // import configManager from '../ConfigManager'
 import { ETHPLORER_API_KEY } from 'src/env';
+import TOKENS_CACHE from 'src/resources/eth/tokens.json';
+import { GET_BALANCE_TYPE } from 'src/utils/const';
 
-import TOKENS_CACHE from '../../resources/eth/tokens.json';
-import { GET_BALANCE_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 // import logger from '../Logger'

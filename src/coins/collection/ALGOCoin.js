@@ -1,9 +1,9 @@
+import Coin from 'src/abstract/coin';
 import { WalletError } from 'src/errors';
+import { AlgoExplorer, AlgoNodeExplorer } from 'src/explorers/collection';
+import { LazyLoadedLib } from 'src/utils';
+import { WALLET_ERROR } from 'src/utils/const';
 
-import Coin from '../../abstract/coin';
-import { AlgoExplorer, AlgoNodeExplorer } from '../../explorers/collection';
-import { LazyLoadedLib } from '../../utils';
-import { WALLET_ERROR } from '../../utils/const';
 import { HasProviders } from '../mixins';
 
 const algosdkLazyLoaded = new LazyLoadedLib(() => import('algosdk'));

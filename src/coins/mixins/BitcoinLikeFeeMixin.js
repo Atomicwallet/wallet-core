@@ -1,6 +1,5 @@
 import coinselect from 'coinselect';
-
-import { BTC_MOCK_ADDR } from '../../utils/const';
+import { BTC_MOCK_ADDR } from 'src/utils/const';
 
 const BitcoinLikeFeeMixin = (superclass) =>
   class extends superclass {

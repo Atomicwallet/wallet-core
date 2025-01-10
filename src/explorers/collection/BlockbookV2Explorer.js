@@ -1,9 +1,10 @@
 // import configManager from '../ConfigManager'
 // import history from '../History'
 // import logger from '../Logger'
-import { getTokenId } from '../../utils';
-import { GET_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from '../../utils/const';
-import { toCurrency } from '../../utils/convert';
+import { getTokenId } from 'src/utils';
+import { GET_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from 'src/utils/const';
+import { toCurrency } from 'src/utils/convert';
+
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

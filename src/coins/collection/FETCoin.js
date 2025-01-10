@@ -1,5 +1,6 @@
-import { Coin } from '../../abstract';
-import CosmosNodeExplorerV2 from '../../explorers/collection/CosmosNodeExplorerV2';
+import { Coin } from 'src/abstract';
+import CosmosNodeExplorerV2 from 'src/explorers/collection/CosmosNodeExplorerV2';
+
 import { CosmosMixinV2, HasBlockScanner, HasProviders } from '../mixins';
 
 const NAME = 'Fetch.AI';

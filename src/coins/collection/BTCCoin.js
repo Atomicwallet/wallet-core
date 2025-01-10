@@ -1,11 +1,10 @@
 import axios from 'axios';
-
-import { Coin } from '../../abstract';
-import { BitcoinLikeFeeMixin, BitcoreMixin } from '../../coins/mixins';
-import { BlockbookV2Explorer } from '../../explorers/collection';
-import fees from '../../resources/wallets_fee.json';
-import { LazyLoadedLib } from '../../utils';
-import { LIB_NAME_INDEX } from '../../utils/const';
+import { Coin } from 'src/abstract';
+import { BitcoinLikeFeeMixin, BitcoreMixin } from 'src/coins/mixins';
+import { BlockbookV2Explorer } from 'src/explorers/collection';
+import fees from 'src/resources/wallets_fee.json';
+import { LazyLoadedLib } from 'src/utils';
+import { LIB_NAME_INDEX } from 'src/utils/const';
 
 const { BITCORE } = LIB_NAME_INDEX;
 const NAME = 'Bitcoin';

@@ -1,18 +1,18 @@
 import axios from 'axios';
-import { MORALIS_API_KEY, MORALIS_NATIVE_API } from 'src/env';
-import { ExternalError, InternalError } from 'src/errors';
-
-import { ETHNftToken } from '../../coins/nfts';
+import { ETHNftToken } from 'src/coins/nfts';
 import {
   ERC1155_TOKEN_STANDARD,
   ERC721_TOKEN_STANDARD,
   erc1155StandardTest,
   erc721StandardTest,
   UNRECOGNIZED_TOKEN_STANDARD,
-} from '../../coins/nfts/ETHNftToken';
-import { getTransformedTokenUri } from '../../coins/nfts/utils';
-import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/const';
-import { getStringWithEnsuredEndChar } from '../../utils/convert';
+} from 'src/coins/nfts/ETHNftToken';
+import { getTransformedTokenUri } from 'src/coins/nfts/utils';
+import { MORALIS_API_KEY, MORALIS_NATIVE_API } from 'src/env';
+import { ExternalError, InternalError } from 'src/errors';
+import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR, INTERNAL_ERROR } from 'src/utils/const';
+import { getStringWithEnsuredEndChar } from 'src/utils/convert';
+
 import { TxTypes } from '../enum/index.js';
 import Explorer from '../Explorer';
 

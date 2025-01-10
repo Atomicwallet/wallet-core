@@ -1,4 +1,5 @@
-import { convertTimestampToDateTime, getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert';
+import { convertTimestampToDateTime, getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
+
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

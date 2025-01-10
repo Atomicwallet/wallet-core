@@ -1,20 +1,21 @@
 import BN from 'bn.js';
+import { Coin } from 'src/abstract';
 import { ExternalError } from 'src/errors';
+import BlockscoutExplorer from 'src/explorers/collection/BlockscoutExplorer';
+import Web3Explorer from 'src/explorers/collection/Web3Explorer';
+import dropDates from 'src/resources/flr/drop-dates.json';
+import TOKENS_CACHE from 'src/resources/flr/tokens.json';
+import { FLRToken } from 'src/tokens';
+import FlareClaimContractABI from 'src/tokens/ABI/ERC-20/FlareClaimContract';
+import FTSORewardsABI from 'src/tokens/ABI/ERC-20/FlareRewardsManagerContract';
+import WFLRAbi from 'src/tokens/ABI/ERC-20/WFLR';
+import { Amount, LazyLoadedLib } from 'src/utils';
+import { EXTERNAL_ERROR } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
 // import { ConfigKey } from '../ConfigManager/ConfigManager.const';
-import BlockscoutExplorer from '../../explorers/collection/BlockscoutExplorer';
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
-import dropDates from '../../resources/flr/drop-dates.json';
-import TOKENS_CACHE from '../../resources/flr/tokens.json';
-import { FLRToken } from '../../tokens';
-import FlareClaimContractABI from '../../tokens/ABI/ERC-20/FlareClaimContract';
-import FTSORewardsABI from '../../tokens/ABI/ERC-20/FlareRewardsManagerContract';
-import WFLRAbi from '../../tokens/ABI/ERC-20/WFLR';
-import { Amount, LazyLoadedLib } from '../../utils';
-import { EXTERNAL_ERROR } from '../../utils/const';
+
 import { HasProviders, HasTokensMixin, StakingMixin, Web3Mixin } from '../mixins';
 
 const web3LazyLoaded = new LazyLoadedLib(() => import('web3'));

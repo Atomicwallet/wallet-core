@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
+import { GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import { GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 
 class NanocrawlerExplorer extends Explorer {

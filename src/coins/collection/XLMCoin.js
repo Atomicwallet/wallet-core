@@ -1,6 +1,6 @@
-import { Coin } from '../../abstract';
-import XlmExplorer from '../../explorers/collection/XlmExplorer';
-import { LazyLoadedLib } from '../../utils';
+import { Coin } from 'src/abstract';
+import XlmExplorer from 'src/explorers/collection/XlmExplorer';
+import { LazyLoadedLib } from 'src/utils';
 
 const stellarSdkLib = new LazyLoadedLib(() => import('stellar-sdk'));
 const stellarHdWalletLib = new LazyLoadedLib(() => import('stellar-hd-wallet'));

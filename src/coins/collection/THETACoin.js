@@ -1,9 +1,10 @@
-import { Coin } from '../../abstract';
 // import logger from '../Logger';
-import ThetaExplorer from '../../explorers/collection/ThetaExplorer';
-import ThetaJSExplorer from '../../explorers/collection/ThetaJSExplorer';
-import { THETAToken } from '../../tokens';
-import { LazyLoadedLib } from '../../utils';
+import { Coin } from 'src/abstract';
+import ThetaExplorer from 'src/explorers/collection/ThetaExplorer';
+import ThetaJSExplorer from 'src/explorers/collection/ThetaJSExplorer';
+import { THETAToken } from 'src/tokens';
+import { LazyLoadedLib } from 'src/utils';
+
 import { HasProviders, HasTokensMixin } from '../mixins';
 
 const thetaJsLib = new LazyLoadedLib(() => import('@thetalabs/theta-js'));

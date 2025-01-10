@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
+import { EXPLORER_API_ERROR } from 'src/utils/const';
 
-import { EXPLORER_API_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 
 class EOSApiExplorer extends Explorer {

@@ -1,15 +1,13 @@
+import { Coin } from 'src/abstract';
+import NftMixin from 'src/coins/nfts/mixins/NftMixin';
 import { ExternalError, UnknownConfigKeyError } from 'src/errors';
+import EtherscanExplorer from 'src/explorers/collection/EtherscanExplorer';
+import Web3Explorer from 'src/explorers/collection/Web3Explorer';
+import Transaction from 'src/explorers/Transaction';
+import { EVMToken } from 'src/tokens';
+import { Amount, LazyLoadedLib } from 'src/utils';
+import { EXTERNAL_ERROR } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
-// import logger from '../Logger';
-// import configManager from '../ConfigManager';
-import NftMixin from '../../coins/nfts/mixins/NftMixin';
-import EtherscanExplorer from '../../explorers/collection/EtherscanExplorer';
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
-import Transaction from '../../explorers/Transaction';
-import { EVMToken } from '../../tokens';
-import { Amount, LazyLoadedLib } from '../../utils';
-import { EXTERNAL_ERROR } from '../../utils/const';
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';

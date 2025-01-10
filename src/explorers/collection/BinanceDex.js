@@ -1,6 +1,6 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import TOKENS_CACHE from 'src/resources/binance/tokens.json';
 
-import TOKENS_CACHE from '../../resources/binance/tokens.json';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 // import history from '../History'

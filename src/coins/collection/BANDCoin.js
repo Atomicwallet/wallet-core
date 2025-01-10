@@ -1,6 +1,7 @@
-import { Coin } from '../../abstract';
-import CosmosNodeExplorer from '../../explorers/collection/CosmosNodeExplorer';
-import CosmosNodeExplorerV2 from '../../explorers/collection/CosmosNodeExplorerV2';
+import { Coin } from 'src/abstract';
+import CosmosNodeExplorer from 'src/explorers/collection/CosmosNodeExplorer';
+import CosmosNodeExplorerV2 from 'src/explorers/collection/CosmosNodeExplorerV2';
+
 import { CosmosMixinV2, HasBlockScanner, HasProviders } from '../mixins';
 
 const NAME = 'Band Protocol';

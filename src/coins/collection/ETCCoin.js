@@ -1,10 +1,9 @@
+import { Coin } from 'src/abstract';
 import { ExplorerRequestError } from 'src/errors';
-
-import { Coin } from '../../abstract';
-import BlockscoutExplorer from '../../explorers/collection/BlockscoutExplorer';
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
-import { LazyLoadedLib } from '../../utils';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
+import BlockscoutExplorer from 'src/explorers/collection/BlockscoutExplorer';
+import Web3Explorer from 'src/explorers/collection/Web3Explorer';
+import { LazyLoadedLib } from 'src/utils';
+import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
 const Web3LazyLoaded = new LazyLoadedLib(() => import('web3'));
 const hdkeyLazyLoaded = new LazyLoadedLib(() => import('ethereumjs-wallet'));

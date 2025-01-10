@@ -1,6 +1,7 @@
-import { Coin } from '../../abstract';
-import CosmosNodeExplorerV2 from '../../explorers/collection/CosmosNodeExplorerV2';
-import CosmosNodeWithBlockscannerExplorer from '../../explorers/extended/CosmosNodeWithBlockscannerExplorer';
+import { Coin } from 'src/abstract';
+import CosmosNodeExplorerV2 from 'src/explorers/collection/CosmosNodeExplorerV2';
+import CosmosNodeWithBlockscannerExplorer from 'src/explorers/extended/CosmosNodeWithBlockscannerExplorer';
+
 import { CosmosMixinV2, HasProviders } from '../mixins';
 
 const NAME = 'Cosmos';

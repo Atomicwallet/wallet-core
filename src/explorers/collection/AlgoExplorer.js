@@ -1,7 +1,7 @@
 import { ExplorerRequestError } from 'src/errors';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from 'src/utils/const';
+import { convertSecondsToDateTime } from 'src/utils/convert';
 
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/const';
-import { convertSecondsToDateTime } from '../../utils/convert';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

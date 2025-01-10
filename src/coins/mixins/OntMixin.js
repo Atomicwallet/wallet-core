@@ -1,7 +1,6 @@
 import base58check from 'base58check';
 import { ExplorerRequestError } from 'src/errors';
-
-import { LazyLoadedLib } from '../../utils';
+import { LazyLoadedLib } from 'src/utils';
 
 const ontologySdkLib = new LazyLoadedLib(() => import('ontology-ts-sdk'));
 

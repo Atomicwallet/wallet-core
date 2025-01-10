@@ -3,9 +3,9 @@ import BN from 'bn.js';
 import lodash from 'lodash';
 import * as nearAPI from 'near-api-js';
 import { ExternalError } from 'src/errors';
+import { Amount } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
-import { Amount } from '../../utils';
 import Explorer from '../Explorer';
 
 const THROTTLE_INTERVAL = 800;

@@ -1,10 +1,10 @@
+import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
+import AtomicExplorer from 'src/explorers/collection/AtomicExplorer';
+import BlockbookV2Explorer from 'src/explorers/collection/BlockbookV2Explorer';
+import { LazyLoadedLib } from 'src/utils';
+import { LIB_NAME_INDEX } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
-import AtomicExplorer from '../../explorers/collection/AtomicExplorer';
-import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
-import { LazyLoadedLib } from '../../utils';
-import { LIB_NAME_INDEX } from '../../utils/const';
 import KomodoRewardCalculator from '../libs/KomodoRewardCalculator';
 import { BitcoinLikeFeeMixin, BitgoMixin, HasProviders } from '../mixins';
 

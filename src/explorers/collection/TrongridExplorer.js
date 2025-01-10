@@ -1,6 +1,6 @@
+import { getTokenId } from 'src/utils';
 import TronWeb from 'tronweb';
 
-import { getTokenId } from '../../utils';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 // import logger from '../Logger'

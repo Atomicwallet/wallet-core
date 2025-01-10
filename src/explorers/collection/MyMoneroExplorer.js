@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { ExternalError } from 'src/errors';
+import { LazyLoadedLib, Emitter as emitter } from 'src/utils';
+import { WALLETS } from 'src/utils/const';
+import { getStringWithEnsuredEndChar } from 'src/utils/convert';
 
-import { LazyLoadedLib, Emitter as emitter } from '../../utils';
-import { WALLETS } from '../../utils/const';
-import { getStringWithEnsuredEndChar } from '../../utils/convert';
 import Explorer from '../Explorer';
 // import activeWalletsList from '../ActiveWalletsList'
 

@@ -1,16 +1,16 @@
 import BN from 'bn.js';
+import Coin from 'src/abstract/coin';
 import { ExternalError } from 'src/errors';
+import { ETHNftExplorer, MoralisExplorer, Web3Explorer } from 'src/explorers/collection';
+import BlockbookV2WithBlockscannerExplorer from 'src/explorers/extended/BlockbookV2WithBlockscannerExplorer';
+import BANNED_TOKENS_CACHE from 'src/resources/eth/tokens-banned.json';
+import TOKENS_CACHE from 'src/resources/eth/tokens.json';
+import ETHToken from 'src/tokens/ETHToken';
+import StakableMaticETHToken from 'src/tokens/StakableMaticETHToken';
+import { Amount } from 'src/utils';
+import { EXTERNAL_ERROR } from 'src/utils/const';
+import LazyLoadedLib from 'src/utils/lazyLoadedLib.js';
 
-import Coin from '../../abstract/coin';
-import { ETHNftExplorer, MoralisExplorer, Web3Explorer } from '../../explorers/collection';
-import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer';
-import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
-import TOKENS_CACHE from '../../resources/eth/tokens.json';
-import ETHToken from '../../tokens/ETHToken';
-import StakableMaticETHToken from '../../tokens/StakableMaticETHToken';
-import { Amount } from '../../utils';
-import { EXTERNAL_ERROR } from '../../utils/const';
-import LazyLoadedLib from '../../utils/lazyLoadedLib.js';
 import { StakingMixin, NftMixin } from '../mixins';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';

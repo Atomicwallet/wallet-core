@@ -12,4 +12,4 @@ export { default as HasTokensMixin } from './HasTokensMixin';
 export { default as HasBlockScanner } from './HasBlockScanner';
 export { default as BitcoinLikeFeeMixin } from './BitcoinLikeFeeMixin';
 export { default as BitcoreBitcoinCashMixin } from './BitcoreBitcoinCashMixin';
-export { default as NftMixin } from '../../coins/nfts/mixins/NftMixin';
+export { default as NftMixin } from 'src/coins/nfts/mixins/NftMixin';

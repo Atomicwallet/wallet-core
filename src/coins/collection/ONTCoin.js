@@ -1,6 +1,7 @@
-import { Coin } from '../../abstract';
-import OntExplorer from '../../explorers/collection/OntExplorer';
-import { ONTToken } from '../../tokens';
+import { Coin } from 'src/abstract';
+import OntExplorer from 'src/explorers/collection/OntExplorer';
+import { ONTToken } from 'src/tokens';
+
 import { HasTokensMixin, OntMixin } from '../mixins';
 
 const NAME = 'Ontology';

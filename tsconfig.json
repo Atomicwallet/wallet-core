@@ -12,9 +12,6 @@
     "compilerOptions": {
       "module": "commonjs",
       "moduleResolution": "node",
-      "paths": {
-        "@/*": ["src/*"]
-      },
       "esModuleInterop": true,
       "target": "esnext",
       "strict": true

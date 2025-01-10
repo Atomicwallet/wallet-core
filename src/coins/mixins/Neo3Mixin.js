@@ -1,4 +1,4 @@
-import { toCurrency } from '../../utils/convert';
+import { toCurrency } from 'src/utils/convert';
 
 const Neo3Mixin = (superclass) =>
   class extends superclass {

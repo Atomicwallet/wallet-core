@@ -1,6 +1,5 @@
 import { WalletError, InsufficientFundsError } from 'src/errors';
-
-import { SEND_TRANSACTION_TYPE, WALLET_ERROR, LIB_NAME_INDEX } from '../../utils/const';
+import { SEND_TRANSACTION_TYPE, WALLET_ERROR, LIB_NAME_INDEX } from 'src/utils/const';
 
 const { BITCOINJS } = LIB_NAME_INDEX;
 

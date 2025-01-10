@@ -1,7 +1,8 @@
-import { Coin } from '../../abstract';
-import VetNodeExplorer from '../../explorers/collection/VetNodeExplorer';
-import { VETToken } from '../../tokens';
-import { LazyLoadedLib } from '../../utils';
+import { Coin } from 'src/abstract';
+import VetNodeExplorer from 'src/explorers/collection/VetNodeExplorer';
+import { VETToken } from 'src/tokens';
+import { LazyLoadedLib } from 'src/utils';
+
 import { HasProviders, HasTokensMixin } from '../mixins';
 
 const thorDevKitLib = new LazyLoadedLib(() => import('thor-devkit'));

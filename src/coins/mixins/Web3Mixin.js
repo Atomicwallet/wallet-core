@@ -1,7 +1,6 @@
 import { ethers } from 'ethers';
-
-import ABICollection from '../../tokens/ABI';
-import ERC20Default from '../../tokens/ABI/ERC-20/standard';
+import ABICollection from 'src/tokens/ABI';
+import ERC20Default from 'src/tokens/ABI/ERC-20/standard';
 
 const DEFAULT_MAX_GAS = '250000';
 const MAX_ALLOWED_AMOUNT = '115792089237316195423570985008687907853269984665640564039457584007913129639935';

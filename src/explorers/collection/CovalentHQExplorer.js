@@ -1,8 +1,8 @@
 import { ExplorerRequestError } from 'src/errors';
+import { getTokenId } from 'src/utils';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from 'src/utils/const';
+import { toCurrency } from 'src/utils/convert';
 
-import { getTokenId } from '../../utils';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/const';
-import { toCurrency } from '../../utils/convert';
 import { TxTypes } from '../enum/index.js';
 import Explorer from '../Explorer';
 

@@ -1,12 +1,13 @@
 // docs: https://near.github.io/near-api-js/
 import lodash from 'lodash';
+import { Coin } from 'src/abstract';
+import NearblocksExplorer from 'src/explorers/collection/NearblocksExplorer';
+import NearRPCExplorer from 'src/explorers/collection/NearRPCExplorer';
+import { Amount, LazyLoadedLib } from 'src/utils';
+import sha256 from 'src/utils/sha256';
 
-import { Coin } from '../../abstract';
 // import logger from '../Logger';
-import NearblocksExplorer from '../../explorers/collection/NearblocksExplorer';
-import NearRPCExplorer from '../../explorers/collection/NearRPCExplorer';
-import { Amount, LazyLoadedLib } from '../../utils';
-import sha256 from '../../utils/sha256';
+
 import { HasBlockScanner, HasProviders, StakingMixin } from '../mixins';
 
 const nearApiLib = new LazyLoadedLib(() => import('near-api-js'));

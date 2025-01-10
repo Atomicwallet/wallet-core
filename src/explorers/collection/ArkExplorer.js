@@ -1,11 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import {
-  GET_BALANCE_TYPE,
-  GET_TRANSACTIONS_TYPE,
-  HTTP_STATUS_NOT_FOUND,
-  SEND_TRANSACTION_TYPE,
-} from '../../utils/const';
 import Explorer from '../Explorer';
 
 class ArkExplorer extends Explorer {

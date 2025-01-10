@@ -1,18 +1,19 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 6, 8, 16, 256] }] */
 /* eslint no-bitwise: ["error", { "allow": ["&"] }] */
+import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
 
-import { Coin } from '../../abstract';
 // import configManager, { ConfigKey } from '../ConfigManager';
 // import logger from '../Logger';
-import TrongridExplorer from '../../explorers/collection/TrongridExplorer';
-import TronscanExplorer from '../../explorers/collection/TronscanExplorer';
-import TronNodeWithBlockscannerExplorer from '../../explorers/extended/TronNodeWithBlockscannerExplorer';
-import BANNED_TOKENS_CACHE from '../../resources/trx/tokens-banned.json';
-import TOKENS_CACHE from '../../resources/trx/tokens.json';
-import { TRXToken } from '../../tokens';
-import { LazyLoadedLib, Amount } from '../../utils';
-import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils/const';
+import TrongridExplorer from 'src/explorers/collection/TrongridExplorer';
+import TronscanExplorer from 'src/explorers/collection/TronscanExplorer';
+import TronNodeWithBlockscannerExplorer from 'src/explorers/extended/TronNodeWithBlockscannerExplorer';
+import BANNED_TOKENS_CACHE from 'src/resources/trx/tokens-banned.json';
+import TOKENS_CACHE from 'src/resources/trx/tokens.json';
+import { TRXToken } from 'src/tokens';
+import { LazyLoadedLib, Amount } from 'src/utils';
+import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from 'src/utils/const';
+
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 const hdkeyLib = new LazyLoadedLib(() => import('hdkey'));

@@ -1,11 +1,11 @@
+import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
+import PolkadotNodeExplorer from 'src/explorers/collection/PolkadotNodeExplorer';
+import PolkadotSidecarExplorer from 'src/explorers/collection/PolkadotSidecarExplorer';
+import PolkaScanExplorer from 'src/explorers/collection/PolkaScanExplorer';
+import { LazyLoadedLib } from 'src/utils';
+import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
-import PolkadotNodeExplorer from '../../explorers/collection/PolkadotNodeExplorer';
-import PolkadotSidecarExplorer from '../../explorers/collection/PolkadotSidecarExplorer';
-import PolkaScanExplorer from '../../explorers/collection/PolkaScanExplorer';
-import { LazyLoadedLib } from '../../utils';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import { HasBlockScanner, HasProviders } from '../mixins';
 
 const NAME = 'Polkadot';

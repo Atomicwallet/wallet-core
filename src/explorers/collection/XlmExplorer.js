@@ -1,7 +1,7 @@
 import { ExplorerRequestError } from 'src/errors';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 import { Server, Networks, Operation, Memo, Keypair, Asset, TransactionBuilder } from 'stellar-sdk';
 
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 // import logger from '../Logger'
 

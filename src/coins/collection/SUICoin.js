@@ -1,6 +1,7 @@
-import { Coin } from '../../abstract';
-import SuiExplorer from '../../explorers/collection/SuiExplorer';
-import { LazyLoadedLib } from '../../utils';
+import { Coin } from 'src/abstract';
+import SuiExplorer from 'src/explorers/collection/SuiExplorer';
+import { LazyLoadedLib } from 'src/utils';
+
 import { HasProviders } from '../mixins';
 
 const suiLib = new LazyLoadedLib(() => import('@mysten/sui.js'));

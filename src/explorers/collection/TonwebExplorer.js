@@ -1,10 +1,10 @@
 import { TONWEB_API_KEY, TONWEB_FALLBACK_INDEX_URL, TONWEB_FALLBACK_V2_URL } from 'src/env';
 import { ExplorerRequestError } from 'src/errors';
+import { getTokenId } from 'src/utils';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from 'src/utils/const';
+import { toCurrency } from 'src/utils/convert';
 import TonWeb from 'tonweb';
 
-import { getTokenId } from '../../utils';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from '../../utils/const';
-import { toCurrency } from '../../utils/convert';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

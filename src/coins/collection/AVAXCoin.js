@@ -1,16 +1,14 @@
 import BN from 'bn.js';
+import { Coin } from 'src/abstract';
+import { NftMixin } from 'src/coins/nfts/mixins';
 import { ExternalError } from 'src/errors';
+import ETHNftExplorer from 'src/explorers/collection/ETHNftExplorer';
+import MoralisExplorer from 'src/explorers/collection/MoralisExplorer';
+import SnowTraceExplorer from 'src/explorers/collection/SnowTraceExplorer';
+import Web3Explorer from 'src/explorers/collection/Web3Explorer';
+import { LazyLoadedLib } from 'src/utils';
+import { EXTERNAL_ERROR } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
-// import logger from '../Logger';
-// import configManager from '../ConfigManager';
-import { NftMixin } from '../../coins/nfts/mixins';
-import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
-import MoralisExplorer from '../../explorers/collection/MoralisExplorer';
-import SnowTraceExplorer from '../../explorers/collection/SnowTraceExplorer';
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
-import { LazyLoadedLib } from '../../utils';
-import { EXTERNAL_ERROR } from '../../utils/const';
 import HasBlockScanner from '../mixins/HasBlockScanner';
 import HasProviders from '../mixins/HasProviders';
 import Web3Mixin from '../mixins/Web3Mixin';

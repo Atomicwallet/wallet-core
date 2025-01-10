@@ -7,12 +7,12 @@ import { Connection, Keypair, PublicKey, StakeProgram, Transaction as SolanaTran
 import axios from 'axios';
 import BN from 'bn.js';
 import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz';
+import { SOLNftToken } from 'src/coins/nfts';
 import { ExternalError } from 'src/errors';
+import { chunkArray, getTokenId } from 'src/utils';
+import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils/const';
+import { convertSecondsToDateTime, getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
 
-import { SOLNftToken } from '../../coins/nfts';
-import { chunkArray, getTokenId } from '../../utils';
-import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/const';
-import { convertSecondsToDateTime, getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert';
 import Explorer from '../Explorer';
 // import history from '../History'
 // import AddrCacheDb from '../AddrCacheDb'

@@ -1,19 +1,20 @@
+import { Coin } from 'src/abstract';
+import NftMixin from 'src/coins/nfts/mixins/NftMixin';
 import { ExternalError } from 'src/errors';
-import applyCoefficient from 'src/utils/applyCoefficient';
 
-import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager, { ConfigKey } from '../ConfigManager';
-import NftMixin from '../../coins/nfts/mixins/NftMixin';
-import CovalentHQExplorer from '../../explorers/collection//CovalentHQExplorer';
-import ETHNftExplorer from '../../explorers/collection/ETHNftExplorer';
-import MoralisExplorer from '../../explorers/collection/MoralisExplorer';
-import PolyscanExplorer from '../../explorers/collection/PolyscanExplorer';
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
-import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer';
-import { MATICToken } from '../../tokens';
-import { LazyLoadedLib } from '../../utils';
-import { EXTERNAL_ERROR } from '../../utils/const';
+import CovalentHQExplorer from 'src/explorers/collection//CovalentHQExplorer';
+import ETHNftExplorer from 'src/explorers/collection/ETHNftExplorer';
+import MoralisExplorer from 'src/explorers/collection/MoralisExplorer';
+import PolyscanExplorer from 'src/explorers/collection/PolyscanExplorer';
+import Web3Explorer from 'src/explorers/collection/Web3Explorer';
+import BlockbookV2WithBlockscannerExplorer from 'src/explorers/extended/BlockbookV2WithBlockscannerExplorer';
+import { MATICToken } from 'src/tokens';
+import { LazyLoadedLib } from 'src/utils';
+import applyCoefficient from 'src/utils/applyCoefficient';
+import { EXTERNAL_ERROR } from 'src/utils/const';
+
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';

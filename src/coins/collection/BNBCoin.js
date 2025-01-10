@@ -1,13 +1,13 @@
+import { Coin } from 'src/abstract';
 import { DEFAULT_BINANCE_NET_URL } from 'src/env';
 import { WalletError } from 'src/errors';
+import BinanceBCExplorer from 'src/explorers/collection/BinanceBCExplorer';
+import BinanceDex from 'src/explorers/collection/BinanceDex';
+import BinanceExplorer from 'src/explorers/collection/BinanceExplorer';
+import { BNBToken } from 'src/tokens';
+import { Amount, LazyLoadedLib } from 'src/utils';
+import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
-import BinanceBCExplorer from '../../explorers/collection/BinanceBCExplorer';
-import BinanceDex from '../../explorers/collection/BinanceDex';
-import BinanceExplorer from '../../explorers/collection/BinanceExplorer';
-import { BNBToken } from '../../tokens';
-import { Amount, LazyLoadedLib } from '../../utils';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 // import configManager, { ConfigKey } from '../ConfigManager';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 

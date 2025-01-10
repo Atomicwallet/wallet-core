@@ -1,9 +1,9 @@
 import BN from 'bn.js';
+import { getTokenId } from 'src/utils';
+import { GET_BALANCE_TYPE, ONE_MINUTE } from 'src/utils/const';
+import { toCurrency } from 'src/utils/convert';
 import TronWeb from 'tronweb';
 
-import { getTokenId } from '../../utils';
-import { GET_BALANCE_TYPE, ONE_MINUTE } from '../../utils/const';
-import { toCurrency } from '../../utils/convert';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

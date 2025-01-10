@@ -1,6 +1,7 @@
-import { Coin } from '../../abstract';
-import NeoscanExplorer from '../../explorers/collection/NeoscanExplorer';
-import { LazyLoadedLib } from '../../utils';
+import { Coin } from 'src/abstract';
+import NeoscanExplorer from 'src/explorers/collection/NeoscanExplorer';
+import { LazyLoadedLib } from 'src/utils';
+
 import { HasProviders, NeoMixin } from '../mixins';
 import DisabledMixin from '../mixins/DisabledMixin';
 

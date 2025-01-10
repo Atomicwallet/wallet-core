@@ -1,7 +1,8 @@
-import { Coin } from '../../abstract';
-import StacksExplorer from '../../explorers/collection/StacksExplorer';
-import StacksHiroExplorer from '../../explorers/collection/StacksHiroExplorer';
-import { LazyLoadedLib } from '../../utils';
+import { Coin } from 'src/abstract';
+import StacksExplorer from 'src/explorers/collection/StacksExplorer';
+import StacksHiroExplorer from 'src/explorers/collection/StacksHiroExplorer';
+import { LazyLoadedLib } from 'src/utils';
+
 import { HasProviders } from '../mixins';
 
 const NAME = 'Stacks';

@@ -1,4 +1,5 @@
-import { toCurrency } from '../../utils/convert';
+import { toCurrency } from 'src/utils/convert';
+
 import txTypes from '../enum/txTypes.js';
 import Explorer from '../Explorer';
 

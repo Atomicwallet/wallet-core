@@ -1,13 +1,13 @@
 import BN from 'bn.js';
+import { Coin } from 'src/abstract';
 import { ExternalError } from 'src/errors';
+import Web3Explorer from 'src/explorers/collection/Web3Explorer';
+import { LazyLoadedLib } from 'src/utils';
+import { EXTERNAL_ERROR } from 'src/utils/const';
+import { isStartsWith } from 'src/utils/funcs';
 
-import { Coin } from '../../abstract';
 // import logger from '../Logger';
 // import configManager from '../ConfigManager';
-import Web3Explorer from '../../explorers/collection/Web3Explorer';
-import { LazyLoadedLib } from '../../utils';
-import { EXTERNAL_ERROR } from '../../utils/const';
-import { isStartsWith } from '../../utils/funcs';
 import { HasProviders } from '../mixins';
 
 const NAME = 'Filecoin';

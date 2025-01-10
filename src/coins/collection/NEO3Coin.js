@@ -1,8 +1,9 @@
-import { Coin } from '../../abstract';
-import DoraExplorer from '../../explorers/collection/DoraExplorer';
-import NeoNodeExplorer from '../../explorers/collection/NeoNodeExplorer';
-import { NEOToken } from '../../tokens';
-import { LazyLoadedLib } from '../../utils';
+import { Coin } from 'src/abstract';
+import DoraExplorer from 'src/explorers/collection/DoraExplorer';
+import NeoNodeExplorer from 'src/explorers/collection/NeoNodeExplorer';
+import { NEOToken } from 'src/tokens';
+import { LazyLoadedLib } from 'src/utils';
+
 import { HasProviders, HasTokensMixin, Neo3Mixin, NeoMixin } from '../mixins';
 
 const GAS_NAME = 'GAS';

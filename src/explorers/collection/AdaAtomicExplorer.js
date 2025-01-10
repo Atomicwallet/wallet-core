@@ -1,6 +1,6 @@
 import BN from 'bn.js';
+import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 
 class AdaAtomicExplorer extends Explorer {

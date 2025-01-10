@@ -1,4 +1,5 @@
-import { GET_TRANSACTIONS_TYPE } from '../../utils/const';
+import { GET_TRANSACTIONS_TYPE } from 'src/utils/const';
+
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

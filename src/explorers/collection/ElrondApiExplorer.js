@@ -1,4 +1,5 @@
-import { Amount } from '../../utils';
+import { Amount } from 'src/utils';
+
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

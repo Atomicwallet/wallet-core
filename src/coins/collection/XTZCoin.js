@@ -1,16 +1,17 @@
 import axios from 'axios';
+import { Coin } from 'src/abstract';
 import { ExplorerRequestError, WalletError } from 'src/errors';
+import TzktIoV1Explorer from 'src/explorers/collection/TzktIoV1Explorer';
+import TezosNodeWithBlockscannerExplorer from 'src/explorers/extended/TezosNodeWithBlockscannerExplorer';
+import { LazyLoadedLib } from 'src/utils';
+import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
 // import configManager from '../ConfigManager';
 // import { coinStakings } from '../Stakings';
 // import logger from '../Logger';
-import TzktIoV1Explorer from '../../explorers/collection/TzktIoV1Explorer';
-import TezosNodeWithBlockscannerExplorer from '../../explorers/extended/TezosNodeWithBlockscannerExplorer';
-// import predefinedValidators from '../../resources/staking/validators.json';
-// import validators from '../../resources/staking/validators.json';
-import { LazyLoadedLib } from '../../utils';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const';
+
+// import predefinedValidators from 'src/resources/staking/validators.json';
+// import validators from 'src/resources/staking/validators.json';
 import { HasProviders } from '../mixins';
 
 const bs58checkLazyLoaded = new LazyLoadedLib(() => import('bs58check'));

@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
+import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import { SEND_TRANSACTION_TYPE } from '../../utils/const';
 import Explorer from '../Explorer';
 
 class AtomicExplorer extends Explorer {

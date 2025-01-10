@@ -1,12 +1,12 @@
+import { Coin } from 'src/abstract';
 import { ExternalError, UnknownConfigKeyError } from 'src/errors';
+import TonwebExplorer from 'src/explorers/collection/TonwebExplorer';
+import { TONToken } from 'src/tokens';
+import { LazyLoadedLib } from 'src/utils';
+import { EXTERNAL_ERROR } from 'src/utils/const';
 
-import { Coin } from '../../abstract';
-import TonwebExplorer from '../../explorers/collection/TonwebExplorer';
-import { TONToken } from '../../tokens';
-import { LazyLoadedLib } from '../../utils';
 // import logger from '../Logger';
 // import configManager, { ConfigKey } from '../ConfigManager';
-import { EXTERNAL_ERROR } from '../../utils/const';
 import { HasProviders, HasTokensMixin } from '../mixins';
 import {
   BALANCE_PROVIDER_OPERATION,

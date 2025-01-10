@@ -1,10 +1,10 @@
 // import configManager from '../ConfigManager'
 import { ExplorerRequestError } from 'src/errors';
+import TOKENS_CACHE from 'src/resources/eth/tokens.json';
+import { getTokenId } from 'src/utils';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, UNDEFINED_OPERATION_ERROR } from 'src/utils/const';
 
-import TOKENS_CACHE from '../../resources/eth/tokens.json';
 // import logger from '../Logger'
-import { getTokenId } from '../../utils';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, UNDEFINED_OPERATION_ERROR } from '../../utils/const';
 import Explorer from '../Explorer';
 import Transaction from '../Transaction';
 

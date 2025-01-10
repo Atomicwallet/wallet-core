@@ -1,6 +1,5 @@
 import { ExplorerRequestError, WalletError } from 'src/errors';
-
-import { LazyLoadedLib, SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils';
+import { LazyLoadedLib, SEND_TRANSACTION_TYPE, WALLET_ERROR } from 'src/utils';
 
 const CONFIRM_TIMEOUT = 5000;
 const CONFIRM_RETRIES = 5;

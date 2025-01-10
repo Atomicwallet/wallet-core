@@ -7,11 +7,11 @@ import { Connection, Keypair, PublicKey, StakeProgram, Transaction } from '@sola
 import axios from 'axios';
 import BN from 'bn.js';
 import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz';
+import { SOLNftToken } from 'src/coins/nfts';
 import { ExternalError } from 'src/errors';
+import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils/const';
+import { getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
 
-import { SOLNftToken } from '../../coins/nfts';
-import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/const';
-import { getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert';
 import AddrCacheDb from '../AddrCacheDb';
 import Explorer from '../Explorer';
 // import history from '../History'

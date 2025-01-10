@@ -1,9 +1,10 @@
-import { Coin } from '../../abstract';
-import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer';
-import DcrDataExplorer from '../../explorers/collection/DcrDataExplorer';
-import InsightExplorer from '../../explorers/collection/InsightExplorer';
-import { LazyLoadedLib } from '../../utils';
-import { LIB_NAME_INDEX } from '../../utils/const';
+import { Coin } from 'src/abstract';
+import BlockbookV2Explorer from 'src/explorers/collection/BlockbookV2Explorer';
+import DcrDataExplorer from 'src/explorers/collection/DcrDataExplorer';
+import InsightExplorer from 'src/explorers/collection/InsightExplorer';
+import { LazyLoadedLib } from 'src/utils';
+import { LIB_NAME_INDEX } from 'src/utils/const';
+
 import { BitcoinLikeFeeMixin, BitcoreMixin } from '../mixins';
 
 const NAME = 'Decred';
