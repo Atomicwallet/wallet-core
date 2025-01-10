@@ -210,9 +210,12 @@ const BitcoinJSMixin = (superclass) =>
         txBuilder.addOutput(otherSideAddr || this.address, parseInt(change.toString(), 10));
       }
 
+      return this.signTransaction(txBuilder, inputs, privateKey);
+    }
+
+    async signTransaction(txBuilder, inputs, privateKey) {
       const keyForSign = await this.getKeyForSignFromPrivateKey(privateKey);
 
-      // sign transaction
       await Promise.all(inputs.map((input, index) => this.signInput(txBuilder, keyForSign, index, input)));
 
       return txBuilder.build().toHex();
