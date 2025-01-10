@@ -1,8 +1,8 @@
-import { generateWalletTests } from '@/__tests__/crypto/crypto.utils';
-import { createCoin } from '@/coins';
-import XRPCoin from '@/coins/collection/XRPCoin';
-import type { CoinDataConfig } from '@/coins/createCoin';
-import { getWalletConfig } from '@/utils';
+import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
+import { createCoin } from 'src/coins';
+import XRPCoin from 'src/coins/collection/XRPCoin';
+import type { CoinDataConfig } from 'src/coins/createCoin';
+import { getWalletConfig } from 'src/utils';
 
 const id = 'XRP';
 const config = getWalletConfig({ id });

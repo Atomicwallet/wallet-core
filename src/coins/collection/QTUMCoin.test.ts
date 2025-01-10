@@ -1,8 +1,8 @@
-import { generateWalletTests } from '@/__tests__/crypto/crypto.utils';
-import { createCoin } from '@/coins';
-import QTUMCoin from '@/coins/collection/QTUMCoin';
-import type { CoinDataConfig } from '@/coins/createCoin';
-import { getWalletConfig } from '@/utils';
+import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
+import { createCoin } from 'src/coins';
+import QTUMCoin from 'src/coins/collection/QTUMCoin';
+import type { CoinDataConfig } from 'src/coins/createCoin';
+import { getWalletConfig } from 'src/utils';
 
 const id = 'QTUM';
 const config = getWalletConfig({ id });

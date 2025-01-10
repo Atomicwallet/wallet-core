@@ -1,9 +1,9 @@
-import { generateWalletTests } from '@/__tests__/crypto/crypto.utils';
-import { createCosmoMockSignedData } from '@/__tests__/fixtures/common.fixture';
-import { createCoin } from '@/coins';
-import OSMOCoin from '@/coins/collection/OSMOCoin';
-import type { CoinDataConfig } from '@/coins/createCoin';
-import { getWalletConfig } from '@/utils';
+import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
+import { createCosmoMockSignedData } from 'src/__tests__/fixtures/common.fixture';
+import { createCoin } from 'src/coins';
+import OSMOCoin from 'src/coins/collection/OSMOCoin';
+import type { CoinDataConfig } from 'src/coins/createCoin';
+import { getWalletConfig } from 'src/utils';
 
 const id = 'OSMO';
 const config = getWalletConfig({ id });

@@ -1,8 +1,8 @@
-import { generateWalletTests } from '@/__tests__/crypto/crypto.utils';
-import { createCoin } from '@/coins';
-import AVAXCoin from '@/coins/collection/AVAXCoin';
-import type { CoinDataConfig } from '@/coins/createCoin';
-import { getWalletConfig } from '@/utils';
+import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
+import { createCoin } from 'src/coins';
+import AVAXCoin from 'src/coins/collection/AVAXCoin';
+import type { CoinDataConfig } from 'src/coins/createCoin';
+import { getWalletConfig } from 'src/utils';
 
 const id = 'AVAX';
 const config = getWalletConfig({ id });

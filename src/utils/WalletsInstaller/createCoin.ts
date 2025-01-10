@@ -5,17 +5,11 @@
  * @return {Object}
  */
 
-import { createEVMCoin } from '../../coins/collection/EVM';
-import type { Coin, CoinConfigType, FeeDataType, Token } from '@/abstract';
-import type { EVMConfig } from '@/coins/collection/EVM/types';
+import { Coin, CoinConfigType, FeeDataType, Token } from 'src/abstract';
+import { createEVMCoin } from 'src/coins/collection/EVM';
+import { EVMConfig } from 'src/coins/collection/EVM/types';
 
-/**
- *
- * @param CoinClass
- * @param coinData
- * @return {Coin}
- */
-function createCoin(
+export default function createCoin(
   CoinClass: new (config: CoinConfigType & EVMConfig) => Coin | Token,
   coinData: CoinConfigType &
     EVMConfig &
@@ -55,5 +49,3 @@ function createCoin(
     decimal: coinData.decimal,
   });
 }
-
-export default createCoin;

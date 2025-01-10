@@ -1,11 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
-import { generateWalletTests } from '@/__tests__/crypto/crypto.utils';
-import { createCoin } from '@/coins';
-import TONCoin from '@/coins/collection/TONCoin';
-import type { CoinDataConfig } from '@/coins/createCoin';
-import { getWalletConfig } from '@/utils';
+import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
+import { createCoin } from 'src/coins';
+import TONCoin from 'src/coins/collection/TONCoin';
+import type { CoinDataConfig } from 'src/coins/createCoin';
+import { getWalletConfig } from 'src/utils';
 
 const id = 'TON';
 const config = getWalletConfig({ id });

@@ -1,12 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
-import { generateWalletTests } from '@/__tests__/crypto/crypto.utils';
-import { createHash64 } from '@/__tests__/fixtures/common.fixture';
-import { createCoin } from '@/coins';
-import LUNACoin from '@/coins/collection/LUNACoin';
-import type { CoinDataConfig } from '@/coins/createCoin';
-import { getWalletConfig } from '@/utils';
+import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
+import { createHash64 } from 'src/__tests__/fixtures/common.fixture';
+import { createCoin } from 'src/coins';
+import LUNACoin from 'src/coins/collection/LUNACoin';
+import type { CoinDataConfig } from 'src/coins/createCoin';
+import { getWalletConfig } from 'src/utils';
 
 const id = 'LUNA';
 const config = getWalletConfig({ id });

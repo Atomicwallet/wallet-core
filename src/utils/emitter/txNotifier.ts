@@ -1,9 +1,10 @@
+import type { Coin, Token } from 'src/abstract';
+
 import eventEmitter from './emitter';
-import type { Coin, Token } from '@/abstract';
 
 const MESSAGE_TYPES = ['reward', 'unfreeze', 'freeze', 'vote'];
 
-class TxNotifier {
+export default class TxNotifier {
   private wallet: Coin | Token;
   private eventEmitter: typeof eventEmitter;
 
@@ -30,5 +31,3 @@ class TxNotifier {
     });
   }
 }
-
-export default TxNotifier;

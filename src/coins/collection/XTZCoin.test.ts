@@ -1,9 +1,9 @@
-import { generateWalletTests } from '@/__tests__/crypto/crypto.utils';
-import { createHash64 } from '@/__tests__/fixtures/common.fixture';
-import { createCoin } from '@/coins';
-import XTZCoin from '@/coins/collection/XTZCoin';
-import type { CoinDataConfig } from '@/coins/createCoin';
-import { getWalletConfig } from '@/utils';
+import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
+import { createHash64 } from 'src/__tests__/fixtures/common.fixture';
+import { createCoin } from 'src/coins';
+import XTZCoin from 'src/coins/collection/XTZCoin';
+import type { CoinDataConfig } from 'src/coins/createCoin';
+import { getWalletConfig } from 'src/utils';
 
 jest.mock('axios');
 

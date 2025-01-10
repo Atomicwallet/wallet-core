@@ -4,9 +4,7 @@
 
 import BN from 'bn.js';
 import isEqual from 'lodash/isEqual';
-import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } from 'src/errors';
-
-import { AbstractWallet } from '@/abstract';
+import { AbstractWallet } from 'src/abstract';
 import type {
   RawTxBinary,
   RawTxHex,
@@ -15,13 +13,14 @@ import type {
   FeeDataType,
   Numeric,
   TokensObject,
-} from '@/abstract';
-import { CoinFeature } from '@/coins/constants';
-import type Explorer from '@/explorers/Explorer';
-import type Transaction from '@/explorers/Transaction';
-import { TxNotifier } from '@/utils';
-import { type LazyLoadedLib } from '@/utils';
-import { GET_TRANSACTIONS_TYPE, TxEventTypes } from '@/utils/const';
+} from 'src/abstract';
+import { CoinFeature } from 'src/coins/constants';
+import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } from 'src/errors';
+import type Explorer from 'src/explorers/Explorer';
+import type Transaction from 'src/explorers/Transaction';
+import { TxNotifier } from 'src/utils';
+import { type LazyLoadedLib } from 'src/utils';
+import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils/const';
 
 const WALLETS_WITH_CUSTOM_TOKENS = ['ETH'];
 const CHECK_TX_UPDATE_TIMEOUT = 3000;

@@ -1,7 +1,7 @@
-import type { Coin } from '@/abstract';
-import * as coins from '@/coins/collection';
-import createCoin from '@/coins/createCoin';
-import walletsConfig from '@/resources/wallets_fee.json';
+import type { Coin } from 'src/abstract';
+import * as coins from 'src/coins/collection';
+import createCoin from 'src/coins/createCoin';
+import walletsConfig from 'src/resources/wallets_fee.json';
 
 const createWallets = async (arg?: { id: string }) => {
   const config = arg ? walletsConfig.filter(({ id: coinId }) => coinId === arg.id) : walletsConfig;

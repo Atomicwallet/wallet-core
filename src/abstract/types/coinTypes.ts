@@ -1,5 +1,5 @@
-import { type Token } from '@/abstract';
-import type { LazyLoadedLib } from '@/utils';
+import { type Token } from 'src/abstract';
+import type { LazyLoadedLib } from 'src/utils';
 
 export type TokensObject = {
   [key: string]: Token;

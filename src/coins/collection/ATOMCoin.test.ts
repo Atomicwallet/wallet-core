@@ -1,9 +1,9 @@
-import { generateWalletTests } from '@/__tests__/crypto/crypto.utils';
-import { createCosmoMockSignedData } from '@/__tests__/fixtures/common.fixture';
-import { createCoin } from '@/coins';
-import ATOMCoin from '@/coins/collection/ATOMCoin';
-import type { CoinDataConfig } from '@/coins/createCoin';
-import { getWalletConfig } from '@/utils';
+import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
+import { createCosmoMockSignedData } from 'src/__tests__/fixtures/common.fixture';
+import { createCoin } from 'src/coins';
+import ATOMCoin from 'src/coins/collection/ATOMCoin';
+import type { CoinDataConfig } from 'src/coins/createCoin';
+import { getWalletConfig } from 'src/utils';
 
 const id = 'ATOM';
 const config = getWalletConfig({ id });

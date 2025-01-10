@@ -3,11 +3,11 @@
 
 import { createHash } from 'crypto';
 
-import { generateWalletTests } from '@/__tests__/crypto/crypto.utils';
-import { createCoin } from '@/coins';
-import NANOCoin from '@/coins/collection/NANOCoin';
-import type { CoinDataConfig } from '@/coins/createCoin';
-import { getWalletConfig } from '@/utils';
+import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
+import { createCoin } from 'src/coins';
+import NANOCoin from 'src/coins/collection/NANOCoin';
+import type { CoinDataConfig } from 'src/coins/createCoin';
+import { getWalletConfig } from 'src/utils';
 
 const id = 'NANO';
 const config = getWalletConfig({ id });

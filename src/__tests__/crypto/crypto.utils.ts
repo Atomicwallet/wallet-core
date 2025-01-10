@@ -1,6 +1,7 @@
+import type { Coin, RawTxBinary } from 'src/abstract';
+import { initializeMnemonic } from 'src/utils';
+
 import { generateMockUtxo, mnemonicPhrasesList, mnemonicMappingKeys } from '../fixtures/common.fixture';
-import type { Coin, RawTxBinary } from '@/abstract';
-import { initializeMnemonic } from '@/utils';
 
 function isJson(value: string | RawTxBinary): boolean {
   if (typeof value !== 'string') {

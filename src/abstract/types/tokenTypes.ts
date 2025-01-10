@@ -1,5 +1,5 @@
-import type Coin from '@/abstract/coin';
-import type { CoinConfigType } from '@/abstract/types/coinTypes';
+import type Coin from 'src/abstract/coin';
+import type { CoinConfigType } from 'src/abstract/types/coinTypes';
 
 export enum TokenSource {
   List = 'list',

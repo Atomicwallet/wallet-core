@@ -1,5 +1,4 @@
 import BN from 'bn.js';
-
 import type {
   Coin,
   Token,
@@ -14,11 +13,11 @@ import type {
   WalletTicker,
   TokenCreationArgs,
   CoinConfigType,
-} from '@/abstract';
-import type Explorer from '@/explorers/Explorer';
-import { Emitter } from '@/utils';
-import { WALLETS } from '@/utils/const';
-import { toMinimal, toCurrency } from '@/utils/convert';
+} from 'src/abstract';
+import type Explorer from 'src/explorers/Explorer';
+import { Emitter } from 'src/utils';
+import { WALLETS } from 'src/utils/const';
+import { toMinimal, toCurrency } from 'src/utils/convert';
 
 const SEND_TIMEOUT = 5000;
 const delayed = {};

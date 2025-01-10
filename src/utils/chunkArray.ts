@@ -1,5 +1,5 @@
-const chunkArray = (array, chunkSize) => {
-  const result = [];
+const chunkArray = <T>(array: T[], chunkSize: number): T[][] => {
+  const result: T[][] = [];
   const maxLength = array.length;
 
   for (let item = 0; item < maxLength; item += chunkSize) {

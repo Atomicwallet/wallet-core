@@ -1,6 +1,6 @@
-import type { Coin, CoinConfigType } from '@/abstract';
-import { createEVMCoin } from '@/coins/collection/EVM';
-import type { EVMConfig, EVMUserConfig } from '@/coins/collection/EVM/types';
+import type { Coin, CoinConfigType } from 'src/abstract';
+import { createEVMCoin } from 'src/coins/collection/EVM';
+import type { EVMConfig, EVMUserConfig } from 'src/coins/collection/EVM/types';
 
 export type CoinDataConfig = CoinConfigType & Partial<EVMUserConfig> & Partial<EVMConfig> & { walletType?: string };
 

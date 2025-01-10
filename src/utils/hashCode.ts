@@ -1,4 +1,4 @@
-const hashCode = (string) => {
+const hashCode = (string: string) => {
   let high = 0xdeadbee;
 
   for (let index = 0; index < string.length; index += 1) {
