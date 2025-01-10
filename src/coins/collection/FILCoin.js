@@ -8,9 +8,6 @@ import { isStartsWith } from 'src/utils/funcs';
 
 import { HasProviders } from '../mixins';
 
-// import logger from '../Logger';
-// import configManager from '../ConfigManager';
-
 const NAME = 'Filecoin';
 const TICKER = 'FIL';
 const DECIMAL = 18;
@@ -186,7 +183,7 @@ class FILCoin extends HasProviders(Coin) {
    * @see {@link https://atomicwallet.atlassian.net/wiki/spaces/DevOps/pages/343638041#%D0%94%D0%B5%D1%84%D0%BE%D0%BB%D1%82%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BC%D0%B8%D1%81%D1%81%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-ETH}
    */
   getFeeSettings() {
-    return {}; // configManager.get(ETH_MODERATED_GAS_PRICE_URL);
+    return {};
   }
 
   /**
@@ -341,30 +338,7 @@ class FILCoin extends HasProviders(Coin) {
    * @returns {Promise<{standard: BN, fastest: BN} | {}>}
    */
   async getModerateGasPrice() {
-    // let moderatedGasPrice;
-    //
-    // try {
-    //   moderatedGasPrice = await configManager.get(
-    //     ETH_MODERATED_GAS_PRICE_URL,
-    //     false,
-    //     {
-    //       timeout: MODERATED_GAS_PRICE_URL_TIMEOUT,
-    //     },
-    //   );
-    // } catch (error) {
-    //   console.warn(error);
-    // }
-    //
-    // if (
-    //   moderatedGasPrice &&
-    //   moderatedGasPrice.fastest &&
-    //   moderatedGasPrice.safeLow
-    // ) {
-    //   return {
-    //     fastest: new this.BN((moderatedGasPrice.fastest / 10) * GWEI),
-    //     standard: new this.BN((moderatedGasPrice.safeLow / 10) * GWEI),
-    //   };
-    // }
+    // @TODO implement external gas price fetcher / config
 
     return {};
   }

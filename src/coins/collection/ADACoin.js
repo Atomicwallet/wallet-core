@@ -59,9 +59,6 @@ class ADACoin extends HasProviders(Coin) {
       },
     };
 
-    // // TODO remove when StakingMixin will be used!
-    // configManager.register('stake_validators_ada');
-
     super(config);
 
     this.derivation = DERIVATION;
@@ -481,36 +478,6 @@ class ADACoin extends HasProviders(Coin) {
 
     return '';
   }
-
-  /**
-   * @deprecated
-   *
-   * Should be migrated to `StakingMixin`
-   * @return {Promise<void>}
-   */
-  // async getPredefinedValidators() {
-  //   const coinStaking = coinStakings.find(
-  //     (item) => item.getName().toLowerCase() === this.ticker.toLowerCase(),
-  //   );
-  //
-  //   if (!coinStaking || coinStaking.validators?.length > 0) {
-  //     return;
-  //   }
-  //
-  //   const predefinedValidatros = validators.find(({ currency }) => currency === 'ADA') ?? {}
-  //
-  //   // configManager.register('stake_validators_ada');
-  //   // const validators = await configManager
-  //   //   .get('stake_validators_ada')
-  //   //   .catch((error) => {
-  //   //     // logger.error(error);
-  //   //     return predefinedValidators.find(
-  //   //       (item) => item.currency === this.ticker,
-  //   //     );
-  //   //   });
-  //
-  //   coinStaking.modifyPredefinedValidators(predefinedValidatros);
-  // }
 }
 
 export default ADACoin;

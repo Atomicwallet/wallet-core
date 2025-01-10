@@ -769,12 +769,6 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<object|object[]>}
    */
   async #getForcedConfigOrFallback(configKey) {
-    // try {
-    //   return await configManager.get(configKey);
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    //   return configManager.getLocal(configKey);
-    // }
     return {};
   }
 
