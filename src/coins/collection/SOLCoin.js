@@ -5,7 +5,6 @@ import { NftMixin } from '../../coins/nfts/mixins';
 import { UnknownConfigKeyError } from '../../errors';
 import SolanaNodeExplorer from '../../explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from '../../explorers/collection/SolanaTritonExplorer';
-import predefinedValidators from '../../resources/staking/validators.json';
 import { SOLToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';
 import { STAKE_ADDR_TYPE } from '../../utils/const';

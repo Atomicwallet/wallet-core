@@ -1,6 +1,6 @@
 import { program } from 'commander';
 
-import type { RawTxHex, RawTxObject, type RawTxBinary } from '@/abstract';
+import { RawTxHex, RawTxObject, RawTxBinary } from '@/abstract';
 import { createWallets, generateKeys } from '@/coins';
 import { initializeMnemonic, type IKeysObject } from '@/utils';
 

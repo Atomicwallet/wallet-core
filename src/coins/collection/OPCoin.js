@@ -13,8 +13,6 @@ import { OPToken } from '../../tokens';
 import { LazyLoadedLib } from '../../utils';
 import { EXTERNAL_ERROR } from '../../utils/const';
 import { toCurrency } from '../../utils/convert';
-// import history from '../History';
-
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
@@ -470,18 +468,14 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<number>} - Gas price in WEI
    */
   async getGasPriceForSendNft(coefficient) {
-    try {
-      const { node: rawGasPrice } =
-        (await this.getProvider('node').getGasPrice()) ?? {};
-      const gasPrice = Number(rawGasPrice) + coefficient * GWEI;
-      const defaultMaxGasPriceInGwei = this.defaultMaxGasPrice * GWEI;
+    const { node: rawGasPrice } =
+      (await this.getProvider('node').getGasPrice()) ?? {};
+    const gasPrice = Number(rawGasPrice) + coefficient * GWEI;
+    const defaultMaxGasPriceInGwei = this.defaultMaxGasPrice * GWEI;
 
-      return gasPrice > defaultMaxGasPriceInGwei
-        ? defaultMaxGasPriceInGwei
-        : gasPrice;
-    } catch (error) {
-      throw error;
-    }
+    return gasPrice > defaultMaxGasPriceInGwei
+      ? defaultMaxGasPriceInGwei
+      : gasPrice;
   }
 
   /**
@@ -688,8 +682,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     const feeL1FromOracle = await gasPriceOracleContract.methods
       .getL1Fee(data)
       .call()
-      .catch(async (error) => {
-        // logger.error({ instance: this, error });
+      .catch(async () => {
         return new this.BN(this.maxGasLimitL1)
           .mul(new this.BN(await this._getGasPriceL1FromConfig()))
           .mul(new this.BN(GWEI));
@@ -809,9 +802,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
     const estimatedGas = await tokenContract.methods
       .transfer(MOCKED_OP_ADDRESS, amount)
       .estimateGas({ from: this.address })
-      .catch((error) => {
-        // Some token contracts may return error: execution reverted: insufficient-balance
-        // logger.error({ instance: this, error });
+      .catch(() => {
         return defaultGas;
       });
 

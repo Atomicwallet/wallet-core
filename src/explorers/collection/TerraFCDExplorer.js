@@ -128,7 +128,7 @@ export default class TerraFCDExplorer extends Explorer {
 
       default: {
         // should be transfer
-        const { to_address: toAddress } = tx.tx?.body.messages[0];
+        const { to_address: toAddress } = tx.tx?.body.messages[0] || {};
 
         return toAddress === selfAddress;
       }
@@ -142,7 +142,7 @@ export default class TerraFCDExplorer extends Explorer {
       validator_address: validator,
       from_address: from,
       to_address: to,
-    } = tx.tx?.body.messages[0];
+    } = tx.tx?.body.messages[0] || {};
 
     switch (type) {
       case COSMOS_MSG_TO_TYPE.MsgDelegate:

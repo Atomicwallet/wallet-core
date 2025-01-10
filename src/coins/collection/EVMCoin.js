@@ -864,10 +864,10 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     const feeL1FromOracle = await gasPriceOracleContract.methods
       .getL1Fee(data)
       .call()
-      .catch(async (error) => {
-        // logger.error({ instance: this, error });
+      .catch(async () => {
+        const l1GasPriceConfig = await this._getGasPriceL1FromConfig();
         return new this.BN(this.maxGasLimitL1)
-          .mul(new this.BN(await this._getGasPriceL1FromConfig()))
+          .mul(new this.BN(l1GasPriceConfig))
           .mul(new this.BN(GWEI));
       });
 
