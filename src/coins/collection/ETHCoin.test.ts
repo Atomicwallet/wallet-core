@@ -17,10 +17,4 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
-const test = () => generateWalletTests(wallet);
-
-if (require.main === module) {
-  test();
-}
-
-export default test;
+generateWalletTests(wallet);
