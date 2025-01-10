@@ -69,7 +69,7 @@ export default abstract class AbstractWallet {
   ): Promise<BN | number | string>;
 
   abstract getFeePerByte(): BN;
-  abstract getUnspentOutputs(): Promise<unknown[]>;
+  abstract getUnspentOutputs(): Promise<any>;
 
   constructor({ name, ticker, decimal, memoRegexp }: CoinConfigType | TokenCreationArgs) {
     this.#name = name;
@@ -219,20 +219,15 @@ export default abstract class AbstractWallet {
 
   /**
    * Determines if the amount is available for send.
-   *
-   * @param {String} amount The amount
-   * @return {Promise<Boolean>} True if available for send, False otherwise.
    */
-  async isAvailableForSend(amount: string): Promise<boolean> {
-    const avaliableBalance = await this.availableBalance();
+  async isAvailableForSend(amount: string, fee?: string): Promise<boolean> {
+    const availableBalance = await this.availableBalance();
 
-    return new BN(this.toMinimalUnit(amount)).lte(new BN(this.toMinimalUnit(avaliableBalance)));
+    return new BN(this.toMinimalUnit(amount)).lte(new BN(this.toMinimalUnit(availableBalance)));
   }
 
   /**
-   * Returns a ticker that a user should see in the interface
-   *
-   * @return {String}
+   * Returns a ticker that a user should see in the connection.
    */
   getUserTicker(): WalletTicker {
     return this.ticker;
@@ -255,9 +250,6 @@ export default abstract class AbstractWallet {
 
   /**
    * Returns stub is NFT supported sign
-   *
-   * @deprecated - Use isFeatureSupported Coin method instead.
-   * @returns {false}
    */
   isNftSupported(): boolean {
     return false;
@@ -265,12 +257,6 @@ export default abstract class AbstractWallet {
 
   /**
    * Comparing instance values with given ones
-   * @param {string} ticker Required
-   * @param {string} [contract]
-   * @param {string} [address]
-   * @param {string} [network]
-   * @param {string | number} [chainId]
-   * @returns {boolean}
    */
   isMatch({ ticker, contract, parent, address, network, chainId }: WalletIdentifierType): boolean {
     const optional: Partial<WalletIdentifierType> = {

@@ -26,7 +26,7 @@ const DEFAULT_TX_LIMIT = 100;
  * @abstract
  * @class {Explorer}
  */
-class Explorer {
+export default class Explorer {
   /**
    * Creates an instance of Explorer.
    * @param {*} config
@@ -459,8 +459,6 @@ class Explorer {
 
   /**
    * Gets the utxos data.
-   *
-   * @return {Promise<Object[]>} The utxos data.
    */
   async getUnspentOutputs(address, scriptPubKey) {
     const response = await this.request(
@@ -505,8 +503,6 @@ class Explorer {
 
   /**
    * Modify unspent outputs response
-   *
-   * @param {Object} response
    */
   modifyUnspentOutputsResponse(address, response, scriptPubKey) {
     return response;
@@ -981,5 +977,3 @@ class Explorer {
     throw new UndeclaredAbstractMethodError('fetchNftList', this);
   }
 }
-
-export default Explorer;

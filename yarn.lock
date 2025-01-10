@@ -3835,6 +3835,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/bitcore-lib@0.15.5":
+  version "0.15.5"
+  resolved "https://registry.yarnpkg.com/@types/bitcore-lib/-/bitcore-lib-0.15.5.tgz#b009b5c0a426abeeadd275adc4a5aed83aba5b98"
+  integrity sha512-LeVV9T4uYQvnca9A85grr9H33l/E8PIGjDyXbVB3P/3wqkzO5HHhVuL9GSvBiOTKJqUHvLiu3Lb97F+5r9KErg==
+  dependencies:
+    "@types/node" "*"
+
 "@types/bn.js@*", "@types/bn.js@^5.1.0", "@types/bn.js@^5.1.5", "@types/bn.js@^5.1.6":
   version "5.1.6"
   resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-5.1.6.tgz#9ba818eec0c85e4d3c679518428afdf611d03203"

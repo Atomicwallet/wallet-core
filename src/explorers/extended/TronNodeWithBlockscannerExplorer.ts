@@ -1,5 +1,6 @@
+import { HasBlockscannerMixin } from 'src/explorers/mixins';
+
 import TronNodeExplorer from '../collection/TronNodeExplorer.js';
-import { HasBlockscannerMixin } from '../mixins';
 
 class TronNodeWithBlockscannerExplorer extends HasBlockscannerMixin(TronNodeExplorer) {}
 

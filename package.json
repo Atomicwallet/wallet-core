@@ -82,6 +82,7 @@
     "@thetalabs/theta-js": "0.0.84",
     "@tronscan/client": "https://github.com/Atomicwallet/tronscan-node-client.git",
     "@types/axios": "0.14.4",
+    "@types/bitcore-lib": "0.15.5",
     "@types/jest": "29.5.14",
     "@types/object-hash": "3.0.6",
     "@types/socket.io-client": "3.0.0",

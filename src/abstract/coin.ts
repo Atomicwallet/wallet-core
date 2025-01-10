@@ -1,25 +1,20 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
-// @ts-nocheck
-
 import BN from 'bn.js';
 import isEqual from 'lodash/isEqual';
-import { AbstractWallet } from 'src/abstract';
 import type {
-  RawTxBinary,
-  RawTxHex,
-  RawTxObject,
   CoinConfigType,
   FeeDataType,
   Numeric,
+  RawTxBinary,
+  RawTxHex,
+  RawTxObject,
   TokensObject,
 } from 'src/abstract';
+import { AbstractWallet } from 'src/abstract';
 import { CoinFeature } from 'src/coins/constants';
 import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } from 'src/errors';
 import type Explorer from 'src/explorers/explorer';
 import type Transaction from 'src/explorers/Transaction';
-import { TxNotifier } from 'src/utils';
-import { type LazyLoadedLib } from 'src/utils';
+import { type LazyLoadedLib, TxNotifier } from 'src/utils';
 import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils/const';
 
 const WALLETS_WITH_CUSTOM_TOKENS = ['ETH'];
@@ -35,10 +30,10 @@ type ExplorersModules = {
  * @abstract
  * @class Coin
  */
-abstract class Coin extends AbstractWallet {
+export default abstract class Coin extends AbstractWallet {
   #id: string;
   #address: string;
-  dependencies: { [name: string]: LazyLoadedLib };
+  dependencies: { [name: string]: LazyLoadedLib<unknown> };
   #derivation: string;
 
   explorersModules: ExplorersModules;
@@ -187,7 +182,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Get fee wallet instance
-   * @return {Coin | Token}
    */
   get feeWallet() {
     return this;
@@ -281,8 +275,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * The active explorer getter.
-   *
-   * @return {Explorer} The instance of explorer
    */
   get explorer() {
     return this.explorers[0];
@@ -290,7 +282,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Get private keys object
-   * @return { Object } contains custom keys depended on chain or just private key
    */
   get privateKeysObject() {
     return this.KeysObject || false;
@@ -298,7 +289,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Set private keys object
-   * @param { Object } privateKeysObject
    */
   set privateKeysObject(privateKeysObject) {
     this.KeysObject = privateKeysObject;
@@ -312,7 +302,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Define whether the network fee is dynamic
-   * @return {boolean} true if the network fee is dynamic
    */
   isFeeDynamic() {
     return false;
@@ -320,8 +309,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Transaction id URL
-   * @param id
-   * @return {string}
    */
   getWebTransactionUrl(id: string) {
     return `${this.txWebUrl}${id}`;
@@ -429,8 +416,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Processes a new tx got from the socket (does nothing by default)
-   *
-   * @param {Object} tx The transaction data
    */
   onConfirmSocketTx(tx: object) {}
 
@@ -448,8 +433,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Gets the address.
-   *
-   * @return {String} Public key
    */
   getAddress() {
     throw new UndeclaredAbstractMethodError('getAddress', this);
@@ -457,8 +440,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Sets the public key.
-   *
-   * @param {String} address The public key string
    */
   setAddress(address: string) {
     this.address = address;
@@ -466,9 +447,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Sets the private key.
-   *
-   * @param {String} privateKey The private key WIF
-   * @param {String} mnemonic
    */
   async setPrivateKey(privateKey: string, mnemonic?: string) {
     throw new UndeclaredAbstractMethodError('async setPrivateKey', this);
@@ -476,9 +454,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Validates wallet address
-   *
-   * @param {String} address The address
-   * @return {Boolean}
    */
   async validateAddress(address: string) {
     throw new UndeclaredAbstractMethodError('validateAddress', this);
@@ -486,9 +461,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Gets the wallet.
-   *
-   * @param {String} mnemonic The mnemonic phrase.
-   * @return {Promise<Object>} The private key.
    */
   async loadWallet(seed?: Buffer, mnemonic?: string): Promise<string | object> {
     throw new UndeclaredAbstractMethodError('async loadWallet', this);
@@ -497,7 +469,7 @@ abstract class Coin extends AbstractWallet {
   // @TODO txInfo type set to `any` until explorer types is not defined
   async checkTransaction(txInfo: any) {
     try {
-      await this.explorer.checkTransaction(this.address, txInfo);
+      await this.explorer?.checkTransaction(this.address, txInfo);
     } catch (error) {
       console.warn(this.ticker, 'Unable to check transaction');
     }
@@ -542,8 +514,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Gets the balance.
-   *
-   * @return {Promise<BN>} The balance.
    */
   async getBalance() {
     const { balance } = await this.getInfo();
@@ -555,9 +525,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Gets the transactions.
-   *
-   * @return {Promise<Object[]>} The transactions.
-   *
    */
   // @TODO `any` until explorer types is not defined
   async getTransactions(args: any) {
@@ -565,15 +532,18 @@ abstract class Coin extends AbstractWallet {
       if (!this.address) {
         throw new Error(`[${this.ticker}] getTransactions error: address is not loaded`);
       }
-      const txs = await this.explorer.getTransactions({ ...args, address: this.address }).catch((error) => {
-        throw new ExplorerRequestError({
-          type: GET_TRANSACTIONS_TYPE,
-          error,
-          instance: this,
+      return await this.explorer
+        .getTransactions({
+          ...args,
+          address: this.address,
+        })
+        .catch((error) => {
+          throw new ExplorerRequestError({
+            type: GET_TRANSACTIONS_TYPE,
+            error,
+            instance: this,
+          });
         });
-      });
-
-      return txs;
     }
 
     return this.transactions;
@@ -581,11 +551,10 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Return available balance for send
-   *
-   * @return {Promise<string>}
    */
   async availableBalance(fees: any) {
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const balance = (this.balances?.available && this.toMinimalUnit(this.balances?.available)) || this.balance;
 
     if (!balance) {
@@ -604,10 +573,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Check amount + fee < balance
-   *
-   * @param {string} amount
-   * @param {string} fee
-   * @return {Promise<*>}
    */
   async isAvailableForSend(amount: string, fee: string) {
     // @ TODO empty string is always true
@@ -647,7 +612,8 @@ abstract class Coin extends AbstractWallet {
       });
     }
 
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const explorer = new ExplorerModule({ wallet: this.instance, config });
 
     this.explorers.push(explorer);
@@ -668,16 +634,15 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Process config feeData.
-   *
-   * @protected
-   * @param {Object} [feeData] feeData
    */
-  setFeeData(feeData = {}) {
+  private setFeeData(feeData = {}) {
     this.feeData = feeData;
     Object.entries(feeData).forEach(([key, value]) => {
-      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       if (typeof this[key] !== 'undefined' && typeof value !== 'undefined' && key !== '__proto__') {
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         this[key] = value;
       }
     });
@@ -689,8 +654,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Update dynamic data set
-   *
-   * @param {Object} data The data
    */
   updateCoinParamsFromServer(data: CoinConfigType) {
     if (this.config === data) {
@@ -709,6 +672,7 @@ abstract class Coin extends AbstractWallet {
 
   install() {
     this.plugins.forEach((plugin) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       plugin.install(this);
     });
@@ -716,12 +680,9 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Process explorers configuration.
-   *
-   * @protected
-   * @param {Object} config
    */
   // @ts-expect-error @TODO define types
-  loadExplorers({ explorers, txWebUrl, submitUrl }) {
+  private loadExplorers({ explorers, txWebUrl, submitUrl }) {
     explorers.forEach((exData: any) => {
       try {
         this.processExplorerConfig({
@@ -737,8 +698,6 @@ abstract class Coin extends AbstractWallet {
 
   /**
    * Gets the unspent transaction outputs.
-   *
-   * @return {Promise<Object[]>} The unspent transaction outputs array
    */
   async getUnspentOutputs() {
     let scriptPubKey;
@@ -757,18 +716,15 @@ abstract class Coin extends AbstractWallet {
   /**
    * isActivated getter
    * Allows to determine if a coin is activated.
-   *
-   * @returns {boolean}
    */
   get isActivated() {
+    return undefined;
     // return activeWalletsList.isActive(this);
   }
 
   /**
    * Activates coin
    * Also activates all associated tokens.
-   *
-   * @returns {Promise<void>}
    */
   async activate() {
     // activeWalletsList.activate(this);
@@ -777,8 +733,6 @@ abstract class Coin extends AbstractWallet {
   /**
    * Deactivates coin
    * Also deactivates all associated tokens.
-   *
-   * @returns {void}
    */
   deactivate() {
     // activeWalletsList.deactivate(this);
@@ -804,5 +758,3 @@ abstract class Coin extends AbstractWallet {
     return this.isFeatureSupported(CoinFeature.Nft);
   }
 }
-
-export default Coin;

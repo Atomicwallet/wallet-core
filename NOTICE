@@ -2522,6 +2522,12 @@ This project includes software developed by third parties.
    - Publisher: N/A
    - Email: N/A
 
+ (vtypes/bitcore-lib)
+   - License: MIT
+   - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+   - Publisher: N/A
+   - Email: N/A
+
  (vtypes/bn.js)
    - License: MIT
    - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped

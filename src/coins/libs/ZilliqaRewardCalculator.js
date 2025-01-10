@@ -1,4 +1,3 @@
-import { Zilliqa } from '@zilliqa-js/zilliqa';
 import axios from 'axios';
 import BN from 'bn.js';
 
@@ -12,8 +11,6 @@ const KEY_DELEG_PER_CYCLE = 'deleg_stake_per_cycle';
 export default class RewardCalculator {
   constructor(url, ssnlist) {
     this.baseUrl = url;
-    this.zilliqa = new Zilliqa(url);
-    this.contract = this.zilliqa.contracts.at(ssnlist);
     this.jsonBody = (params) => {
       return {
         id: 'atomic',

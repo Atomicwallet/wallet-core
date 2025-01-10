@@ -17,7 +17,7 @@ import type {
 
 const tokensNetworks = new Set(['BNB', 'TRX', 'ETH', 'MATIC', 'BSC', 'LUNA', 'BASE']);
 
-abstract class Token extends AbstractWallet {
+export default abstract class Token extends AbstractWallet {
   #parent: Coin;
   #id: string;
   #contract: string;
@@ -35,16 +35,6 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Constructs a new instance of the class.
-   *
-   * @param {Coin} args.parent The parent cin instance
-   * @param {string} args.name The token name
-   * @param {string} args.ticker The token ticker
-   * @param {number} args.decimal The decimal precision
-   * @param {string} args.contract The contract key
-   * @param {boolean} args.source 'list' | 'user' | 'custom'
-   * @param {boolean} args.visibility
-   * @param {boolean} args.confirmed
-   * @param {{}} args.config
    */
   constructor(args: TokenCreationArgs) {
     super(args);
@@ -102,17 +92,15 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Address
-   * @returns {string}
    */
-  get address() {
+  get address(): string {
     return this.#parent.address;
   }
 
   /**
    * Token network
-   * @returns {string}
    */
-  get network() {
+  get network(): string {
     return this.#parent.id;
   }
 
@@ -122,7 +110,6 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Get fee wallet instance
-   * @return {Coin | Token}
    */
   get feeWallet() {
     return this.#parent;
@@ -134,7 +121,6 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Should be removed
-   * @return {*}
    */
   get deprecatedParent() {
     return this.#parent.id;
@@ -142,8 +128,6 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Transaction base url
-   *
-   * @returns {string}
    */
   get txWebUrl() {
     return this.#parent.txWebUrl;
@@ -151,8 +135,6 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Parent corelib
-   *
-   * @return {*}
    */
   get coreLibrary() {
     return this.#parent.coreLibrary;
@@ -160,8 +142,6 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Determines token custom source
-   *
-   * @returns {boolean}
    */
   get isCustom() {
     return this.source === 'custom';
@@ -177,9 +157,6 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Gets the wallet.
-   *
-   * @param {String} mnemonic The mnemonic phrase.
-   * @return {Promise<Object>} The private key.
    */
   async loadWallet(mnemonic: string) {
     return this;
@@ -187,10 +164,6 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Validates wallet address
-   *
-   * @param {String} address The address
-   * @param {String} network The network
-   * @return {Boolean}
    */
   async validateAddress(address: string) {
     return this.#parent.validateAddress(address);
@@ -213,8 +186,6 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Gets the information about a wallet.
-   *
-   * @return {Promise<Object>} The information data.
    */
   async getInfo() {
     if (this.#parent.getTokenInfo) {
@@ -230,18 +201,11 @@ abstract class Token extends AbstractWallet {
 
   /**
    * Gets the available balance.
-   *
-   * @return {Promise<String>} The balance.
    */
   async availableBalance() {
     return this.divisibleBalance ? String(this.divisibleBalance) : '0';
   }
 
-  /**
-   *
-   * @param {string} fee
-   * @return {Promise<*>}
-   */
   async isAvailableForFee(fee: string) {
     return this.#parent.indivisibleBalance?.gte(new this.BN(fee));
   }
@@ -259,8 +223,8 @@ abstract class Token extends AbstractWallet {
     return this.#parent.getFee(args);
   }
 
-  getGasPrice(withoutCoeff: boolean, isToken?: boolean): Promise<BN | number | string> {
-    return this.#parent.getGasPrice(withoutCoeff, isToken);
+  getGasPrice(withoutCoefficient: boolean, isToken?: boolean): Promise<BN | number | string> {
+    return this.#parent.getGasPrice(withoutCoefficient, isToken);
   }
 
   estimateGas(
@@ -274,9 +238,7 @@ abstract class Token extends AbstractWallet {
 
   async getTokenTransactions() {
     try {
-      const txs = await this.#parent.getTokenTransactions({
-        contract: this.contract,
-      });
+      const txs = await this.#parent.getTokenTransactions({ contract: this.contract });
 
       if (txs.length > 0) {
         const tokenTransactions = txs.filter((tx: any) => tx.walletId === this.#id);
@@ -294,11 +256,6 @@ abstract class Token extends AbstractWallet {
     }
   }
 
-  /**
-   * @param offset
-   * @param limit
-   * @returns {Promise<Array>}
-   */
   async getTransactions(offset: number, limit: number) {
     try {
       const txs = await this.#parent.getTransactions({
@@ -332,18 +289,12 @@ abstract class Token extends AbstractWallet {
     return this.#parent.checkTransaction(args);
   }
 
-  /**
-   * @param txId
-   * @returns {Promise<Promise<Transaction>>}
-   */
   async getTransaction(txId: TxHash) {
     return this.#parent.getTransaction(txId);
   }
 
   /**
    * Update dynamic data set
-   *
-   * @param {Object} data The data
    */
   updateTokenParamsFromServer(data: CoinConfigType) {
     if (!data?.feeData) {
@@ -376,8 +327,6 @@ abstract class Token extends AbstractWallet {
   /**
    * isActivated getter
    * Allows to determine if a token is activated.
-   *
-   * @returns {boolean}
    */
   get isActivated() {
     return this.#parent.isActivated;
@@ -386,8 +335,6 @@ abstract class Token extends AbstractWallet {
   /**
    * Activates token
    * Also activates the parent coin and all associated tokens.
-   *
-   * @returns {Promise<void>}
    */
   async activate() {
     return this.#parent.activate();
@@ -396,8 +343,6 @@ abstract class Token extends AbstractWallet {
   /**
    * Deactivates token
    * Also deactivates the parent coin and all associated tokens.
-   *
-   * @returns {void}
    */
   deactivate() {
     return this.#parent.deactivate();
@@ -407,5 +352,3 @@ abstract class Token extends AbstractWallet {
     return this.#parent.removeTokenFromDb(args);
   }
 }
-
-export default Token;

@@ -1,5 +1,6 @@
+import { HasBlockscannerMixin } from 'src/explorers/mixins';
+
 import CosmosNodeExplorer from '../collection/CosmosNodeExplorer.js';
-import { HasBlockscannerMixin } from '../mixins';
 
 class CosmosNodeWithBlockscannerExplorer extends HasBlockscannerMixin(CosmosNodeExplorer) {}
 

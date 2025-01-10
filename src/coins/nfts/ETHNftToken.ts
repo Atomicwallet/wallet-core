@@ -1,4 +1,4 @@
-import { NftToken } from './index';
+import { NftToken } from 'src/coins/nfts/index';
 
 const ETH_BLOCKCHAIN = 'Ethereum';
 const BSC_BLOCKCHAIN = 'BNB Smart Chain';
@@ -7,7 +7,7 @@ const AVALANCHE_BLOCKCHAIN = 'Avalanche';
 const FANTOM_BLOCKCHAIN = 'Fantom';
 const ARBITRUM_BLOCKCHAIN = 'Arbitrum';
 
-const blockchain = (ticker) => {
+const blockchain = (ticker: string) => {
   switch (ticker) {
     case 'ETH':
       return ETH_BLOCKCHAIN;
@@ -39,15 +39,16 @@ export const erc1155StandardTest = /^ERC.?1155$/i;
 class ETHNftToken extends NftToken {
   /**
    * Create Ethereum NFT
-   * @param {string} contractAddress - NFT contract address.
-   * @param {string} tokenId - NFT id.
-   * @param {string} coinId - Coin id.
-   * @param {string} tokenStandard - The token standard. For example `ERC-721` or 'ERC-1155'.
-   * @param {string} name - NFT name.
-   * @param {string} [description=undefined] - NFT description. Optional.
-   * @param {string} imageUrl - URL to NFT image.
    */
-  constructor(contractAddress, tokenId, coinId, tokenStandard, name, description = undefined, imageUrl) {
+  constructor(
+    contractAddress: string,
+    tokenId: string,
+    coinId: string,
+    tokenStandard: string,
+    name: string,
+    description = undefined,
+    imageUrl: string,
+  ) {
     super(contractAddress, tokenId, coinId, blockchain(coinId), tokenStandard, name, description, imageUrl);
   }
 }
