@@ -2744,6 +2744,12 @@ This project includes software developed by third parties.
    - Publisher: N/A
    - Email: N/A
 
+ (vtypes/object-hash)
+   - License: MIT
+   - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+   - Publisher: N/A
+   - Email: N/A
+
  (vtypes/pbkdf2)
    - License: MIT
    - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped

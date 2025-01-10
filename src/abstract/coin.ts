@@ -48,7 +48,7 @@ abstract class Coin extends AbstractWallet {
 
   transactions: Transaction[];
   BN: typeof BN;
-  fields: object;
+  fields: Record<string, unknown>;
   plugins: unknown[];
   unspendableBalance: string;
   feeData: FeeDataType;

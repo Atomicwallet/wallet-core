@@ -2,7 +2,6 @@ import BN from 'bn.js';
 import { AbstractWallet, type Coin } from 'src/abstract';
 import type Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
-import { HISTORY_WALLET_UPDATED } from 'src/utils/eventTopics';
 
 import type {
   CreateTxParams,
@@ -14,6 +13,7 @@ import type {
   TokenSource,
   CoinConfigType,
 } from './index';
+import { HISTORY_WALLET_UPDATED } from '@/utils/eventTopics';
 
 const tokensNetworks = new Set(['BNB', 'TRX', 'ETH', 'MATIC', 'BSC', 'LUNA', 'BASE']);
 

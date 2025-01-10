@@ -1,12 +1,12 @@
 export { default as hashCode } from 'src/utils/hashCode';
-export { default as hex2a } from './hex2a';
+export { default as hex2a } from 'src/utils/hex2a';
 export { default as chunkArray } from 'src/utils/chunkArray';
 export { default as chunkString } from 'src/utils/chunkString';
 export { default as arrayToObject } from 'src/utils/arrayToObject';
 export { default as randomElementFromArray } from 'src/utils/randomElementFromArray';
 export { default as Amount } from './amount';
 export { default as preventConcurrent } from 'src/utils/preventConcurrent';
-export { default as LazyLoadedLib } from './lazyLoadedLib';
+export { default as LazyLoadedLib } from 'src/utils/lazyLoadedLib';
 export { REQUEST_TYPE, requestQueueState } from './requestQueueState';
 export { sleepFor } from './sleepFor';
 export { getTokenId } from './token';

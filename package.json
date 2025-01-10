@@ -83,6 +83,7 @@
     "@tronscan/client": "https://github.com/Atomicwallet/tronscan-node-client.git",
     "@types/axios": "0.14.0",
     "@types/jest": "29.5.14",
+    "@types/object-hash": "3.0.6",
     "@types/spark-md5": "3.0.5",
     "@typescript-eslint/eslint-plugin": "6.*",
     "@typescript-eslint/parser": "6.*",

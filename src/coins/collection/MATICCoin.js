@@ -1,9 +1,6 @@
 import { Coin } from 'src/abstract';
 import NftMixin from 'src/coins/nfts/mixins/NftMixin';
 import { ExternalError } from 'src/errors';
-
-// import logger from '../Logger';
-// import configManager, { ConfigKey } from '../ConfigManager';
 import CovalentHQExplorer from 'src/explorers/collection//CovalentHQExplorer';
 import ETHNftExplorer from 'src/explorers/collection/ETHNftExplorer';
 import MoralisExplorer from 'src/explorers/collection/MoralisExplorer';

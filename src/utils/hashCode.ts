@@ -1,4 +1,4 @@
-const hashCode = (string: string) => {
+export default (string: string) => {
   let high = 0xdeadbee;
 
   for (let index = 0; index < string.length; index += 1) {
@@ -11,5 +11,3 @@ const hashCode = (string: string) => {
 
   return sanitized.toString();
 };
-
-export default hashCode;
