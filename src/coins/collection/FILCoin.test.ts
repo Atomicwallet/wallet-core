@@ -17,4 +17,6 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
+jest.spyOn(wallet, 'getGasPrice').mockReturnValue(Promise.resolve('1001000538'));
+
 generateWalletTests(wallet);
