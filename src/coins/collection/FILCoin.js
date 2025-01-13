@@ -233,19 +233,15 @@ class FILCoin extends HasProviders(Coin) {
    * @param {number} multiplier coefficient
    * @return {Promise<string>} Raw transaction
    */
-  async createTransaction({ address, amount, paymentData = null, nonce, gasLimit = this.gasLimit }) {
-    const [coreLibrary, { ethAddressFromDelegated }] = await Promise.all([
-      this.getCoreLibrary(),
-      this.getFilecoinAddressSdk(),
-      this.getNonce(),
-    ]);
+  async createTransaction({ address, amount, nonce, gasLimit, paymentData = null }) {
+    const { ethAddressFromDelegated } = await this.getFilecoinAddressSdk();
 
     const transaction = {
       to: isStartsWith(address, '0x') ? address : ethAddressFromDelegated(address),
       value: amount,
-      gas: gasLimit || this.gasLimit, // front may send "null"
+      gas: gasLimit || this.gasLimit,
       chainId: CHAIN_ID,
-      nonce: nonce || this.nonce,
+      nonce: nonce ?? (await this.getNonce()),
       type: 0x2,
     };
 
@@ -253,7 +249,12 @@ class FILCoin extends HasProviders(Coin) {
       transaction.data = paymentData;
     }
 
-    const signedTx = await coreLibrary.eth.accounts.signTransaction(transaction, this.#privateKey);
+    return this.signTransaction(transaction);
+  }
+
+  async signTransaction(unsignedTx) {
+    const coreLibrary = await this.getCoreLibrary();
+    const signedTx = await coreLibrary.eth.accounts.signTransaction(unsignedTx, this.#privateKey);
 
     return signedTx.rawTransaction;
   }

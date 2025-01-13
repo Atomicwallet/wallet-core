@@ -17,6 +17,17 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
-jest.spyOn(wallet, 'getGasPrice').mockReturnValue(Promise.resolve('1001000538'));
+// @ts-expect-error not implemented in abstract
+jest.spyOn(wallet, 'getNonce').mockReturnValue('1');
+
+// @ts-expect-error unimplemented in abstract class
+const originalSign = wallet.signTransaction.bind(wallet);
+// @ts-expect-error mixin overload
+jest.spyOn(wallet, 'signTransaction').mockImplementation((tx) => {
+  tx.maxPriorityFeePerGas = '2500000000';
+  tx.maxFeePerGas = '30000000000';
+
+  return originalSign(tx);
+});
 
 generateWalletTests(wallet);
