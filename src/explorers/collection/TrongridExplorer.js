@@ -3,8 +3,6 @@ import Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
 import TronWeb from 'tronweb';
 
-
-
 const DYNAMIC_PARAMETERS = ['getDynamicEnergyThreshold', 'getDynamicEnergyIncreaseFactor', 'getDynamicEnergyMaxFactor'];
 
 /**

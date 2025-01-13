@@ -1,7 +1,6 @@
 import { providers, networks } from '@thetalabs/theta-js';
 import Explorer from 'src/explorers/explorer';
 
-
 const INIT_PROVIDER_TIMEOUT = 10000;
 const TICKER_FROM_PROVIDER = /(theta|tfuel)wei/i;
 const ACCOUNT_NOT_FOUND_ERROR = -32000;

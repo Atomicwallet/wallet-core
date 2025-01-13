@@ -3,8 +3,6 @@ import Explorer from 'src/explorers/explorer';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 import { Server, Networks, Operation, Memo, Keypair, Asset, TransactionBuilder } from 'stellar-sdk';
 
-
-
 const TX_SEND_TIMEOUT = 30;
 
 const isNotFoundError = (error) => error.response.status === 404;
