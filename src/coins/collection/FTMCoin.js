@@ -224,7 +224,6 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   /**
    * Get FTM fee settings
    * @return {Promise<Object>} The FTM fee settings
-   * @see {@link https://atomicwallet.atlassian.net/wiki/spaces/DevOps/pages/343638041#%D0%94%D0%B5%D1%84%D0%BE%D0%BB%D1%82%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BC%D0%B8%D1%81%D1%81%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-ETH}
    */
   getFeeSettings() {
     // @TODO implement fetch moderated gas config
@@ -296,7 +295,6 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       const gasPrice = isSendAll && userFee ? Number(userFee) / Number(this.gasLimit) : await this.getGasPrice();
 
       // @TODO Possible wrong implementation which uses multiplication instead of addition.
-      // @See discussion in Slack: https://atomicwallet.slack.com/archives/CGYJCPNBY/p1674047528806719?thread_ts=1674046796.998489&cid=CGYJCPNBY
       // Also @See getGasPrice method
       // @TODO If the gasPriceCoefficient parameter in the fee config is set to zero, then an error will
       //  occur here due to the zero gas price
