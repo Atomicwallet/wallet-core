@@ -29,16 +29,18 @@ export function generateWalletTests(wallet: Coin) {
 
       expect(pk).toBeDefined();
 
+      // EOS does not have address before activation process
       if (id !== 'EOS') {
         expect(address).toBeDefined();
         expect(wallet.address).toBeDefined();
-        expect(wallet.address).toBe(address);
+        expect(wallet.address).toEqual(address);
+        expect(wallet.address).not.toEqual(pk);
       } else {
         // @ts-expect-error eos specific keytype
         keys.privateKey = JSON.parse(keys.privateKey);
       }
 
-      // @ts-expect-error privateKey types can differs
+      // @ts-expect-error privateKey types could differ
       expect(keys.privateKey).toStrictEqual(pk);
     });
   });
