@@ -442,7 +442,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
       // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
       if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-        // logger.error({ instance: this, error });
+        // @TODO implement logger
       }
       // Fallback value
       return this.maxGasLimit;
@@ -642,7 +642,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
       // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
       if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-        // logger.error({ instance: this, error });
+        // @TODO implement logger
       }
       // Fallback value
       return contractAddress ? this.maxGasLimit : this.gasLimit;

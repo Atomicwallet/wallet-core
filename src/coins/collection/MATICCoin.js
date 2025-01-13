@@ -465,30 +465,8 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
   }
 
   async getModerateGasPrice() {
-    // try {
-    //   const moderatedGasPrice = await configManager.get('polygon-gas-price');
-    //
-    //   if (
-    //     moderatedGasPrice &&
-    //     moderatedGasPrice.fastest &&
-    //     moderatedGasPrice.safeLow
-    //   ) {
-    //     return {
-    //       fastest: new this.BN(moderatedGasPrice.fastest).mul(
-    //         new this.BN(GWEI),
-    //       ),
-    //       safeLow: new this.BN(moderatedGasPrice.safeLow).mul(
-    //         new this.BN(GWEI),
-    //       ),
-    //     };
-    //   }
-    //
-    //   throw new Error(`${this.ticker}: failed to get gas price`);
-    // } catch (error) {
-    //   console.warn(error);
-    //
-    //   return {};
-    // }
+    // @TODO implement fetch moderated gas config
+
     return {};
   }
 
@@ -602,14 +580,8 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    * @returns {Promise<Array>}
    */
   async getTokenLists(configName) {
-    // try {
-    //   const tokenResponse = await configManager.get(configName);
-    //
-    //   return tokenResponse || [];
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    //   return [];
-    // }
+    // @TODO implement fetch tokens list
+
     return [];
   }
 

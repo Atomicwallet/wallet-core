@@ -26,10 +26,7 @@ class NearRPCExplorer extends Explorer {
     try {
       return this.provider.experimental_protocolConfig({ finality: 'final' });
     } catch (error) {
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // })
+      // @TODO implement logger
 
       return null;
     }
@@ -53,10 +50,7 @@ class NearRPCExplorer extends Explorer {
 
       return gasPrice;
     } catch (error) {
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // })
+      // @TODO implement logger
 
       return null;
     }

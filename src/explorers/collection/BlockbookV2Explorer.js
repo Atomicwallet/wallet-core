@@ -1,6 +1,3 @@
-// import configManager from '../ConfigManager'
-// import history from '../History'
-// import logger from '../Logger'
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
@@ -611,15 +608,8 @@ class BlockbookV2Explorer extends Explorer {
   }
 
   async getBannedTokensList() {
-    let banned;
-
-    // try {
-    //   banned = await configManager.get('ethereum-tokens-banned')
-    // } catch (error) {
-    //   // logger.error({ instance: this, error })
-    // }
-
-    return Array.isArray(banned) ? banned : [];
+    // @TODO implement fetch banned tokens list
+    return [];
   }
 
   // only for ETH

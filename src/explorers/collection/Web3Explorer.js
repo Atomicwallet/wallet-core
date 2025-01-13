@@ -1,4 +1,3 @@
-// import configManager from '../ConfigManager'
 import { ExplorerRequestError, InternalError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
@@ -145,9 +144,8 @@ class Web3Explorer extends Explorer {
   }
 
   getGasPriceConfig() {
-    // return configManager.get('eth-gas-price', false, {
-    //   timeout: MODERATED_GAS_PRICE_URL_TIMEOUT,
-    // }).catch((error) => console.warn(error))
+    // @TODO implement fetch gas config
+
     return null;
   }
 

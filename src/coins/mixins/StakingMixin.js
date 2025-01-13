@@ -1,5 +1,3 @@
-// import configManager from '../ConfigManager';
-// import logger from '../Logger';
 import { UndeclaredAbstractMethodError } from 'src/errors';
 import defaultValidators from 'src/resources/staking/validators.json';
 import { Amount } from 'src/utils';
@@ -23,7 +21,6 @@ const StakingMixin = (superclass) =>
       this.#balances = {};
 
       this.#restoreCachedBalances();
-      // configManager.register(this.getPredefineValidatorsConfigName());
     }
 
     get balances() {
@@ -43,24 +40,7 @@ const StakingMixin = (superclass) =>
      * @return {Promise<void>}
      */
     async #restoreCachedBalances() {
-      // const { topic } = STAKING_BALANCES_CACHE(this.id);
-      //
-      // try {
-      //   const cachedData = localStorage.getItem(topic);
-      //
-      //   return this.setBalances(
-      //     cachedData
-      //       ? this.#transformCachedBalancesFromJSON(JSON.parse(cachedData))
-      //       : await this.makeStakingInfoStruct(),
-      //   );
-      // } catch (error) {
-      //   // logger.error({
-      //   //   instance: this,
-      //   //   error,
-      //   // });
-      //
-      //   return this.setBalances(await this.makeStakingInfoStruct());
-      // }
+      // @TODO implement balance cache
     }
 
     /**
@@ -497,14 +477,7 @@ const StakingMixin = (superclass) =>
         return this.#predefinedValidators;
       }
 
-      // const validators = await configManager
-      //   .get(this.getPredefineValidatorsConfigName())
-      //   .catch((error) =>
-      //     // logger.error({
-      //     //   instance: this,
-      //     //   error,
-      //     // }),
-      //   );
+      // @TODO implement fetch predefined validators
 
       this.#predefinedValidators = this.getDefaultValidators();
 

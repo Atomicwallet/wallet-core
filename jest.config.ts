@@ -2,10 +2,7 @@ export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.ts$': [
-      'ts-jest',
-      { tsconfig: '<rootDir>/tsconfig.jest.json', babelConfig: true },
-    ],
+    '^.+\\.ts$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.jest.json', babelConfig: true }],
     '^.+\\.js$': 'babel-jest',
   },
   moduleNameMapper: {

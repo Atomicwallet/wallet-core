@@ -64,9 +64,6 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
       stakingProxyContract,
     };
 
-    // TODO remove when StakingMixin will be used!
-    // configManager.register('stake_validators_zil');
-
     super(config);
 
     this.derivation = DERIVATION;
@@ -500,34 +497,6 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
   getGasRange(sendType = 'send') {
     return this.feeData[sendType] || this.feeData.gasSettings || this.feeDataDefaults.gasSettings;
   }
-
-  /**
-   * @deprecated
-   *
-   * Should be migrated to `StakingMixin`
-   * @return {Promise<void>}
-   */
-  // async getPredefinedValidators() {
-  //   const coinStaking = coinStakings.find(
-  //     (item) => item.getName().toLowerCase() === this.ticker.toLowerCase(),
-  //   );
-  //
-  //   if (!coinStaking || coinStaking.validators?.length > 0) {
-  //     return;
-  //   }
-  //
-  //   configManager.register('stake_validators_zil');
-  //   const validators = await configManager
-  //     .get('stake_validators_zil')
-  //     .catch((error) => {
-  //       // logger.error(error);
-  //       return predefinedValidators.find(
-  //         (item) => item.currency === this.ticker,
-  //       );
-  //     });
-  //
-  //   coinStaking.modifyPredefinedValidators(validators);
-  // }
 }
 
 export default ZILCoin;

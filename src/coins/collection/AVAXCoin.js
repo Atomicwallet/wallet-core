@@ -241,10 +241,7 @@ class AVAXCoin extends Web3Mixin(NftMixin(HasProviders(HasBlockScanner(Coin)))) 
 
       return new this.BN(fastest).mul(new this.BN(nAVAX));
     } catch (error) {
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // });
+      // @TODO implement logger
 
       const gasPrice = new this.BN(new this.BN(this.defaultGasPrice));
 

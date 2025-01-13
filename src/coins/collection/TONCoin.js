@@ -5,8 +5,6 @@ import { TONToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
-// import logger from '../Logger';
-// import configManager, { ConfigKey } from '../ConfigManager';
 import { HasProviders, HasTokensMixin } from '../mixins';
 import {
   BALANCE_PROVIDER_OPERATION,
@@ -143,8 +141,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
       try {
         await this.wallet.deploy(TonWeb.utils.hexToBytes(this.#privateKey)).send();
       } catch (error) {
-        // logger.error({ instance: this, error });
-        // console.log(error);
+        // @TODO implement logger
       }
     }
 
@@ -242,15 +239,9 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    // return configManager.get(ConfigKey.TonTokens).catch((error) => {
-    //   if (!(error instanceof UnknownConfigKeyError)) {
-    //     // logger.error({
-    //     //   instance: this,
-    //     //   error,
-    //     // });
-    //   }
-    //   return [];
-    // });
+
+    // @TODO implement fetch tokens list
+
     return [];
   }
 
@@ -261,15 +252,8 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @returns {Promise<string[]>} - Array of contract addresses
    */
   getBannedTokenList() {
-    // return configManager.get(ConfigKey.TonTokensBanned).catch((error) => {
-    //   if (!(error instanceof UnknownConfigKeyError)) {
-    //     // logger.error({
-    //     //   instance: this,
-    //     //   error,
-    //     // });
-    //   }
-    //   return [];
-    // });
+    // @TODO implement fetch banned tokens list
+
     return [];
   }
 

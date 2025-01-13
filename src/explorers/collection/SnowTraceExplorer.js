@@ -4,7 +4,7 @@ import Explorer from 'src/explorers/explorer';
 
 import { erc721Abi } from './ETHNftExplorer.js';
 
-// import logger from '../Logger'
+
 
 const GAS_PRICE_INTERVAL = 1000;
 const GAS_PRICES_URL = 'https://gavax.blockscan.com/gasapi.ashx';
@@ -20,8 +20,7 @@ class SnowTraceExplorer extends Explorer {
     try {
       return super.getTransactions(...args);
     } catch (error) {
-      // logger.error({ instance: this, error: `${this.wallet.ticker}: failed to load transactions` })
-
+      // @TODO implement logger
       return [];
     }
   }
@@ -157,8 +156,7 @@ class SnowTraceExplorer extends Explorer {
         safeLow: response.result.SafeGasPrice,
       };
     } catch (error) {
-      // logger.error({ instance: this, error: `${this.wallet.ticker}: failed to get gas prices` })
-
+      // @TODO implement logger
       return {};
     }
   }

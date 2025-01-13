@@ -100,10 +100,6 @@ export default class NftToken {
    * Sets NftToken.ipfsGateway from config
    */
   static async updateIpfsGateway() {
-    // const { ipfsGateway } = await configManager.get(ConfigKey.IpfsGateway).catch() ?? {}
-    //
-    // if (ipfsGateway) {
-    //   NftToken.ipfsGateway = ipfsGateway
-    // }
+    // @TODO implement fetch ipfs settings
   }
 }

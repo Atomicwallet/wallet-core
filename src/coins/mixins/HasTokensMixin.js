@@ -1,4 +1,3 @@
-// import logger from '../../Logger';
 import { Token } from 'src/abstract';
 import { UndeclaredAbstractMethodError } from 'src/errors';
 import InternalError from 'src/errors/InternalError';

@@ -1,14 +1,10 @@
 import { Coin } from 'src/abstract';
 import { NftMixin } from 'src/coins/nfts/mixins';
-import { UnknownConfigKeyError } from 'src/errors';
 import SolanaNodeExplorer from 'src/explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from 'src/explorers/collection/SolanaTritonExplorer';
 import { SOLToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
 import { STAKE_ADDR_TYPE } from 'src/utils/const';
-
-// import configManager, { ConfigKey } from '../ConfigManager';
-// import AddrCacheDb from '../AddrCacheDb';
 
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
 import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from '../mixins/HasProviders';
@@ -56,9 +52,6 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
     this.loadExplorers(config);
 
     const { feeData } = config;
-
-    // TODO remove when StakingMixin will be used!
-    // configManager.register('stake_validators_sol');
 
     this.fee = feeData.fee || DEFAULT_FEES;
     this.feeData = feeData;
@@ -263,11 +256,7 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
     transaction.feePayer = authorized.staker;
     transaction.sign(...signers);
 
-    AddrCacheDb.setAddrCache({
-      ticker: this.ticker,
-      type: STAKE_ADDR_TYPE,
-      addresses: [stakePubkey.toBase58()],
-    });
+    // @TODO implement new staking address storage
 
     return transaction.serialize();
   }
@@ -375,34 +364,6 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
     return new PublicKey(address);
   }
 
-  /**
-   * @deprecated
-   *
-   * Should be migrated to `StakingMixin`
-   * @return {Promise<void>}
-   */
-  // async getPredefinedValidators() {
-  //   const coinStaking = coinStakings.find(
-  //     (item) => item.getName().toLowerCase() === this.ticker.toLowerCase(),
-  //   );
-  //
-  //   if (!coinStaking || coinStaking.validators?.length > 0) {
-  //     return;
-  //   }
-  //
-  //   // configManager.register('stake_validators_sol');
-  //   const validators = await configManager
-  //     .get('stake_validators_sol')
-  //     .catch((error) => {
-  //       // logger.error(error);
-  //       return predefinedValidators.find(
-  //         (item) => item.currency === this.ticker,
-  //       );
-  //     });
-  //
-  //   coinStaking.modifyPredefinedValidators(validators);
-  // }
-
   setPrivateKey(privateKey) {
     this.#privateKey = privateKey;
   }
@@ -425,15 +386,7 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    // return configManager.get(ConfigKey.SolTokens).catch((error) => {
-    //   if (!(error instanceof UnknownConfigKeyError)) {
-    //     // logger.error({
-    //     //   instance: this,
-    //     //   error,
-    //     // });
-    //   }
-    //   return [];
-    // });
+
     return [];
   }
 
@@ -444,15 +397,8 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
    * @returns {Promise<string[]>} - Array of contract addresses
    */
   getBannedTokenList() {
-    // return configManager.get(ConfigKey.SolTokensBanned).catch((error) => {
-    //   if (!(error instanceof UnknownConfigKeyError)) {
-    //     // logger.error({
-    //     //   instance: this,
-    //     //   error,
-    //     // });
-    //   }
-    //   return [];
-    // });
+    // @TODO implement fetch tokens list
+
     return [];
   }
 

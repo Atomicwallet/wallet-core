@@ -6,7 +6,7 @@ import NearRPCExplorer from 'src/explorers/collection/NearRPCExplorer';
 import { Amount, LazyLoadedLib } from 'src/utils';
 import sha256 from 'src/utils/sha256';
 
-// import logger from '../Logger';
+;
 
 import { HasBlockScanner, HasProviders, StakingMixin } from '../mixins';
 
@@ -130,10 +130,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
         address: this.address,
       };
     } catch (error) {
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // });
+      // @TODO implement logger
 
       return this;
     }
@@ -425,10 +422,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
       this.balance = balance;
       this.unspendableBalance = unspendable;
     } catch (error) {
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // });
+      // @TODO implement logger
     }
   }
 
@@ -449,7 +443,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
       await this.updateBalance();
     }
     const balances = await this.getProvider('node').fetchStakingInfo(this.address, {
-      activeValidators: [], // await configManager.get(this.getPredefineValidatorsConfigName(),),
+      activeValidators: [], // @TODO implement  fetch predefined validators
     });
 
     this.setBalances(await this.makeStakingInfoStruct(balances));

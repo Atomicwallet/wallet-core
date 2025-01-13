@@ -1,5 +1,3 @@
-// import logger from '../Logger'
-
 class AtomicError extends Error {
   defaultType = 'Unknown';
 
@@ -42,7 +40,7 @@ class AtomicError extends Error {
     if (args.url) {
       errorObject.url = args.url;
     }
-    // logger.error(errorObject)
+    // @TODO implement logger
 
     this.name = this.constructor.name;
   }

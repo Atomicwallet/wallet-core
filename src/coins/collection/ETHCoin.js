@@ -206,7 +206,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
    * @see {@link https://atomicwallet.atlassian.net/wiki/spaces/DevOps/pages/343638041#%D0%94%D0%B5%D1%84%D0%BE%D0%BB%D1%82%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BC%D0%B8%D1%81%D1%81%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-ETH}
    */
   getFeeSettings() {
-    return {} // @TODO implement external fees fetcher / config
+    return {}; // @TODO implement external fees fetcher / config
   }
 
   /**
@@ -250,7 +250,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
 
       this.#privateKey = coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
     } catch (error) {
-      // logger.error({ instance: this, error });
+      // @TODO implement logger
     }
     return this.#privateKey;
   }
@@ -800,12 +800,6 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
     this.bannedTokens = await this.getBannedTokenList();
     let tokens;
 
-    try {
-      // tokens = await configManager.get(ConfigKey.EthereumTokens);
-    } catch (error) {
-      // logger.error({ instance: this, error });
-    }
-
     return tokens || TOKENS_CACHE;
   }
 
@@ -814,15 +808,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    let banned;
-
-    try {
-      // banned = await configManager.get('ethereum-tokens-banned');
-    } catch (error) {
-      // logger.error({ instance: this, error });
-    }
-
-    return banned || BANNED_TOKENS_CACHE;
+    return BANNED_TOKENS_CACHE;
   }
 
   /**

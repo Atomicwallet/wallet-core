@@ -179,13 +179,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     this.#tokensConfigName = `${tokenConfigPrefix}-tokens`;
     this.#bannedTokensConfigName = `${tokenConfigPrefix}-tokens-banned`;
 
-    // this.#gasPriceConfigName &&
-    //   configManager.register(this.#gasPriceConfigName, {
-    //     cacheTtl: MODERATED_GAS_PRICE_TIMEOUT,
-    //   });
-    // this.#tokensConfigName && configManager.register(this.#tokensConfigName);
-    // this.#bannedTokensConfigName &&
-    //   configManager.register(this.#bannedTokensConfigName);
+    // @TODO implement gas price config fetch by evm nave
 
     this.web3BaseUrl = explorers.find(({ className }) => className === 'Web3Explorer')?.baseUrl;
 
@@ -532,7 +526,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
       // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
       if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-        // logger.error({ instance: this, error });
+        // @TODO implement logger
       }
       // Fallback value
       return this.maxGasLimit;
@@ -763,14 +757,8 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<number>}
    */
   async _getGasPriceL1FromConfig() {
-    // const { fast } = await configManager
-    //   .get(ConfigKey.EthereumGasPrice)
-    //   .catch((error) => {
-    //     // logger.error({ instance: this, error });
-    //     return this.maxGasPriceL1;
-    //   });
-    //
-    // return fast;
+    // @TODO implement l1 gas config
+
     return null;
   }
 
@@ -832,21 +820,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<{standard: number, fastest: number} | null>}
    */
   async getModeratedGasPrice() {
-    // try {
-    //   const { fastest, safeLow } = await configManager.get(
-    //     this.#gasPriceConfigName,
-    //   );
-    //
-    //   return !fastest || !safeLow
-    //     ? null
-    //     : {
-    //         fastest: (fastest / 10) * GWEI,
-    //         standard: (safeLow / 10) * GWEI,
-    //       };
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    //   return null;
-    // }
+    // @TODO implement fetch moderated gas config
 
     return null;
   }
@@ -874,7 +848,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
       // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
       if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-        // logger.error({ instance: this, error });
+        // @TODO implement logger
       }
       // Fallback value
       return contractAddress ? this.maxGasLimit : this.gasLimit;
@@ -1049,15 +1023,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    // return configManager.get(this.#tokensConfigName).catch((error) => {
-    //   if (!(error instanceof UnknownConfigKeyError)) {
-    //     // logger.error({
-    //     //   instance: this,
-    //     //   error,
-    //     // });
-    //   }
-    //   return [];
-    // });
+
     return [];
   }
 
@@ -1068,15 +1034,6 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<string[]>} - Array of contract addresses
    */
   getBannedTokenList() {
-    // return configManager.get(this.#bannedTokensConfigName).catch((error) => {
-    //   if (!(error instanceof UnknownConfigKeyError)) {
-    //     // logger.error({
-    //     //   instance: this,
-    //     //   error,
-    //     // });
-    //   }
-    //   return [];
-    // });
     return [];
   }
 

@@ -12,10 +12,6 @@ import WFLRAbi from 'src/tokens/ABI/ERC-20/WFLR';
 import { Amount, LazyLoadedLib } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
-// import logger from '../Logger';
-// import configManager from '../ConfigManager';
-// import { ConfigKey } from '../ConfigManager/ConfigManager.const';
-
 import { HasProviders, HasTokensMixin, StakingMixin, Web3Mixin } from '../mixins';
 
 const web3LazyLoaded = new LazyLoadedLib(() => import('web3'));
@@ -192,7 +188,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
     try {
       this.#privateKey = this.coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
     } catch (error) {
-      // logger.error({ instance: this, error });
+      // @TODO implement logger
     }
     return this.#privateKey;
   }
@@ -552,7 +548,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
     try {
       await this.getStakingInfo();
     } catch (error) {
-      // logger.error({ instance: this, error });
+      // @TODO implement logger
     }
 
     return { balance: info.balance, balances: this.balances };
@@ -603,15 +599,10 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    let tokens;
 
-    try {
-      // tokens = await configManager.get(ConfigKey.FlareTokens);
-    } catch (error) {
-      // logger.error({ instance: this, error });
-    }
+    // @TODO implement fetch tokens list
 
-    return tokens || TOKENS_CACHE;
+    return TOKENS_CACHE;
   }
 
   /**
@@ -619,15 +610,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    let banned;
-
-    try {
-      // banned = await configManager.get('flare-tokens-banned');
-    } catch (error) {
-      // logger.error({ instance: this, error });
-    }
-
-    return banned || [];
+    return [];
   }
 
   gasPrice() {
@@ -827,7 +810,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
     const { manager: rewardsManagerInterface } = await this.#getRewardsManagerInterface();
 
     const claimContractAddress = await rewardsManagerInterface.methods.claimSetupManager().call();
-    const executorsList = []; // await configManager.get(ConfigKey.FlareClaimExecutors);
+    const executorsList = []; // @TODO implement fetch executors list
 
     const executorsAddresses = executorsList.map(({ address }) => address);
     const executorsFees = executorsList
@@ -994,7 +977,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
       delegatedVotes,
     });
     const rewards = new Amount(this.calculateRewards(unclaimedRewards), this);
-    const executorsList = []; // await configManager.get(ConfigKey.FlareClaimExecutors);
+    const executorsList = []; // @TODO implement fetch executors list
     const executorsFees = executorsList.reduce((acc, { fee }) => {
       acc = acc.add(new this.BN(this.toMinimalUnit(fee)));
       return acc;

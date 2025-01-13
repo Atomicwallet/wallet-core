@@ -1,6 +1,6 @@
 import { providers, networks } from '@thetalabs/theta-js';
 import Explorer from 'src/explorers/explorer';
-// import logger from '../Logger'
+
 
 const INIT_PROVIDER_TIMEOUT = 10000;
 const TICKER_FROM_PROVIDER = /(theta|tfuel)wei/i;
@@ -32,10 +32,7 @@ export default class ThetaJSExplorer extends Explorer {
         baseUrl || networks.Mainnet.rpcUrl,
       );
     } catch (error) {
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // })
+      // @TODO implement logger
 
       setTimeout(
         () =>
@@ -90,10 +87,7 @@ export default class ThetaJSExplorer extends Explorer {
         };
       }
 
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // })
+      // @TODO implement logger
 
       return {
         sequence: 0,

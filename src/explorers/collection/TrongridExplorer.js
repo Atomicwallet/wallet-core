@@ -3,7 +3,7 @@ import Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
 import TronWeb from 'tronweb';
 
-// import logger from '../Logger'
+
 
 const DYNAMIC_PARAMETERS = ['getDynamicEnergyThreshold', 'getDynamicEnergyIncreaseFactor', 'getDynamicEnergyMaxFactor'];
 
@@ -182,7 +182,7 @@ class TrongridExplorer extends Explorer {
     const failed = response?.transaction?.ret[0]?.ret === 'FAILED';
 
     if (failed) {
-      // logger.error({ instance: this, error: new Error('[TrongridExplorer]:
+      // @TODO implement logger
       // Failed to call estimate energy, node rejects tx with REVERT opcode, probably invalid tx was passed') })
 
       return undefined;

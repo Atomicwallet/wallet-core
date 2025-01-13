@@ -1,4 +1,3 @@
-// import logger from '../Logger';
 import { Coin } from 'src/abstract';
 import ThetaExplorer from 'src/explorers/collection/ThetaExplorer';
 import ThetaJSExplorer from 'src/explorers/collection/ThetaJSExplorer';
@@ -119,10 +118,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
       this.address = address;
       this.#privateKey = privateKey;
     } catch (error) {
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // });
+      // @TODO implement logger
     }
 
     return { id: this.id, privateKey: this.#privateKey, address: this.address };
@@ -194,10 +190,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
         ...payload,
       });
     } catch (error) {
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // });
+      // @TODO implement logger
 
       return [];
     }

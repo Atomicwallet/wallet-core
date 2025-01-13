@@ -231,7 +231,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
         .getGasPrices()
         .catch(() => {
           console.warn('Could not get gasPrices');
-          // logger.error({ instance: this, error });
+          // @TODO implement logger
           return this.gasPrices;
         }),
     ]);
@@ -282,7 +282,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
       await this.getStakingInfo();
     } catch (error) {
       console.warn('Could not get staking info');
-      // logger.error({ instance: this, error });
+      // @TODO implement logger
     }
 
     return { balance: this.balance };

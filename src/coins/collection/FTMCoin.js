@@ -227,7 +227,8 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @see {@link https://atomicwallet.atlassian.net/wiki/spaces/DevOps/pages/343638041#%D0%94%D0%B5%D1%84%D0%BE%D0%BB%D1%82%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BC%D0%B8%D1%81%D1%81%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-ETH}
    */
   getFeeSettings() {
-    return {}; // configManager.get(FTM_MODERATED_GAS_PRICE_URL);
+    // @TODO implement fetch moderated gas config
+    return {};
   }
 
   /**
@@ -620,30 +621,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<{standard: BN, fastest: BN} | {}>}
    */
   async getModerateGasPrice() {
-    // let moderatedGasPrice;
-    //
-    // try {
-    //   moderatedGasPrice = await configManager.get(
-    //     FTM_MODERATED_GAS_PRICE_URL,
-    //     false,
-    //     {
-    //       timeout: MODERATED_GAS_PRICE_URL_TIMEOUT,
-    //     },
-    //   );
-    // } catch (error) {
-    //   console.warn(error);
-    // }
-    //
-    // if (
-    //   moderatedGasPrice &&
-    //   moderatedGasPrice.fastest &&
-    //   moderatedGasPrice.safeLow
-    // ) {
-    //   return {
-    //     fastest: new this.BN((moderatedGasPrice.fastest / 10) * GWEI),
-    //     standard: new this.BN((moderatedGasPrice.safeLow / 10) * GWEI),
-    //   };
-    // }
+    // @TODO implement fetch moderated gas config
 
     return {};
   }
@@ -874,15 +852,10 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    let tokens;
 
-    try {
-      // tokens = await configManager.get(ConfigKey.FantomTokens);
-    } catch (error) {
-      // logger.error({ instance: this, error });
-    }
+    // @TODO implement fetch tokens list
 
-    return tokens || TOKENS_CACHE;
+    return TOKENS_CACHE;
   }
 
   /**
@@ -890,15 +863,9 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    let banned;
+    // @TODO implement fetch banned tokens list
 
-    try {
-      // banned = await configManager.get(ConfigKey.FantomTokensBanned);
-    } catch (error) {
-      // logger.error({ instance: this, error });
-    }
-
-    return banned || BANNED_TOKENS_CACHE;
+    return BANNED_TOKENS_CACHE;
   }
 
   /**

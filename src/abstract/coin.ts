@@ -691,7 +691,7 @@ export default abstract class Coin extends AbstractWallet {
           webUrl: txWebUrl,
         });
       } catch (error) {
-        // logger.error({ instance: this, error });
+        // @TODO implement logger
       }
     });
   }

@@ -63,14 +63,8 @@ export default class TerraMantleExplorer extends Explorer {
   }
 
   async getBannedTokensList() {
-    let banned;
+    // @TODO implement fetch banned tokens list
 
-    // try {
-    //   banned = await configManager.get('luna-tokens-banned')
-    // } catch (error) {
-    //   // logger.error({ instance: this, error })
-    // }
-
-    return Array.isArray(banned) ? banned : [];
+    return [];
   }
 }

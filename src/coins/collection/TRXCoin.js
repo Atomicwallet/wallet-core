@@ -387,7 +387,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     const estimatedEnergy = await this.getProvider('dynamicEnergy')
       .getEstimatedEnergy(args)
       .catch(() => {
-        // logger.error({ instance: this, error })
+        // @TODO implement logger
       });
 
     return estimatedEnergy || defaultEnergy;
@@ -442,7 +442,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
         return this.toMinimalUnit(burnedForEnergyTrx + burnedForNetTrx);
       }
     } catch (error) {
-      // logger.error({ instance: this, error });
+      // @TODO implement logger
 
       return this.feeData?.feeTRC20;
     }
@@ -769,11 +769,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // try {
-    //   return await configManager.get(ConfigKey.TrxTokens);
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    // }
+    // @TODO implement fetch tokens list
 
     return TOKENS_CACHE;
   }
@@ -783,15 +779,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<string[]>}
    */
   async getBannedTokenList() {
-    let banned;
-
-    // try {
-    //   banned = await configManager.get(ConfigKey.TrxTokensBanned);
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    // }
-
-    return banned || BANNED_TOKENS_CACHE;
+    return BANNED_TOKENS_CACHE;
   }
 }
 

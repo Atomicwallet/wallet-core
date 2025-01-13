@@ -311,7 +311,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
       return fee.amount[0].amount;
     } catch (error) {
-      // logger.error({ instance: this, error });
+      // @TODO implement logger
 
       const gasLimit = Number(this.gasLimit?.[sendType]) || FALLBACK_GASLIMIT[sendType] || FALLBACK_GASLIMIT.max;
       const gasPrice = Number(this.gasPrices?.uluna) || Number(FALLBACK_GASPRICE.uluna);
@@ -457,10 +457,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       return tokens.concat(denoms).filter((denom) => !existedTickers.includes(denom.symbol));
     } catch (error) {
       error.message = `[${this.ticker}] getUserTokenList error: ${error.message || 'Unknown error'}.`;
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // });
+      // @TODO implement logger
       return [];
     }
   }
@@ -470,13 +467,8 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<Array>}
    */
   async getTokenList() {
-    // try {
-    //   return configManager.get(ConfigKey.LunaClassicTokens);
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    //
-    //   return [];
-    // }
+    // @TODO implement fetch tokens list
+
     return [];
   }
 
@@ -577,7 +569,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
             if (!tokenBalance) {
               throw new Error(
-                `${this.ticker} can't get balance of token with ${info.contract ? 'contract address' : 'denom'} 
+                `${this.ticker} can't get balance of token with ${info.contract ? 'contract address' : 'denom'}
                 ${info.contract || info.denom}`,
               );
             }
@@ -588,7 +580,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
                 this.tokens[contractOrTicker].balance = tokenBalance.toString();
               });
           } catch (error) {
-            // logger.error({ instance: this, error });
+            // @TODO implement logger
           }
         }),
       );
@@ -603,14 +595,14 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
       this.balance = balance;
     } catch (error) {
-      // logger.error({ instance: this, error });
+      // @TODO implement logger
     }
 
     try {
       await this.getStakingInfo();
     } catch (error) {
       console.warn('Could not get staking info');
-      // logger.error({ instance: this, error });
+      // @TODO implement logger
     }
 
     return { balance: this.balance };

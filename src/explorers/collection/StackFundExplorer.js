@@ -72,7 +72,7 @@ class StackFundExplorer extends Explorer {
 
       return this.getTxDirection(selfAddress, tx) ? txParams.value.from_address : txParams.value.to_address;
     } catch (error) {
-      // logger.error({ instance: this, error })
+      // @TODO implement logger
 
       return 'Parse Error';
     }

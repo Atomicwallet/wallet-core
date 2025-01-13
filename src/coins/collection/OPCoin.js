@@ -9,10 +9,6 @@ import TOKENS_CACHE from 'src/resources/op/tokens.json';
 import { OPToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
-
-// import logger from '../Logger';
-// import configManager from '../ConfigManager';
-// import { ConfigKey } from '../ConfigManager/ConfigManager.const';
 import { toCurrency } from 'src/utils/convert';
 
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
@@ -609,11 +605,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<number>}
    */
   async _getGasPriceL1FromConfig() {
-    const { fast } = await configManager.get(ConfigKey.EthereumGasPrice).catch(() => {
-      return this.maxGasPriceL1;
-    });
+    // @TODO implement get L1 gas config
 
-    return fast;
+    return 1;
   }
 
   /**
@@ -825,15 +819,10 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    let tokens;
 
-    // try {
-    //   tokens = await configManager.get(TOKENS_CONFIG_KEY);
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    // }
+    // @TODO implement fetch tokens list
 
-    return tokens || TOKENS_CACHE;
+    return TOKENS_CACHE;
   }
 
   /**
@@ -841,15 +830,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    let banned;
+    // @TODO implement fetch banned tokens list
 
-    // try {
-    //   banned = await configManager.get(BANNED_TOKENS_CONFIG_KEY);
-    // } catch (error) {
-    //   // logger.error({ instance: this, error });
-    // }
-
-    return banned || BANNED_TOKENS_CACHE;
+    return BANNED_TOKENS_CACHE;
   }
 
   /**

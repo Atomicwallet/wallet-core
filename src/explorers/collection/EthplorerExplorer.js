@@ -1,11 +1,10 @@
-// import configManager from '../ConfigManager'
 import { ETHPLORER_API_KEY } from 'src/env';
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
 import TOKENS_CACHE from 'src/resources/eth/tokens.json';
 import { GET_BALANCE_TYPE } from 'src/utils/const';
 
-// import logger from '../Logger'
+
 
 const USER_TOKEN_LIST = 'https://api.ethplorer.io/getAddressInfo/{address}';
 const MAX_CONFIRMATIONS = 10;
@@ -197,11 +196,7 @@ class EthplorerExplorer extends Explorer {
   async getTokenList() {
     const tokens = TOKENS_CACHE;
 
-    // try {
-    //   tokens = await configManager.get('ethereum-tokens')
-    // } catch (error) {
-    //   // logger.error({ instance: this, error })
-    // }
+    // @TODO implement fetch tokens list
 
     return tokens;
   }

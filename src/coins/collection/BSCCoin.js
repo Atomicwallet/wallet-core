@@ -125,10 +125,7 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
     try {
       this.coreLibrary = new Web3(provider);
     } catch (error) {
-      // logger.error({
-      //   instance: this,
-      //   error,
-      // });
+      // @TODO implement logger
       setTimeout(() => this.initProvider(provider), INIT_PROVIDER_TIMEOUT);
     }
   }
@@ -171,7 +168,7 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
     try {
       this.#privateKey = this.coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
     } catch (error) {
-      // logger.error({ instance: this, error });
+      // @TODO implement logger
     }
     return this.#privateKey;
   }
