@@ -800,7 +800,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       amount,
       paymentData: data,
       gasLimit: this.stakingGasLimit || (await this.estimateGas(amount, address)),
-    }); // @TODO replace by estimated gasLimit in future
+    }); // @TODO replace by estimated gasLimit
 
     return tx;
   }

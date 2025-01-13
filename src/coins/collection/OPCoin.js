@@ -141,7 +141,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
   setFeeData(feeData = {}) {
     super.setFeeData(feeData);
     this.gasLimit = Number(feeData.gasLimit);
-    // @TODO replace by estimated gasLimit in future
+    // @TODO replace by estimated gasLimit
     this.stakingGasLimit = Number(feeData.stakingGasLimit) || DEFAULT_MAX_GAS;
     this.nftGasLimitCoefficient = Number(feeData.nftGasLimitCoefficient);
     this.nftGasPriceCoefficient = Number(feeData.nftGasPriceCoefficient);

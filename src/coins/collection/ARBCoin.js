@@ -143,7 +143,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     super.setFeeData(feeData);
     this.unspendableBalance = feeData.unspendableBalance || UNSPENDABLE_BALANCE;
     this.gasLimit = Number(feeData.gasLimit) || DEFAULT_MIN_GAS;
-    // @TODO replace by estimated gasLimit in future
+    // @TODO replace by estimated gasLimit
     this.stakingGasLimit = Number(feeData.stakingGasLimit) || DEFAULT_MAX_GAS;
     this.maxGasLimit = Number(feeData.maxGasLimit) || DEFAULT_MAX_GAS;
     this.nftGasLimitCoefficient = Number(feeData.nftGasLimitCoefficient) || 1;
