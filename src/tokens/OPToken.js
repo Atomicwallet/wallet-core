@@ -4,7 +4,6 @@ class OPToken extends Token {
   constructor(...args) {
     super(...args);
 
-    // @TODO WTF feeData not included!
     this.gasLimit = '150000';
     this.coefficient = 1;
   }
