@@ -382,7 +382,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         feeTicker: feeTicker ?? coin.feeTicker ?? this.ticker,
       });
 
-      // await history.filterAndUpdateTransactions([newTx]);
+      // TODO implement history data storage
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,

@@ -285,7 +285,7 @@ class XRPCoin extends Coin {
           }
           const confirmedTx = await this.explorer.getTransaction(this.address, transaction.hash);
 
-          // await history.filterAndUpdateTransactions([confirmedTx]);
+          // TODO implement history data storage
 
           this.balance = await this.getBalance();
 

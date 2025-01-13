@@ -243,7 +243,7 @@ export default abstract class Token extends AbstractWallet {
       if (txs.length > 0) {
         const tokenTransactions = txs.filter((tx: any) => tx.walletId === this.#id);
 
-        // await history.filterAndUpdateTransactions(tokenTransactions);
+        // TODO implement history data storage
         const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions);
 
         this.eventEmitter.emit(topic, payload);
@@ -267,7 +267,7 @@ export default abstract class Token extends AbstractWallet {
       if (txs.length > 0) {
         const tokenTransactions = txs.filter((tx: any) => tx.walletId === this.#id);
 
-        // await history.filterAndUpdateTransactions(tokenTransactions);
+        // TODO implement history data storage
         const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions);
 
         this.eventEmitter.emit(topic, payload);
@@ -301,12 +301,12 @@ export default abstract class Token extends AbstractWallet {
       return;
     }
     Object.entries(data.feeData).forEach(([key, value]) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      if (typeof this[key] !== 'undefined' && typeof value !== 'undefined' && key !== '__proto__') {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        this[key] = value;
+      if (
+        typeof (this as { [key: string]: any })[key] !== 'undefined' &&
+        typeof value !== 'undefined' &&
+        key !== '__proto__'
+      ) {
+        (this as { [key: string]: any })[key] = value;
       }
     });
   }

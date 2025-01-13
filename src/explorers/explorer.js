@@ -159,7 +159,7 @@ export default class Explorer {
       feeTicker: feeTicker ?? coin.feeTicker ?? this.getTxFeeTicker(),
     });
 
-    // await history.filterAndUpdateTransactions([newTx])
+    // TODO implement history data storage
 
     return newTx;
   }
@@ -931,7 +931,7 @@ export default class Explorer {
   async getSocketTransaction({ address, hash, tokens, type, scriptPubKey }) {
     const newTx = await this.getTransaction(address, hash, tokens);
 
-    // await history.filterAndUpdateTransactions([newTx])
+    // TODO implement history data storage
 
     this.txNotifier.notify(type, newTx, newTx.walletid, newTx.ticker, hash);
   }

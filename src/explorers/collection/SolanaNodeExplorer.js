@@ -376,7 +376,7 @@ class SolanaNodeExplorer extends Explorer {
 
     const txs = await this.getSpecifiedTransactions(sigs, pubkey.toBase58());
 
-    // await history.filterAndUpdateTransactions(txs)
+    // TODO implement history data storage
 
     txs.forEach((tx) => {
       if (tx.direction) {

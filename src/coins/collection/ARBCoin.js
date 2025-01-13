@@ -370,7 +370,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         feeTicker: this.ticker,
       });
 
-      // await history.filterAndUpdateTransactions([newTx]);
+      // TODO implement history data storage
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,

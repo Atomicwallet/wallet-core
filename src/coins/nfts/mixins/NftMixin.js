@@ -53,24 +53,9 @@ const NftMixin = (superclass) =>
      * @throws {InternalError} - NFT token removing from local storage error.
      */
     async transferNft(contractAddress, tokenId, toAddress, options = {}) {
-      // let tokenStandard;
-      //
-      // try {
-      //   const nft = await nftHistory.getOneOptimistic(
-      //     this,
-      //     contractAddress,
-      //     tokenId,
-      //   );
-      //
-      //   tokenStandard = nft.tokenStandard;
-      // } catch (error) {
-      //   console.warn(error);
-      //   throw new InternalError({
-      //     type: INTERNAL_ERROR,
-      //     error,
-      //     instance: this,
-      //   });
-      // }
+      const tokenStandard = {};
+
+      // TODO implement token standard config
 
       let transferResponse;
 
@@ -92,16 +77,7 @@ const NftMixin = (superclass) =>
         });
       }
 
-      // try {
-      //   await nftHistory.delete(this, contractAddress, tokenId);
-      // } catch (error) {
-      //   console.warn(error);
-      //   throw new InternalError({
-      //     type: INTERNAL_ERROR,
-      //     error,
-      //     instance: this,
-      //   });
-      // }
+      // TODO implement history data storage
 
       return transferResponse;
     }

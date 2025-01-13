@@ -217,7 +217,7 @@ class BinanceDex extends Explorer {
                 alias: this.wallet.alias,
               });
 
-              // history.filterAndUpdateTransactions([tx])
+              // TODO implement history data storage
 
               this.eventEmitter.emit(`${this.wallet.parent}-${asset}::new-socket-tx`, {
                 unconfirmedTx: tx,

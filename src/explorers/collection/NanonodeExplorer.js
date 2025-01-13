@@ -447,7 +447,7 @@ class NanonodeExplorer extends Explorer {
       alias: this.wallet.alias,
     });
 
-    // await history.updatePendingOrInsert(tx)
+    // TODO implement history data storage
 
     this.eventEmitter.emit(`${this.wallet.parent}-${this.wallet.id}::new-socket-tx`, {
       unconfirmedTx: tx,
@@ -474,7 +474,7 @@ class NanonodeExplorer extends Explorer {
       alias: this.wallet.alias,
     });
 
-    // await history.updatePendingOrInsert(tx)
+    // TODO implement history data storage
 
     this.eventEmitter.emit(`${this.wallet.parent}-${this.wallet.id}::new-socket-tx`, {
       unconfirmedTx: tx,

@@ -19,7 +19,7 @@ class BlockbookV2Explorer extends Explorer {
     const utxos = await this.getUnspentOutputs(address, scriptPubKey);
     const unconfirmedBalance = this.calculateBalance(utxos).toString();
 
-    // await history.filterAndUpdateTransactions([unconfirmedTx])
+    // TODO implement history data storage
 
     this.eventEmitter.emit(`${this.wallet.parent}-${this.wallet.id}::new-socket-tx`, {
       unconfirmedTx,

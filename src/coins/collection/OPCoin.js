@@ -381,7 +381,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
         feeTicker: this.ticker,
       });
 
-      // await history.filterAndUpdateTransactions([newTx]);
+      // TODO implement history data storage
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,

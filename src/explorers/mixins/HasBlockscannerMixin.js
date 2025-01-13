@@ -7,7 +7,7 @@ const HasBlockscannerMixin = (superclass) =>
     async getSocketTransaction({ address, hash, tokens, type, scriptPubKey }) {
       const newTx = await this.getTransaction(address, hash, tokens);
 
-      // await history.filterAndUpdateTransactions([newTx])
+      // TODO implement history data storage
 
       if (type === 'receive') {
         this.eventEmitter.emit(`${this.wallet.parent}-${newTx.walletid}::new-socket-tx`, {
