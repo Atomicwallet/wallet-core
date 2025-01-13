@@ -590,7 +590,7 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    * @returns {Promise<Array>}
    */
   async getTokenList() {
-    return this.getTokenLists(ConfigKey.PolygonTokens);
+    return [];
   }
 
   /**

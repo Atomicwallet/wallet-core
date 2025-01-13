@@ -4,8 +4,6 @@ import Transaction from 'src/explorers/Transaction';
 import TOKENS_CACHE from 'src/resources/eth/tokens.json';
 import { GET_BALANCE_TYPE } from 'src/utils/const';
 
-
-
 const USER_TOKEN_LIST = 'https://api.ethplorer.io/getAddressInfo/{address}';
 const MAX_CONFIRMATIONS = 10;
 

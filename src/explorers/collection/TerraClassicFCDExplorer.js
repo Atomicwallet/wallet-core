@@ -1,4 +1,3 @@
-
 import Explorer from 'src/explorers/explorer';
 
 const COSMOS_MSG_TYPES = {

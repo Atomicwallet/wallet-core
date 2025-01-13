@@ -4,8 +4,6 @@ import Explorer from 'src/explorers/explorer';
 
 import { erc721Abi } from './ETHNftExplorer.js';
 
-
-
 const GAS_PRICE_INTERVAL = 1000;
 const GAS_PRICES_URL = 'https://gavax.blockscan.com/gasapi.ashx';
 const ERC_721_SAFE_TRANSFER_FROM_METHOD_NAME = 'safeTransferFrom';
