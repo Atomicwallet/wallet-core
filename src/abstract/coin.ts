@@ -140,8 +140,7 @@ export default abstract class Coin extends AbstractWallet {
 
   async loadLib(name: string): Promise<unknown> {
     try {
-      // @ts-expect-error @TODO define types
-      return await this.dependencies[name].get();
+      return await this.dependencies[name]?.get();
     } catch (error) {
       console.error(`[${this.id}] Error: Could not load "${name}" dependency`, error);
       throw error;
@@ -638,12 +637,12 @@ export default abstract class Coin extends AbstractWallet {
   private setFeeData(feeData = {}) {
     this.feeData = feeData;
     Object.entries(feeData).forEach(([key, value]) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      if (typeof this[key] !== 'undefined' && typeof value !== 'undefined' && key !== '__proto__') {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        this[key] = value;
+      if (
+        typeof (this as { [key: string]: any })[key] !== 'undefined' &&
+        typeof value !== 'undefined' &&
+        key !== '__proto__'
+      ) {
+        (this as { [key: string]: any })[key] = value;
       }
     });
   }
@@ -681,9 +680,16 @@ export default abstract class Coin extends AbstractWallet {
   /**
    * Process explorers configuration.
    */
-  // @ts-expect-error @TODO define types
-  private loadExplorers({ explorers, txWebUrl, submitUrl }) {
-    explorers.forEach((exData: any) => {
+  private loadExplorers({
+    explorers,
+    txWebUrl,
+    submitUrl,
+  }: {
+    explorers: object[];
+    txWebUrl: string;
+    submitUrl: string;
+  }) {
+    explorers.forEach((exData: object) => {
       try {
         this.processExplorerConfig({
           ...exData,
