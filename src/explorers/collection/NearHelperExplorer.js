@@ -4,7 +4,6 @@
  */
 import Explorer from 'src/explorers/explorer';
 
-
 const TRANSFER_ACTION = 'TRANSFER';
 
 class NearHelperExplorer extends Explorer {
