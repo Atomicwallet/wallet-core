@@ -3,8 +3,6 @@ import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
 import TOKENS_CACHE from 'src/resources/binance/tokens.json';
 
-// import history from '../History'
-
 const WEBSOCKET_CONFIG = {
   WebSocket: global.WebSocket,
   connectionTimeout: 2000,

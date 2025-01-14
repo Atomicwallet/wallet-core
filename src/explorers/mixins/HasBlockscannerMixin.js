@@ -1,5 +1,3 @@
-// import history from '../../History'
-
 const MESSAGE_TYPES = ['reward', 'unfreeze', 'freeze', 'vote'];
 
 const HasBlockscannerMixin = (superclass) =>

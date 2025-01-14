@@ -4,8 +4,6 @@ import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
 import { SEND_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE } from 'src/utils/const';
 
-// import history from '../History'
-
 const WEBSOCKET_CONFIG = {
   WebSocket: global.WebSocket,
   connectionTimeout: 2000,

@@ -1,7 +1,6 @@
 import { HISTORY_WALLET_UPDATED } from 'src/utils/eventTopics';
 
 import { Token } from '../abstract';
-// import history from '../History'
 
 class TONToken extends Token {
   #parent;

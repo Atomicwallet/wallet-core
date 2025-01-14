@@ -1,5 +1,3 @@
-// import history from '../History';
-
 import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
 import RippleExplorer from 'src/explorers/collection/RippleExplorer';
