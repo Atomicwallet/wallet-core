@@ -15,9 +15,6 @@ import { chunkArray, getTokenId } from 'src/utils';
 import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils/const';
 import { convertSecondsToDateTime, getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
 
-// import history from '../History'
-// import AddrCacheDb from '../AddrCacheDb'
-
 const STAKE_DATA_LENGTH = 200;
 
 const ATOMIC_HISTORY_SIGNATURES_CHUNK_SIZE = 500;
@@ -355,14 +352,14 @@ class SolanaTritonExplorer extends Explorer {
 
   async getStakingBalance(props) {
     // fetch cached stake addresses from db
-    // const cachedAddrRows = await AddrCacheDb.getAddrCache(this.wallet.ticker, STAKE_ADDR_TYPE)
+    const cachedAddrRows = []; // @TODO implement addresses cache db
 
     let addresses = [];
 
     // map addresses if cache exists
-    // if (cachedAddrRows) {
-    //   addresses = cachedAddrRows.map(({ address }) => address)
-    // }
+    if (cachedAddrRows) {
+      addresses = cachedAddrRows.map(({ address }) => address);
+    }
 
     // If cached addresses exists then get account info for each cached address
     // else fetch huge `getStakeProgramInfo` request to get all existing stake account for specified address
@@ -382,7 +379,7 @@ class SolanaTritonExplorer extends Explorer {
       });
 
       // Insert addresses to DB, adding only new addresses
-      // AddrCacheDb.setAddrCache({ ticker: this.wallet.ticker, type: STAKE_ADDR_TYPE, addresses })
+      // e.g. db.setAddr()
     }
 
     const { epoch } = await this.getEpochInfo();
@@ -392,7 +389,7 @@ class SolanaTritonExplorer extends Explorer {
         // for empty addresses
         // rm saved address if not exists on B/C
         if (!info.account) {
-          // AddrCacheDb._removeItem(info.pubkey.toBase58())
+          // db.removeAddr()
           return undefined;
         }
 

@@ -91,7 +91,7 @@ export function generateWalletTests(wallet: Coin) {
           signedTx = Array.from(signedTx);
         }
 
-        // console.log(wallet.address, '\n', JSON.stringify(signedTx));
+        console.log(wallet.address, '\n', JSON.stringify(signedTx));
 
         expect(signedTx).toStrictEqual(tx);
       },

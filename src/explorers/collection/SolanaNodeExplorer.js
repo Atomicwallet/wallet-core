@@ -13,9 +13,6 @@ import Explorer from 'src/explorers/explorer';
 import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils/const';
 import { getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
 
-import AddrCacheDb from '../AddrCacheDb';
-// import history from '../History'
-
 const STAKE_DATA_LENGTH = 200;
 
 /**
@@ -159,7 +156,7 @@ class SolanaNodeExplorer extends Explorer {
 
   async getStakingBalance(props) {
     // fetch cached stake addresses from db
-    const cachedAddrRows = await AddrCacheDb.getAddrCache(this.wallet.ticker, STAKE_ADDR_TYPE);
+    const cachedAddrRows = []; // @TODO implement cache db for staking addresses
 
     let addresses = [];
 
@@ -186,11 +183,7 @@ class SolanaNodeExplorer extends Explorer {
       });
 
       // Insert addresses to DB, adding only new addresses
-      AddrCacheDb.setAddrCache({
-        ticker: this.wallet.ticker,
-        type: STAKE_ADDR_TYPE,
-        addresses,
-      });
+      // e.g. db.setAddr()
     }
 
     const { epoch } = await this.getEpochInfo();
@@ -200,7 +193,7 @@ class SolanaNodeExplorer extends Explorer {
         // for empty addresses
         // rm saved address if not exists on B/C
         if (!info.account) {
-          AddrCacheDb._removeItem(info.pubkey.toBase58());
+          // db.removeAddr()
           return undefined;
         }
 

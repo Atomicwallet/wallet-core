@@ -4,7 +4,6 @@ import SolanaNodeExplorer from 'src/explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from 'src/explorers/collection/SolanaTritonExplorer';
 import { SOLToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
-import { STAKE_ADDR_TYPE } from 'src/utils/const';
 
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
 import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from '../mixins/HasProviders';
