@@ -86,10 +86,6 @@ class BlockbookV2Explorer extends Explorer {
     return `${this.getApiPrefix()}address/${address}`;
   }
 
-  /**
-   * Temp hacks for nownodes
-   * @return {*}
-   */
   getInfoOptions() {
     return this.config.options || {};
   }
