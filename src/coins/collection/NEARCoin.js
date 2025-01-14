@@ -6,8 +6,6 @@ import NearRPCExplorer from 'src/explorers/collection/NearRPCExplorer';
 import { Amount, LazyLoadedLib } from 'src/utils';
 import sha256 from 'src/utils/sha256';
 
-;
-
 import { HasBlockScanner, HasProviders, StakingMixin } from '../mixins';
 
 const nearApiLib = new LazyLoadedLib(() => import('near-api-js'));
