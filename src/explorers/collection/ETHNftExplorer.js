@@ -128,7 +128,6 @@ class ETHNftExplorer extends Explorer {
 
     if (nonce) {
       // @TODO Nonce is not part of the gas estimation call params.
-      // @See telegram chanel Atomic<>Fantom 2023-02-17 15:49MSK
       transactionConfig.nonce = nonce + 1;
     }
 
