@@ -10478,6 +10478,12 @@ rpc-websockets (v7.11.2)
    - Publisher: Elpheria
    - Email: N/A
 
+rpc-websockets (v7.5.1)
+   - License: LGPL-3.0-only
+   - Repository: https://github.com/elpheria/rpc-websockets
+   - Publisher: Elpheria
+   - Email: N/A
+
 run-parallel (v1.2.0)
    - License: MIT
    - Repository: https://github.com/feross/run-parallel
