@@ -275,23 +275,19 @@ class ADACoin extends HasProviders(Coin) {
       this.getCoreLibrary(),
     ]);
 
-    const tx = coreLibrary.createTransaction({
+    return coreLibrary.createTransaction({
       address: this.address,
       amount,
       changeAddress: this.#privateKey.byronAddress,
       utxo,
       slotNo: lastblock.slot_no,
     });
-
-    return tx;
   }
 
-  async getLegacyAddressUnspentOutputs() {
+  getLegacyAddressUnspentOutputs() {
     const { byronAddress } = this.#privateKey;
 
-    const utxo = await this.getUnspentOutputs(byronAddress);
-
-    return utxo;
+    return this.getUnspentOutputs(byronAddress);
   }
 
   async getLegacyAddressAvailableBalance({ legacyUtxo, address }) {
