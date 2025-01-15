@@ -74,8 +74,10 @@ export function generateWalletTests(wallet: Coin) {
           }
         }
 
-        // @ts-expect-error typ
-        jest.spyOn(wallet, 'getUnspentOutputs').mockReturnValue(utxo);
+        if (wallet.id !== 'ADA') {
+          // @ts-expect-error typ
+          jest.spyOn(wallet, 'getUnspentOutputs').mockReturnValue(utxo);
+        }
 
         let signedTx = await wallet.createTransaction({
           amount,
@@ -91,7 +93,7 @@ export function generateWalletTests(wallet: Coin) {
           signedTx = Array.from(signedTx);
         }
 
-        console.log(wallet.address, '\n', JSON.stringify(signedTx));
+        // console.log(wallet.address, '\n', JSON.stringify(signedTx));
 
         expect(signedTx).toStrictEqual(tx);
       },
