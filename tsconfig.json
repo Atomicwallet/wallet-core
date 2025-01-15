@@ -10,11 +10,14 @@
   ],
   "ts-node": {
     "compilerOptions": {
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "esModuleInterop": true,
+      "allowJs": true,
       "target": "esnext",
-      "strict": true
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "resolveJsonModule": true,
+      "noImplicitAny": false,
     },
     "require": ["tsconfig-paths/register"]
   },
