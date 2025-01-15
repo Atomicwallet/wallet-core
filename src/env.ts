@@ -15,6 +15,8 @@ const getEnv = (key: string) => {
   return process.env[key];
 };
 
+export const IS_IOS = !!getEnv('IS_IOS');
+
 /**
  * Config endpoints
  */
