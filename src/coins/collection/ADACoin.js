@@ -103,21 +103,24 @@ class ADACoin extends HasProviders(Coin) {
     const isIOS = IS_IOS;
     const isNode = typeof process !== 'undefined' && !!process.versions?.node;
 
-    const nodeModules = [import('cardano-wallet'), import('@emurgo/cardano-serialization-lib-nodejs')];
+    console.log(isNode, 'IS NODE?'); // true
 
-    const browserModules = isIOS
-      ? [import('cardano-wallet-asm'), import('@emurgo/cardano-serialization-lib-asmjs')]
-      : [import('cardano-wallet-browser'), import('@emurgo/cardano-serialization-lib-browser')];
+    let modules;
 
-    const modules = isNode ? nodeModules : browserModules;
-    return Promise.all(modules)
-      .then((modules) => {
-        this.cardanoWalletV2 = modules[0];
-        this.cardanoWalletV4 = modules[1];
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (isNode) {
+      modules = await Promise.all([import('cardano-wallet'), import('@emurgo/cardano-serialization-lib-nodejs')]);
+    } else {
+      modules = await Promise.all(
+        isIOS
+          ? [import('cardano-wallet-asm'), import('@emurgo/cardano-serialization-lib-asmjs')]
+          : [import('cardano-wallet-browser'), import('@emurgo/cardano-serialization-lib-browser')],
+      );
+    }
+
+    this.cardanoWalletV2 = modules[0];
+    this.cardanoWalletV4 = modules[1];
+
+    return modules;
   }
 
   validateStakePoolAddress(poolAddress) {
