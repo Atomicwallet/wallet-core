@@ -866,6 +866,12 @@ This project includes software developed by third parties.
    - Publisher: EMURGO
    - Email: N/A
 
+ (vemurgo/cardano-serialization-lib-nodejs)
+   - License: MIT
+   - Repository: https://github.com/Emurgo/cardano-serialization-lib
+   - Publisher: EMURGO
+   - Email: N/A
+
  (veslint-community/eslint-utils)
    - License: MIT
    - Repository: https://github.com/eslint-community/eslint-utils
@@ -3758,6 +3764,12 @@ babel-plugin-check-es2015-constants (v6.22.0)
    - Publisher: N/A
    - Email: N/A
 
+babel-plugin-dynamic-import-node (v2.3.3)
+   - License: MIT
+   - Repository: https://github.com/airbnb/babel-plugin-dynamic-import-node
+   - Publisher: Jordan Gensler
+   - Email: jordan.gensler@airbnb.com
+
 babel-plugin-istanbul (v6.1.1)
    - License: BSD-3-Clause
    - Repository: https://github.com/istanbuljs/babel-plugin-istanbul
@@ -4833,6 +4845,12 @@ cardano-crypto-js (v5.3.0)
    - Email: N/A
 
 cardano-wallet-browser (v1.2.2)
+   - License: MIT OR Apache-2.0
+   - Repository: https://github.com/input-output-hk/js-cardano-wasm
+   - Publisher: N/A
+   - Email: N/A
+
+cardano-wallet (v1.2.2)
    - License: MIT OR Apache-2.0
    - Repository: https://github.com/input-output-hk/js-cardano-wasm
    - Publisher: N/A

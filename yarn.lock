@@ -1300,6 +1300,11 @@
   resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-browser/-/cardano-serialization-lib-browser-11.4.0.tgz#53b5f26fac06e4f6bdef7a11eb57aebf403b1ef4"
   integrity sha512-VWMvLRBFo7MAYh42zledURFs5BpMTWvkP4DzsLNbyJxZlwjDS+bPyehJVyGc116d2gq8NHFmANbfdeuK8ffJ7A==
 
+"@emurgo/cardano-serialization-lib-nodejs@11.4.0":
+  version "11.4.0"
+  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-nodejs/-/cardano-serialization-lib-nodejs-11.4.0.tgz#2a47d1cbdbfe6ad96ea55ba03d6cbec90497ea9d"
+  integrity sha512-dMiofDcqv+IrAITCgWBZmsMLqwv2xImDsJDSrKiYYG1zRKaL8XfMOxx6S0WEnKVj5/343Q5FFURYcSu3iBRNMQ==
+
 "@eslint-community/eslint-utils@^4.1.2", "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/@eslint-community/eslint-utils/-/eslint-utils-4.4.1.tgz#d1145bf2c20132d6400495d6df4bf59362fd9d56"
@@ -5424,6 +5429,13 @@ babel-plugin-check-es2015-constants@^6.22.0:
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-dynamic-import-node@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/babel-plugin-dynamic-import-node/-/babel-plugin-dynamic-import-node-2.3.3.tgz#84fda19c976ec5c6defef57f9427b3def66e17a3"
+  integrity sha512-jZVI+s9Zg3IqA/kdi0i6UDCybUI3aSBLnglhYbSSjKlV7yF1F/5LWv8MakQmvYpnbJDS6fcBL2KzHSxNCMtWSQ==
+  dependencies:
+    object.assign "^4.1.0"
+
 babel-plugin-istanbul@^6.1.1:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-istanbul/-/babel-plugin-istanbul-6.1.1.tgz#fa88ec59232fd9b4e36dbbc540a8ec9a9b47da73"
@@ -6922,6 +6934,16 @@ capability@^0.2.5:
 "cardano-wallet-asm@https://github.com/Atomicwallet/cardano-wallet-asm.git":
   version "1.2.2"
   resolved "https://github.com/Atomicwallet/cardano-wallet-asm.git#bea3795e3da42fe35a00231c65407e6a8e1224ee"
+
+cardano-wallet-browser@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/cardano-wallet-browser/-/cardano-wallet-browser-1.2.2.tgz#f3baf82abedb8b403fc2f79c8b71b2f3ab800fd0"
+  integrity sha512-KogurUQeo/jiaHkB+TJygawTHPMPVjLvj8c5OjnxS7jQL7mTAqwMnrWrsFYX0iBb6mqFy5DhwNR4Kco/RoLMaQ==
+
+cardano-wallet@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/cardano-wallet/-/cardano-wallet-1.2.2.tgz#b04d8605ee272b86ee51ceee45cffe7fd2f2689b"
+  integrity sha512-G3nq0CDOQLph6cdeDj4Ienkjf0WTJOC5f8mnxgi8BGO68Qx9oCLjK6gIwJr2WXisCUTK+m21KvLQxHuw1zEmug==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -12750,7 +12772,7 @@ object-visit@^1.0.0:
   dependencies:
     isobject "^3.0.0"
 
-object.assign@^4.1.4, object.assign@^4.1.7:
+object.assign@^4.1.0, object.assign@^4.1.4, object.assign@^4.1.7:
   version "4.1.7"
   resolved "https://registry.yarnpkg.com/object.assign/-/object.assign-4.1.7.tgz#8c14ca1a424c6a561b0bb2a22f66f5049a945d3d"
   integrity sha512-nK28WOo+QIjBkDduTINE4JkF/UJJKyf2EJxvJKfblDpyg0Q+pkOHNTL0Qwy6NP6FhE/EnzV73BxxqcJaXY9anw==
