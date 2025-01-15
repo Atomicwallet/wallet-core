@@ -2,7 +2,7 @@ import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
 import { createCoin } from 'src/coins';
 import ADACoin from 'src/coins/collection/ADACoin';
 import type { CoinDataConfig } from 'src/coins/createCoin';
-import { getWalletConfig, initializeMnemonic } from 'src/utils';
+import { getWalletConfig } from 'src/utils';
 
 const id = 'ADA';
 const config = getWalletConfig({ id });
