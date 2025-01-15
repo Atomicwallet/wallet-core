@@ -5,7 +5,7 @@ export { default as EGLDCoin } from './EGLDCoin';
 export { default as BNBCoin } from './BNBCoin';
 export { default as DOGECoin } from './DOGECoin';
 export { default as SOLCoin } from './SOLCoin';
-// export { default as ADACoin } from './ADACoin';
+export { default as ADACoin } from './ADACoin';
 export { default as ZILCoin } from './ZILCoin';
 export { default as MATICCoin } from './MATICCoin';
 export { default as DOTCoin } from './DOTCoin';
