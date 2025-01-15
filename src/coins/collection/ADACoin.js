@@ -1,12 +1,11 @@
 import Coin from 'src/abstract/coin';
-import { DEFAULT_ADALITE_SUBMIT_URL } from 'src/env';
+import { DEFAULT_ADALITE_SUBMIT_URL, IS_IOS } from 'src/env';
 import { WalletError } from 'src/errors';
 import { AdaAtomicExplorer, YoroExplorer } from 'src/explorers/collection';
 import { LazyLoadedLib, preventConcurrent } from 'src/utils';
 import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
 import { HasProviders } from '../mixins';
-// import validators from 'src/resources/staking/validators.json'
 
 const NAME = 'Cardano';
 const TICKER = 'ADA';
@@ -101,64 +100,23 @@ class ADACoin extends HasProviders(Coin) {
       return [this.cardanoWalletV2, this.cardanoWalletV4];
     }
 
-    const originalFetch = window && window.fetch;
+    const isIOS = IS_IOS;
+    const isNode = typeof process !== 'undefined' && !!process.versions?.node;
 
-    if (platformVersion.getPlatformType() === 'Mobile') {
-      // CORDOVA HACKS FOR WASM LOAD
-      const fetchRes = (url, param) => {
-        try {
-          WebAssembly.instantiateStreaming = undefined;
-        } catch (error) {
-          console.warn('[ADA] WebAssembly not supported');
-        }
+    const nodeModules = [import('cardano-wallet'), import('@emurgo/cardano-serialization-lib-nodejs')];
 
-        return new Promise(function loadCoreLib(resolve, reject) {
-          const xhr = new XMLHttpRequest();
+    const browserModules = isIOS
+      ? [import('cardano-wallet-asm'), import('@emurgo/cardano-serialization-lib-asmjs')]
+      : [import('cardano-wallet-browser'), import('@emurgo/cardano-serialization-lib-browser')];
 
-          if (url.endsWith('.wasm')) {
-            xhr.responseType = 'arraybuffer';
-          }
-
-          xhr.open((param && param.method) || 'GET', url);
-          xhr.addEventListener('load', function onLoadEvent() {
-            if (this.status >= 200 && this.status < 300) {
-              resolve({
-                json: () => JSON.parse(xhr.response),
-                ok: true,
-                arrayBuffer: () => xhr.response,
-              });
-            } else {
-              reject(new Error(`[ADA] wasm load error: status ${this.status}: ${xhr.statusText}`));
-            }
-          });
-          xhr.addEventListener('error', function onErrorEvent() {
-            reject(new Error(`[ADA] wasm load error: status ${this.status}: ${xhr.statusText}`));
-          });
-          xhr.send();
-        });
-      };
-
-      window.fetch = fetchRes;
-    }
-
-    const isIOS = platformVersion.getOS() === 'ios';
-
-    return Promise.all(
-      isIOS
-        ? [import('cardano-wallet-asm'), import('@emurgo/cardano-serialization-lib-asmjs')]
-        : [import('cardano-wallet-browser'), import('@emurgo/cardano-serialization-lib-browser')],
-    )
+    const modules = isNode ? nodeModules : browserModules;
+    return Promise.all(modules)
       .then((modules) => {
         this.cardanoWalletV2 = modules[0];
         this.cardanoWalletV4 = modules[1];
       })
       .catch((error) => {
         console.error(error);
-      })
-      .finally(() => {
-        if (originalFetch && window) {
-          window.fetch = originalFetch;
-        }
       });
   }
 
@@ -228,6 +186,10 @@ class ADACoin extends HasProviders(Coin) {
     return { id: this.id, privateKey: this.#privateKey, address: this.address };
   }
 
+  getLatestBlock() {
+    return this.getProvider('block').getLatestBlock();
+  }
+
   async validateAddress(address) {
     const coreLibrary = await this.getCoreLibrary();
 
@@ -272,7 +234,7 @@ class ADACoin extends HasProviders(Coin) {
     }
 
     const [lastblock, utxo, coreLibrary] = await Promise.all([
-      this.getProvider('block').getLatestBlock(),
+      this.getLatestBlock(),
       this.getUnspentOutputs(changeAddress),
       this.getCoreLibrary(),
     ]);
@@ -288,6 +250,7 @@ class ADACoin extends HasProviders(Coin) {
         cip: this.#cip1852Account,
       });
     } catch (error) {
+      console.log(error);
       throw new WalletError({
         type: SEND_TRANSACTION_TYPE,
         error,
@@ -304,7 +267,7 @@ class ADACoin extends HasProviders(Coin) {
     }
 
     const [lastblock, amount, coreLibrary] = await Promise.all([
-      this.getProvider('block').getLatestBlock(),
+      this.getLatestBlock(),
       this.getLegacyAddressAvailableBalance({
         address: this.address,
         legacyUtxo: utxo,
@@ -368,7 +331,7 @@ class ADACoin extends HasProviders(Coin) {
 
     const [outputs, lastblock, coreLibrary] = await Promise.all([
       utxos || (await this.getUnspentOutputs(changeAddress || this.address)),
-      this.getProvider('block').getLatestBlock(),
+      this.getLatestBlock(),
       this.getCoreLibrary(),
     ]);
 
@@ -420,7 +383,7 @@ class ADACoin extends HasProviders(Coin) {
     }
 
     const [lastblock, utxo, coreLibrary] = await Promise.all([
-      this.getProvider('block').getLatestBlock(),
+      this.getLatestBlock(),
       this.getUnspentOutputs(this.address),
       this.getCoreLibrary(),
     ]);
@@ -449,7 +412,7 @@ class ADACoin extends HasProviders(Coin) {
 
   async claim() {
     const [lastblock, utxo, coreLibrary] = await Promise.all([
-      this.getProvider('block').getLatestBlock(),
+      this.getLatestBlock(),
       this.getUnspentOutputs(this.address),
       this.getCoreLibrary(),
     ]);
