@@ -177,7 +177,7 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
 
         this.address = accountId;
       } catch (error) {
-        console.error(error);
+        // @TODO implement logger
       }
     }
 

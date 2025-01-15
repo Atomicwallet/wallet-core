@@ -103,8 +103,6 @@ class ADACoin extends HasProviders(Coin) {
     const isIOS = IS_IOS;
     const isNode = typeof process !== 'undefined' && !!process.versions?.node;
 
-    console.log(isNode, 'IS NODE?'); // true
-
     let modules;
 
     if (isNode) {
