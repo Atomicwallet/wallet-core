@@ -279,7 +279,7 @@ class AVAXCoin extends Web3Mixin(NftMixin(HasProviders(HasBlockScanner(Coin)))) 
 
       this.balance = balance;
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
     }
   }
 

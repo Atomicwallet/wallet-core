@@ -596,7 +596,7 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
 
       this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
     }
     return this.gasPriceConfig;
   }

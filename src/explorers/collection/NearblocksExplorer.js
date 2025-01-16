@@ -83,7 +83,7 @@ class NearblocksExplorer extends Explorer {
         confirmations: this.getTxConfirmations(),
       });
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
       return undefined;
     }
   }
@@ -107,7 +107,7 @@ class NearblocksExplorer extends Explorer {
     try {
       return new Date(Number(String(tx.block_timestamp).substr(0, 13)));
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
       return new Date();
     }
   }
@@ -133,7 +133,7 @@ class NearblocksExplorer extends Explorer {
     try {
       return this.wallet.toCurrencyUnit(getNumberStringWithoutENotation(tx.actions_agg.deposit));
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
       return '0';
     }
   }
@@ -156,7 +156,7 @@ class NearblocksExplorer extends Explorer {
     try {
       return this.wallet.toCurrencyUnit(getNumberStringWithoutENotation(tx.outcomes_agg.transaction_fee));
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
       return '0';
     }
   }

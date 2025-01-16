@@ -275,7 +275,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
 
       this.balance = balance;
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
     }
 
     try {

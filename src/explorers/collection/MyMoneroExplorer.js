@@ -116,7 +116,7 @@ class MyMoneroExplorer extends Explorer {
         this.#ensureInitialization(walletManager, resolve);
       });
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
     }
 
     this.#myMoneroLocalAccount.wallet = await walletManager.importWalletKeys(

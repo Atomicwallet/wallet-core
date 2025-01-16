@@ -33,7 +33,7 @@ class DoraExplorer extends Explorer {
     try {
       apiBalances = await this.request(`balance/${address}`);
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
     }
 
     const balances = {

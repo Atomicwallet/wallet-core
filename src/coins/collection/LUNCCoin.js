@@ -622,7 +622,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     try {
       this.gasPrices = await this.getGasPricesList();
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
     }
 
     const { uluna } = this.gasPrices;

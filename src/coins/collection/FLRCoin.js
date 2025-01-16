@@ -634,7 +634,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
 
       this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
     }
     return this.gasPriceConfig;
   }

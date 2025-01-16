@@ -934,7 +934,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
       this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
     }
     return this.gasPriceConfig;
   }

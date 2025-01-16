@@ -525,7 +525,7 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
         ...args,
       });
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
       return this.transactions || [];
     }
   }

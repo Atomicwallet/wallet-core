@@ -662,7 +662,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
       return this.nonce;
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
       return undefined;
     }
   }

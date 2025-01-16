@@ -411,7 +411,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
         address: this.address,
       });
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
       return this.transactions || [];
     }
   }

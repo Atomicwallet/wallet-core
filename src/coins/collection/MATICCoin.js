@@ -151,7 +151,7 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
 
       return [...txs.value, ...(tokenTxs.value || [])];
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
 
       return [];
     }

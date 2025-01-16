@@ -884,7 +884,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
 
       this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
     }
     return this.gasPriceConfig;
   }

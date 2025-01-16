@@ -180,7 +180,7 @@ class ADACoin extends HasProviders(Coin) {
 
       this.address = await coreLibrary.getAddressByPrivateKey();
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
       console.error('ADA load walled failed, core library is not initialized');
     }
 

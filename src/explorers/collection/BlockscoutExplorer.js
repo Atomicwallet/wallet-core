@@ -80,14 +80,6 @@ class BlockscoutExplorer extends Explorer {
   }
 
   modifyInfoResponse(response) {
-    // if (Array.isArray(response.tokens)) {
-    //   response.tokens.forEach(({ contractAddress, balance }) => {
-    //     if (this.wallet.tokens[contractAddress.toLowerCase()]) {
-    //       this.wallet.tokens[contractAddress.toLowerCase()].balance = new this.wallet.BN(balance)
-    //     }
-    //   })
-    // }
-
     return {
       balance: response.balance,
       tokensBalances: response.tokens || [],
@@ -141,7 +133,7 @@ class BlockscoutExplorer extends Explorer {
 
       return txs.concat(tokenTransfers);
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
 
       return [];
     }

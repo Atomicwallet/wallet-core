@@ -59,7 +59,7 @@ class CovalentHQExplorer extends Explorer {
 
       return tokens.map((token) => this.#mapToTokenFormat(token));
     } catch (error) {
-      console.error(error);
+      // @TODO implement logger
 
       return [];
     }
