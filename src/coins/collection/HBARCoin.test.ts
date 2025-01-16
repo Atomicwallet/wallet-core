@@ -1,14 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
-// import { txFields } from '@waves/marshall/dist/schemas';
-
 import { generateWalletTests } from 'src/__tests__/crypto/crypto.utils';
 import { createCoin } from 'src/coins';
 import HBARCoin from 'src/coins/collection/HBARCoin';
 import type { CoinDataConfig } from 'src/coins/createCoin';
 import { getWalletConfig } from 'src/utils';
-// import amount = txFields.amount;
 
 const id = 'HBAR';
 const config = getWalletConfig({ id });
@@ -24,6 +18,7 @@ if (!wallet) {
 }
 
 // @todo proper tx mocks should be defined
+// @ts-expect-error typ
 jest.spyOn(wallet, 'createTransaction').mockImplementation(({ address, amount }) => {
   return { address, amount };
 });
