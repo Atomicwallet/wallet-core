@@ -129,8 +129,10 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
         this.feePerByte = data.fastestFee;
         this.feeRecommended = typeof data !== 'object' ? null : data;
       }
-    } // @TODO implement logger
+    } catch {
+      // @TODO implement logger
     }
+
     return this.feeRecommended;
   }
 
