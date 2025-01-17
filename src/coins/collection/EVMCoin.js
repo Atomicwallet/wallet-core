@@ -111,19 +111,22 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {boolean} [config.isTestnet=false]
    * @param {boolean} [config.isCustom=false]
    */
-  constructor(config) {
+  constructor(config, configManager) {
     const { id, isL2, isUseModeratedGasPrice = false, isUseEIP1559 = false, feeData, explorers } = config;
 
-    super({
-      ...config,
-      decimal: DECIMAL,
-      l2Name: isL2 ? id : null,
-      unspendableBalance: feeData.unspendableBalance,
-      dependencies: {
-        [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+    super(
+      {
+        ...config,
+        decimal: DECIMAL,
+        l2Name: isL2 ? id : null,
+        unspendableBalance: feeData.unspendableBalance,
+        dependencies: {
+          [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
+          [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        },
       },
-    });
+      configManager,
+    );
 
     this.setExplorersModules([Web3Explorer, EtherscanExplorer]);
 
