@@ -1,3 +1,5 @@
+import { ConfigManagerInterface } from 'src/abstract';
+
 import EVMCoin from '../EVMCoin';
 import { generateId } from './generateId';
 import type { EVMExplorerConfig, EVMFeeConfig, EVMSpecific, EVMUserConfig } from './types';
@@ -36,14 +38,10 @@ export function isRpcBaseUrlValid(rpcBaseUrl: string) {
   }
 }
 
-export function createEVMCoin({
-  ticker,
-  name,
-  chainId,
-  rpcBaseUrl,
-  explorerWebUrl = 'https://etherscan.io',
-  features,
-}: EVMUserConfig): EVMCoin {
+export function createEVMCoin(
+  { ticker, name, chainId, rpcBaseUrl, explorerWebUrl = 'https://etherscan.io', features }: EVMUserConfig,
+  configManager?: ConfigManagerInterface,
+): EVMCoin {
   if (!ticker || !name || !chainId || !rpcBaseUrl) {
     throw new TypeError(
       'CreateEVMCoin: Missing arguments.\n Every of [ticker, name, chainId, rpcBaseUrl] must be provided!',
@@ -56,20 +54,23 @@ export function createEVMCoin({
 
   const explorerConfig = generateExplorerConfig({ chainId, rpcBaseUrl });
 
-  return new EVMCoin({
-    id: generateId({ ticker, chainId, walletType: 'EVM' }),
-    alias: 'atomic',
-    name,
-    ticker,
-    chainId,
-    features,
-    feeData: generateDefaultFeeConfig(),
-    explorers: [explorerConfig],
-    isL2: false,
-    isUseModeratedGasPrice: false,
-    isUseEIP1559: false,
-    txWebUrl: `${explorerWebUrl.replace(/\/+$/, '')}/tx/`,
-    socket: false,
-    isCustom: true,
-  });
+  return new EVMCoin(
+    {
+      id: generateId({ ticker, chainId, walletType: 'EVM' }),
+      alias: 'atomic',
+      name,
+      ticker,
+      chainId,
+      features,
+      feeData: generateDefaultFeeConfig(),
+      explorers: [explorerConfig],
+      isL2: false,
+      isUseModeratedGasPrice: false,
+      isUseEIP1559: false,
+      txWebUrl: `${explorerWebUrl.replace(/\/+$/, '')}/tx/`,
+      socket: false,
+      isCustom: true,
+    },
+    configManager,
+  );
 }

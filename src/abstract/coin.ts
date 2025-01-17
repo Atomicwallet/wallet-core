@@ -2,6 +2,7 @@ import BN from 'bn.js';
 import isEqual from 'lodash/isEqual';
 import type {
   CoinConfigType,
+  ConfigManagerInterface,
   FeeDataType,
   Numeric,
   RawTxBinary,
@@ -86,8 +87,8 @@ export default abstract class Coin extends AbstractWallet {
 
   abstract removeTokenFromDb(args: unknown): void;
 
-  constructor(config: CoinConfigType) {
-    super(config);
+  constructor(config: CoinConfigType, configManager?: ConfigManagerInterface) {
+    super(config, configManager);
 
     this.dependencies = config.dependencies || {};
     this.config = config;
