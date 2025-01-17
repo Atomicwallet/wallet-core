@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { AbstractWallet, type Coin } from 'src/abstract';
+import { AbstractWallet, type Coin, ConfigManagerInterface } from 'src/abstract';
 import type Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
 import { HISTORY_WALLET_UPDATED } from 'src/utils/eventTopics';
@@ -36,8 +36,8 @@ export default abstract class Token extends AbstractWallet {
   /**
    * Constructs a new instance of the class.
    */
-  constructor(args: TokenCreationArgs) {
-    super(args);
+  constructor(args: TokenCreationArgs, configManager?: ConfigManagerInterface) {
+    super(args, configManager);
 
     this.#parent = args.parent;
     this.#contract = args.contract;
