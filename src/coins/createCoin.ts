@@ -1,5 +1,4 @@
-import { ConfigManager } from '@arkecosystem/crypto/dist/managers/config';
-import type { Coin, CoinConfigType, ConfigManagerInterface } from 'src/abstract';
+import type { Coin, CoinConfigType, ConfigManagerInterface, LoggerInterface } from 'src/abstract';
 import { createEVMCoin } from 'src/coins/collection/EVM';
 import type { EVMConfig, EVMUserConfig } from 'src/coins/collection/EVM/types';
 
@@ -15,10 +14,11 @@ export default function createCoin(
   CoinClass: unknown,
   coinData: CoinDataConfig,
   configManager?: ConfigManagerInterface,
+  logger?: LoggerInterface,
 ): Coin {
   if (coinData.walletType === 'EVM') {
     // @todo define proper return type
-    return createEVMCoin(coinData, configManager) as unknown as Coin;
+    return createEVMCoin(coinData, configManager, logger) as unknown as Coin;
   }
 
   // @ts-expect-error define generic type
@@ -51,5 +51,6 @@ export default function createCoin(
       decimal: coinData.decimal,
     },
     configManager,
+    logger,
   );
 }

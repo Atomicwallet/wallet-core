@@ -111,7 +111,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {boolean} [config.isTestnet=false]
    * @param {boolean} [config.isCustom=false]
    */
-  constructor(config, configManager) {
+  constructor(config, configManager, logger) {
     const { id, isL2, isUseModeratedGasPrice = false, isUseEIP1559 = false, feeData, explorers } = config;
 
     super(
@@ -126,6 +126,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         },
       },
       configManager,
+      logger,
     );
 
     this.setExplorersModules([Web3Explorer, EtherscanExplorer]);

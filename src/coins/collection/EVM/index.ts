@@ -1,4 +1,4 @@
-import { ConfigManagerInterface } from 'src/abstract';
+import { ConfigManagerInterface, LoggerInterface } from 'src/abstract';
 
 import EVMCoin from '../EVMCoin';
 import { generateId } from './generateId';
@@ -41,6 +41,7 @@ export function isRpcBaseUrlValid(rpcBaseUrl: string) {
 export function createEVMCoin(
   { ticker, name, chainId, rpcBaseUrl, explorerWebUrl = 'https://etherscan.io', features }: EVMUserConfig,
   configManager?: ConfigManagerInterface,
+  logger?: LoggerInterface,
 ): EVMCoin {
   if (!ticker || !name || !chainId || !rpcBaseUrl) {
     throw new TypeError(
@@ -72,5 +73,6 @@ export function createEVMCoin(
       isCustom: true,
     },
     configManager,
+    logger,
   );
 }
