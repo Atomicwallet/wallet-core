@@ -13,9 +13,10 @@ import type {
   WalletTicker,
   TokenCreationArgs,
   CoinConfigType,
+  ConfigManagerInterface,
 } from 'src/abstract';
 import type Explorer from 'src/explorers/explorer';
-import { Emitter } from 'src/utils';
+import { Emitter, defaultConfigManager } from 'src/utils';
 import { WALLETS } from 'src/utils/const';
 import { toMinimal, toCurrency } from 'src/utils/convert';
 
@@ -39,6 +40,8 @@ export default abstract class AbstractWallet {
 
   indivisibleBalance: null | BN = null;
   divisibleBalance: null | string = null;
+
+  private configManager: ConfigManagerInterface;
 
   abstract gasPriceConfig?: IGasPriceConfig;
   abstract gasLimit?: string | number | BN;
@@ -71,11 +74,15 @@ export default abstract class AbstractWallet {
   abstract getFeePerByte(): BN;
   abstract getUnspentOutputs(): Promise<any>;
 
-  constructor({ name, ticker, decimal, memoRegexp }: CoinConfigType | TokenCreationArgs) {
+  constructor(
+    { name, ticker, decimal, memoRegexp }: CoinConfigType | TokenCreationArgs,
+    configManager?: ConfigManagerInterface,
+  ) {
     this.#name = name;
     this.#ticker = ticker;
     this.#decimal = decimal;
 
+    this.configManager = configManager ?? defaultConfigManager;
     this.alias = 'atomic';
     this.memoRegexp = memoRegexp;
   }
