@@ -15,7 +15,7 @@ import { CoinFeature } from 'src/coins/constants';
 import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } from 'src/errors';
 import type Explorer from 'src/explorers/explorer';
 import type Transaction from 'src/explorers/Transaction';
-import { type LazyLoadedLib, TxNotifier } from 'src/utils';
+import { IKeysObject, type LazyLoadedLib, TxNotifier } from 'src/utils';
 import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils/const';
 
 const WALLETS_WITH_CUSTOM_TOKENS = ['ETH'];
@@ -462,7 +462,7 @@ export default abstract class Coin extends AbstractWallet {
   /**
    * Gets the wallet.
    */
-  async loadWallet(seed?: Buffer, mnemonic?: string): Promise<string | object> {
+  async loadWallet(seed?: Buffer, mnemonic?: string): Promise<IKeysObject> {
     throw new UndeclaredAbstractMethodError('async loadWallet', this);
   }
 

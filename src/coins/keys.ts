@@ -4,7 +4,7 @@ import type { IKeys, IKeysObject } from 'src/utils';
 const generateKeys = async (wallet: Coin, { seed, phrase }: IKeys): Promise<IKeysObject> => {
   const keysObject = await wallet.loadWallet(seed, phrase);
 
-  return keysObject as Promise<IKeysObject>;
+  return keysObject;
 };
 
 const loadKeys = async (
