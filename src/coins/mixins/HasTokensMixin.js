@@ -13,8 +13,11 @@ let preloadedTokens = null;
 
 export function loadTokensFromDb() {
   if (!preloadedTokens) {
-    preloadedTokens = db.tokens.toArray();
+    const db = this.getDbTable('tokens');
+
+    preloadedTokens = db.getAll();
   }
+
   return preloadedTokens;
 }
 

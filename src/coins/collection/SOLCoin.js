@@ -1,12 +1,12 @@
 import { Coin } from 'src/abstract';
+import { HasBlockScanner, HasProviders, HasTokensMixin } from 'src/coins/mixins';
+import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from 'src/coins/mixins/HasProviders';
 import { NftMixin } from 'src/coins/nfts/mixins';
 import SolanaNodeExplorer from 'src/explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from 'src/explorers/collection/SolanaTritonExplorer';
 import { SOLToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
-
-import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
-import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from '../mixins/HasProviders';
+import { STAKE_ADDR_TYPE } from 'src/utils/const';
 
 const NAME = 'Solana';
 const TICKER = 'SOL';
@@ -255,7 +255,9 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
     transaction.feePayer = authorized.staker;
     transaction.sign(...signers);
 
-    // @TODO implement new staking address storage
+    const db = this.getDbTable('addrCache');
+
+    await db.put({ ticker: this.ticker, type: STAKE_ADDR_TYPE, addresses: [stakePubkey.toBase58()] });
 
     return transaction.serialize();
   }
