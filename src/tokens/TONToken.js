@@ -72,7 +72,10 @@ class TONToken extends Token {
       if (txs.length > 0) {
         const tokenTransactions = txs.filter((tx) => tx.walletId === this.id);
 
-        // TODO implement history data storage
+        const db = this.getDbTable('transactions');
+
+        await db.batchPut(tokenTransactions);
+
         const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions);
 
         this.eventEmitter.emit(topic, payload);
