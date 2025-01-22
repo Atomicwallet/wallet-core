@@ -285,7 +285,7 @@ class XRPCoin extends Coin {
 
           const db = this.getDbTable('transactions');
 
-          await db.batchPut(confirmedTx);
+          await db.put(confirmedTx);
 
           this.balance = await this.getBalance();
 
