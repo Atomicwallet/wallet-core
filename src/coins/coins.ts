@@ -1,8 +1,9 @@
-import type { Coin, IConfigManager, ILogger } from 'src/abstract';
+import type { Coin, ILogger } from 'src/abstract';
 import * as coins from 'src/coins/collection';
 import createCoin from 'src/coins/createCoin';
 import walletsConfig from 'src/resources/wallets_fee.json';
 
+import { IConfigManager } from '../utils/configManager';
 import { IDataBase } from '../utils/db';
 
 export const createWallets = async (
