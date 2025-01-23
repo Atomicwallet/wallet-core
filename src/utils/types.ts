@@ -31,3 +31,10 @@ export interface IConfig {
   ticker: string;
   txWebUrl: string;
 }
+
+export interface IAddrCacheElement {
+  id: string;
+  ticker: string;
+  type: string;
+  address: string;
+}
