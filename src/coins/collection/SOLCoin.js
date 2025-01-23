@@ -257,7 +257,9 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
 
     const db = this.getDbTable('addrCache');
 
-    await db.put({ ticker: this.ticker, type: STAKE_ADDR_TYPE, addresses: [stakePubkey.toBase58()] });
+    const address = stakePubkey.toBase58();
+
+    await db.put({ id: address, ticker: this.ticker, type: STAKE_ADDR_TYPE, address });
 
     return transaction.serialize();
   }
