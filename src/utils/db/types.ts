@@ -1,5 +1,8 @@
 import { Token } from 'src/abstract';
+import { NftToken } from 'src/coins/nfts';
 import Transaction from 'src/explorers/Transaction';
+
+import { IAddrCacheElement } from '../types';
 
 export type TableElementKey = string | number;
 export type TableElement = Record<string, unknown>;
@@ -9,9 +12,9 @@ export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'configs' | '
 export type TableTypes = {
   transactions: Transaction;
   tokens: Token;
-  addrCache: TableElement; // @TODO implement typings instead unknown
+  nfts: NftToken;
+  addrCache: IAddrCacheElement; // @TODO implement typings instead unknown
   configs: TableElement;
-  nfts: TableElement;
 };
 
 export interface ITable<T> {
