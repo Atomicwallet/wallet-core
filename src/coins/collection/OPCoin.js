@@ -8,10 +8,10 @@ import BANNED_TOKENS_CACHE from 'src/resources/op/tokens-banned.json';
 import TOKENS_CACHE from 'src/resources/op/tokens.json';
 import { OPToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
 
-import { ConfigKey } from '../../utils/configManager';
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';

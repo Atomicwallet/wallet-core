@@ -6,6 +6,7 @@ import Web3Explorer from 'src/explorers/collection/Web3Explorer';
 import Transaction from 'src/explorers/Transaction';
 import { EVMToken } from 'src/tokens';
 import { Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
@@ -762,9 +763,9 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<number>}
    */
   async _getGasPriceL1FromConfig() {
-    // @TODO implement l1 gas config
+    const price = await this.configManager?.get(ConfigKey.EthereumGasPrice);
 
-    return null;
+    return (price && price.fast) ?? this.maxGasPriceL1;
   }
 
   /**

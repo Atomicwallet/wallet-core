@@ -11,10 +11,10 @@ import BlockbookV2WithBlockscannerExplorer from 'src/explorers/extended/Blockboo
 import Transaction from 'src/explorers/Transaction';
 import { ARBToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
 
-import { ConfigKey } from '../../utils/configManager';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';

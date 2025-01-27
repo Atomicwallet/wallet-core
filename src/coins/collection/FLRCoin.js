@@ -10,10 +10,10 @@ import FlareClaimContractABI from 'src/tokens/ABI/ERC-20/FlareClaimContract';
 import FTSORewardsABI from 'src/tokens/ABI/ERC-20/FlareRewardsManagerContract';
 import WFLRAbi from 'src/tokens/ABI/ERC-20/WFLR';
 import { Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
-import { ConfigKey } from '../../utils/configManager';
 import { HasProviders, HasTokensMixin, StakingMixin, Web3Mixin } from '../mixins';
 
 const web3LazyLoaded = new LazyLoadedLib(() => import('web3'));
@@ -614,7 +614,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
   async getBannedTokenList() {
     const banned = await this.configManager.get(ConfigKey.FlareTokensBanned);
 
-    return banned ?? [];
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   gasPrice() {
@@ -814,7 +814,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
     const { manager: rewardsManagerInterface } = await this.#getRewardsManagerInterface();
 
     const claimContractAddress = await rewardsManagerInterface.methods.claimSetupManager().call();
-    const executorsList = []; // @TODO implement fetch executors list
+    const executorsList = (await this.configManager.get(ConfigKey.FlareClaimExecutors)) ?? [];
 
     const executorsAddresses = executorsList.map(({ address }) => address);
     const executorsFees = executorsList
@@ -981,7 +981,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
       delegatedVotes,
     });
     const rewards = new Amount(this.calculateRewards(unclaimedRewards), this);
-    const executorsList = []; // @TODO implement fetch executors list
+    const executorsList = (await this.configManager.get(ConfigKey.FlareClaimExecutors)) ?? [];
     const executorsFees = executorsList.reduce((acc, { fee }) => {
       acc = acc.add(new this.BN(this.toMinimalUnit(fee)));
       return acc;

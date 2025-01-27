@@ -10,9 +10,9 @@ import BANNED_TOKENS_CACHE from 'src/resources/trx/tokens-banned.json';
 import TOKENS_CACHE from 'src/resources/trx/tokens.json';
 import { TRXToken } from 'src/tokens';
 import { LazyLoadedLib, Amount } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from 'src/utils/const';
 
-import { ConfigKey } from '../../utils/configManager';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 const hdkeyLib = new LazyLoadedLib(() => import('hdkey'));

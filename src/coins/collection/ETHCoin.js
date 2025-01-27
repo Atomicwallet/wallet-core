@@ -8,10 +8,10 @@ import TOKENS_CACHE from 'src/resources/eth/tokens.json';
 import ETHToken from 'src/tokens/ETHToken';
 import StakableMaticETHToken from 'src/tokens/StakableMaticETHToken';
 import { Amount } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import LazyLoadedLib from 'src/utils/lazyLoadedLib.ts';
 
-import { ConfigKey } from '../../utils/configManager';
 import { StakingMixin, NftMixin } from '../mixins';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
@@ -205,8 +205,10 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
    * Get ETH fee settings
    * @return {Promise<Object>} The ETH fee settings
    * */
-  getFeeSettings() {
-    return {}; // @TODO implement external fees fetcher / config
+  async getFeeSettings() {
+    const settings = await this.configManager?.get(ConfigKey.EthereumGasPrice);
+
+    return settings ?? {};
   }
 
   /**
@@ -555,7 +557,20 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
    * @returns {Promise<{standard: BN, fastest: BN} | {}>}
    */
   async getModerateGasPrice() {
-    // @TODO implement external gas price fetcher / config
+    let moderatedGasPrice;
+
+    try {
+      moderatedGasPrice = await this.getFeeSettings();
+    } catch (error) {
+      console.warn(error);
+    }
+
+    if (moderatedGasPrice && moderatedGasPrice.fastest && moderatedGasPrice.safeLow) {
+      return {
+        fastest: new this.BN((moderatedGasPrice.fastest / 10) * GWEI),
+        standard: new this.BN((moderatedGasPrice.safeLow / 10) * GWEI),
+      };
+    }
 
     return {};
   }

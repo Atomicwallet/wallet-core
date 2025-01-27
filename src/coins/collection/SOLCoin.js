@@ -6,11 +6,11 @@ import SolanaNodeExplorer from 'src/explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from 'src/explorers/collection/SolanaTritonExplorer';
 import { SOLToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { STAKE_ADDR_TYPE } from 'src/utils/const';
 
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
-import { ConfigKey } from '../../utils/configManager';
 
 const NAME = 'Solana';
 const TICKER = 'SOL';
@@ -396,7 +396,7 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
 
     const tokens = await this.configManager.get(ConfigKey.SolTokens);
 
-    return tokens ?? [];
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -407,7 +407,7 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
    */
   async getBannedTokenList() {
     const banned = await this.configManager.get(ConfigKey.SolTokensBanned);
-    return banned ?? [];
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   /**

@@ -10,10 +10,10 @@ import BANNED_TOKENS_CACHE from 'src/resources/binance/bsc-tokens-banned.json';
 import TOKENS_CACHE from 'src/resources/binance/bsc-tokens.json';
 import { BSCToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import Web3 from 'web3';
 
-import { ConfigKey } from '../../utils/configManager';
 import HasBlockScanner from '../mixins/HasBlockScanner';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';

@@ -3,9 +3,9 @@ import { ExternalError, UnknownConfigKeyError } from 'src/errors';
 import TonwebExplorer from 'src/explorers/collection/TonwebExplorer';
 import { TONToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
-import { ConfigKey } from '../../utils/configManager';
 import { HasProviders, HasTokensMixin } from '../mixins';
 import {
   BALANCE_PROVIDER_OPERATION,

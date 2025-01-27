@@ -3,6 +3,7 @@ import { Coin } from 'src/abstract';
 import { ExternalError } from 'src/errors';
 import Web3Explorer from 'src/explorers/collection/Web3Explorer';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { isStartsWith } from 'src/utils/funcs';
 
@@ -182,7 +183,7 @@ class FILCoin extends HasProviders(Coin) {
    * @return {Promise<Object>} The ETH fee settings
    */
   getFeeSettings() {
-    return {};
+    return this.configManager.get(ConfigKey.EthereumGasPrice);
   }
 
   /**
@@ -338,7 +339,22 @@ class FILCoin extends HasProviders(Coin) {
    * @returns {Promise<{standard: BN, fastest: BN} | {}>}
    */
   async getModerateGasPrice() {
-    // @TODO implement external gas price fetcher / config
+    let moderatedGasPrice;
+
+    try {
+      moderatedGasPrice = await this.configManager?.get(ETH_MODERATED_GAS_PRICE_URL, false, {
+        timeout: MODERATED_GAS_PRICE_URL_TIMEOUT,
+      });
+    } catch (error) {
+      console.warn(error);
+    }
+
+    if (moderatedGasPrice && moderatedGasPrice.fastest && moderatedGasPrice.safeLow) {
+      return {
+        fastest: new this.BN((moderatedGasPrice.fastest / 10) * GWEI),
+        standard: new this.BN((moderatedGasPrice.safeLow / 10) * GWEI),
+      };
+    }
 
     return {};
   }

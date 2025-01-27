@@ -6,9 +6,9 @@ import BinanceDex from 'src/explorers/collection/BinanceDex';
 import BinanceExplorer from 'src/explorers/collection/BinanceExplorer';
 import { BNBToken } from 'src/tokens';
 import { Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-import { ConfigKey } from '../../utils/configManager';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 const NAME = 'BNB Coin';
