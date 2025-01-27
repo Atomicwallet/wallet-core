@@ -5,7 +5,9 @@ import TerraClassicLCDExplorer from 'src/explorers/collection/TerraClassicLCDExp
 import TerraMantleExplorer from 'src/explorers/collection/TerraMantleExplorer';
 import LUNCToken from 'src/tokens/LUNCToken';
 import { Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 
+import TOKENS_CACHE from '../../resources/eth/tokens.json';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 export const LUNC_SEND_TYPES = {
@@ -467,9 +469,9 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<Array>}
    */
   async getTokenList() {
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager?.get(ConfigKey.LunaClassicTokens);
 
-    return [];
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -637,10 +639,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<Object.<string, string>>}
    */
   getGasPricesList() {
-    // @TODO implement gasprice estimation
-    return Promise.resolve({
-      uluna: '28.325',
-    });
+    return this.configManager?.get(ConfigKey.LunaClassicGasPrice);
   }
 
   async getBalance() {

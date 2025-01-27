@@ -8,6 +8,7 @@ import BANNED_TOKENS_CACHE from 'src/resources/op/tokens-banned.json';
 import TOKENS_CACHE from 'src/resources/op/tokens.json';
 import { OPToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
 
@@ -822,9 +823,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.OptimismTokens);
 
-    return TOKENS_CACHE;
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -832,9 +833,8 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    // @TODO implement fetch banned tokens list
-
-    return BANNED_TOKENS_CACHE;
+    const banned = await this.configManager.get(ConfigKey.OptimismTokensBanned);
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   /**

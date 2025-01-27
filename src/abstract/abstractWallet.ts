@@ -46,7 +46,7 @@ export default abstract class AbstractWallet {
   configManager: IConfigManager;
 
   #db: IDataBase;
-  #logger: ILogger;
+  logger: ILogger;
 
   abstract gasPriceConfig?: IGasPriceConfig;
   abstract gasLimit?: string | number | BN;
@@ -90,7 +90,7 @@ export default abstract class AbstractWallet {
     this.#decimal = decimal;
 
     this.configManager = configManager ?? defaultConfigManager;
-    this.#logger = logger ?? defaultLogger;
+    this.logger = logger ?? defaultLogger;
     this.#db = db ?? new BaseDatabase();
     this.alias = 'atomic';
     this.memoRegexp = memoRegexp;

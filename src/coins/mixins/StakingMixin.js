@@ -477,9 +477,9 @@ const StakingMixin = (superclass) =>
         return this.#predefinedValidators;
       }
 
-      // @TODO implement fetch predefined validators
+      const validators = await this.configManager?.get(this.getPredefineValidatorsConfigName());
 
-      this.#predefinedValidators = this.getDefaultValidators();
+      this.#predefinedValidators = validators ?? this.getDefaultValidators();
 
       const { topic, payload } = STAKING_PREDEFINED_VALIDATORS_UPDATED(this.id, this.#predefinedValidators);
 

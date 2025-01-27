@@ -441,7 +441,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
       await this.updateBalance();
     }
     const balances = await this.getProvider('node').fetchStakingInfo(this.address, {
-      activeValidators: [], // @TODO implement  fetch predefined validators
+      activeValidators: (await this.configManager?.get(this.getPredefineValidatorsConfigName())) ?? [],
     });
 
     this.setBalances(await this.makeStakingInfoStruct(balances));

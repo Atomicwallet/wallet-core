@@ -1,4 +1,5 @@
-import Token from '../abstract/token';
+import Token from 'src/abstract/token';
+import { ConfigKey } from 'src/utils/configManager';
 
 class ETHToken extends Token {
   constructor(...args) {
@@ -42,7 +43,7 @@ class ETHToken extends Token {
    * @return {Promise<Object>} The ERC20 fee settings
    */
   getFeeSettings() {
-    return {}; // @TODO implement fetch fee settings
+    return this.configManager?.get(ConfigKey.EthereumGasPrice);
   }
 }
 

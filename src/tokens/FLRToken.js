@@ -1,4 +1,5 @@
 import { Token } from '../abstract';
+import { ConfigKey } from '../utils/configManager';
 
 class FLRToken extends Token {
   constructor(...args) {
@@ -27,7 +28,7 @@ class FLRToken extends Token {
    * @return {Promise<Object>} The ERC20 fee settings
    */
   getFeeSettings() {
-    return {}; // @TODO implement fetch fee settings
+    return this.configManager?.get(ConfigKey.EthereumGasPrice);
   }
 
   /* @TODO DEPRECATED

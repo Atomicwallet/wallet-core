@@ -11,6 +11,7 @@ import BlockbookV2WithBlockscannerExplorer from 'src/explorers/extended/Blockboo
 import Transaction from 'src/explorers/Transaction';
 import { ARBToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
 
@@ -771,7 +772,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<object|object[]>}
    */
   async #getForcedConfigOrFallback(configKey) {
-    return {};
+    return this.configManager?.get(configKey);
   }
 
   /**
@@ -780,7 +781,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    return this.#getForcedConfigOrFallback(); // TOKENS_CONFIG_KEY;
+    return this.#getForcedConfigOrFallback(ConfigKey.ArbitrumTokens);
   }
 
   /**
@@ -789,7 +790,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<Array>}
    */
   getBannedTokenList() {
-    return this.#getForcedConfigOrFallback(); // BANNED_TOKENS_CONFIG_KEY;
+    return this.#getForcedConfigOrFallback(ConfigKey.ArbitrumTokensBanned);
   }
 
   /**

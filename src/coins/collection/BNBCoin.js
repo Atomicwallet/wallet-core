@@ -6,6 +6,7 @@ import BinanceDex from 'src/explorers/collection/BinanceDex';
 import BinanceExplorer from 'src/explorers/collection/BinanceExplorer';
 import { BNBToken } from 'src/tokens';
 import { Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
@@ -519,8 +520,8 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     return new BNBToken({ parent: this, ...args });
   }
 
-  async getTokenList() {
-    return []; // @TODO implement external tokens list fetcher
+  getTokenList() {
+    return this.configManager.get(ConfigKey.BnbTokens);
   }
 
   /**

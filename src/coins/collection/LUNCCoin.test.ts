@@ -21,6 +21,12 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
+jest.spyOn(wallet, 'getGasPricesList').mockReturnValue(
+  Promise.resolve({
+    uluna: '28.325',
+  }),
+);
+
 jest.spyOn(wallet, 'estimateFeeAndTax').mockReturnValue({
   fee: { gas: '1397796', amount: [{ denom: 'uluna', amount: '39592572' }] },
   tax: { denom: 'uluna', amount: '0' },
