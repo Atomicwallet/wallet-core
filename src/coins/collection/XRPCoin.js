@@ -283,7 +283,9 @@ class XRPCoin extends Coin {
           }
           const confirmedTx = await this.explorer.getTransaction(this.address, transaction.hash);
 
-          // TODO implement history data storage
+          const db = this.getDbTable('transactions');
+
+          await db.put(confirmedTx);
 
           this.balance = await this.getBalance();
 

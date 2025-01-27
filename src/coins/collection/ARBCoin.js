@@ -370,7 +370,9 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         feeTicker: this.ticker,
       });
 
-      // TODO implement history data storage
+      const db = this.getDbTable('transactions');
+
+      await db.put(newTx);
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,

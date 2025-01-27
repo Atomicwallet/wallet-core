@@ -76,7 +76,7 @@ const NftMixin = (superclass) =>
         });
       }
 
-      // TODO implement history data storage
+      // TODO implement nfts collection data storage
 
       return transferResponse;
     }

@@ -17,4 +17,7 @@ if (!wallet) {
   throw new Error(`Failed to initialize ${id} wallet`);
 }
 
+// @ts-expect-error not implemented in abstract
+jest.spyOn(wallet, 'getNonce').mockReturnValue(1);
+
 generateWalletTests(wallet);

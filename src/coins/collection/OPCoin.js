@@ -381,7 +381,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
         feeTicker: this.ticker,
       });
 
-      // TODO implement history data storage
+      const db = this.getDbTable('transactions');
+
+      await db.batchPut(newTx);
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,

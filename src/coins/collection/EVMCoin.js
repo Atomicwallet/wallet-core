@@ -111,7 +111,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {boolean} [config.isTestnet=false]
    * @param {boolean} [config.isCustom=false]
    */
-  constructor(config, configManager, logger) {
+  constructor(config, db, configManager, logger) {
     const { id, isL2, isUseModeratedGasPrice = false, isUseEIP1559 = false, feeData, explorers } = config;
 
     super(
@@ -125,6 +125,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
           [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
         },
       },
+      db,
       configManager,
       logger,
     );

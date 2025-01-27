@@ -1,6 +1,7 @@
-import { ConfigManagerInterface, ConfigManagerResponse } from 'src/abstract';
+import { IConfigManager, ConfigManagerResponse } from './types';
+export * from './types';
 
-class DefaultConfigManager implements ConfigManagerInterface {
+class DefaultConfigManager implements IConfigManager {
   get(id: string): Promise<ConfigManagerResponse> {
     return Promise.reject(new Error('ConfigManager not implemented'));
   }
