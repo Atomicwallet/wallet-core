@@ -8,6 +8,7 @@ import { BNBToken } from 'src/tokens';
 import { Amount, LazyLoadedLib } from 'src/utils';
 import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
+import { ConfigKey } from '../../utils/configManager';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 const NAME = 'BNB Coin';
@@ -519,8 +520,8 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     return new BNBToken({ parent: this, ...args });
   }
 
-  async getTokenList() {
-    return []; // @TODO implement external tokens list fetcher
+  getTokenList() {
+    return this.configManager.get(ConfigKey.BnbTokens);
   }
 
   /**

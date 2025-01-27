@@ -12,6 +12,7 @@ import { TRXToken } from 'src/tokens';
 import { LazyLoadedLib, Amount } from 'src/utils';
 import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from 'src/utils/const';
 
+import { ConfigKey } from '../../utils/configManager';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 const hdkeyLib = new LazyLoadedLib(() => import('hdkey'));
@@ -769,9 +770,9 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.TrxTokens);
 
-    return TOKENS_CACHE;
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -779,7 +780,9 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<string[]>}
    */
   async getBannedTokenList() {
-    return BANNED_TOKENS_CACHE;
+    const banned = await this.configManager.get(ConfigKey.TrxTokensBanned);
+
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 }
 

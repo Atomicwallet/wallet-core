@@ -12,6 +12,8 @@ import { LazyLoadedLib } from 'src/utils';
 import applyCoefficient from 'src/utils/applyCoefficient';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
+import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
+import { ConfigKey } from '../../utils/configManager';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
@@ -598,7 +600,8 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    return this.getTokenLists('polygon-tokens-banned');
+    const banned = await this.configManager.get(ConfigKey.PolygonTokensBanned);
+    return banned ?? [];
   }
 
   /**

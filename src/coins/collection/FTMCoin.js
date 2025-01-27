@@ -13,6 +13,7 @@ import { getTokenId, Amount, LazyLoadedLib } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
 
+import { ConfigKey } from '../../utils/configManager';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
@@ -853,9 +854,9 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.FantomTokens);
 
-    return TOKENS_CACHE;
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -863,9 +864,8 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    // @TODO implement fetch banned tokens list
-
-    return BANNED_TOKENS_CACHE;
+    const banned = await this.configManager.get(ConfigKey.FantomTokensBanned);
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   /**

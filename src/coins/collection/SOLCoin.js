@@ -8,6 +8,10 @@ import { SOLToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
 import { STAKE_ADDR_TYPE } from 'src/utils/const';
 
+import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
+import TOKENS_CACHE from '../../resources/eth/tokens.json';
+import { ConfigKey } from '../../utils/configManager';
+
 const NAME = 'Solana';
 const TICKER = 'SOL';
 const DERIVATION = "m/44'/501'/0'";
@@ -390,7 +394,9 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    return [];
+    const tokens = await this.configManager.get(ConfigKey.SolTokens);
+
+    return tokens ?? [];
   }
 
   /**
@@ -399,10 +405,9 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
    * @async
    * @returns {Promise<string[]>} - Array of contract addresses
    */
-  getBannedTokenList() {
-    // @TODO implement fetch tokens list
-
-    return [];
+  async getBannedTokenList() {
+    const banned = await this.configManager.get(ConfigKey.SolTokensBanned);
+    return banned ?? [];
   }
 
   /**

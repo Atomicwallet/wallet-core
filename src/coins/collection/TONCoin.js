@@ -5,6 +5,7 @@ import { TONToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
+import { ConfigKey } from '../../utils/configManager';
 import { HasProviders, HasTokensMixin } from '../mixins';
 import {
   BALANCE_PROVIDER_OPERATION,
@@ -240,9 +241,9 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.TonTokens);
 
-    return [];
+    return tokens ?? [];
   }
 
   /**
@@ -251,10 +252,10 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @async
    * @returns {Promise<string[]>} - Array of contract addresses
    */
-  getBannedTokenList() {
-    // @TODO implement fetch banned tokens list
+  async getBannedTokenList() {
+    const banned = await this.configManager?.get(ConfigKey.TonTokensBanned);
 
-    return [];
+    return banned ?? [];
   }
 
   /**

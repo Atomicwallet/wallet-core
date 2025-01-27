@@ -11,6 +11,7 @@ import { Amount } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import LazyLoadedLib from 'src/utils/lazyLoadedLib.ts';
 
+import { ConfigKey } from '../../utils/configManager';
 import { StakingMixin, NftMixin } from '../mixins';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
@@ -797,9 +798,10 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    let tokens;
 
-    return tokens || TOKENS_CACHE;
+    const tokens = await this.configManager.get(ConfigKey.EthereumTokens);
+
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -807,7 +809,8 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    return BANNED_TOKENS_CACHE;
+    const banned = await this.configManager.get(ConfigKey.EthereumTokensBanned);
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   /**

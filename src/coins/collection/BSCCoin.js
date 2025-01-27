@@ -13,6 +13,7 @@ import { LazyLoadedLib } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import Web3 from 'web3';
 
+import { ConfigKey } from '../../utils/configManager';
 import HasBlockScanner from '../mixins/HasBlockScanner';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
@@ -563,9 +564,9 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    let tokens;
+    const tokens = await this.configManager?.get(ConfigKey.BscTokens);
 
-    return tokens || TOKENS_CACHE;
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -573,9 +574,9 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    let banned;
+    const banned = await this.configManager?.get(ConfigKey.BscTokensBanned);
 
-    return banned || BANNED_TOKENS_CACHE;
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   gasPrice() {

@@ -12,6 +12,8 @@ import WFLRAbi from 'src/tokens/ABI/ERC-20/WFLR';
 import { Amount, LazyLoadedLib } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
+import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
+import { ConfigKey } from '../../utils/configManager';
 import { HasProviders, HasTokensMixin, StakingMixin, Web3Mixin } from '../mixins';
 
 const web3LazyLoaded = new LazyLoadedLib(() => import('web3'));
@@ -600,9 +602,9 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.FlareTokens);
 
-    return TOKENS_CACHE;
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -610,7 +612,9 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    return [];
+    const banned = await this.configManager.get(ConfigKey.FlareTokensBanned);
+
+    return banned ?? [];
   }
 
   gasPrice() {

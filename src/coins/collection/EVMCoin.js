@@ -1029,7 +1029,9 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    return [];
+    const tokens = await this.configManager.get(this.#tokensConfigName);
+
+    return tokens ?? [];
   }
 
   /**
@@ -1038,8 +1040,10 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @async
    * @returns {Promise<string[]>} - Array of contract addresses
    */
-  getBannedTokenList() {
-    return [];
+  async getBannedTokenList() {
+    const banned = await this.configManager?.get(this.#bannedTokensConfigName);
+
+    return banned ?? [];
   }
 
   /**
