@@ -1,11 +1,13 @@
 import { Coin, Token } from 'src/abstract';
 import type Explorer from 'src/explorers/explorer';
 
-type TransactionFields = {
+export interface TransactionFields {
+  id?: string;
   wallet: Coin | Token;
+  walletid?: string;
   explorer: Explorer | string;
   txid: string;
-  direction: boolean | 'in';
+  direction: 'in' | 'out' | boolean; // @TODO deprecated boolean type, used for fallback support
   otherSideAddress: string;
   amount: string;
   memo?: string;
@@ -15,13 +17,15 @@ type TransactionFields = {
   ticker: string;
   timestamp?: number;
   recepient?: string;
-};
+  fee?: string;
+}
 
-export default class Transaction {
+export default class Transaction implements TransactionFields {
   wallet: Coin | Token;
+  walletid?: string;
   explorer: Explorer | string;
   txid: string;
-  direction: boolean | 'in';
+  direction: 'in' | 'out' | boolean;
   otherSideAddress: string;
   amount: string;
   memo?: string;
@@ -32,6 +36,7 @@ export default class Transaction {
   timestamp: number;
   date: string;
   time: string;
+  fee?: string;
 
   constructor(fields: TransactionFields) {
     if (typeof fields !== 'object') {
@@ -52,6 +57,7 @@ export default class Transaction {
     this.datetime = fields.datetime;
     this.timestamp = fields.timestamp || this.datetime.getTime();
     this.wallet = fields.wallet;
+    this.walletid = fields.wallet.id;
     this.explorer = fields.explorer;
     this.txid = fields.txid;
     this.direction = fields.direction;
@@ -59,6 +65,7 @@ export default class Transaction {
     this.amount = fields.amount;
     this.memo = fields.memo;
     this.confirmations = fields.confirmations;
+    this.fee = fields.fee;
 
     this.date = this.getDate();
     this.time = this.getTime();

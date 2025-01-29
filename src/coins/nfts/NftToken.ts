@@ -9,14 +9,14 @@ const HTTP_OK = 200;
  */
 export default class NftToken {
   static ipfsGateway = DEFAULT_IPFS_GATEWAY;
-  private contractAddress: string | null;
-  private tokenId: string;
-  private coinId: string;
-  private blockchain: string | undefined;
-  private tokenStandard: string;
-  private name: string;
-  private description: string | undefined;
-  private imageUrl: string;
+  contractAddress: string | null;
+  tokenId: string;
+  coinId: string;
+  blockchain: string | undefined;
+  tokenStandard: string;
+  name: string;
+  description: string | undefined;
+  imageUrl: string;
 
   /**
    * Create a NFT
