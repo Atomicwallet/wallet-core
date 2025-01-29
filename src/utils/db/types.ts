@@ -7,7 +7,7 @@ import { IAddrCacheElement } from '../types';
 export type TableElementKey = string | number;
 export type TableElement = Record<string, unknown>;
 
-export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'configs' | 'nfts';
+export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'configs' | 'nfts' | 'sentNfts';
 
 export type TableTypes = {
   transactions: Transaction;
