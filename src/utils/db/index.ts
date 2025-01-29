@@ -5,16 +5,20 @@ import { IDataBase, ITable, TableElement, TableElementKey } from 'src/utils/db/t
 
 import { IAddrCacheElement } from '../types';
 
-export * from 'src/utils/db/types';
-
 export class BaseTable<T> implements ITable<T> {
-  async get(id: TableElementKey): Promise<Partial<T> | undefined> {
+  async get(conditions: Partial<T>): Promise<Partial<T> | undefined> {
     console.log('Base DB used, not implemented.');
 
     return Promise.resolve(undefined);
   }
 
-  async getAll(): Promise<Partial<T>[]> {
+  async getAll(conditions: Partial<T>): Promise<Partial<T>[]> {
+    console.log('Base DB used, not implemented.');
+
+    return Promise.resolve([]);
+  }
+
+  async anyOf(conditions: Partial<T>, anyOf: T[]): Promise<T[]> {
     console.log('Base DB used, not implemented.');
 
     return Promise.resolve([]);
@@ -26,13 +30,13 @@ export class BaseTable<T> implements ITable<T> {
     return Promise.resolve('');
   }
 
-  async update(id: TableElementKey, changes: Partial<T>): Promise<T> {
+  async update(id: TableElementKey, changes: Partial<T>): Promise<TableElementKey> {
     console.log('Base DB used, not implemented.');
 
     throw new Error('Not implemented.');
   }
 
-  async delete(id: TableElementKey): Promise<void> {
+  async delete(id: Pick<T, keyof T>): Promise<void> {
     console.log('Base DB used, not implemented.');
 
     return Promise.resolve();
@@ -76,3 +80,5 @@ export class BaseDatabase implements IDataBase {
     };
   }
 }
+
+export * from './types';
