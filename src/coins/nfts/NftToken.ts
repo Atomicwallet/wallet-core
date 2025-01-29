@@ -17,6 +17,7 @@ export default class NftToken {
   name: string;
   description: string | undefined;
   imageUrl: string;
+  expiredAt?: number | string;
 
   /**
    * Create a NFT
