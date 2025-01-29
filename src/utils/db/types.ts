@@ -13,6 +13,7 @@ export type TableTypes = {
   transactions: Transaction;
   tokens: Token;
   nfts: NftToken;
+  sentNfts: NftToken;
   addrCache: IAddrCacheElement;
   configs: TableElement;
 };
