@@ -31,6 +31,7 @@ export default class NftToken {
     name: string,
     description: string | undefined = undefined,
     imageUrl: string,
+    expiredAt?: number | string,
   ) {
     this.contractAddress = contractAddress;
     this.tokenId = tokenId;
@@ -40,6 +41,7 @@ export default class NftToken {
     this.name = name;
     this.description = description;
     this.imageUrl = imageUrl;
+    this.expiredAt = expiredAt;
   }
 
   /**
