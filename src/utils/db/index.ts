@@ -48,7 +48,7 @@ export class BaseTable<T> implements ITable<T> {
     return Promise.resolve(undefined);
   }
 
-  batchPut(items: T[]): Promise<TableElementKey> {
+  batchPut(items: T[]): Promise<TableElementKey | TableElementKey[]> {
     console.log('Base DB used, not implemented.');
 
     return Promise.reject(new Error('Not implemented.'));
