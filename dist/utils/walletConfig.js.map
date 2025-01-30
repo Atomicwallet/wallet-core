@@ -1,1 +1,0 @@
-{"version":3,"file":"walletConfig.js","sourceRoot":"","sources":["../../src/utils/walletConfig.ts"],"names":[],"mappings":"AACA,OAAO,aAAa,MAAM,gCAAgC,CAAC;AAE3D,MAAM,eAAe,GAAG,CAAC,EAAE,EAAE,EAA8B,EAAW,EAAE;IACtE,OAAO,aAAa,CAAC,IAAI,CAAC,CAAC,EAAE,EAAE,EAAE,MAAM,EAAE,EAAE,EAAE,CAAC,MAAM,KAAK,EAAE,CAAC,CAAC;AAC/D,CAAC,CAAC;AAEF,OAAO,EAAE,eAAe,EAAE,CAAC"}
