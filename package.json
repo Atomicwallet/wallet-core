@@ -1,5 +1,5 @@
 {
-  "name": "atomic-wallet-core-adapters",
+  "name": "atomic-core-adapters",
   "version": "1.0.0",
   "description": "Atomic Wallet Core Adapters",
   "main": "src/index.ts",
