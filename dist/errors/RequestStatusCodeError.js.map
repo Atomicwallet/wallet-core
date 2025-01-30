@@ -1,0 +1,1 @@
+{"version":3,"file":"RequestStatusCodeError.js","sourceRoot":"","sources":["../../src/errors/RequestStatusCodeError.ts"],"names":[],"mappings":"AAAA,MAAM,sBAAuB,SAAQ,KAAK;IACxC,YAAY,KAAa;QACvB,KAAK,CAAC,6BAA6B,KAAK,EAAE,CAAC,CAAC;IAC9C,CAAC;CACF;AAED,eAAe,sBAAsB,CAAC"}

@@ -1,0 +1,9 @@
+export declare const ACTION_BUY = "buy";
+export declare const ACTION_CLAIM = "claim";
+export declare const ACTION_EXCHANGE = "exchange";
+export declare const ACTION_FREEZE = "freeze";
+export declare const ACTION_SEND = "send";
+export declare const ACTION_STAKE = "stake";
+export declare const ACTION_UNSTAKE = "unstake";
+export declare const ACTION_VOTE = "vote";
+export declare const ACTION_WITHDRAW = "withdraw";
