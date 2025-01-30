@@ -2494,7 +2494,7 @@ This project includes software developed by third parties.
 
  (vtypes/axios)
    - License: MIT
-   - Repository: N/A
+   - Repository: https://github.com/mzabriskie/axios
    - Publisher: N/A
    - Email: N/A
 
@@ -3470,12 +3470,6 @@ ansi-styles (v2.2.1)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
-ansi-styles (v3.2.1)
-   - License: MIT
-   - Repository: https://github.com/chalk/ansi-styles
-   - Publisher: Sindre Sorhus
-   - Email: sindresorhus@gmail.com
-
 ansi-styles (v4.3.0)
    - License: MIT
    - Repository: https://github.com/chalk/ansi-styles
@@ -3746,16 +3740,16 @@ atob (v2.1.2)
    - Publisher: AJ ONeal
    - Email: coolaj86@gmail.com
 
+atomic-core-adapters (v1.0.0)
+   - License: GPL-3.0*
+   - Repository: N/A
+   - Publisher: Atomic Protocol Systems OÜ
+   - Email: N/A
+
 atomic-sleep (v1.0.0)
    - License: MIT
    - Repository: https://github.com/davidmarkclements/atomic-sleep
    - Publisher: David Mark Clements
-   - Email: N/A
-
-atomic-wallet-core-adapters (v1.0.0)
-   - License: GPL-3.0*
-   - Repository: N/A
-   - Publisher: Atomic Protocol Systems OÜ
    - Email: N/A
 
 available-typed-arrays (v1.0.7)
@@ -4898,6 +4892,12 @@ buffer-to-arraybuffer (v0.0.5)
    - Publisher: Miguel Mota
    - Email: hello@miguelmota.com
 
+buffer-to-uint8array (v1.1.0)
+   - License: MIT
+   - Repository: https://github.com/substack/buffer-to-uint8array
+   - Publisher: substack
+   - Email: N/A
+
 buffer-xor (v1.0.3)
    - License: MIT
    - Repository: https://github.com/crypto-browserify/buffer-xor
@@ -5054,12 +5054,6 @@ cardano-wallet-browser (v1.2.2)
    - Publisher: N/A
    - Email: N/A
 
-cardano-wallet (v1.2.2)
-   - License: MIT OR Apache-2.0
-   - Repository: https://github.com/input-output-hk/js-cardano-wasm
-   - Publisher: N/A
-   - Email: N/A
-
 caseless (v0.12.0)
    - License: Apache-2.0
    - Repository: https://github.com/mikeal/caseless
@@ -5079,12 +5073,6 @@ cbor (v4.1.5)
    - Email: joe-github@cursive.net
 
 chalk (v1.1.3)
-   - License: MIT
-   - Repository: https://github.com/chalk/chalk
-   - Publisher: N/A
-   - Email: N/A
-
-chalk (v2.4.2)
    - License: MIT
    - Repository: https://github.com/chalk/chalk
    - Publisher: N/A
@@ -5228,23 +5216,11 @@ collection-visit (v1.0.0)
    - Publisher: Jon Schlinkert
    - Email: N/A
 
-color-convert (v1.9.3)
-   - License: MIT
-   - Repository: https://github.com/Qix-/color-convert
-   - Publisher: Heather Arthur
-   - Email: fayearthur@gmail.com
-
 color-convert (v2.0.1)
    - License: MIT
    - Repository: https://github.com/Qix-/color-convert
    - Publisher: Heather Arthur
    - Email: fayearthur@gmail.com
-
-color-name (v1.1.3)
-   - License: MIT
-   - Repository: https://github.com/dfcreative/color-name
-   - Publisher: DY
-   - Email: dfcreative@gmail.com
 
 color-name (v1.1.4)
    - License: MIT
@@ -5930,7 +5906,7 @@ dom-walk (v0.1.2)
    - Publisher: Raynos
    - Email: raynos2@gmail.com
 
-dotenv (v16.4.7)
+dotenv (v6.2.0)
    - License: BSD-2-Clause
    - Repository: https://github.com/motdotla/dotenv
    - Publisher: N/A
@@ -5977,12 +5953,6 @@ duplexify (v4.1.3)
    - Repository: https://github.com/mafintosh/duplexify
    - Publisher: Mathias Buus
    - Email: N/A
-
-duplicate-package-checker-webpack-plugin (v3.0.0)
-   - License: MIT
-   - Repository: https://github.com/darrenscerri/duplicate-package-checker-webpack-plugin
-   - Publisher: Darren Scerri
-   - Email: darrenscerri@gmail.com
 
 ecc-jsbn (v0.1.2)
    - License: MIT
@@ -6961,12 +6931,6 @@ find-cache-dir (v4.0.0)
    - Repository: https://github.com/sindresorhus/find-cache-dir
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
-
-find-root (v1.1.0)
-   - License: MIT
-   - Repository: https://github.com/js-n/find-root
-   - Publisher: jsdnxx
-   - Email: N/A
 
 find-up (v4.1.0)
    - License: MIT
@@ -10892,12 +10856,6 @@ rpc-websockets (v7.11.2)
    - Publisher: Elpheria
    - Email: N/A
 
-rpc-websockets (v7.5.1)
-   - License: LGPL-3.0-only
-   - Repository: https://github.com/elpheria/rpc-websockets
-   - Publisher: Elpheria
-   - Email: N/A
-
 run-parallel (v1.2.0)
    - License: MIT
    - Repository: https://github.com/feross/run-parallel
@@ -11384,6 +11342,12 @@ source-map (v0.6.1)
    - Publisher: Nick Fitzgerald
    - Email: nfitzgerald@mozilla.com
 
+spark-md5 (v3.0.1)
+   - License: WTFPL
+   - Repository: https://github.com/satazor/js-spark-md5
+   - Publisher: André Cruz
+   - Email: andremiguelcruz@msn.com
+
 spark-md5 (v3.0.2)
    - License: (WTFPL OR MIT)
    - Repository: https://github.com/satazor/js-spark-md5
@@ -11661,12 +11625,6 @@ supports-color (v2.0.0)
    - Email: sindresorhus@gmail.com
 
 supports-color (v5.4.0)
-   - License: MIT
-   - Repository: https://github.com/chalk/supports-color
-   - Publisher: Sindre Sorhus
-   - Email: sindresorhus@gmail.com
-
-supports-color (v5.5.0)
    - License: MIT
    - Repository: https://github.com/chalk/supports-color
    - Publisher: Sindre Sorhus
