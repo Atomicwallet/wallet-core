@@ -2612,6 +2612,12 @@ This project includes software developed by third parties.
    - Publisher: N/A
    - Email: N/A
 
+ (vtypes/dotenv)
+   - License: MIT
+   - Repository: N/A
+   - Publisher: N/A
+   - Email: N/A
+
  (vtypes/duplexify)
    - License: MIT
    - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -4430,6 +4436,12 @@ binary-extensions (v1.13.1)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
+binary-extensions (v2.3.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/binary-extensions
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
 bindings (v1.5.0)
    - License: MIT
    - Repository: https://github.com/TooTallNate/node-bindings
@@ -5114,6 +5126,12 @@ chokidar (v1.7.0)
    - Publisher: Paul Miller
    - Email: N/A
 
+chokidar (v3.6.0)
+   - License: MIT
+   - Repository: https://github.com/paulmillr/chokidar
+   - Publisher: Paul Miller
+   - Email: N/A
+
 chownr (v1.1.4)
    - License: ISC
    - Repository: https://github.com/isaacs/chownr
@@ -5259,6 +5277,12 @@ commander (v2.20.3)
    - Email: tj@vision-media.ca
 
 commander (v7.2.0)
+   - License: MIT
+   - Repository: https://github.com/tj/commander.js
+   - Publisher: TJ Holowaychuk
+   - Email: tj@vision-media.ca
+
+commander (v9.5.0)
    - License: MIT
    - Repository: https://github.com/tj/commander.js
    - Publisher: TJ Holowaychuk
@@ -5905,6 +5929,12 @@ dom-walk (v0.1.2)
    - Repository: https://github.com/Raynos/dom-walk
    - Publisher: Raynos
    - Email: raynos2@gmail.com
+
+dotenv (v16.4.7)
+   - License: BSD-2-Clause
+   - Repository: https://github.com/motdotla/dotenv
+   - Publisher: N/A
+   - Email: N/A
 
 dotenv (v6.2.0)
    - License: BSD-2-Clause
@@ -7826,6 +7856,12 @@ is-binary-path (v1.0.1)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
+is-binary-path (v2.1.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/is-binary-path
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
 is-boolean-object (v1.2.1)
    - License: MIT
    - Repository: https://github.com/inspect-js/is-boolean-object
@@ -9422,6 +9458,12 @@ mustache (v4.2.0)
    - Publisher: mustache.js Authors
    - Email: http://github.com/janl/mustache.js
 
+mylas (v2.1.13)
+   - License: MIT
+   - Repository: https://github.com/raouldeheer/Mylas
+   - Publisher: Raoul de Heer
+   - Email: N/A
+
 nan (v2.22.0)
    - License: MIT
    - Repository: https://github.com/nodejs/nan
@@ -10130,6 +10172,12 @@ pkg-dir (v7.0.0)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
+plimit-lit (v1.6.1)
+   - License: MIT
+   - Repository: https://github.com/joelvoss/plimit-lit
+   - Publisher: Joel Voß
+   - Email: mail@joelvoss.com
+
 posix-character-classes (v0.1.1)
    - License: MIT
    - Repository: https://github.com/jonschlinkert/posix-character-classes
@@ -10400,6 +10448,12 @@ querystringify (v2.2.0)
    - Publisher: Arnout Kazemier
    - Email: N/A
 
+queue-lit (v1.5.2)
+   - License: MIT
+   - Repository: https://github.com/joelvoss/queue-lit
+   - Publisher: Joel Voß
+   - Email: mail@joelvoss.com
+
 queue-microtask (v1.2.3)
    - License: MIT
    - Repository: https://github.com/feross/queue-microtask
@@ -10503,6 +10557,12 @@ readable-stream (v4.6.0)
    - Email: N/A
 
 readdirp (v2.2.1)
+   - License: MIT
+   - Repository: https://github.com/paulmillr/readdirp
+   - Publisher: Thorsten Lorenz
+   - Email: thlorenz@gmx.de
+
+readdirp (v3.6.0)
    - License: MIT
    - Repository: https://github.com/paulmillr/readdirp
    - Publisher: Thorsten Lorenz
@@ -11917,6 +11977,12 @@ ts-node (v10.9.2)
    - Repository: https://github.com/TypeStrong/ts-node
    - Publisher: Blake Embrey
    - Email: hello@blakeembrey.com
+
+tsc-alias (v1.8.10)
+   - License: MIT
+   - Repository: https://github.com/justkey007/tsc-alias
+   - Publisher: Juskey B.
+   - Email: N/A
 
 tsconfig-paths (v3.15.0)
    - License: MIT
