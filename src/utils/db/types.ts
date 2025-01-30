@@ -7,7 +7,7 @@ import { IAddrCacheElement } from '../types';
 export type TableElementKey = string | number;
 export type TableElement = Record<string, unknown>;
 
-export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'configs' | 'nfts' | 'sentNfts';
+export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'nfts' | 'sentNfts';
 
 export type TableTypes = {
   transactions: Transaction;
@@ -15,7 +15,6 @@ export type TableTypes = {
   nfts: NftToken;
   sentNfts: NftToken;
   addrCache: IAddrCacheElement;
-  configs: TableElement;
 };
 
 export interface ITable<T> {
@@ -23,9 +22,8 @@ export interface ITable<T> {
   getAll(conditions: Partial<T>): Promise<Partial<T>[]>;
   put(item: T): Promise<TableElementKey>;
   update(id: TableElementKey, changes: Partial<T>): Promise<TableElementKey>;
-  anyOf(conditions: Partial<T>, anyOf: T[]): Promise<T[]>;
-  delete(id: Pick<T, keyof T>): Promise<void>;
-  batchPut(items: T[]): Promise<TableElementKey[]>;
+  delete(id: string): Promise<void>;
+  batchPut(items: T[]): Promise<TableElementKey | TableElementKey[]>;
   batchDelete(ids: TableElementKey[]): Promise<void>;
   batchUpdate(ids: TableElementKey[], changes: Partial<T>): Promise<T[]>;
 }
