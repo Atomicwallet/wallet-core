@@ -6,7 +6,10 @@
   "include": ["./src/**/*.ts", "./src/@types/**/*.ts"],
   "exclude": [
     "./node_modules",
-    "./src/__tests__/**/*.test.ts"
+    "./src/cli/**/*",
+    "./src/__tests__/**/*.test.ts",
+    "./src/__tests__/**/*",
+    "./src/**/*.test.ts"
   ],
   "ts-node": {
     "compilerOptions": {

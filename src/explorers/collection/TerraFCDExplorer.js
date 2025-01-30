@@ -1,4 +1,4 @@
-import { COSMOS_MSG_TO_TYPE } from 'src/explorers/enum/txTypes.ts';
+import { COSMOS_MSG_TO_TYPE } from 'src/explorers/enum';
 import Explorer from 'src/explorers/explorer';
 
 export default class TerraFCDExplorer extends Explorer {
@@ -37,7 +37,7 @@ export default class TerraFCDExplorer extends Explorer {
   getTxCoins(selfAddress, tx) {
     const type = this.getTxType(tx);
 
-    if (type === COSMOS_MSG_TO_TYPE.MsgWithdrawDelegatorReward) {
+    if (type === TxTypes.COSMOS_MSG_TO_TYPE.MsgWithdrawDelegatorReward) {
       const rewardReceived = tx.logs.reduce((sum, current) => {
         const coinReceived = current.events?.find((e) => {
           return (

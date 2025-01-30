@@ -1,4 +1,4 @@
-import txTypes from 'src/explorers/enum/txTypes.ts';
+import { TxTypes } from 'src/explorers/enum';
 import Explorer from 'src/explorers/explorer';
 import { toCurrency } from 'src/utils/convert';
 
@@ -105,10 +105,10 @@ export default class HederaMirrorNodeExplorer extends Explorer {
    */
   getTxType(tx) {
     if (tx.name === 'CRYPTOTRANSFER') {
-      return txTypes.TRANSFER;
+      return TxTypes.TRANSFER;
     }
     if (tx.name === 'CRYPTOUPDATEACCOUNT' && tx.staking_reward_transfers?.length) {
-      return txTypes.REWARD;
+      return TxTypes.REWARD;
     }
     return '';
   }
