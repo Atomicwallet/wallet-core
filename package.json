@@ -123,6 +123,7 @@
     "buffer-to-uint8array": "1.1.0",
     "c32check": "2.0.0",
     "cardano-crypto-js": "https://github.com/Atomicwallet/cardano-crypto.js.git",
+    "cardano-wallet": "1.2.2",
     "cardano-wallet-asm": "https://github.com/Atomicwallet/cardano-wallet-asm.git",
     "cardano-wallet-browser": "1.2.2",
     "cbor": "4.1.5",

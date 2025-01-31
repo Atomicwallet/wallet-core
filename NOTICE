@@ -5066,6 +5066,12 @@ cardano-wallet-browser (v1.2.2)
    - Publisher: N/A
    - Email: N/A
 
+cardano-wallet (v1.2.2)
+   - License: MIT OR Apache-2.0
+   - Repository: https://github.com/input-output-hk/js-cardano-wasm
+   - Publisher: N/A
+   - Email: N/A
+
 caseless (v0.12.0)
    - License: Apache-2.0
    - Repository: https://github.com/mikeal/caseless
