@@ -4,7 +4,7 @@ import { Coin } from '../../abstract/index.js';
 import NearblocksExplorer from '../../explorers/collection/NearblocksExplorer.js';
 import NearRPCExplorer from '../../explorers/collection/NearRPCExplorer.js';
 import { Amount, LazyLoadedLib } from '../../utils/index.js';
-import sha256 from 'src/utils/sha256.js';
+import sha256 from '../../utils/sha256.js';
 import { HasBlockScanner, HasProviders, StakingMixin } from '../mixins/index.js';
 const nearApiLib = new LazyLoadedLib(() => import('near-api-js'));
 const nearSeedPhraseLib = new LazyLoadedLib(() => import('near-seed-phrase'));

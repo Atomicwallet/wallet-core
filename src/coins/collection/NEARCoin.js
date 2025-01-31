@@ -4,7 +4,7 @@ import { Coin } from 'src/abstract';
 import NearblocksExplorer from 'src/explorers/collection/NearblocksExplorer';
 import NearRPCExplorer from 'src/explorers/collection/NearRPCExplorer';
 import { Amount, LazyLoadedLib } from 'src/utils';
-import sha256 from 'src/utils/sha256.js';
+import sha256 from 'src/utils/sha256';
 
 import { HasBlockScanner, HasProviders, StakingMixin } from '../mixins';
 
