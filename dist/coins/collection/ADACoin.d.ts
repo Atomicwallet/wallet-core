@@ -32,7 +32,49 @@ declare class ADACoin {
         feeConst: any;
     };
     dustAmount: string;
-    loadLibsPromise: () => Promise<object[] | [any, {
+    loadLibsPromise: () => Promise<object[] | [{
+        default: typeof import("cardano-wallet");
+        paper_wallet_scramble(entropy: import("cardano-wallet").Entropy, iv: Uint8Array, password: string): any;
+        paper_wallet_unscramble(paper: Uint8Array, password: string): import("cardano-wallet").Entropy;
+        password_encrypt(password: string, salt: Uint8Array, nonce: Uint8Array, data: Uint8Array): any;
+        password_decrypt(password: string, encrypted_data: Uint8Array): any;
+        AccountIndex: typeof import("cardano-wallet").AccountIndex;
+        Address: typeof import("cardano-wallet").Address;
+        AddressKeyIndex: typeof import("cardano-wallet").AddressKeyIndex;
+        Bip44AccountPrivate: typeof import("cardano-wallet").Bip44AccountPrivate;
+        Bip44AccountPublic: typeof import("cardano-wallet").Bip44AccountPublic;
+        Bip44ChainPrivate: typeof import("cardano-wallet").Bip44ChainPrivate;
+        Bip44ChainPublic: typeof import("cardano-wallet").Bip44ChainPublic;
+        Bip44RootPrivateKey: typeof import("cardano-wallet").Bip44RootPrivateKey;
+        BlockchainSettings: typeof import("cardano-wallet").BlockchainSettings;
+        Coin: typeof import("cardano-wallet").Coin;
+        CoinDiff: typeof import("cardano-wallet").CoinDiff;
+        DaedalusAddressChecker: typeof import("cardano-wallet").DaedalusAddressChecker;
+        DaedalusCheckedAddress: typeof import("cardano-wallet").DaedalusCheckedAddress;
+        DaedalusWallet: typeof import("cardano-wallet").DaedalusWallet;
+        DerivationScheme: typeof import("cardano-wallet").DerivationScheme;
+        Entropy: typeof import("cardano-wallet").Entropy;
+        InputSelectionBuilder: typeof import("cardano-wallet").InputSelectionBuilder;
+        InputSelectionResult: typeof import("cardano-wallet").InputSelectionResult;
+        LinearFeeAlgorithm: typeof import("cardano-wallet").LinearFeeAlgorithm;
+        OutputPolicy: typeof import("cardano-wallet").OutputPolicy;
+        PrivateKey: typeof import("cardano-wallet").PrivateKey;
+        PrivateRedeemKey: typeof import("cardano-wallet").PrivateRedeemKey;
+        PublicKey: typeof import("cardano-wallet").PublicKey;
+        PublicRedeemKey: typeof import("cardano-wallet").PublicRedeemKey;
+        RedeemSignature: typeof import("cardano-wallet").RedeemSignature;
+        Signature: typeof import("cardano-wallet").Signature;
+        SignedTransaction: typeof import("cardano-wallet").SignedTransaction;
+        Transaction: typeof import("cardano-wallet").Transaction;
+        TransactionBuilder: typeof import("cardano-wallet").TransactionBuilder;
+        TransactionFinalized: typeof import("cardano-wallet").TransactionFinalized;
+        TransactionId: typeof import("cardano-wallet").TransactionId;
+        TransactionSignature: typeof import("cardano-wallet").TransactionSignature;
+        TxInput: typeof import("cardano-wallet").TxInput;
+        TxOut: typeof import("cardano-wallet").TxOut;
+        TxoPointer: typeof import("cardano-wallet").TxoPointer;
+        Witness: typeof import("cardano-wallet").Witness;
+    }, {
         default: typeof import("@emurgo/cardano-serialization-lib-nodejs");
         encode_json_str_to_plutus_datum(json: string, schema: number): import("@emurgo/cardano-serialization-lib-nodejs").PlutusData;
         decode_plutus_datum_to_json_str(datum: import("@emurgo/cardano-serialization-lib-nodejs").PlutusData, schema: number): string;
@@ -232,7 +274,49 @@ declare class ADACoin {
      * @returns {Promise<import('./libs/AdaLibApi').default>}
      */
     getCoreLibrary(): Promise<any>;
-    loadLibs(): Promise<object[] | [any, {
+    loadLibs(): Promise<object[] | [{
+        default: typeof import("cardano-wallet");
+        paper_wallet_scramble(entropy: import("cardano-wallet").Entropy, iv: Uint8Array, password: string): any;
+        paper_wallet_unscramble(paper: Uint8Array, password: string): import("cardano-wallet").Entropy;
+        password_encrypt(password: string, salt: Uint8Array, nonce: Uint8Array, data: Uint8Array): any;
+        password_decrypt(password: string, encrypted_data: Uint8Array): any;
+        AccountIndex: typeof import("cardano-wallet").AccountIndex;
+        Address: typeof import("cardano-wallet").Address;
+        AddressKeyIndex: typeof import("cardano-wallet").AddressKeyIndex;
+        Bip44AccountPrivate: typeof import("cardano-wallet").Bip44AccountPrivate;
+        Bip44AccountPublic: typeof import("cardano-wallet").Bip44AccountPublic;
+        Bip44ChainPrivate: typeof import("cardano-wallet").Bip44ChainPrivate;
+        Bip44ChainPublic: typeof import("cardano-wallet").Bip44ChainPublic;
+        Bip44RootPrivateKey: typeof import("cardano-wallet").Bip44RootPrivateKey;
+        BlockchainSettings: typeof import("cardano-wallet").BlockchainSettings;
+        Coin: typeof import("cardano-wallet").Coin;
+        CoinDiff: typeof import("cardano-wallet").CoinDiff;
+        DaedalusAddressChecker: typeof import("cardano-wallet").DaedalusAddressChecker;
+        DaedalusCheckedAddress: typeof import("cardano-wallet").DaedalusCheckedAddress;
+        DaedalusWallet: typeof import("cardano-wallet").DaedalusWallet;
+        DerivationScheme: typeof import("cardano-wallet").DerivationScheme;
+        Entropy: typeof import("cardano-wallet").Entropy;
+        InputSelectionBuilder: typeof import("cardano-wallet").InputSelectionBuilder;
+        InputSelectionResult: typeof import("cardano-wallet").InputSelectionResult;
+        LinearFeeAlgorithm: typeof import("cardano-wallet").LinearFeeAlgorithm;
+        OutputPolicy: typeof import("cardano-wallet").OutputPolicy;
+        PrivateKey: typeof import("cardano-wallet").PrivateKey;
+        PrivateRedeemKey: typeof import("cardano-wallet").PrivateRedeemKey;
+        PublicKey: typeof import("cardano-wallet").PublicKey;
+        PublicRedeemKey: typeof import("cardano-wallet").PublicRedeemKey;
+        RedeemSignature: typeof import("cardano-wallet").RedeemSignature;
+        Signature: typeof import("cardano-wallet").Signature;
+        SignedTransaction: typeof import("cardano-wallet").SignedTransaction;
+        Transaction: typeof import("cardano-wallet").Transaction;
+        TransactionBuilder: typeof import("cardano-wallet").TransactionBuilder;
+        TransactionFinalized: typeof import("cardano-wallet").TransactionFinalized;
+        TransactionId: typeof import("cardano-wallet").TransactionId;
+        TransactionSignature: typeof import("cardano-wallet").TransactionSignature;
+        TxInput: typeof import("cardano-wallet").TxInput;
+        TxOut: typeof import("cardano-wallet").TxOut;
+        TxoPointer: typeof import("cardano-wallet").TxoPointer;
+        Witness: typeof import("cardano-wallet").Witness;
+    }, {
         default: typeof import("@emurgo/cardano-serialization-lib-nodejs");
         encode_json_str_to_plutus_datum(json: string, schema: number): import("@emurgo/cardano-serialization-lib-nodejs").PlutusData;
         decode_plutus_datum_to_json_str(datum: import("@emurgo/cardano-serialization-lib-nodejs").PlutusData, schema: number): string;
