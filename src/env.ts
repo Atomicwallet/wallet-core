@@ -1,3 +1,4 @@
+// @ts-expect-error declarations
 import dotenv from 'dotenv';
 
 dotenv.config();
