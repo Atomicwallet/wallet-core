@@ -2,7 +2,7 @@
  * Class representing NFTs
  */
 export default class NftToken {
-    static ipfsGateway: any;
+    static ipfsGateway: string;
     contractAddress: string | null;
     tokenId: string;
     coinId: string;

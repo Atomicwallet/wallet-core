@@ -12,7 +12,7 @@ const requiredEnv = (key: string) => {
   return requiredKey;
 };
 
-const getEnv = (key: string) => {
+const getEnv = (key: string): string | undefined => {
   // @ts-expect-error web-based usage
   return (window && window.envVariables && window.envVariables[key]) ?? process.env[key];
 };
