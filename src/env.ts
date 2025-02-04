@@ -13,7 +13,8 @@ const requiredEnv = (key: string) => {
 };
 
 const getEnv = (key: string) => {
-  return process.env[key];
+  // @ts-expect-error web-based usage
+  return (window && window.envVariables && window.envVariables[key]) ?? process.env[key];
 };
 
 export const IS_IOS = !!getEnv('IS_IOS');
