@@ -331,7 +331,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider(SOCKET_PROVIDER_OPERATION).getSocketTransaction({

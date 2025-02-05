@@ -193,20 +193,6 @@ class AdaAtomicExplorer extends Explorer {
   getTxConfirmations() {
     return 1;
   }
-
-  // TODO: fix multiple requests
-  // async getTxFee (tx) {
-  //   const address = this.getTxOtherSideAddress(this.wallet.address, tx)
-  //   const amount = this.getTxValueSatoshis(address, tx)
-  //   const fee = await this.wallet.getFee({ address, amount })
-
-  //   return this.wallet.toCurrencyUnit(fee || 0)
-  // }
-  // async getTxConfirmations (tx) {
-  //   const latestBlock = await this.getLatestBlock()
-
-  //   return Number(latestBlock.block_no) - Number(tx.block.height) + 1
-  // }
 }
 
 export default AdaAtomicExplorer;

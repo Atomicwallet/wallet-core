@@ -539,18 +539,6 @@ const HasTokensMixin = (superclass) =>
      * @return {any[]}
      */
     createTokens(tokens = [], wallets) {
-      /*
-    // safety check against double creation
-
-    const createdTokenTickers = wallets
-      .filter((coin) => coin.parent.ticker === this.ticker)
-      .filter((coin) => cocreateTokensin.parent.ticker !== coin.ticker)
-      .map(token => token.ticker)
-
-    const tokensToCreate = tokens
-      .filter((token) => !createdTokenTickers.includes(token.ticker))
-    */
-
       const tokensToCreate = tokens;
       const createdTokens = [];
 

@@ -160,7 +160,7 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {string[]} array of tickers
    */
   getExcludedTokenList() {

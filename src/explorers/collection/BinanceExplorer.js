@@ -4,8 +4,6 @@ import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
 import { GET_TRANSACTIONS_TYPE } from 'src/utils/const';
 
-// https://testnet-dex.binance.org/api/v1/fees
-
 /**
  * Binance Explorer
  *
@@ -119,7 +117,7 @@ class BinanceExplorer extends Explorer {
     return tx.txHash;
   }
 
-  // true - incloming
+  // true - incoming
   getTxDirection(selfAddress, tx) {
     if (tx.txType !== 'TRANSFER') {
       return false;

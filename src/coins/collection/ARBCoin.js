@@ -212,7 +212,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider('socket').getSocketTransaction({
@@ -226,7 +226,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {Array<String>} array of tickers
    */
   getExcludedTokenList() {

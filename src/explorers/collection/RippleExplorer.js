@@ -105,10 +105,10 @@ class RippleExplorer extends Explorer {
   }
 
   /**
-   * Gets the trasaction amount.
+   * Gets the transaction amount.
    *
-   * @param {Object} tx The trasaction
-   * @return {Number} The trasaction amount.
+   * @param {Object} tx The transaction
+   * @return {Number} The transaction amount.
    */
   getTxValue(selfAddress, tx) {
     return Number(this.wallet.toCurrencyUnit(tx.Amount));

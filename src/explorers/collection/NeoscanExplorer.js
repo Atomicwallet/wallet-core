@@ -53,10 +53,6 @@ class NeoscanExplorer extends Explorer {
     return balances;
   }
 
-  // @TODO absctract `modifyTransactionsResponse`
-  // shoud take args as Object
-  // @FIXME
-
   modifyTransactionsResponse(response, address) {
     return super.modifyTransactionsResponse(this.filterTransactionList(response, address), address);
   }
