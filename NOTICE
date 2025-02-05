@@ -4622,12 +4622,6 @@ bluebird (v3.7.2)
    - Publisher: Petka Antonov
    - Email: petka_antonov@hotmail.com
 
-bn.js (v2.2.0)
-   - License: MIT
-   - Repository: https://github.com/indutny/bn.js
-   - Publisher: Fedor Indutny
-   - Email: fedor@indutny.com
-
 bn.js (v4.11.6)
    - License: MIT
    - Repository: https://github.com/indutny/bn.js
@@ -6050,25 +6044,7 @@ electron-to-chromium (v1.5.76)
    - Publisher: Kilian Valkhof
    - Email: N/A
 
-elliptic (v3.1.0)
-   - License: MIT
-   - Repository: https://github.com/indutny/elliptic
-   - Publisher: Fedor Indutny
-   - Email: fedor@indutny.com
-
-elliptic (v6.4.0)
-   - License: MIT
-   - Repository: https://github.com/indutny/elliptic
-   - Publisher: Fedor Indutny
-   - Email: fedor@indutny.com
-
 elliptic (v6.5.4)
-   - License: MIT
-   - Repository: https://github.com/indutny/elliptic
-   - Publisher: Fedor Indutny
-   - Email: fedor@indutny.com
-
-elliptic (v6.6.1)
    - License: MIT
    - Repository: https://github.com/indutny/elliptic
    - Publisher: Fedor Indutny
