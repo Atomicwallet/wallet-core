@@ -68,7 +68,6 @@ class RippleExplorer extends Explorer {
   modifyTransactionsResponse(response, address) {
     this.currentLedgerVersion = response.ledger_index_max;
 
-    // return super.modifyTransactionsResponse(response.transactions)
     return response.transactions.map(({ tx }) => this.modifyTransactionResponse(tx, address));
   }
 

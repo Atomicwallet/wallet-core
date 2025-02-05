@@ -72,7 +72,8 @@ declare function StakingMixin(superclass: any): {
          * staked: Amount,
          * delegatedVotes: Amount,
          * availableWithdrawals: Amount,
-         * rewards: Amount}>
+         * rewards: Amount
+         * }>
          * }
          */
         makeStakingInfoStruct({ staked, unstaking, delegatedVotes, availableVotes, pendingWithdrawals, availableWithdrawals, availableForUnstake, rewards, frozenVotes, frozenEnergy, validators, additional, }?: Amount): Promise<{
@@ -194,7 +195,7 @@ declare function StakingMixin(superclass: any): {
         "__#11@#getBalanceByType"(balanceType: string, validatorAddress: string): string;
         /**
          * By default, returns total staked balance
-         * or for specific validator if validator addres is passed
+         * or for specific validator if validator address is passed
          *
          * @param validator Address for validator
          * @returns {string}
@@ -202,7 +203,7 @@ declare function StakingMixin(superclass: any): {
         getStakedBalance(validator: any): string;
         /**
          * By default, returns total unstaking balance
-         * or for specific validator if validator addres is passed
+         * or for specific validator if validator address is passed
          *
          * @param validator Address for validator
          * @returns {string}
@@ -210,7 +211,7 @@ declare function StakingMixin(superclass: any): {
         getUnstakingBalance(validator: any): string;
         /**
          * By default, returns total rewards
-         * or from specific validator if validator addres is passed
+         * or from specific validator if validator address is passed
          *
          * @param validator Address for validator
          * @returns {string}
@@ -229,8 +230,8 @@ declare function StakingMixin(superclass: any): {
         getFrozenVotes(): any;
         getFrozenEnergy(): any;
         /**
-         * By default, returns total pending withdarals
-         * or from specific validator if validator addres is passed
+         * By default, returns total pending withdrawals
+         * or from specific validator if validator address is passed
          *
          * @param validator Address for validator
          * @returns {string}
@@ -238,7 +239,7 @@ declare function StakingMixin(superclass: any): {
         getPendingWithdrawals(validator: any): string;
         /**
          * By default, returns total available withdrawals
-         * or from specific validator if validator addres is passed
+         * or from specific validator if validator address is passed
          *
          * @param validator Address for validator
          * @returns {string}

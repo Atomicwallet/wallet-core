@@ -26,8 +26,6 @@ export default {
             abi: MaticValidatorsShare,
         },
     },
-    // olr  0x6D55E24Dc2d3bD2Fc5Ae1fcCD1A73bc5f18A8A30
-    // old2 0x9EDCa806834e89cC928EF4951cE0506Be8416309
     '0x85627d71921AE25769f5370E482AdA5E1e418d37': {
         methods: {
             getUnclaimedEpochs: {

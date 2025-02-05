@@ -129,7 +129,7 @@ class FILCoin extends HasProviders(Coin) {
                 });
             }
         });
-        // confirmed transacion message received, balance update needed
+        // confirmed transaction message received, balance update needed
         this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
             if (this.ticker === ticker) {
                 this.getProvider('socket').getSocketTransaction({

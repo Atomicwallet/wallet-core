@@ -58,7 +58,7 @@ declare class MATICCoin extends MATICCoin_base {
     tokenGasLimit: any;
     getTransactions(): Promise<any[]>;
     /**
-     * List to be exluded from wallets list
+     * List to be excluded from wallets list
      * @return {string[]} array of tickers
      */
     getExcludedTokenList(): string[];

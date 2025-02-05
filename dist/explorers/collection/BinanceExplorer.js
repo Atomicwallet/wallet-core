@@ -3,7 +3,6 @@ import { TxTypes } from '../../explorers/enum/index.js';
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import { GET_TRANSACTIONS_TYPE } from '../../utils/const/index.js';
-// https://testnet-dex.binance.org/api/v1/fees
 /**
  * Binance Explorer
  *
@@ -93,7 +92,7 @@ class BinanceExplorer extends Explorer {
     getTxHash(tx) {
         return tx.txHash;
     }
-    // true - incloming
+    // true - incoming
     getTxDirection(selfAddress, tx) {
         if (tx.txType !== 'TRANSFER') {
             return false;

@@ -136,10 +136,10 @@ class Web3Explorer extends Explorer {
         return Number(tx.confirmations);
     }
     /**
-     * Gets the trasaction direction.
+     * Gets the transaction direction.
      *
-     * @param {Transaction} tx The trasaction
-     * @return {String} The trasaction direction.
+     * @param {Transaction} tx The transaction
+     * @return {String} The transaction direction.
      */
     getTxDirection(selfAddress, tx) {
         return selfAddress.toLowerCase() !== tx.from.toLowerCase();

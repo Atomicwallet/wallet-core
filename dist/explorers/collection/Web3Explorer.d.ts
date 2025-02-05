@@ -30,10 +30,10 @@ declare class Web3Explorer extends Explorer {
     getTxNonce(tx: any): any;
     getTxConfirmations(tx: any): number;
     /**
-     * Gets the trasaction direction.
+     * Gets the transaction direction.
      *
-     * @param {Transaction} tx The trasaction
-     * @return {String} The trasaction direction.
+     * @param {Transaction} tx The transaction
+     * @return {String} The transaction direction.
      */
     getTxDirection(selfAddress: any, tx: Transaction): string;
     /**

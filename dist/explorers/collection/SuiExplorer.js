@@ -102,7 +102,7 @@ export default class SuiExplorer extends Explorer {
         return 1;
     }
     getTxDateTime(tx) {
-        // sometimes tx does not have timestampMs
+        // sometimes tx does not have `timestampMs`
         // (probably it is not confirmed yet)
         return new Date(Number(tx.timestampMs) || Date.now());
     }

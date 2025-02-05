@@ -49,7 +49,7 @@ class EtherscanExplorer extends Explorer {
      * Sends a transaction.
      *
      * @param {String} rawtx The rawtx
-     * @return {Promise<Object>} The transaaction data
+     * @return {Promise<Object>} The transaction data
      */
     async sendTransaction(rawtx) {
         const response = await this.request('submit', null, { tx_blob: rawtx });

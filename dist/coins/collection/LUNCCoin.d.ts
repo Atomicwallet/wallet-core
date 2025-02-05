@@ -146,7 +146,7 @@ declare class LUNCCoin extends LUNCCoin_base {
     getTickerFromContractAddress(contractAddress: any): any;
     createToken(args: any): LUNCToken;
     /**
-     * List to be exluded from wallets list
+     * List to be excluded from wallets list
      * @return {string[]} array of tickers
      */
     getExcludedTokenList(): string[];

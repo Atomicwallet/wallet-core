@@ -19,10 +19,10 @@ declare class XlmExplorer extends Explorer {
     getTransactionUrl(txId: any): string;
     getTransactionParams(txId: any): {};
     /**
-     * Gets the trasaction amount.
+     * Gets the transaction amount.
      *
-     * @param {Object} tx The trasaction
-     * @return {string} The trasaction amount.
+     * @param {Object} tx The transaction
+     * @return {string} The transaction amount.
      */
     getTxValue(selfAddress: any, tx: Object): string;
     getTxMemo(tx: any): any;

@@ -63,7 +63,7 @@ declare class FTMCoin extends FTMCoin_base {
     getTransactions(): Promise<any>;
     manageSocket(): void;
     /**
-     * List to be exluded from wallets list
+     * List to be excluded from wallets list
      * @return {Array<String>} array of tickers
      */
     getExcludedTokenList(): Array<string>;

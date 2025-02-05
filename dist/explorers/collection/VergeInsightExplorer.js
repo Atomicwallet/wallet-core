@@ -83,10 +83,10 @@ class VergeInsightExplorer extends Explorer {
         return new Date(tx.blockTimeNormalized);
     }
     /**
-     * Gets the trasaction amount.
+     * Gets the transaction amount.
      *
-     * @param {Object} tx The trasaction
-     * @return {Number} The trasaction amount.
+     * @param {Object} tx The transaction
+     * @return {Number} The transaction amount.
      */
     getTxValue(selfAddress, tx, direction) {
         const filterFn = direction
@@ -98,16 +98,16 @@ class VergeInsightExplorer extends Explorer {
         return this.wallet.toCurrencyUnit(value);
     }
     /**
-     * Gets the trasaction direction.
+     * Gets the transaction direction.
      *
-     * @param {Object} tx The trasaction
-     * @return {Boolean} The trasaction direction.
+     * @param {Object} tx The transaction
+     * @return {Boolean} The transaction direction.
      */
     getTxDirection(selfAddress, tx) {
         return tx.inputs.every((input) => input.address !== selfAddress);
     }
     /**
-     * Gets the trasaction recipient.
+     * Gets the transaction recipient.
      *
      * @param {Object} tx The transaction response.
      * @return {(Boolean|String)} The transaction recipient.

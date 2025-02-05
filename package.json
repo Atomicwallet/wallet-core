@@ -22,6 +22,7 @@
   "author": "Atomic Protocol Systems OÜ",
   "license": "GPL",
   "resolutions": {
+    "elliptic": "6.5.5",
     "bitcore-lib": "10.0.11",
     "@solana/web3.js": "1.67.0",
     "blake2b": "2.1.4",
@@ -143,7 +144,7 @@
     "dexie": "2.0.4",
     "dotenv": "6.2.0",
     "ed25519-hd-key": "1.2.0",
-    "elliptic": "6.4.0",
+    "elliptic": "6.5.5",
     "eosjs": "20.0.3",
     "eosjs-ecc": "4.0.7",
     "es6-promise-plugin": "4.2.2",

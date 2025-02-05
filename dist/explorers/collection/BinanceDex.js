@@ -9,7 +9,6 @@ const WEBSOCKET_CONFIG = {
     minReconnectionDelay: 10000,
     maxRetries: 10,
 };
-// https://testnet-dex.binance.org/api/v1/fees
 /**
  * Binance Explorer
  *

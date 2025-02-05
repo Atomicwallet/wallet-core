@@ -49,10 +49,10 @@ declare class PolyscanExplorer extends Explorer {
      */
     override getTxConfirmations(tx: any): number;
     /**
-     * Gets the trasaction direction.
+     * Gets the transaction direction.
      * @override
-     * @param {Transaction} tx The trasaction
-     * @return {Boolean} The trasaction direction.
+     * @param {Transaction} tx The transaction
+     * @return {Boolean} The transaction direction.
      */
     override getTxDirection(selfAddress: any, tx: Transaction): boolean;
     /**

@@ -4,7 +4,6 @@ import Explorer from '../../explorers/explorer.js';
 import { LazyLoadedLib, Emitter as emitter } from '../../utils/index.js';
 import { WALLETS } from '../../utils/const/index.js';
 import { getStringWithEnsuredEndChar } from '../../utils/convert.js';
-// import activeWalletsList from '../ActiveWalletsList'
 const MymoneroWalletManagerLazyLoaded = new LazyLoadedLib(() => import('@mymonero/mymonero-wallet-manager'));
 const ATOMIC_ALIAS = 'atomic';
 const MONERO_MAINNET = 'MAINNET';
@@ -124,9 +123,6 @@ class MyMoneroExplorer extends Explorer {
      * @throws {ExternalError}
      */
     async #logInToOrSyncMyMonero() {
-        // if (!activeWalletsList.isActive(this.wallet)) {
-        //   throw new Error('Wallet is not active')
-        // }
         try {
             if (!this.#myMoneroLocalAccount.isLoggedIn) {
                 await this.#initAndGetMyMoneroWalletManager();

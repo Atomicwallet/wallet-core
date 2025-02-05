@@ -21,7 +21,7 @@ declare class EtherscanExplorer extends Explorer {
      * Sends a transaction.
      *
      * @param {String} rawtx The rawtx
-     * @return {Promise<Object>} The transaaction data
+     * @return {Promise<Object>} The transaction data
      */
     sendTransaction(rawtx: string): Promise<Object>;
     getTxHash(tx: any): any;

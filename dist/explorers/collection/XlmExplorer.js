@@ -63,25 +63,25 @@ class XlmExplorer extends Explorer {
         return new Date(Number(`${tx.timestamp}`));
     }
     /**
-     * Gets the trasaction amount.
+     * Gets the transaction amount.
      *
-     * @param {Object} tx The trasaction
-     * @return {string} The trasaction amount.
+     * @param {Object} tx The transaction
+     * @return {string} The transaction amount.
      */
     getTxValue(selfAddress, tx) {
         return tx.amount;
     }
     /**
-     * Gets the trasaction direction.
+     * Gets the transaction direction.
      *
-     * @param {Object} tx The trasaction
-     * @return {Boolean} The trasaction direction.
+     * @param {Object} tx The transaction
+     * @return {Boolean} The transaction direction.
      */
     getTxDirection(selfAddress, tx) {
         return tx.addressTo.toLowerCase() === selfAddress.toLowerCase();
     }
     /**
-     * Gets the trasaction recipient.
+     * Gets the transaction recipient.
      *
      * @param {Object} tx The transaction response.
      * @return {(Boolean|String)} The transaction recipient.

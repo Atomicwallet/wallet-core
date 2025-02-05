@@ -15,14 +15,14 @@ declare class VergeInsightExplorer extends Explorer {
     };
     modifyUnspentOutputsResponse(selfAddress: any, response: any): any;
     /**
-     * Gets the trasaction amount.
+     * Gets the transaction amount.
      *
-     * @param {Object} tx The trasaction
-     * @return {Number} The trasaction amount.
+     * @param {Object} tx The transaction
+     * @return {Number} The transaction amount.
      */
     getTxValue(selfAddress: any, tx: Object, direction: any): number;
     /**
-     * Gets the trasaction recipient.
+     * Gets the transaction recipient.
      *
      * @param {Object} tx The transaction response.
      * @return {(Boolean|String)} The transaction recipient.

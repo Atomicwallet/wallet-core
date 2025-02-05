@@ -33,9 +33,6 @@ export default class BNBToken extends Token {
     async getBalance() {
         return this.balance;
     }
-    // async getTransactions () {
-    //   return this.transactions
-    // }
     getUserTicker() {
         return this.ticker.split('-')[0];
     }
