@@ -1,3 +1,4 @@
+import('ontology-ts-sdk');
 export * from './abstract/index.js';
 export * from './coins/index.js';
 export * from './tokens/index.js';
