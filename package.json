@@ -21,13 +21,7 @@
   },
   "author": "Atomic Protocol Systems OÜ",
   "license": "GPL",
-  "overrides": {
-    "elliptic": "6.4.0",
-    "**/elliptic": "6.4.0"
-  },
   "resolutions": {
-    "elliptic": "6.4.0",
-    "**/elliptic": "6.4.0",
     "bitcore-lib": "10.0.11",
     "@solana/web3.js": "1.67.0",
     "blake2b": "2.1.4",
