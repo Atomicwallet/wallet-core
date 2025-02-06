@@ -1,5 +1,3 @@
-import('ontology-ts-sdk');
-
 export * from 'src/abstract';
 export * from 'src/coins';
 export * from 'src/tokens';
