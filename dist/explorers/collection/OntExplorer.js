@@ -1,13 +1,8 @@
-import { CONST, RestClient } from 'ontology-ts-sdk';
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import { GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
 class OntExplorer extends Explorer {
-    constructor(...args) {
-        super(...args);
-        this.rest = new RestClient(CONST.MAIN_ONT_URL.REST_URL);
-    }
     getAllowedTickers() {
         return ['ONT', 'ONG'];
     }
@@ -139,24 +134,11 @@ class OntExplorer extends Explorer {
         return this.latestBlock.block_height - tx.block_height;
     }
     async sendTransaction(rawtx) {
-        let response;
-        try {
-            response = await this.rest.sendRawTransaction(rawtx);
-            if (response.Error !== 0) {
-                throw new Error(`${response.Desc} : ${response.Result}`);
-            }
-        }
-        catch (error) {
-            throw new ExplorerRequestError({
-                type: SEND_TRANSACTION_TYPE,
-                error,
-                instance: this,
-            });
-        }
-        // this.wallet.getInfo()
-        return {
-            txid: response.Result,
-        };
+        throw new ExplorerRequestError({
+            type: SEND_TRANSACTION_TYPE,
+            error: new Error('Not implemented'),
+            instance: this,
+        });
     }
     getTxFee(tx) {
         return (tx && tx.fee) || 0;

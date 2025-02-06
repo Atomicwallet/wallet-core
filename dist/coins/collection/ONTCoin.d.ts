@@ -27,13 +27,19 @@ declare const ONTCoin_base: {
             asset: any;
         }): Promise<string>;
         getPrivateKeyObject(): Promise<import("ontology-ts-sdk/lib/types/crypto").PrivateKey>;
-        sendAllToMyself(asset: any): Promise<any>;
+        sendAllToMyself(asset: any): Promise<{
+            txid: any;
+        }>;
         checkUnbondSendTxAndRefreshBalance(): Promise<{
             balance: any;
             balances: any;
         }>;
-        checkRewardAndClaim(): Promise<any>;
-        makeClaim(): Promise<any>;
+        checkRewardAndClaim(): Promise<{
+            txid: any;
+        }>;
+        makeClaim(): Promise<{
+            txid: any;
+        }>;
         getInfo(): Promise<{
             balance: any;
             balances: any;
@@ -41,8 +47,13 @@ declare const ONTCoin_base: {
         balance: any;
         balances: any;
         createClaimTransaction(amount: any): Promise<string>;
-        claim(): Promise<any>;
+        claim(): Promise<{
+            txid: any;
+        }>;
         setPrivateKey(privateKey: any): void;
+        sendTransaction(rawtx: any): Promise<{
+            txid: any;
+        }>;
     };
     [x: string]: any;
 };

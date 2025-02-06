@@ -1,7 +1,5 @@
 export default OntExplorer;
 declare class OntExplorer extends Explorer {
-    constructor(...args: any[]);
-    rest: RestClient;
     modifyGeneralResponse(response: any): any;
     getTransactionsUrl(address: any): string;
     getTokenTransactionsUrl(address: any, asset?: string): string;
@@ -29,12 +27,9 @@ declare class OntExplorer extends Explorer {
     getTxValue(selfAddress: any, tx: any): any;
     getTxDateTime(tx: any): Date;
     getTxConfirmations(tx: any): number;
-    sendTransaction(rawtx: any): Promise<{
-        txid: any;
-    }>;
+    sendTransaction(rawtx: any): Promise<void>;
     getTxFee(tx: any): any;
     getTxFeeTicker(): string;
 }
 import Explorer from '../../explorers/explorer.js';
-import { RestClient } from 'ontology-ts-sdk';
 import Transaction from '../../explorers/Transaction.js';
