@@ -56,7 +56,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
                 [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
                 [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
             },
-        });
+        }, db, configManager);
         /** @type {import('web3').default|null} */
         this.coreLibrary = null;
         this.derivation = DERIVATION;
