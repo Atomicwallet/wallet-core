@@ -52,7 +52,7 @@ export default class AbstractWallet {
         return Emitter;
     }
     getDbTable(tableName) {
-        return this.db.tables[tableName];
+        return this.db.table(tableName);
     }
     isStakingSupported() {
         return false;

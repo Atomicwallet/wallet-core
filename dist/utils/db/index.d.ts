@@ -1,7 +1,7 @@
 import { Token } from '../../abstract/index.js';
 import { NftToken } from '../../coins/nfts/index.js';
 import Transaction from '../../explorers/Transaction.js';
-import { dbTablesType, IDataBase, ITable, TableElement, TableElementKey } from '../../utils/db/types.js';
+import { dbTablesType, IDataBase, ITable, TableElement, TableElementKey, TableNames, TableTypes } from '../../utils/db/types.js';
 import { IAddrCacheElement } from '../types.js';
 export declare class BaseTable<T> implements ITable<T> {
     get(conditions: Partial<T>): Promise<Partial<T> | undefined>;
@@ -17,6 +17,7 @@ export declare class BaseTable<T> implements ITable<T> {
 export declare class DataBase implements IDataBase {
     tables: dbTablesType;
     constructor(tables: dbTablesType);
+    table<T extends TableNames>(dbTable: T): ITable<TableTypes[T]>;
 }
 export declare class BaseDatabase implements DataBase {
     tables: {
@@ -28,5 +29,6 @@ export declare class BaseDatabase implements DataBase {
         configs: ITable<TableElement>;
     };
     constructor(tables?: dbTablesType);
+    table<T extends TableNames>(dbTable: T): ITable<TableTypes[T]>;
 }
 export * from './types.js';

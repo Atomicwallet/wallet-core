@@ -4,13 +4,14 @@ import Transaction from '../../explorers/Transaction.js';
 import { IAddrCacheElement } from '../types.js';
 export type TableElementKey = string | number;
 export type TableElement = Record<string, unknown>;
-export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'nfts' | 'sentNfts';
+export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'nfts' | 'sentNfts' | 'configs';
 export type TableTypes = {
     transactions: Transaction;
     tokens: Token;
     nfts: NftToken;
     sentNfts: NftToken;
     addrCache: IAddrCacheElement;
+    configs: TableElement;
 };
 export interface ITable<T> {
     get(conditions: Partial<T>): Promise<Partial<T> | undefined>;
@@ -26,5 +27,6 @@ export type dbTablesType = {
     [tableName in TableNames]: ITable<TableTypes[tableName]>;
 };
 export interface IDataBase {
-    tables: Partial<dbTablesType>;
+    tables: dbTablesType;
+    table: <T extends TableNames>(dbTable: T) => ITable<TableTypes[T]>;
 }

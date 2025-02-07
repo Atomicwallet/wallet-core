@@ -40,6 +40,9 @@ export class DataBase {
     constructor(tables) {
         this.tables = tables;
     }
+    table(dbTable) {
+        return this.tables[dbTable];
+    }
 }
 export class BaseDatabase {
     constructor(tables) {
@@ -51,6 +54,9 @@ export class BaseDatabase {
             sentNfts: new BaseTable(),
             configs: new BaseTable(),
         };
+    }
+    table(dbTable) {
+        return this.tables[dbTable];
     }
 }
 export * from './types.js';
