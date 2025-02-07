@@ -1,4 +1,5 @@
 export declare enum CoinFeature {
     Nft = "nft",
-    CustomTokens = "customTokens"
+    CustomTokens = "customTokens",
+    Tokens = "tokens"
 }
