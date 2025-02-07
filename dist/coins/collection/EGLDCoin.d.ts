@@ -1,6 +1,6 @@
 export default EGLDCoin;
 declare const EGLDCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -82,7 +82,7 @@ declare class EGLDCoin extends EGLDCoin_base {
         txWebUrl: any;
         socket: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     derivation: string;
     gasPrice: any;
     gasLimit: any;

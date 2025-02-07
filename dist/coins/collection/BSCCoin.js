@@ -39,14 +39,14 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
      *
      * @param  {object} config
      */
-    constructor(config) {
+    constructor(config, db, configManager) {
         super({
             ...config,
             name: config.name ?? NAME,
             ticker: config.ticker ?? TICKER,
             decimal: DECIMAL,
             unspendableBalance: UNSPENDABLE_BALANCE,
-        });
+        }, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([Web3Explorer, BlockbookV2Explorer, MoralisExplorer, ETHNftExplorer]);
         this.loadExplorers(config);

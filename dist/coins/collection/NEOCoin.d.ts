@@ -31,7 +31,7 @@ declare class NEOCoin extends NEOCoin_base {
         txWebUrl: any;
         socket: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     derivation: string;
     balances: any;
     get feeTicker(): string;

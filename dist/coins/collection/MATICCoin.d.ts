@@ -26,7 +26,7 @@ declare class MATICCoin extends MATICCoin_base {
      *
      * @param  {object} config
      */
-    constructor(config: object);
+    constructor(config: object, db: any, configManager: any);
     /** @type {string} */
     web3BaseUrl: string;
     /** @type {object|null} */

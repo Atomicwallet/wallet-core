@@ -15,14 +15,14 @@ const STUB_FEE = 86988; // fallback fee for 0 balance
 export default class SUICoin extends HasProviders(Coin) {
   #privateKey;
 
-  constructor(walletsFeeConfig) {
+  constructor(walletsFeeConfig, db, configManager) {
     const config = {
       ...walletsFeeConfig,
       name: NAME,
       decimal: DECIMAL,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 

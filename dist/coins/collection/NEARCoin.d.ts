@@ -1,6 +1,6 @@
 export default NEARCoin;
 declare const NEARCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -85,7 +85,7 @@ declare class NEARCoin extends NEARCoin_base {
      * @param  {array}  explorers the explorers
      * @param  {<type>} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, network, id }: <type>() => any);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, network, id }: <type>() => any, db: any, configManager: any);
     derivation: string;
     bannedTokens: any[];
     unspendableBalance: string;

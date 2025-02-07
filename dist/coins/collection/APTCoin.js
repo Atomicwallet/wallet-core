@@ -42,7 +42,7 @@ class APTCoin extends HasProviders(Coin) {
     #gasLimitCoefficient;
     /** @type number  */
     #txExpirationTimeout;
-    constructor({ alias, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -58,7 +58,7 @@ class APTCoin extends HasProviders(Coin) {
                 [APTOS_SDK]: new LazyLoadedLib(() => import('aptos')),
             },
         };
-        super(config);
+        super(config, db, configManager);
         this.setExplorersModules([AptExplorer]);
         this.loadExplorers(config);
         this.derivation = DERIVATION;

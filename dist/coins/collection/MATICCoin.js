@@ -35,7 +35,7 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
      *
      * @param  {object} config
      */
-    constructor(config) {
+    constructor(config, db, configManager) {
         super({
             ...config,
             name: config.name ?? NAME,
@@ -47,7 +47,7 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
                 web3: new LazyLoadedLib(() => import('web3')),
                 hdkey: new LazyLoadedLib(() => import('ethereumjs-wallet')),
             },
-        });
+        }, db, configManager);
         /** @type {object|null} */
         this.coreLibrary = null;
         this.derivation = DERIVATION;

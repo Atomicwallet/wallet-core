@@ -46,7 +46,7 @@ declare class RVNCoin extends RVNCoin_base {
      * @param  {array}  explorers the explorers
      * @param  {<type>} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: <type>() => any);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: <type>() => any, db: any, configManager: any);
     derivation: string;
     feePerByte: any;
     coefficient: any;

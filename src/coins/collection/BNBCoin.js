@@ -47,7 +47,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @param {*} txWebUrl
    * @memberof BNBCoin
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -65,7 +65,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.setExplorersModules([BinanceExplorer, BinanceBCExplorer, BinanceDex]);
 

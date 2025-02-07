@@ -1,6 +1,6 @@
 export default OntMixin;
 declare function OntMixin(superclass: any): {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#9@#privateKey": any;
         gasLimit: any;

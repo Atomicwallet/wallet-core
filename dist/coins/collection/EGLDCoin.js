@@ -35,7 +35,7 @@ const STAKING_ACTIONS = {
 };
 class EGLDCoin extends StakingMixin(HasProviders(Coin)) {
     #privateKey;
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -49,7 +49,7 @@ class EGLDCoin extends StakingMixin(HasProviders(Coin)) {
             socket,
             feeData,
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([ElrondApiExplorer]);
         this.loadExplorers(config);

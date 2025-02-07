@@ -20,7 +20,7 @@ class EOSCoin extends HasProviders(Coin) {
      * @param {Explorer[]}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -33,7 +33,7 @@ class EOSCoin extends HasProviders(Coin) {
             explorers,
             socket,
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([EOSNodeExplorer, EOSApiExplorer]);
         this.loadExplorers(config);

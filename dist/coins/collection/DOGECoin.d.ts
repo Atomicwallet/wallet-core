@@ -35,7 +35,7 @@ declare class DOGECoin extends DOGECoin_base {
      * @param  {array}  explorers the explorers
      * @param  {<type>} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: <type>() => any);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: <type>() => any, db: any, configManager: any);
     derivation: string;
     network: any;
     setFeeData(feeData?: {}): void;

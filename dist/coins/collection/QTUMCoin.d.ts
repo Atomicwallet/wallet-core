@@ -64,7 +64,7 @@ declare class QTUMCoin extends QTUMCoin_base {
         txWebUrl: string;
         socket: boolean;
         notify?: boolean | undefined;
-    });
+    }, db: any, configManager: any);
     derivation: string;
     network: any;
     setFeeData(feeData?: {}): void;

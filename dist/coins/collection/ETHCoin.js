@@ -38,7 +38,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
      *
      * @param  {object} config
      */
-    constructor(config) {
+    constructor(config, db, configManager) {
         super({
             ...config,
             name: config.name ?? NAME,
@@ -49,7 +49,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
                 web3: new LazyLoadedLib(() => import('web3')),
                 hdkey: new LazyLoadedLib(() => import('ethereumjs-wallet')),
             },
-        });
+        }, db, configManager);
         /** @type {object|null} */
         this.coreLibrary = null;
         this.derivation = DERIVATION;

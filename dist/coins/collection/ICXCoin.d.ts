@@ -1,6 +1,6 @@
 export default ICXCoin;
 declare const ICXCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -82,7 +82,7 @@ declare class ICXCoin extends ICXCoin_base {
      * @param {Explorer[]}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     derivation: string;
     fee: any;
     stepLimit: any;

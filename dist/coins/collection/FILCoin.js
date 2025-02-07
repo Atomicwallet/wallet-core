@@ -33,7 +33,7 @@ class FILCoin extends HasProviders(Coin) {
      * @param  {array}  explorers the explorers
      * @param  {<type>} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -52,7 +52,7 @@ class FILCoin extends HasProviders(Coin) {
                 [FILECOIN_ADDRESS_SDK]: new LazyLoadedLib(() => import('@glif/filecoin-address')),
             },
         };
-        super(config);
+        super(config, db, configManager);
         /** @type {import('web3').default|null} */
         this.coreLibrary = null;
         this.setExplorersModules([Web3Explorer]);

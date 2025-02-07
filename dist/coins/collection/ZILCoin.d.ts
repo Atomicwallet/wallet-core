@@ -15,7 +15,7 @@ declare class ZILCoin extends ZILCoin_base {
      * @param {Explorer[]}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, stakingContract, stakingProxyContract, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, stakingContract, stakingProxyContract, id }: string, db: any, configManager: any);
     derivation: string;
     zilliqa: Zilliqa;
     balances: {};

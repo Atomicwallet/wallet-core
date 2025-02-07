@@ -51,7 +51,7 @@ class APTCoin extends HasProviders(Coin) {
   /** @type number  */
   #txExpirationTimeout;
 
-  constructor({ alias, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -68,7 +68,7 @@ class APTCoin extends HasProviders(Coin) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.setExplorersModules([AptExplorer]);
 

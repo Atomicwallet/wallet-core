@@ -13,7 +13,7 @@ declare class XLMCoin extends Coin {
      * @param  {array}  explorers the explorers
      * @param  {<type>} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: <type>() => any);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: <type>() => any, db: any, configManager: any);
     fee: any;
     /**
      * Loads a wallet.

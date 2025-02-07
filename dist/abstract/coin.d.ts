@@ -64,7 +64,7 @@ export default abstract class Coin extends AbstractWallet {
     abstract getTokenTransactions(args: unknown): Transaction[];
     abstract getTokenInfo(args: unknown): string | null;
     abstract removeTokenFromDb(args: unknown): void;
-    constructor(config: CoinConfigType, configManager?: IConfigManager, db?: IDataBase);
+    constructor(config: CoinConfigType, db?: IDataBase, configManager?: IConfigManager);
     loadLib(name: string): Promise<unknown>;
     protected set id(id: string);
     get id(): string;

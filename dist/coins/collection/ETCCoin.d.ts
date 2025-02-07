@@ -11,7 +11,7 @@ declare class ETCCoin extends Coin {
         txWebUrl: any;
         socket: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     web3BaseUrl: any;
     web3: any;
     gasLimit: any;

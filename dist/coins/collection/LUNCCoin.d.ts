@@ -6,7 +6,7 @@ export namespace LUNC_SEND_TYPES {
 }
 export default LUNCCoin;
 declare const LUNCCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -94,7 +94,7 @@ declare class LUNCCoin extends LUNCCoin_base {
         socket: any;
         isTestnet: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     derivation: string;
     BigNumber: typeof BigNumber;
     bannedTokens: any[];

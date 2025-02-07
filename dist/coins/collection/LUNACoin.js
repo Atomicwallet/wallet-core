@@ -35,7 +35,7 @@ const TERRA_SDK = 'terraSdk';
  */
 class LUNACoin extends StakingMixin(HasProviders(Coin)) {
     #privateKey;
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -53,7 +53,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
                 [TERRA_SDK]: new LazyLoadedLib(() => import('@terra-money/terra.js')),
             },
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([TerraFCDExplorer, TerraLCDExplorer]);
         this.loadExplorers(config);

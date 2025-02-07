@@ -48,7 +48,7 @@ declare class DCRCoin extends DCRCoin_base {
      * @param {array}  explorers the explorers
      * @param {string} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     derivation: string;
     feePerByte: any;
     coefficient: any;

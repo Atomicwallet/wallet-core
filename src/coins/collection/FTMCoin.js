@@ -59,7 +59,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    *
    * @param  {object} config
    */
-  constructor(config) {
+  constructor(config, db, configManager) {
     super({
       ...config,
       name: config.name ?? NAME,

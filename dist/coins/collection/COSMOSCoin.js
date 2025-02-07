@@ -44,12 +44,12 @@ class COSMOSCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
      * @param {boolean} config.socket
      * @param {boolean} [config.notify=false]
      */
-    constructor(config) {
+    constructor(config, db, configManager) {
         const { prefix, denom, feeData, derivation } = config;
         super({
             ...config,
             unspendableBalance: feeData.unspendableBalance,
-        });
+        }, db, configManager);
         this.derivation = derivation;
         this.prefix = prefix;
         this.denom = denom;

@@ -14,8 +14,8 @@ const StakingMixin = (superclass) =>
     #balances;
     #predefinedValidators;
 
-    constructor(config) {
-      super(config);
+    constructor(config, db, configManager) {
+      super(config, db, configManager);
 
       this.#predefinedValidators = [];
       this.#balances = {};

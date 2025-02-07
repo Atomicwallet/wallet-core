@@ -1,6 +1,6 @@
 export default CosmosMixinV2;
 declare function CosmosMixinV2(superclass: any): {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#12@#privateKey": any;
         gasPrice: any;

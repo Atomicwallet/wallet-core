@@ -26,7 +26,7 @@ declare class BSCCoin extends BSCCoin_base {
      *
      * @param  {object} config
      */
-    constructor(config: object);
+    constructor(config: object, db: any, configManager: any);
     derivation: string;
     bannedTokens: any[];
     web3: Web3Explorer;

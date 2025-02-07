@@ -41,7 +41,7 @@ declare class THETACoin extends THETACoin_base {
         socket: any;
         network?: string | undefined;
         id: any;
-    });
+    }, db: any, configManager: any);
     derivation: string;
     defaultFee: any;
     resendTimeout: any;

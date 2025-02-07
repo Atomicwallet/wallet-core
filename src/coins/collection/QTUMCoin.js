@@ -39,7 +39,7 @@ class QTUMCoin extends BitcoinJSMixin(BitcoinLikeFeeMixin(Coin)) {
    * @param {boolean} config.socket
    * @param {boolean} [config.notify=false]
    */
-  constructor(config) {
+  constructor(config, db, configManager) {
     /**
      * @typedef { {
      *  pubKeyHash: number,
@@ -87,14 +87,18 @@ class QTUMCoin extends BitcoinJSMixin(BitcoinLikeFeeMixin(Coin)) {
 
     const { feeData } = config;
 
-    super({
-      ...config,
-      decimal: DECIMAL,
-      derivation: DERIVATION,
-      dependencies: {
-        [BITCOINJS]: new LazyLoadedLib(() => import('bitcoinjs-lib')),
+    super(
+      {
+        ...config,
+        decimal: DECIMAL,
+        derivation: DERIVATION,
+        dependencies: {
+          [BITCOINJS]: new LazyLoadedLib(() => import('bitcoinjs-lib')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.derivation = DERIVATION;
 

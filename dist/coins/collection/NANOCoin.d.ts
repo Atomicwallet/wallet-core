@@ -40,7 +40,7 @@ declare class NANOCoin extends NANOCoin_base {
      * @param {Explorer[]}  explorers the explorers
      * @param {string} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     derivation: string;
     transactions: any[];
     account_state: {};

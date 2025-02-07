@@ -34,19 +34,23 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      dependencies: {
-        [solanaWeb3Lib]: new LazyLoadedLib(() => import('@solana/web3.js')),
-        [hdKeyLib]: new LazyLoadedLib(() => import('ed25519-hd-key')),
-        [tweetnaclLib]: new LazyLoadedLib(() => import('tweetnacl')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        dependencies: {
+          [solanaWeb3Lib]: new LazyLoadedLib(() => import('@solana/web3.js')),
+          [hdKeyLib]: new LazyLoadedLib(() => import('ed25519-hd-key')),
+          [tweetnaclLib]: new LazyLoadedLib(() => import('tweetnacl')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.derivation = DERIVATION;
 

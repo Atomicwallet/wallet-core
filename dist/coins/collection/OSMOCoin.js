@@ -23,7 +23,7 @@ class OSMOCoin extends CosmosMixinV2(HasBlockScanner(HasProviders(Coin))) {
      * @param {Explorer[]}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -38,7 +38,7 @@ class OSMOCoin extends CosmosMixinV2(HasBlockScanner(HasProviders(Coin))) {
             feeData,
             denom: DENOM_NAME,
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([CosmosNodeExplorerV2]);
         this.loadExplorers(config);

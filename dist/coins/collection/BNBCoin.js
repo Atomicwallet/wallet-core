@@ -33,7 +33,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
      * @param {*} txWebUrl
      * @memberof BNBCoin
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -50,7 +50,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
                 [BINANCE_SDK]: new LazyLoadedLib(() => import('@binance-chain/javascript-sdk')),
             },
         };
-        super(config);
+        super(config, db, configManager);
         /**
          * @typedef {import('@binance-chain/javascript-sdk').BncClient} BncClient
          */

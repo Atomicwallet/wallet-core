@@ -1,6 +1,6 @@
 export default FLRCoin;
 declare const FLRCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -87,7 +87,7 @@ declare class FLRCoin extends FLRCoin_base {
      * @param {*} notify
      * @param { boolean } socket
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     derivation: string;
     stakingFeeMultiplier: number;
     gasPriceConfig: any;

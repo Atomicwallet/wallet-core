@@ -1,6 +1,6 @@
 export default ETHCoin;
 declare const ETHCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -82,7 +82,7 @@ declare class ETHCoin extends ETHCoin_base {
      *
      * @param  {object} config
      */
-    constructor(config: object);
+    constructor(config: object, db: any, configManager: any);
     /** @type {string} */
     web3BaseUrl: string;
     /** @type {object|null} */

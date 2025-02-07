@@ -28,7 +28,7 @@ class DOTCoin extends HasProviders(HasBlockScanner(Coin)) {
      * @param {Explorer[]}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -42,7 +42,7 @@ class DOTCoin extends HasProviders(HasBlockScanner(Coin)) {
             feeData,
             socket,
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([PolkadotSidecarExplorer, PolkaScanExplorer, PolkadotNodeExplorer]);
         this.loadExplorers(config);

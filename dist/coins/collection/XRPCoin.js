@@ -28,7 +28,7 @@ class XRPCoin extends Coin {
      * @param  {array}  explorers the explorers
      * @param  {<type>} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -41,7 +41,7 @@ class XRPCoin extends Coin {
             txWebUrl,
             socket,
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([RippleExplorer]);
         this.loadExplorers(config);

@@ -19,7 +19,7 @@ export default class STXCoin extends HasProviders(Coin) {
      * @param {Explorer[]}  explorers the explorers
      * @param {string} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -37,7 +37,7 @@ export default class STXCoin extends HasProviders(Coin) {
                 c32check: new LazyLoadedLib(() => import('c32check')),
             },
         };
-        super(config);
+        super(config, db, configManager);
         this.setExplorersModules([StacksExplorer, StacksHiroExplorer]);
         this.loadExplorers(config);
         this.feeData = feeData;

@@ -1,6 +1,6 @@
 export default COSMOSCoin;
 declare const COSMOSCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -127,7 +127,7 @@ declare class COSMOSCoin extends COSMOSCoin_base {
         txWebUrl: string;
         socket: boolean;
         notify?: boolean | undefined;
-    });
+    }, db: any, configManager: any);
     derivation: any;
     prefix: string;
     denom: string;

@@ -51,7 +51,7 @@ declare class APTCoin extends APTCoin_base {
         txWebUrl: any;
         socket: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     /** @type string | undefined */
     publicKey: string | undefined;
     derivation: string;

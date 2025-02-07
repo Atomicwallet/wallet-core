@@ -28,7 +28,7 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
      * @param {Array}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -42,7 +42,7 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
             feeData,
             socket,
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([VetNodeExplorer]);
         this.loadExplorers(config);

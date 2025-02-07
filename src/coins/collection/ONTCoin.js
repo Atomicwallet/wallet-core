@@ -30,7 +30,7 @@ class ONTCoin extends OntMixin(HasTokensMixin(Coin)) {
    * @param {Explorer[]}  explorers list
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -45,7 +45,7 @@ class ONTCoin extends OntMixin(HasTokensMixin(Coin)) {
       socket,
     };
 
-    super(config);
+    super(config, db, configManager);
     this.derivation = DERIVATION;
 
     this.setExplorersModules([OntExplorer]);

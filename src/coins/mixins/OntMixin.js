@@ -14,8 +14,8 @@ const CLAIM_THRESHOLD = 0.03; // claim if unbonding+rewards more then this value
 const OntMixin = (superclass) =>
   class extends superclass {
     #privateKey;
-    constructor(config) {
-      super(config);
+    constructor(config, db, configManager) {
+      super(config, db, configManager);
 
       this.gasLimit = (config && config.feeData.gasLimit) || GAS_LIMIT;
       this.gasPrice = (config && config.feeData.gasPrice) || GAS_PRICE;

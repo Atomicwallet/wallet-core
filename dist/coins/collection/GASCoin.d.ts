@@ -31,6 +31,6 @@ declare class GASCoin extends GASCoin_base {
         txWebUrl: any;
         socket: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     derivation: string;
 }

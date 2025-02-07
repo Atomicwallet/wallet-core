@@ -17,7 +17,7 @@ export default class Coin extends AbstractWallet {
     #id;
     #address;
     #derivation;
-    constructor(config, configManager, db) {
+    constructor(config, db, configManager) {
         super(config, db, configManager);
         this.dependencies = config.dependencies || {};
         this.config = config;

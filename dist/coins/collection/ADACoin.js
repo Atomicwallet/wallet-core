@@ -26,7 +26,7 @@ class ADACoin extends HasProviders(Coin) {
     #privateKey;
     #legacyAccount;
     #cip1852Account;
-    constructor({ alias, notify, feeData, explorers, txWebUrl, submitUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, submitUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -45,7 +45,7 @@ class ADACoin extends HasProviders(Coin) {
                 [ADA_LIB_API]: new LazyLoadedLib(() => import('../libs/AdaLibApi.js')),
             },
         };
-        super(config);
+        super(config, db, configManager);
         /** @type {import('./libs/AdaLibApi').default|null} */
         this.coreLibrary = null;
         /** @type {object|null} */

@@ -38,7 +38,7 @@ const TERRA_SDK = 'terraSdk';
  */
 class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
     #privateKey;
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -56,7 +56,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
                 [TERRA_SDK]: new LazyLoadedLib(() => import('@terra-money/terra.js')),
             },
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([TerraClassicLCDExplorer, TerraClassicFCDExplorer, TerraMantleExplorer]);
         this.loadExplorers(config);

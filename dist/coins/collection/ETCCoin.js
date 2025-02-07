@@ -18,7 +18,7 @@ const DERIVATION = "m/44'/0'/0'/0/0";
  */
 class ETCCoin extends Coin {
     #privateKey;
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -31,7 +31,7 @@ class ETCCoin extends Coin {
             txWebUrl,
             socket,
         };
-        super(config);
+        super(config, db, configManager);
         this.setExplorersModules([BlockscoutExplorer, Web3Explorer]);
         this.loadExplorers(config);
         this.derivation = DERIVATION;

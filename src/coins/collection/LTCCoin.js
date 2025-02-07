@@ -26,7 +26,7 @@ class LTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
    * @param  {array}  explorers the explorers
    * @param  {<type>} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const networkName = 'litecoin-livenet';
 
     const addNetwork = (bitcoreLib) => {
@@ -73,7 +73,7 @@ class LTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
       dependencies: { bitcore },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.setExplorersModules([BlockbookV2Explorer]);
 

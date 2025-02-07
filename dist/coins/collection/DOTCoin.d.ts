@@ -37,7 +37,7 @@ declare class DOTCoin extends DOTCoin_base {
      * @param {Explorer[]}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     derivation: string;
     nonce: number;
     transactions: any[];

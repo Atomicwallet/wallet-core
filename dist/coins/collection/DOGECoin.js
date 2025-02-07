@@ -23,7 +23,7 @@ class DOGECoin extends BitcoinJSMixin(BitcoinLikeFeeMixin(Coin)) {
      * @param  {array}  explorers the explorers
      * @param  {<type>} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         /**
          * DOGE network
          * @type {
@@ -76,7 +76,7 @@ class DOGECoin extends BitcoinJSMixin(BitcoinLikeFeeMixin(Coin)) {
                 [BITCOINJS]: new LazyLoadedLib(() => import('bitcoinjs-lib')),
             },
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([BlockbookV2Explorer]);
         this.loadExplorers(config);

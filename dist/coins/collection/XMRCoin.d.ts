@@ -37,7 +37,7 @@ declare class XMRCoin extends XMRCoin_base {
      * @param {Explorer[]}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id, atomicId }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id, atomicId }: string, db: any, configManager: any);
     derivation: string;
     coreLibrary: any;
     privateKeyView: string | null;

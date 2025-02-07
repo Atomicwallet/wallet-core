@@ -1,6 +1,6 @@
 export default BNBCoin;
 declare const BNBCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -87,7 +87,7 @@ declare class BNBCoin extends BNBCoin_base {
      * @param {*} txWebUrl
      * @memberof BNBCoin
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: any);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: any, db: any, configManager: any);
     /**
      * @typedef {import('@binance-chain/javascript-sdk').BncClient} BncClient
      */

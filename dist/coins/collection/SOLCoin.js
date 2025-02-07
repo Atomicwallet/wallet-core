@@ -29,7 +29,7 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
      *
      * @param  {object} config
      */
-    constructor(config) {
+    constructor(config, db, configManager) {
         super({
             ...config,
             name: config.name ?? NAME,
@@ -41,7 +41,7 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
                 [hdKeyLib]: new LazyLoadedLib(() => import('ed25519-hd-key')),
                 [tweetnaclLib]: new LazyLoadedLib(() => import('tweetnacl')),
             },
-        });
+        }, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([SolanaNodeExplorer, SolanaTritonExplorer]);
         this.loadExplorers(config);

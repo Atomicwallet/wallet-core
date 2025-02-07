@@ -17,7 +17,7 @@ declare class ADACoin {
         submitUrl: any;
         socket: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     /** @type {import('./libs/AdaLibApi').default|null} */
     coreLibrary: any | null;
     /** @type {object|null} */

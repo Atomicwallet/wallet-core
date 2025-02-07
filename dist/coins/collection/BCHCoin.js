@@ -23,7 +23,7 @@ class BCHCoin extends HasProviders(BitcoreMixin(BitcoreBitcoinCashMixin(BitcoinL
      * @param  {array}  explorers the explorers
      * @param  {<type>} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -39,7 +39,7 @@ class BCHCoin extends HasProviders(BitcoreMixin(BitcoreBitcoinCashMixin(BitcoinL
             explorers,
             txWebUrl,
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([BlockbookV2Explorer]);
         this.loadExplorers(config);

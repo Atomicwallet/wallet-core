@@ -1,6 +1,6 @@
 export default ONTCoin;
 declare const ONTCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#9@#privateKey": any;
         gasLimit: any;
@@ -71,7 +71,7 @@ declare class ONTCoin extends ONTCoin_base {
      * @param {Explorer[]}  explorers list
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     derivation: string;
     get feeWallet(): any;
     /**

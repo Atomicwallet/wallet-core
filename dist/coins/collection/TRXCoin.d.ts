@@ -1,6 +1,6 @@
 export default TRXCoin;
 declare const TRXCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -87,7 +87,7 @@ declare class TRXCoin extends TRXCoin_base {
      * @param {Array}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     derivation: string;
     transactions: any[];
     tokens: {};

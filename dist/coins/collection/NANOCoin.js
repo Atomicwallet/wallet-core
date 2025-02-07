@@ -37,7 +37,7 @@ class NANOCoin extends HasProviders(Coin) {
      * @param {Explorer[]}  explorers the explorers
      * @param {string} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -50,7 +50,7 @@ class NANOCoin extends HasProviders(Coin) {
             txWebUrl,
             socket,
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([NanonodeExplorer]);
         this.loadExplorers(config);

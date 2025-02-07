@@ -27,7 +27,7 @@ declare class FTMCoin extends FTMCoin_base {
      *
      * @param  {object} config
      */
-    constructor(config: object);
+    constructor(config: object, db: any, configManager: any);
     /** @type {string} */
     web3BaseUrl: string;
     /** @type {import('web3').default|null} */

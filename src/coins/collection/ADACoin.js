@@ -38,7 +38,7 @@ class ADACoin extends HasProviders(Coin) {
   /** @type {object|null} */
   cardanoWalletV4 = null;
 
-  constructor({ alias, notify, feeData, explorers, txWebUrl, submitUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, submitUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -58,7 +58,7 @@ class ADACoin extends HasProviders(Coin) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 

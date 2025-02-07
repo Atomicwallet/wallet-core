@@ -64,21 +64,25 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      chainId: config.chainId ?? ARB_CHAIN_ID,
-      l2Name: ID,
-      network: config.network ?? NETWORK,
-      dependencies: {
-        [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        chainId: config.chainId ?? ARB_CHAIN_ID,
+        l2Name: ID,
+        network: config.network ?? NETWORK,
+        dependencies: {
+          [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
+          [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.setExplorersModules([
       Web3Explorer,

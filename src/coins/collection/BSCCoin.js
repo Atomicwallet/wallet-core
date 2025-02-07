@@ -45,14 +45,18 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-    });
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+      },
+      db,
+      configManager,
+    );
 
     this.derivation = DERIVATION;
 

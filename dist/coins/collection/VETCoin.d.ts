@@ -42,7 +42,7 @@ declare class VETCoin extends VETCoin_base {
      * @param {Array}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     derivation: string;
     transactions: any[];
     feeTokenContract: string;

@@ -52,7 +52,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
      * @param  {Explorer[]}  explorers the explorers
      * @param  {string} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -73,7 +73,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
                 [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
             },
         };
-        super(config);
+        super(config, db, configManager);
         /** @type {import('web3').default|null} */
         this.coreLibrary = null;
         this.derivation = DERIVATION;

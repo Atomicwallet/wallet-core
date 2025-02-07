@@ -6,7 +6,7 @@ export namespace LUNA_SEND_TYPES {
 }
 export default LUNACoin;
 declare const LUNACoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];
@@ -94,7 +94,7 @@ declare class LUNACoin extends LUNACoin_base {
         socket: any;
         isTestnet: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     derivation: string;
     BigNumber: typeof BigNumber;
     feeDenom: string;

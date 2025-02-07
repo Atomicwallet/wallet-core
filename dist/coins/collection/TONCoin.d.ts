@@ -43,7 +43,7 @@ declare class TONCoin extends TONCoin_base {
         socket: any;
         isTestnet: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     isTestnet: any;
     /** @type {{ [id: string]: TONToken }} */
     tokens: {

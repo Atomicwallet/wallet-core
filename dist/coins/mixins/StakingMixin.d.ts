@@ -1,6 +1,6 @@
 export default StakingMixin;
 declare function StakingMixin(superclass: any): {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#11@#balances": {};
         "__#11@#predefinedValidators": any[];

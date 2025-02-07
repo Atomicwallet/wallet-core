@@ -17,7 +17,7 @@ const UNSPENDABLE_BALANCE = '0';
  * @class NEOCoin
  */
 class NEOCoin extends DisabledMixin(NeoMixin(HasProviders(Coin))) {
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -32,7 +32,7 @@ class NEOCoin extends DisabledMixin(NeoMixin(HasProviders(Coin))) {
       dependencies: { coreLib: new LazyLoadedLib(() => import('neo2')) },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.setExplorersModules([NeoscanExplorer]);
 

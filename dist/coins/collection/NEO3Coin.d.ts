@@ -36,7 +36,7 @@ declare class NEO3Coin extends NEO3Coin_base {
         txWebUrl: any;
         socket: any;
         id: any;
-    });
+    }, db: any, configManager: any);
     derivation: string;
     get feeWallet(): any;
     get feeTicker(): string;

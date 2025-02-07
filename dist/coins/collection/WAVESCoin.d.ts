@@ -11,7 +11,7 @@ declare class WAVESCoin extends Coin {
      * @param {Explorer[]}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData: { fee }, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData: { fee }, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     fee: any;
     transactions: any[];
     /**

@@ -33,7 +33,7 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
    * @param {Explorer[]}  explorers the explorers
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -50,7 +50,7 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 

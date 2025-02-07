@@ -30,7 +30,7 @@ class XTZCoin extends HasProviders(Coin) {
      * @param  {array}  explorers the explorers
      * @param  {<type>} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
         const config = {
             id,
             alias,
@@ -44,7 +44,7 @@ class XTZCoin extends HasProviders(Coin) {
             socket,
             feeData,
         };
-        super(config);
+        super(config, db, configManager);
         this.derivation = DERIVATION;
         this.setExplorersModules([TzktIoV1Explorer, TezosNodeWithBlockscannerExplorer]);
         this.loadExplorers(config);

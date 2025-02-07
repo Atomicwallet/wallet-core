@@ -52,7 +52,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
    * @param {*} notify
    * @param { boolean } socket
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -67,7 +67,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
       feeData,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 

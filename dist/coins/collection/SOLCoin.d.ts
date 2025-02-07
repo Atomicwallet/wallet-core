@@ -16,7 +16,7 @@ declare class SOLCoin extends SOLCoin_base {
      *
      * @param  {object} config
      */
-    constructor(config: object);
+    constructor(config: object, db: any, configManager: any);
     derivation: string;
     fee: any;
     feeData: any;

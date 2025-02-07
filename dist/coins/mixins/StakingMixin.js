@@ -6,8 +6,8 @@ const undefinedValidatorWarn = (ticker) => `Probably ${ticker} doesn't have such
 const StakingMixin = (superclass) => class extends superclass {
     #balances;
     #predefinedValidators;
-    constructor(config) {
-        super(config);
+    constructor(config, db, configManager) {
+        super(config, db, configManager);
         this.#predefinedValidators = [];
         this.#balances = {};
         this.#restoreCachedBalances();

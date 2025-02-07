@@ -28,7 +28,7 @@ declare const SUICoin_base: {
     [x: string]: any;
 };
 export default class SUICoin extends SUICoin_base {
-    constructor(walletsFeeConfig: any);
+    constructor(walletsFeeConfig: any, db: any, configManager: any);
     derivation: string;
     loadWallet(seed: any, mnemonic: any): Promise<{
         id: any;

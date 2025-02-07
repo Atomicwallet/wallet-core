@@ -1,6 +1,6 @@
 export default ATOMCoin;
 declare const ATOMCoin_base: {
-    new (config: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         "__#12@#privateKey": any;
         gasPrice: any;
@@ -189,7 +189,7 @@ declare class ATOMCoin extends ATOMCoin_base {
      * @param {Explorer[]}  explorers the explorers
      * @param {String} txWebUrl the transmit web url
      */
-    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string);
+    constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }: string, db: any, configManager: any);
     derivation: string;
     prefix: string;
     denom: string;
