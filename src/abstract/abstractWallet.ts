@@ -133,7 +133,7 @@ export default abstract class AbstractWallet {
   }
 
   getDbTable<T extends TableNames>(tableName: T): ITable<TableTypes[T]> {
-    return this.db.tables[tableName]!;
+    return this.db.table(tableName);
   }
 
   isStakingSupported(): boolean {

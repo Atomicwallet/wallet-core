@@ -7,7 +7,7 @@ import { IAddrCacheElement } from '../types';
 export type TableElementKey = string | number;
 export type TableElement = Record<string, unknown>;
 
-export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'nfts' | 'sentNfts';
+export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'nfts' | 'sentNfts' | 'configs';
 
 export type TableTypes = {
   transactions: Transaction;
@@ -15,6 +15,7 @@ export type TableTypes = {
   nfts: NftToken;
   sentNfts: NftToken;
   addrCache: IAddrCacheElement;
+  configs: TableElement;
 };
 
 export interface ITable<T> {
@@ -33,5 +34,6 @@ export type dbTablesType = {
 };
 
 export interface IDataBase {
-  tables: Partial<dbTablesType>;
+  tables: dbTablesType; // Убираем Partial
+  table: <T extends TableNames>(dbTable: T) => ITable<TableTypes[T]>;
 }

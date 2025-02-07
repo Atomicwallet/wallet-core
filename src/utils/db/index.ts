@@ -1,7 +1,15 @@
 import { Token } from 'src/abstract';
 import { NftToken } from 'src/coins/nfts';
 import Transaction from 'src/explorers/Transaction';
-import { dbTablesType, IDataBase, ITable, TableElement, TableElementKey } from 'src/utils/db/types';
+import {
+  dbTablesType,
+  IDataBase,
+  ITable,
+  TableElement,
+  TableElementKey,
+  TableNames,
+  TableTypes,
+} from 'src/utils/db/types';
 
 import { IAddrCacheElement } from '../types';
 
@@ -67,6 +75,10 @@ export class DataBase implements IDataBase {
   constructor(tables: dbTablesType) {
     this.tables = tables;
   }
+
+  table<T extends TableNames>(dbTable: T): ITable<TableTypes[T]> {
+    return this.tables[dbTable];
+  }
 }
 
 export class BaseDatabase implements DataBase {
@@ -86,8 +98,12 @@ export class BaseDatabase implements DataBase {
       addrCache: new BaseTable<IAddrCacheElement>(),
       nfts: new BaseTable<NftToken>(),
       sentNfts: new BaseTable<NftToken>(),
-      configs: new BaseTable(),
+      configs: new BaseTable<TableElement>(),
     };
+  }
+
+  table<T extends TableNames>(dbTable: T): ITable<TableTypes[T]> {
+    return this.tables[dbTable] as ITable<TableTypes[T]>;
   }
 }
 
