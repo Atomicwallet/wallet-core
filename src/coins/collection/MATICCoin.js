@@ -558,10 +558,14 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    * @return {MATICToken}
    */
   createToken(args) {
-    return new MATICToken({
-      parent: this,
-      ...args,
-    });
+    return new MATICToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

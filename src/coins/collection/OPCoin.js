@@ -781,10 +781,14 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {OPToken}
    */
   createToken(args) {
-    return new OPToken({
-      parent: this,
-      ...args,
-    });
+    return new OPToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

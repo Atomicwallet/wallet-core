@@ -1,6 +1,6 @@
 export default VETToken;
 declare class VETToken extends Token {
-    constructor(...args: any[]);
+    constructor(config: any, db: any, configManager: any);
     fee: string;
     get feeWallet(): this;
     getInfo(): Promise<{

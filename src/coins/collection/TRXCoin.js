@@ -135,10 +135,14 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {TRXToken}
    */
   createToken(args) {
-    return new TRXToken({
-      parent: this,
-      ...args,
-    });
+    return new TRXToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

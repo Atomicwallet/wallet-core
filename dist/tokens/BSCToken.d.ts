@@ -1,6 +1,6 @@
 export default BSCToken;
 declare class BSCToken extends Token {
-    constructor(...args: any[]);
+    constructor(config: any, db: any, configManager: any);
     gasLimit: string;
     coefficient: number;
     getInfo(): Promise<{

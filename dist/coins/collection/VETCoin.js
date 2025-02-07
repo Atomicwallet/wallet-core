@@ -88,7 +88,7 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
         return new VETToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     #initFeeTokenWallet() {
         this.#feeTokenWallet = this.createToken({

@@ -1,6 +1,6 @@
 export default ETHToken;
 declare class ETHToken extends Token {
-    constructor(...args: any[]);
+    constructor(config: any, db: any, configManager: any);
     gasLimit: string;
     coefficient: number;
     getTransactions(): Promise<import("../explorers/Transaction.js").default[]>;

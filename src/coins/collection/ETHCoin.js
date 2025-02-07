@@ -773,16 +773,24 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
    */
   createToken(args) {
     if (args.isStakable) {
-      return new StakableMaticETHToken({
-        parent: this,
-        ...args,
-      });
+      return new StakableMaticETHToken(
+        {
+          parent: this,
+          ...args,
+        },
+        this.db,
+        this.configManager,
+      );
     }
 
-    return new ETHToken({
-      parent: this,
-      ...args,
-    });
+    return new ETHToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

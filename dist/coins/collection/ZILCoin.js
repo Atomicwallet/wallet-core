@@ -359,7 +359,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
         return new ZILToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     getExcludedTokenList() {
         return [];

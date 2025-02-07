@@ -815,10 +815,14 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {FTMToken}
    */
   createToken(args) {
-    return new FTMToken({
-      parent: this,
-      ...args,
-    });
+    return new FTMToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

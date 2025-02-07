@@ -20,7 +20,7 @@ export default class StakableMaticETHToken extends StakableMaticETHToken_base {
     constructor({ config, ...args }: {
         [x: string]: any;
         config: any;
-    });
+    }, db: any, configManager: any);
     stakingContract: any;
     stakingGasLimit: any;
     unstakingGasLimit: any;

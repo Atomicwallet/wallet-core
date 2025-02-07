@@ -1,10 +1,10 @@
 import { Token } from '../abstract/index.js';
 export default class NEOToken extends Token {
     #parent;
-    constructor(args) {
-        super(args);
+    constructor(config, db, configManager) {
+        super(config, db, configManager);
         this.id = 'GAS3';
-        this.#parent = args.parent;
+        this.#parent = config.parent;
     }
     async createTransaction({ address, amount }) {
         return {

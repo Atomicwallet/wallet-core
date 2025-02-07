@@ -3,10 +3,10 @@ const solanaWeb3Lib = 'solanaWeb3Lib';
 class SOLToken extends Token {
     #parent;
     #address;
-    constructor(args) {
-        super(args);
-        this.mint = args.mint;
-        this.#parent = args.parent;
+    constructor(config, db, configManager) {
+        super(config);
+        this.mint = config.mint;
+        this.#parent = config.parent;
         this.loadAddress();
     }
     async loadAddress() {

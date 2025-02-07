@@ -530,10 +530,14 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
    **/
 
   createToken(args) {
-    return new BSCToken({
-      parent: this,
-      ...args,
-    });
+    return new BSCToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

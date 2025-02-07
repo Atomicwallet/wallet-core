@@ -735,10 +735,14 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {ARBToken}
    */
   createToken(args) {
-    return new ARBToken({
-      parent: this,
-      ...args,
-    });
+    return new ARBToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

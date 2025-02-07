@@ -1,5 +1,5 @@
 export default class THETAToken extends Token {
-    constructor(args: any);
+    constructor(config: any, db: any, configManageer: any);
     get feeWallet(): this;
     createTransaction({ address, amount, userFee }: {
         address: any;

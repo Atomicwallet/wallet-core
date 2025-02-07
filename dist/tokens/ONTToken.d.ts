@@ -1,5 +1,5 @@
 export default class ONTToken extends Token {
-    constructor(args: any);
+    constructor(config: any, db: any, configManageer: any);
     createTransaction({ address, amount }: {
         address: any;
         amount: any;

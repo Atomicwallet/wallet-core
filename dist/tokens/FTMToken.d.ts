@@ -1,6 +1,6 @@
 export default FTMToken;
 declare class FTMToken extends Token {
-    constructor(...args: any[]);
+    constructor(config: any, db: any, configManager: any);
     gasLimit: string;
     coefficient: number;
     getInfo(): Promise<{

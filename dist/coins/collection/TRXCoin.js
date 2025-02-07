@@ -119,7 +119,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
         return new TRXToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     /**
      * Loads a wallet.

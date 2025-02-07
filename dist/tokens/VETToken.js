@@ -5,11 +5,11 @@ const FEE = '60';
 const TWO = 2;
 class VETToken extends Token {
     #parent;
-    constructor(...args) {
-        super(...args);
+    constructor(config, db, configManager) {
+        super(config, db, configManager);
         this.id = this.ticker;
         this.fee = FEE;
-        this.#parent = args.parent;
+        this.#parent = config.parent;
     }
     get feeTicker() {
         return this.ticker;

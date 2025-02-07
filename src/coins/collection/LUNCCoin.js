@@ -129,11 +129,15 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   createToken(args) {
-    return new LUNCToken({
-      parent: this,
-      ...args,
-      config: { ...this.feeData, ...args.config },
-    });
+    return new LUNCToken(
+      {
+        parent: this,
+        ...args,
+        config: { ...this.feeData, ...args.config },
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

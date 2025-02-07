@@ -16,6 +16,7 @@ export default abstract class AbstractWallet {
     indivisibleBalance: null | BN;
     divisibleBalance: null | string;
     configManager: IConfigManager;
+    db: IDataBase;
     logger: ILogger;
     abstract gasPriceConfig?: IGasPriceConfig;
     abstract gasLimit?: string | number | BN;

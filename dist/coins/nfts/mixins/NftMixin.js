@@ -6,8 +6,8 @@ const NftMixin = (superclass) => class extends superclass {
      *
      * Checks getProvider method for existence and throws if not.
      */
-    constructor() {
-        super(...arguments);
+    constructor(args, db, configManager) {
+        super(args, db, configManager);
         if (typeof super.getProvider !== 'function') {
             throw new InternalError({ type: INTERNAL_ERROR, instance: this });
         }

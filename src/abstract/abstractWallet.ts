@@ -45,7 +45,7 @@ export default abstract class AbstractWallet {
 
   configManager: IConfigManager;
 
-  #db: IDataBase;
+  db: IDataBase;
   logger: ILogger;
 
   abstract gasPriceConfig?: IGasPriceConfig;
@@ -91,7 +91,7 @@ export default abstract class AbstractWallet {
 
     this.configManager = configManager ?? defaultConfigManager;
     this.logger = logger ?? defaultLogger;
-    this.#db = db ?? new BaseDatabase();
+    this.db = db ?? new BaseDatabase();
     this.alias = 'atomic';
     this.memoRegexp = memoRegexp;
   }
@@ -133,7 +133,7 @@ export default abstract class AbstractWallet {
   }
 
   getDbTable<T extends TableNames>(tableName: T): ITable<TableTypes[T]> {
-    return this.#db.tables[tableName]!;
+    return this.db.tables[tableName]!;
   }
 
   isStakingSupported(): boolean {

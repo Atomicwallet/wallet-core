@@ -449,10 +449,14 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
    * @return {ETHToken}
    */
   createToken(args) {
-    return new ZILToken({
-      parent: this,
-      ...args,
-    });
+    return new ZILToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   getExcludedTokenList() {

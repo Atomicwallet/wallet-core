@@ -12,7 +12,6 @@ export default class AbstractWallet {
     #name;
     #ticker;
     #decimal;
-    #db;
     constructor({ name, ticker, decimal, memoRegexp }, db, configManager, logger) {
         this.indivisibleBalance = null;
         this.divisibleBalance = null;
@@ -21,7 +20,7 @@ export default class AbstractWallet {
         this.#decimal = decimal;
         this.configManager = configManager ?? defaultConfigManager;
         this.logger = logger ?? defaultLogger;
-        this.#db = db ?? new BaseDatabase();
+        this.db = db ?? new BaseDatabase();
         this.alias = 'atomic';
         this.memoRegexp = memoRegexp;
     }
@@ -53,7 +52,7 @@ export default class AbstractWallet {
         return Emitter;
     }
     getDbTable(tableName) {
-        return this.#db.tables[tableName];
+        return this.db.tables[tableName];
     }
     isStakingSupported() {
         return false;

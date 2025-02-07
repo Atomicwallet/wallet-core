@@ -962,10 +962,14 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {EVMToken}
    */
   createToken(args) {
-    return new EVMToken({
-      parent: this,
-      ...args,
-    });
+    return new EVMToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

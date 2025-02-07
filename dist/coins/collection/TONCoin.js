@@ -246,7 +246,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
         return new TONToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     /**
      * Gets token balance

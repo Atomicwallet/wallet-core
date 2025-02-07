@@ -791,7 +791,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         return new EVMToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     /**
      * @typedef ExplorerTokenShape

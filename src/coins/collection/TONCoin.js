@@ -307,10 +307,14 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @return {TONToken}
    */
   createToken(args) {
-    return new TONToken({
-      parent: this,
-      ...args,
-    });
+    return new TONToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

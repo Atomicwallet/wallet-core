@@ -12,10 +12,9 @@ const DEFAULT_CLAIM_REWARDS_GAS_LIMIT = 170000;
 const DEFAULT_STAKING_CONTRACT = '0x5E3EF299FDDF15EAA0432E6E66473ACE8C13D908';
 const MAX_ALLOWED_AMOUNT = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
-
 export default class StakableMaticETHToken extends Web3Mixin(StakingMixin(ETHToken)) {
-  constructor({ config, ...args }) {
-    super({ config, ...args });
+  constructor({ config, ...args }, db, configManager) {
+    super({ config, ...args }, db, configManager);
 
     this.stakingContract = config.stakingContract ?? DEFAULT_STAKING_CONTRACT;
     this.stakingGasLimit = config.stakingGasLimit ?? DEFALT_STAKING_GAS_LIMIT;

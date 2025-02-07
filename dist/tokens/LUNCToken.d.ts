@@ -1,6 +1,6 @@
 export default LUNCToken;
 declare class LUNCToken extends Token {
-    constructor(args: any);
+    constructor(config: any, db: any, configManager: any);
     denom: any;
     stabilityFee: any;
     createTransaction({ address, amount, userGasPrice, gasLimit, multiplier, feeLimit, memo }: {

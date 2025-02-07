@@ -1,5 +1,5 @@
 export default class BNBToken extends Token {
-    constructor(args: any);
+    constructor(config: any, db: any, configManager: any);
     balances: {};
     getInfo(): Promise<{
         balance: string;

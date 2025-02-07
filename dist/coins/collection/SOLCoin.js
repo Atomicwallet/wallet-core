@@ -400,7 +400,7 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
         return new SOLToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     /**
      * Gets token balance

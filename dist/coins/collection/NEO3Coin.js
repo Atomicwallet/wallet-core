@@ -70,7 +70,7 @@ class NEO3Coin extends Neo3Mixin(NeoMixin(HasProviders(HasTokensMixin(Coin)))) {
         return new NEOToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     getTokenList() {
         return [

@@ -25,8 +25,8 @@ Token integration guide:
 
 const HasTokensMixin = (superclass) =>
   class extends superclass {
-    constructor(args) {
-      super(args);
+    constructor(config, db, configManager) {
+      super(config, db, configManager);
 
       this.tokens = {};
     }

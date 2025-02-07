@@ -1,6 +1,6 @@
 export default SOLToken;
 declare class SOLToken extends Token {
-    constructor(args: any);
+    constructor(config: any, db: any, configManager: any);
     mint: any;
     loadAddress(): Promise<void>;
     set address(val: any);

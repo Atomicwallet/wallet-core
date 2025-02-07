@@ -1,6 +1,6 @@
 export default NftMixin;
 declare function NftMixin(superclass: any): {
-    new (...args: any[]): {
+    new (args: any, db: any, configManager: any): {
         [x: string]: any;
         /**
          * Get the NFT info url

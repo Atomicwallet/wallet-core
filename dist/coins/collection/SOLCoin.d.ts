@@ -1,6 +1,6 @@
 export default SOLCoin;
 declare const SOLCoin_base: {
-    new (...args: any[]): {
+    new (args: any, db: any, configManager: any): {
         [x: string]: any;
         getNftInfoUrl(contractAddress: string | null, tokenId: string): string;
         getNftList(isSpamNftsEnabled: boolean): Promise<Object<NftToken>[]>;

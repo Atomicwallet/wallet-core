@@ -2,13 +2,13 @@ import { HISTORY_WALLET_UPDATED } from '../utils/eventTopics.js';
 import { Token } from '../abstract/index.js';
 class TONToken extends Token {
     #parent;
-    constructor(args) {
-        super(args);
+    constructor(config, db, configManager) {
+        super(config, db, configManager);
         /** @type {string} */
         this._jettonWalletAddress = null;
         this.fields = { paymentId: true };
-        this.#parent = args.parent;
-        this.mint = args.mint;
+        this.#parent = config.parent;
+        this.mint = config.mint;
         this._getJettonWalletAddress();
     }
     async _getJettonWalletAddress() {

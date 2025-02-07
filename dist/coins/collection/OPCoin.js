@@ -633,7 +633,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
         return new OPToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     /**
      * Returns user token list data

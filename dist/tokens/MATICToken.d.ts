@@ -1,6 +1,6 @@
 export default MATICToken;
 declare class MATICToken extends Token {
-    constructor(...args: any[]);
+    constructor(config: any, db: any, configManager: any);
     gasLimit: string;
     coefficient: number;
     getInfo(): Promise<{

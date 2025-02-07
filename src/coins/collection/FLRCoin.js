@@ -563,10 +563,14 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
    * @return {ETHToken}
    */
   createToken(args) {
-    return new FLRToken({
-      parent: this,
-      ...args,
-    });
+    return new FLRToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

@@ -517,7 +517,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {BNBToken}
    */
   createToken(args) {
-    return new BNBToken({ parent: this, ...args });
+    return new BNBToken({ parent: this, ...args }, this.db, this.configManager);
   }
 
   getTokenList() {

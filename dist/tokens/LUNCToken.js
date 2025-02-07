@@ -4,9 +4,9 @@ const MINIMAL_UNIT = 10 ** DECIMAL;
 const FEE_LIMIT = 10 * MINIMAL_UNIT;
 const DEFAULT_USTC_STABILITY_FEE = 0.012;
 class LUNCToken extends Token {
-    constructor(args) {
-        super(args);
-        this.denom = args.denom;
+    constructor(config, db, configManager) {
+        super(config, db, configManager);
+        this.denom = config.denom;
         this.fields.paymentId = true;
         this.stabilityFee = this.config?.stabilityFee || DEFAULT_USTC_STABILITY_FEE;
     }

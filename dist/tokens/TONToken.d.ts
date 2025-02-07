@@ -1,6 +1,6 @@
 export default TONToken;
 declare class TONToken extends Token {
-    constructor(args: any);
+    constructor(config: any, db: any, configManager: any);
     /** @type {string} */
     _jettonWalletAddress: string;
     mint: any;

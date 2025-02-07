@@ -1,6 +1,6 @@
 export default HasTokensMixin;
 declare function HasTokensMixin(superclass: any): {
-    new (args: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
         tokens: {};
         /**

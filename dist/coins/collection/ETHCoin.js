@@ -600,12 +600,12 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
             return new StakableMaticETHToken({
                 parent: this,
                 ...args,
-            });
+            }, this.db, this.configManager);
         }
         return new ETHToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     /**
      * Returns user token list data

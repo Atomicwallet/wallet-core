@@ -1,7 +1,7 @@
 import { Token } from '../abstract/index.js';
 export default class ARBToken extends Token {
-    constructor(...args) {
-        super(...args);
+    constructor(config, db, configManager) {
+        super(config, db, configManager);
         this.gasLimit = '150000';
         this.coefficient = 1;
     }

@@ -114,7 +114,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
             parent: this,
             ...args,
             config: { ...this.feeData, ...args.config },
-        });
+        }, this.db, this.configManager);
     }
     /**
      * List to be excluded from wallets list

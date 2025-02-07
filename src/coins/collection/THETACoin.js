@@ -92,10 +92,14 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
   }
 
   createToken(args) {
-    return new THETAToken({
-      parent: this,
-      ...args,
-    });
+    return new THETAToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   getTokenList() {

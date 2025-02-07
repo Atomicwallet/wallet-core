@@ -1,7 +1,7 @@
 import { Token } from '../abstract/index.js';
 export default class BNBToken extends Token {
-    constructor(args) {
-        super(args);
+    constructor(config, db, configManager) {
+        super(config, db, configManager);
         this.fields.paymentId = true;
         this.balances = {};
     }

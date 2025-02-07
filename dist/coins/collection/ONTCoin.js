@@ -85,7 +85,7 @@ class ONTCoin extends OntMixin(HasTokensMixin(Coin)) {
         return new ONTToken({
             parent: this,
             ...args,
-        });
+        }, this.db, this.configManager);
     }
     getTokenList() {
         return [
