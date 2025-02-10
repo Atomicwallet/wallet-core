@@ -34,6 +34,6 @@ export type dbTablesType = {
 };
 
 export interface IDataBase {
-  tables: dbTablesType; // Убираем Partial
+  tables: dbTablesType;
   table: <T extends TableNames>(dbTable: T) => ITable<TableTypes[T]>;
 }
