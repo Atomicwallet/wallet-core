@@ -7,10 +7,6 @@ export class BaseTable {
         console.log('Base DB used, not implemented.');
         return Promise.resolve([]);
     }
-    async anyOf(conditions, anyOf) {
-        console.log('Base DB used, not implemented.');
-        return Promise.resolve([]);
-    }
     async put(item) {
         console.log('Base DB used, not implemented.');
         return Promise.resolve('');

@@ -27,6 +27,6 @@ export type dbTablesType = {
     [tableName in TableNames]: ITable<TableTypes[tableName]>;
 };
 export interface IDataBase {
-    tables: dbTablesType;
+    tables: Partial<dbTablesType>;
     table: <T extends TableNames>(dbTable: T) => ITable<TableTypes[T]>;
 }

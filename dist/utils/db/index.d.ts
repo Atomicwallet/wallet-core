@@ -6,7 +6,6 @@ import { IAddrCacheElement } from '../types.js';
 export declare class BaseTable<T> implements ITable<T> {
     get(conditions: Partial<T>): Promise<Partial<T> | undefined>;
     getAll(conditions: Partial<T>): Promise<Partial<T>[]>;
-    anyOf(conditions: Partial<T>, anyOf: T[]): Promise<T[]>;
     put(item: T): Promise<TableElementKey>;
     update(id: TableElementKey, changes: Partial<T>): Promise<TableElementKey>;
     delete(id: string): Promise<void>;
