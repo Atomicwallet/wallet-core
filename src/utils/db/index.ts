@@ -26,12 +26,6 @@ export class BaseTable<T> implements ITable<T> {
     return Promise.resolve([]);
   }
 
-  async anyOf(conditions: Partial<T>, anyOf: T[]): Promise<T[]> {
-    console.log('Base DB used, not implemented.');
-
-    return Promise.resolve([]);
-  }
-
   async put(item: T): Promise<TableElementKey> {
     console.log('Base DB used, not implemented.');
 
