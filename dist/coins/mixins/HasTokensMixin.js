@@ -74,7 +74,7 @@ const HasTokensMixin = (superclass) => class extends superclass {
      */
     async loadTokensFromDb(parentTicker, filterFun = (token) => token.parentTicker === parentTicker) {
         const db = this.getDbTable('tokens');
-        const allTokens = db.getAll();
+        const allTokens = await db.getAll();
         return parentTicker ? allTokens.filter(filterFun) : allTokens;
     }
     /**
