@@ -7,9 +7,6 @@
   "exclude": [
     "./node_modules",
     "./src/cli/**/*",
-    "./src/__tests__/**/*.test.ts",
-    "./src/__tests__/**/*",
-    "./src/**/*.test.ts"
   ],
   "ts-node": {
     "compilerOptions": {
