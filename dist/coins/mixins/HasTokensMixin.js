@@ -74,7 +74,7 @@ const HasTokensMixin = (superclass) => class extends superclass {
      */
     async loadTokensFromDb(parentTicker, filterFun = (token) => token.parentTicker === parentTicker) {
         const db = this.getDbTable('tokens');
-        const allTokens = db.getAll();
+        const allTokens = await db.getAll();
         return parentTicker ? allTokens.filter(filterFun) : allTokens;
     }
     /**
@@ -159,7 +159,8 @@ const HasTokensMixin = (superclass) => class extends superclass {
                 return token.source === source && !token.isCustom && !processedUniques.includes(token.uniqueField);
             });
             const db = this.getDbTable('tokens');
-            const inserted = processedUniques.length > 0 ? await db.getAll('uniqueField').anyOf(processedUniques).toArray() : [];
+            const allTokens = await db.getAll();
+            const inserted = processedUniques.length > 0 ? allTokens.filter((token) => processedUniques.includes(token.uniqueField)) : [];
             const insertedUniques = inserted.map((token) => token.uniqueField);
             const notInserted = processedTokens.filter((token) => {
                 return !insertedUniques.includes(token.uniqueField);
