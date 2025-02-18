@@ -76,16 +76,6 @@ class EOSNodeExplorer extends Explorer {
   }
 
   modifyInfoResponse(response) {
-    // response.forEach((data) => {
-    //   if (typeof data === 'string' && data.split(' ').length > 1) {
-    //     const [balance, symbol] = data.split(' ')
-    //
-    //     if (balance && symbol === this.wallet.ticker) {
-    //       this.wallet.balance = new this.wallet.BN(this.wallet.toMinimalUnit(balance))
-    //     }
-    //   }
-    // })
-
     return {
       balance: response,
       transactions: [],

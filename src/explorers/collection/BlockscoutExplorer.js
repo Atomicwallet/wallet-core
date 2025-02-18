@@ -189,13 +189,6 @@ class BlockscoutExplorer extends Explorer {
       return this.wallet.toCurrencyUnit(tx.value);
     }
 
-    // @TODO should be inside coin
-    // const token = this.wallet.tokens[tx.contractAddress.toLowerCase()]
-    //
-    //   if (token) {
-    //     return token.toCurrencyUnit(tx.value)
-    // }
-
     return this.wallet.toCurrencyUnit(tx.value);
   }
 

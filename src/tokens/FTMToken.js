@@ -2,8 +2,8 @@ import { Token } from 'src/abstract';
 import { ConfigKey } from 'src/utils/configManager';
 
 class FTMToken extends Token {
-  constructor(...args) {
-    super(...args);
+  constructor(config, db, configManager) {
+    super(config, db, configManager);
 
     this.gasLimit = '150000';
     this.coefficient = 1;

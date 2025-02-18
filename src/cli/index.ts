@@ -51,13 +51,13 @@ program
   .option('-p, --phrase <phrase>', 'Generate key-pairs from mnemonic')
   .option('-w, --wallet <wallet>', 'wallet ticker, e.g. BTC')
   .option('-a, --amount <amount>', 'Amount, e.g. 1.35')
-  .option('-r, --recepient <recepient>', 'Recepient address')
+  .option('-r, --recipient <recepient>', 'Recipient address')
   .option('-m, --memo <memo>', 'Memo info')
   .action(
     async (options: {
       wallet: string;
       amount: string;
-      recepient: string;
+      recipient: string;
       phrase?: string;
       memo?: string;
     }): Promise<void> => {
@@ -75,10 +75,10 @@ program
       }
       console.log('OK');
 
-      const validAddress = (await wallet.validateAddress(options.recepient)) as unknown as boolean;
+      const validAddress = (await wallet.validateAddress(options.recipient)) as unknown as boolean;
 
       if (!validAddress) {
-        throw new Error(`Invalid recepient address: ${options.recepient}`);
+        throw new Error(`Invalid recipient address: ${options.recipient}`);
       }
 
       console.log('Generate key pairs...');
@@ -89,7 +89,7 @@ program
       const tx = await wallet
         .createTransaction({
           amount: wallet.toMinimalUnit(options.amount),
-          address: options.recepient,
+          address: options.recipient,
           memo: options.memo,
         })
         .catch((err) => {

@@ -28,6 +28,7 @@ export default abstract class Token extends AbstractWallet {
   visibility: boolean;
   source: TokenSource;
   config?: CoinConfigType;
+  uniqueField: string;
   BN: typeof BN;
 
   fields = { paymentId: false };
@@ -52,6 +53,7 @@ export default abstract class Token extends AbstractWallet {
     this.source = args.source;
     this.visibility = args.visibility;
     this.confirmed = args.confirmed;
+    this.uniqueField = args.uniqueField;
 
     this.decimal = args.decimal;
 
@@ -76,7 +78,7 @@ export default abstract class Token extends AbstractWallet {
     this.manageEvents();
   }
 
-  get id() {
+  get id(): string {
     return this.#id;
   }
 
@@ -125,6 +127,10 @@ export default abstract class Token extends AbstractWallet {
    * Should be removed
    */
   get deprecatedParent() {
+    return this.#parent.id;
+  }
+
+  get parentTicker() {
     return this.#parent.id;
   }
 

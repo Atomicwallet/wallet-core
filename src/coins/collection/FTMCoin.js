@@ -59,18 +59,22 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      dependencies: {
-        [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        dependencies: {
+          [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
+          [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.derivation = DERIVATION;
 
@@ -199,7 +203,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider('socket').getSocketTransaction({
@@ -213,7 +217,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {Array<String>} array of tickers
    */
   getExcludedTokenList() {
@@ -760,7 +764,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
   async calculateAvailableForStake() {
     // we can exactly calculate available balance,
-    // because each smart-contarct can require various gasLimit values
+    // because each smart-contract can require various gasLimit values
 
     const stakingFees = await this.getFee({ gasLimit: this.stakingGasLimit });
     const doubleRegularFees = await this.getFee();
@@ -815,10 +819,14 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {FTMToken}
    */
   createToken(args) {
-    return new FTMToken({
-      parent: this,
-      ...args,
-    });
+    return new FTMToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

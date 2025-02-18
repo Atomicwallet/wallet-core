@@ -8,7 +8,6 @@ node_modules/
 wallaby.js
 test/
 /configs
-dist/fonts
 licenses.json
 
 # Log files

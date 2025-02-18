@@ -43,7 +43,7 @@ const TERRA_SDK = 'terraSdk';
 class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   #privateKey;
 
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -62,7 +62,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -129,15 +129,19 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   createToken(args) {
-    return new LUNCToken({
-      parent: this,
-      ...args,
-      config: { ...this.feeData, ...args.config },
-    });
+    return new LUNCToken(
+      {
+        parent: this,
+        ...args,
+        config: { ...this.feeData, ...args.config },
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {string[]} array of tickers
    */
   getExcludedTokenList() {

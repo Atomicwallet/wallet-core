@@ -5,10 +5,10 @@ import { Token } from '../abstract';
 export default class THETAToken extends Token {
   #parent;
 
-  constructor(args) {
-    super(args);
+  constructor(config, db, configManageer) {
+    super(config);
     this.id = this.ticker;
-    this.#parent = args.parent;
+    this.#parent = config.parent;
   }
 
   get feeTicker() {

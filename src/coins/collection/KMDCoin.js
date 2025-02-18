@@ -36,7 +36,7 @@ class KMDCoin extends HasProviders(BitgoMixin(BitcoinLikeFeeMixin(Coin))) {
    * @param  {array}  explorers the explorers
    * @param  {<type>} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const networks = {
       mainnet: {
         messagePrefix: '',
@@ -79,7 +79,7 @@ class KMDCoin extends HasProviders(BitgoMixin(BitcoinLikeFeeMixin(Coin))) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 

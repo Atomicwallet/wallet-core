@@ -1,0 +1,635 @@
+[
+    {
+        "currency": "EGLD",
+        "validators": [
+            {
+                "address": "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqc0llllsayxegu",
+                "name": "Binance Staking",
+                "reward": 9.4
+            },
+            {
+                "address": "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqq8hlllls7a6h85",
+                "name": "Just Mining",
+                "reward": 9.4
+            }
+        ]
+    },
+    {
+        "currency": "NEAR",
+        "validators": [
+            {
+                "address": "lunanova.poolv1.near",
+                "name": "LunaNova",
+                "fee": 7,
+                "reward": 11
+            }
+        ]
+    },
+    {
+        "currency": "ATOM",
+        "validators": [
+            {
+                "name": "Sikka",
+                "reward": "10.16",
+                "address": "cosmosvaloper1ey69r37gfxvxg62sh4r0ktpuc46pzjrm873ae8",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepqg6y8magedjwr9p6s2c28zp28jdjtecxhn97ew6tnuzqklg63zgfspp9y3n",
+                "description": {
+                    "moniker": "Sikka",
+                    "identity": "https://keybase.io/team/sikka",
+                    "website": "sikka.tech",
+                    "details": "Sunny Aggarwal (@sunnya97) and Dev Ojha (@ValarDragon)"
+                },
+                "commission": {
+                    "rate": "0.000000000000000000",
+                    "max_rate": "1.000000000000000000",
+                    "max_change_rate": "1.000000000000000000",
+                    "update_time": "2019-03-13T23:00:00Z"
+                }
+            },
+            {
+                "name": "Polychain Labs",
+                "reward": "8.13",
+                "address": "cosmosvaloper14k4pzckkre6uxxyd2lnhnpp8sngys9m6hl6ml7",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepquhlqdhjw4qp2c2t6qh5z7tfk52qc72623f0etc8f3n7hy8uuh25ql34fvu",
+                "description": {
+                    "moniker": "Polychain Labs",
+                    "identity": "A51CE3B9CD649C3F",
+                    "website": "https://cosmos.polychainlabs.com",
+                    "details": "Secure staking with Polychain Labs, the most experienced institutional grade staking team."
+                },
+                "commission": {
+                    "rate": "0.200000000000000000",
+                    "max_rate": "1.000000000000000000",
+                    "max_change_rate": "0.010000000000000000",
+                    "update_time": "2019-04-22T04:57:29.717811274Z"
+                }
+            },
+            {
+                "name": "🐠stake.fish | bitfish",
+                "reward": "9.76",
+                "address": "cosmosvaloper1sjllsnramtg3ewxqwwrwjxfgc4n4ef9u2lcnj0",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepq6fpkt3qn9xd7u44478ypkhrvtx45uhfj3uhdny420hzgsssrvh3qnzwdpe",
+                "description": {
+                    "moniker": "🐠stake.fish | bitfish",
+                    "identity": "90B597A673FC950E",
+                    "website": "stake.fish",
+                    "details": "Winner of the Game of Stakes. Brought to you by stake.fish and bitfish."
+                },
+                "commission": {
+                    "rate": "0.040000000000000000",
+                    "max_rate": "1.000000000000000000",
+                    "max_change_rate": "0.010000000000000000",
+                    "update_time": "2019-03-13T23:00:00Z"
+                }
+            },
+            {
+                "name": "DokiaCapital",
+                "reward": "8.64",
+                "address": "cosmosvaloper14lultfckehtszvzw4ehu0apvsr77afvyju5zzy",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepqp0j4vum7ryt6nl6zsgq9ar347afmq2c5z6jmzeavv2p2ns6m0dgs5zmg4z",
+                "description": {
+                    "moniker": "DokiaCapital",
+                    "identity": "25422F4ADF3F6765",
+                    "website": "https://ion.dokia.capital",
+                    "details": "We are open for delegations."
+                },
+                "commission": {
+                    "rate": "0.150000000000000000",
+                    "max_rate": "0.150000000000000000",
+                    "max_change_rate": "0.010000000000000000",
+                    "update_time": "2019-03-13T23:00:00Z"
+                }
+            },
+            {
+                "name": "SparkPool",
+                "reward": "9.76",
+                "address": "cosmosvaloper1rwh0cxa72d3yle3r4l8gd7vyphrmjy2kpe4x72",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepq5kg8xls9l35ftulkm2rt70hexeeyr5cqqkcv4h7936z5uasvvazqla8eck",
+                "description": {
+                    "moniker": "SparkPool",
+                    "identity": "DE8E37240061B04E",
+                    "website": "https://cosmos.sparkpool.com/",
+                    "details": "The biggest Ethereum mining pool, we can be a reliable validator with our 3 years"
+                },
+                "commission": {
+                    "rate": "0.040000000000000000",
+                    "max_rate": "0.200000000000000000",
+                    "max_change_rate": "0.050000000000000000",
+                    "update_time": "2019-09-26T06:05:19.676181518Z"
+                }
+            },
+            {
+                "name": "Certus One",
+                "reward": "8.89",
+                "address": "cosmosvaloper1qwl879nx9t6kef4supyazayf7vjhennyh568ys",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepqwrjpn0slu86e32zfu5xxg8l42uk40guuw6er44vw2yl6s7wc38est6l0ux",
+                "description": {
+                    "moniker": "Certus One",
+                    "identity": "ABD51DF68C0D1ECF",
+                    "website": "https://certus.one",
+                    "details": "Stake and earn rewards with the most secure and stable validator. Winner of the Game of Stakes. Operated by Certus One Inc. By delegating, you confirm that you are aware of the risk of slashing and that Certus One Inc is not liable for any potential damages to your investment."
+                },
+                "commission": {
+                    "rate": "0.125000000000000000",
+                    "max_rate": "0.300000000000000000",
+                    "max_change_rate": "0.010000000000000000",
+                    "update_time": "2019-03-13T23:00:00Z"
+                }
+            },
+            {
+                "name": "Cosmostation",
+                "reward": "8.94",
+                "address": "cosmosvaloper1clpqr4nrk4khgkxj78fcwwh6dl3uw4epsluffn",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepq0dc9apn3pz2x2qyujcnl2heqq4aceput2uaucuvhrjts75q0rv5smjjn7v",
+                "description": {
+                    "moniker": "Cosmostation",
+                    "identity": "AE4C403A6E7AA1AC",
+                    "website": "https://www.cosmostation.io",
+                    "details": "CØSMOSTATION Validator. Delegate your atoms and Start Earning Staking Rewards"
+                },
+                "commission": {
+                    "rate": "0.120000000000000000",
+                    "max_rate": "0.200000000000000000",
+                    "max_change_rate": "0.100000000000000000",
+                    "update_time": "2019-03-13T23:00:00Z"
+                }
+            },
+            {
+                "name": "iqlusion",
+                "reward": "9.15",
+                "address": "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepqdgvppnyr5c9pulsrmzr9e9rp7qpgm9jwp5yu8g3aumekgjugxacq8a9p2c",
+                "description": {
+                    "moniker": "iqlusion",
+                    "identity": "DCB176E79AE7D51F",
+                    "website": "iqlusion.io",
+                    "details": ""
+                },
+                "commission": {
+                    "rate": "0.100000000000000000",
+                    "max_rate": "1.000000000000000000",
+                    "max_change_rate": "0.010000000000000000",
+                    "update_time": "2019-03-13T23:00:00Z"
+                }
+            },
+            {
+                "name": "Figment Networks",
+                "reward": "8.94",
+                "address": "cosmosvaloper1hjct6q7npsspsg3dgvzk3sdf89spmlpfdn6m9d",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepqnltddase4lqjcfhup8ymg0qex3srakg54ppv06pstvwdjxkm6tmq08znvs",
+                "description": {
+                    "moniker": "Figment Networks",
+                    "identity": "E5F274B870BDA01D",
+                    "website": "https://figment.network",
+                    "details": "Makers of Hubble and Canada’s largest Cosmos validator, Figment is the easiest and most secure way to stake your Atoms."
+                },
+                "commission": {
+                    "rate": "0.120000000000000000",
+                    "max_rate": "0.300000000000000000",
+                    "max_change_rate": "0.010000000000000000",
+                    "update_time": "2019-04-30T21:17:48.866795285Z"
+                }
+            },
+            {
+                "name": "Forbole",
+                "reward": "10.16",
+                "address": "cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepqmfxl36td7rcdzszzrk6c7kzp5l3jlw4lnxz8zms3py7qcsa9xlns7zxfd6",
+                "description": {
+                    "moniker": "Forbole",
+                    "identity": "2861F5EE06627224",
+                    "website": "https://www.forbole.com/cosmos-hub-validator/",
+                    "details": "We are a named winner in Game of Stakes and HackAtom3 by Cosmos proving us as a validator with high uptime and never jailed. We are currently running a [#PWYW campaign](https://bit.ly/2Hx9dM2) which you can choose how much commission you would like to pay us."
+                },
+                "commission": {
+                    "rate": "0.000000000000000000",
+                    "max_rate": "0.250000000000000000",
+                    "max_change_rate": "0.010000000000000000",
+                    "update_time": "2019-03-28T07:25:41.600375946Z"
+                }
+            },
+            {
+                "name": "jackzampolin",
+                "reward": "9.15",
+                "address": "cosmosvaloper130mdu9a0etmeuw52qfxk73pn0ga6gawkxsrlwf",
+                "consensus_pubkey": "cosmosvalconspub1zcjduepqfahazsjeru5wqulfuzklmkh272ggss2ru6fk00zq2fmlfzcq773sqlqe42",
+                "description": {
+                    "moniker": "jackzampolin",
+                    "identity": "0979483D4F669CFF",
+                    "website": "https://pylonvalidator.com",
+                    "details": "'Trust, but verify.' -Russian Proverb"
+                },
+                "commission": {
+                    "rate": "0.100000000000000000",
+                    "max_rate": "0.150000000000000000",
+                    "max_change_rate": "0.100000000000000000",
+                    "update_time": "2019-03-25T15:28:01.171914203Z"
+                }
+            }
+        ]
+    },
+    {
+        "currency": "BAND",
+        "validators": [
+            {
+                "name": "Figment Networks Inc.",
+                "reward": "10.16",
+                "address": "bandvaloper1zm5p8gg3ugjcdwz9yrxaf6fdptxa4gw04rplr9",
+                "consensus_pubkey": "bandvalconspub1addwnpepqvll0h6xd65l4w0dvunurmdz7dapxxxp7jm2s5fg7v6rqla8fqmpqmwytma",
+                "description": {
+                    "moniker": "figment",
+                    "identity": "E5F274B870BDA01D",
+                    "website": "https://figment.network",
+                    "details": "Figment Networks Inc."
+                },
+                "commission": {
+                    "rate": "0.100000000000000000",
+                    "max_rate": "0.250000000000000000",
+                    "max_change_rate": "0.050000000000000000",
+                    "update_time": "2020-05-28T14:00:00Z"
+                }
+            },
+            {
+                "name": "Chorus One",
+                "reward": "10.16",
+                "address": "bandvaloper1fyn907tzlxknxgmvkjvmhgksf7t3zwjlcd6a0a",
+                "consensus_pubkey": "bandvalconspub1addwnpepqg008dkxcurd0fl47glld92j0aycld27nvl8ufkp8vqwlu2pmzzqy7me5tg",
+                "description": {
+                    "moniker": "Chorus One",
+                    "identity": "00B79D689B7DC1CE",
+                    "website": "https://chorus.one",
+                    "details": "Secure Band and shape its future by delegating to Chorus One, a highly secure and stable validator. By delegating, you agree to the terms of service."
+                },
+                "commission": {
+                    "rate": "0.120000000000000000",
+                    "max_rate": "0.300000000000000000",
+                    "max_change_rate": "0.100000000000000000",
+                    "update_time": "2020-05-28T14:00:00Z"
+                }
+            }
+        ]
+    },
+    {
+        "currency": "OSMO",
+        "validators": [
+            {
+                "name": "Atomic Wallet",
+                "reward": "11",
+                "address": "osmovaloper1x2e2pnenh0mmc99cnp7sukngnt8lc4saljavr3"
+            }
+        ]
+    },
+    {
+        "currency": "XTZ",
+        "validators": [
+            {
+                "address": "tz1TcH4Nb3aHNDJ7CGZhU7jgAK1BkSP4Lxds",
+                "name": "XTZ Antipodes",
+                "logo": "xtz-antipodes.png",
+                "site": "https://xtzantipodes.org",
+                "balance": 118800.355971,
+                "stakingBalance": 904501.913143,
+                "stakingCapacity": 1127415.637111,
+                "estimatedRoi": 0.064791
+            },
+            {
+                "address": "tz3adcvQaKXTCg12zbninqo3q8ptKKtDFTLv",
+                "name": "Tezzigator",
+                "logo": "tezzigator.png",
+                "site": "https://www.tezzigator.com",
+                "balance": 1029350.686895,
+                "stakingBalance": 7431297.310968,
+                "stakingCapacity": 9772716.158969,
+                "estimatedRoi": 0.063356
+            },
+            {
+                "address": "tz1YKh8T79LAtWxX29N5VedCSmaZGw9LNVxQ",
+                "name": "Tezos Brazil",
+                "logo": "tezos-brazil.png",
+                "site": "https://tezosbr.com",
+                "balance": 21826.653288,
+                "stakingBalance": 96594.775482,
+                "stakingCapacity": 208302.655757,
+                "estimatedRoi": 0.063728
+            },
+            {
+                "address": "tz1TDSmoZXwVevLTEvKCTHWpomG76oC9S2fJ",
+                "name": "Tezos Capital Legacy",
+                "logo": "tezos-capital.png",
+                "site": "https://www.tezos.capital",
+                "balance": 1871626.207705,
+                "stakingBalance": 11820408.108919,
+                "stakingCapacity": 17758503.268737,
+                "estimatedRoi": 0.059872
+            },
+            {
+                "address": "tz3bEQoFCZEEfZMskefZ8q8e4eiHH1pssRax",
+                "name": "Ceibo XTZ",
+                "logo": "ceibo-xtz.png",
+                "site": "https://www.ceiboxtz.com",
+                "balance": 26485.185431,
+                "stakingBalance": 229672.952134,
+                "stakingCapacity": 257566.932136,
+                "estimatedRoi": 0.065288
+            },
+            {
+                "address": "tz2PdGc7U5tiyqPgTSgqCDct94qd6ovQwP6u",
+                "name": "Tezos Capital",
+                "logo": "tezos-capital.png",
+                "site": "https://www.tezos.capital",
+                "balance": 100349.565992,
+                "stakingBalance": 510696.612696,
+                "stakingCapacity": 964435.509474,
+                "estimatedRoi": 0.055632
+            },
+            {
+                "address": "tz1NRGxXV9h6SdNaZLcgmjuLx3hyy2f8YoGN",
+                "name": "Bake ꜩ For Me",
+                "logo": "bake-tz-for-me.png",
+                "site": "https://baketzfor.me",
+                "balance": 12320.529561,
+                "stakingBalance": 75422.663562,
+                "stakingCapacity": 122412.00096,
+                "estimatedRoi": 0.06054
+            },
+            {
+                "address": "tz1Ldzz6k1BHdhuKvAtMRX7h5kJSMHESMHLC",
+                "name": "PayTezos",
+                "logo": "paytezos.png",
+                "site": "https://paytezos.com",
+                "balance": 1268461.397504,
+                "stakingBalance": 7910797.121167,
+                "stakingCapacity": 12041367.832962,
+                "estimatedRoi": 0.063363
+            },
+            {
+                "address": "tz1Xek93iSXXckyQ6aYLVS5Rr2tge2en7ZxS",
+                "name": "XTZ Delegate",
+                "logo": "xtz-delegate.png",
+                "site": "https://xtzdelegate.io",
+                "balance": 49473.941936,
+                "stakingBalance": 307538.312934,
+                "stakingCapacity": 474708.941335,
+                "estimatedRoi": 0.062688
+            },
+            {
+                "address": "tz1TaLYBeGZD3yKVHQGBM857CcNnFFNceLYh",
+                "name": "Tezocracy",
+                "logo": "tezocracy.png",
+                "site": "https://tezocracy.com",
+                "balance": 712467.090159,
+                "stakingBalance": 4434120.689041,
+                "stakingCapacity": 6760795.80625,
+                "estimatedRoi": 0.063388,
+                "insAmount": 12560.84988
+            }
+        ]
+    },
+    {
+        "currency": "ADA",
+        "validators": [
+            {
+                "address": "57eb48cdf25980039f087207af09fafb4970018e322d37c11c9a2496",
+                "ticker": "EVERS",
+                "name": "Everstake",
+                "logo": "57eb48cdf25980039f087207af09fafb4970018e322d37c11c9a2496.png",
+                "estimatedRoi": 0.063388,
+                "visibility": false
+            },
+            {
+                "address": "ae66e56ab11ccb39e882669f220a37956c683e4ce84fefd910012d7a",
+                "ticker": "AWP2",
+                "name": "Atomic Wallet 2",
+                "estimatedRoi": 5,
+                "visibility": true
+            },
+            {
+                "address": "a3ac6ca0694fc5825f831c8d0d97f202c4f298741ae60874730fafb8",
+                "ticker": "AWP",
+                "name": "Atomic Wallet",
+                "estimatedRoi": 5,
+                "visibility": true
+            }
+        ]
+    },
+    {
+        "currency": "TRX",
+        "validators": [
+            {
+                "name": "Binance",
+                "reward": "4.32",
+                "address": "TLyqzVGLV1srkB7dToTAEqgDSfPtXRJZYH"
+            },
+            {
+                "name": "Sesameseed",
+                "reward": "4.32",
+                "address": "TGzz8gjYiYRqpfmDwnLxfgPuLVNmpCswVp"
+            },
+            {
+                "name": "BitGuils",
+                "reward": "4.32",
+                "address": "TV9QitxEJ3pdiAUAfJ2QuPxLKp9qTTR3og"
+            }
+        ]
+    },
+    {
+        "currency": "ICX",
+        "validators": [
+            {
+                "address": "hx0b047c751658f7ce1b2595da34d57a0e7dad357d",
+                "name": "ICON Foundation",
+                "reward": "10"
+            },
+            {
+                "address": "hxfba37e91ccc13ec1dab115811f73e429cde44d48",
+                "name": "ICX_Station",
+                "reward": "10"
+            },
+            {
+                "address": "hxd0d9b0fee857de26fd1e8b15209ca15b14b851b2",
+                "name": "VELIC",
+                "reward": "10"
+            },
+            {
+                "address": "hx54d6f19c3d16b2ef23c09c885ca1ba776aaa80e2",
+                "name": "Ubik Capital",
+                "reward": "10"
+            },
+            {
+                "address": "hx262afdeda4eba10fe41fa5ef21796ac2bdcc6629",
+                "name": "ICONation",
+                "reward": "10"
+            },
+            {
+                "address": "hx4a43790d44b07909d20fbcc233548fc80f7a4067",
+                "name": "RHIZOME",
+                "reward": "10"
+            },
+            {
+                "address": "hxab751d4e83b6fda412a38cb5f7f96860396b1327",
+                "name": "Symmetry SLC",
+                "reward": "10"
+            },
+            {
+                "address": "hxd5059fec8665bc7b769f4893aef65cf00049377a",
+                "name": "ICON Hyperconnect",
+                "reward": "10"
+            },
+            {
+                "address": "hxf75bfd0df8d96ee0963965135af2485cee6d5000",
+                "name": "weBloc asia",
+                "reward": "10"
+            },
+            {
+                "address": "hxdc35f82a3a943e040ae2b9ab2baa2118781b2bc9",
+                "name": "Mineable",
+                "reward": "10"
+            },
+            {
+                "address": "hx863e16bd18ceaa7d498b4b275e36cd58818b1f25",
+                "name": "ICONVIET",
+                "reward": "10"
+            },
+            {
+                "address": "hxe4c008b838e8a9a7c065f20f393974de4c86f917",
+                "name": "ReliantNode",
+                "reward": "10"
+            },
+            {
+                "address": "hx168d2cfe6d73acb8cb690d3abda54d3af266addf",
+                "name": "block42",
+                "reward": "10"
+            },
+            {
+                "address": "hxb11448743cbb63fcf29609401cdc5782793be211",
+                "name": "ICONbet Community",
+                "reward": "10"
+            },
+            {
+                "address": "hx8e6dcffdf06f850af5d372ac96389135e17d56d3",
+                "name": "Everstake",
+                "reward": "10"
+            },
+            {
+                "address": "hx3aa778e1f00c77d3490e9e625f1f83ed26f90133",
+                "name": "Paradigm Citadel",
+                "reward": "10"
+            },
+            {
+                "address": "hx5b97bbec2e555289351806103833a465b7fbbd47",
+                "name": "Blockmove",
+                "reward": "10"
+            },
+            {
+                "address": "hx231a795d1c719b9edf35c46b9daa4e0b5a1e83aa",
+                "name": "iBriz - ICONOsphere",
+                "reward": "10"
+            },
+            {
+                "address": "hx6f89b2c25c15f6294c79810221753131067ed3f8",
+                "name": "Sharpn",
+                "reward": "10"
+            },
+            {
+                "address": "hx9780bfcd8d33c50f56e37f5b27313433c28eb8d8",
+                "name": "Stakin (POS Bakerz)",
+                "reward": "10"
+            }
+        ]
+    },
+    {
+        "currency": "ZIL",
+        "validators": [
+            {
+                "address": "0x122219cceab410901e96c3a0e55e46231480341b",
+                "name": "Zilliqa",
+                "reward": null
+            },
+            {
+                "address": "0x3ee34d308f962d17774a591f32cd1214e8bc470d",
+                "name": "Shardpool.io",
+                "reward": null
+            },
+            {
+                "address": "0x635eff625a147c7ca0397445eee436129ee6ca0b",
+                "name": "Moonlet.io",
+                "reward": null
+            },
+            {
+                "address": "0x82b82c65213e0b2b206492d3d8a2a679e7fe52e0",
+                "name": "ViewBlock",
+                "reward": null
+            },
+            {
+                "address": "0xb83fc2c72c44b6b869c64384375c979dc3f7cf05",
+                "name": "Zillacracy",
+                "reward": null
+            }
+        ]
+    },
+    {
+        "currency": "SOL",
+        "validators": [
+            {
+                "address": "2Y2opv8Kq8zFATg6ipqb2AjgCf18tkv1CLMLXQGif2NH",
+                "name": "AtomicWallet",
+                "reward": 7.4
+            }
+        ]
+    },
+    {
+        "currency": "BNB",
+        "validators": [
+            {
+                "address": "bva1t42gtf6hawqgpmdpjzmvlzvmlttlqtkvlmgjxt",
+                "name": "BscScan",
+                "reward": 4.7
+            },
+            {
+                "address": "bva1rv0d5yehn48jnza2f490xa00t20scse9y4khvh",
+                "name": "Neptune",
+                "reward": 4.2
+            }
+        ]
+    },
+    {
+        "currency": "LUNC",
+        "validators": [
+            {
+                "name": "Interstellar Lounge",
+                "reward": "10.16",
+                "address": "terravaloper1fg5g8acntt90n9303cm5fjza9s3newleq60zt9"
+            },
+            {
+                "name": "Orion.Money",
+                "reward": "8.13",
+                "address": "terravaloper1259cmu5zyklsdkmgstxhwqpe0utfe5hhyty0at"
+            }
+        ]
+    },
+    {
+        "currency": "LUNA",
+        "validators": [
+            {
+                "name": "Allnodes.com ⚡️ Auto-compound (Ledger or Keplr)",
+                "reward": "7",
+                "address": "terravaloper120ppepaj2lh5vreadx42wnjjznh55vvktp78wk"
+            },
+            {
+                "name": "polkachu.com",
+                "reward": "7",
+                "address": "terravaloper1rr2g4z2ch4cqwl8s70yj94a5l2vakg0v36nmjh"
+            }
+        ]
+    },
+    {
+        "currency": "FET",
+        "validators": [
+            {
+                "name": "Binance Staking",
+                "reward": "11",
+                "address": "fetchvaloper17zr49k6tmcz7eezxgl7x0pfxa9e92h7lv29hd3"
+            }
+        ]
+    }
+]

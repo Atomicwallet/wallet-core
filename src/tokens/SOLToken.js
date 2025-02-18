@@ -6,11 +6,11 @@ class SOLToken extends Token {
   #parent;
   #address;
 
-  constructor(args) {
-    super(args);
+  constructor(config, db, configManager) {
+    super(config);
 
-    this.mint = args.mint;
-    this.#parent = args.parent;
+    this.mint = config.mint;
+    this.#parent = config.parent;
 
     this.loadAddress();
   }

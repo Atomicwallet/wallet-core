@@ -10,10 +10,10 @@ class TONToken extends Token {
 
   fields = { paymentId: true };
 
-  constructor(args) {
-    super(args);
-    this.#parent = args.parent;
-    this.mint = args.mint;
+  constructor(config, db, configManager) {
+    super(config, db, configManager);
+    this.#parent = config.parent;
+    this.mint = config.mint;
 
     this._getJettonWalletAddress();
   }

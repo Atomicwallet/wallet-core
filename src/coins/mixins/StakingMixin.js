@@ -14,8 +14,8 @@ const StakingMixin = (superclass) =>
     #balances;
     #predefinedValidators;
 
-    constructor(config) {
-      super(config);
+    constructor(config, db, configManager) {
+      super(config, db, configManager);
 
       this.#predefinedValidators = [];
       this.#balances = {};
@@ -39,19 +39,13 @@ const StakingMixin = (superclass) =>
      * Restore cached balances from localStorage
      * @return {Promise<void>}
      */
-    async #restoreCachedBalances() {
-      // @TODO implement balance cache
-    }
+    async #restoreCachedBalances() {}
 
     /**
      * Update cached balances
      * @param balances
      */
-    #updateCachedBalances(balances) {
-      // const { topic, payload } = STAKING_BALANCES_CACHE(this.id, balances);
-      //
-      // localStorage.setItem(topic, JSON.stringify(payload));
-    }
+    #updateCachedBalances(balances) {}
 
     /**
      * Transform balances JSON object
@@ -171,7 +165,8 @@ const StakingMixin = (superclass) =>
      * staked: Amount,
      * delegatedVotes: Amount,
      * availableWithdrawals: Amount,
-     * rewards: Amount}>
+     * rewards: Amount
+     * }>
      * }
      */
     async makeStakingInfoStruct({
@@ -374,7 +369,7 @@ const StakingMixin = (superclass) =>
 
     /**
      * By default, returns total staked balance
-     * or for specific validator if validator addres is passed
+     * or for specific validator if validator address is passed
      *
      * @param validator Address for validator
      * @returns {string}
@@ -385,7 +380,7 @@ const StakingMixin = (superclass) =>
 
     /**
      * By default, returns total unstaking balance
-     * or for specific validator if validator addres is passed
+     * or for specific validator if validator address is passed
      *
      * @param validator Address for validator
      * @returns {string}
@@ -396,7 +391,7 @@ const StakingMixin = (superclass) =>
 
     /**
      * By default, returns total rewards
-     * or from specific validator if validator addres is passed
+     * or from specific validator if validator address is passed
      *
      * @param validator Address for validator
      * @returns {string}
@@ -430,8 +425,8 @@ const StakingMixin = (superclass) =>
     }
 
     /**
-     * By default, returns total pending withdarals
-     * or from specific validator if validator addres is passed
+     * By default, returns total pending withdrawals
+     * or from specific validator if validator address is passed
      *
      * @param validator Address for validator
      * @returns {string}
@@ -442,7 +437,7 @@ const StakingMixin = (superclass) =>
 
     /**
      * By default, returns total available withdrawals
-     * or from specific validator if validator addres is passed
+     * or from specific validator if validator address is passed
      *
      * @param validator Address for validator
      * @returns {string}

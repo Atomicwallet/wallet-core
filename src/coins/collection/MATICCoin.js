@@ -45,19 +45,23 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      chainId: config.chainId ?? MATIC_CHAIN_ID,
-      dependencies: {
-        web3: new LazyLoadedLib(() => import('web3')),
-        hdkey: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        chainId: config.chainId ?? MATIC_CHAIN_ID,
+        dependencies: {
+          web3: new LazyLoadedLib(() => import('web3')),
+          hdkey: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.derivation = DERIVATION;
 
@@ -160,7 +164,7 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {string[]} array of tickers
    */
   getExcludedTokenList() {
@@ -554,10 +558,14 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    * @return {MATICToken}
    */
   createToken(args) {
-    return new MATICToken({
-      parent: this,
-      ...args,
-    });
+    return new MATICToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

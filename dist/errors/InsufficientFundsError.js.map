@@ -1,0 +1,1 @@
+{"version":3,"file":"InsufficientFundsError.js","sourceRoot":"","sources":["../../src/errors/InsufficientFundsError.ts"],"names":[],"mappings":"AAAA,OAAO,WAAW,MAAM,wBAAwB,CAAC;AAEjD,MAAM,WAAW,GAAG,wBAAwB,CAAC;AAE7C,MAAM,sBAAuB,SAAQ,WAAW;IAC9C,YAAY,IAAa;QACvB,KAAK,CAAC,IAAI,CAAC,CAAC;QACZ,IAAI,CAAC,IAAI,GAAG,WAAW,CAAC;IAC1B,CAAC;CACF;AAED,eAAe,sBAAsB,CAAC"}

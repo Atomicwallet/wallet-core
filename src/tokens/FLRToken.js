@@ -2,8 +2,8 @@ import { Token } from '../abstract';
 import { ConfigKey } from '../utils/configManager';
 
 class FLRToken extends Token {
-  constructor(...args) {
-    super(...args);
+  constructor(config, db, configManager) {
+    super(config, db, configManager);
 
     this.gasLimit = '150000';
     this.coefficient = 1;

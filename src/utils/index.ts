@@ -13,6 +13,7 @@ export { REQUEST_TYPE, requestQueueState } from 'src/utils/requestQueueState';
 export { sleepFor } from './sleepFor';
 export { getTokenId } from './token';
 export { PROMISE_STATE, getPromiseState } from 'src/utils/promiseState';
+export * from './db';
 export * from './walletConfig';
 export * from './mnemonic';
 export * from './emitter';

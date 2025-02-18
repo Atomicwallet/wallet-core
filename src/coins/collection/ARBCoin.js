@@ -64,21 +64,25 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      chainId: config.chainId ?? ARB_CHAIN_ID,
-      l2Name: ID,
-      network: config.network ?? NETWORK,
-      dependencies: {
-        [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        chainId: config.chainId ?? ARB_CHAIN_ID,
+        l2Name: ID,
+        network: config.network ?? NETWORK,
+        dependencies: {
+          [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
+          [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.setExplorersModules([
       Web3Explorer,
@@ -212,7 +216,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider('socket').getSocketTransaction({
@@ -226,7 +230,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {Array<String>} array of tickers
    */
   getExcludedTokenList() {
@@ -731,10 +735,14 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {ARBToken}
    */
   createToken(args) {
-    return new ARBToken({
-      parent: this,
-      ...args,
-    });
+    return new ARBToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

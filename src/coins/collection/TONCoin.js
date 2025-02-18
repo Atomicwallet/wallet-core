@@ -33,7 +33,7 @@ const CHECK_TX_UPDATE_TIMEOUT = 3000;
 class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
   #privateKey;
 
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -48,7 +48,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
       feeData,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.setExplorersModules([TonwebExplorer]);
 
@@ -307,10 +307,14 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @return {TONToken}
    */
   createToken(args) {
-    return new TONToken({
-      parent: this,
-      ...args,
-    });
+    return new TONToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

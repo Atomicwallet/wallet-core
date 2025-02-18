@@ -65,7 +65,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @param  {Explorer[]}  explorers the explorers
    * @param  {string} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -87,7 +87,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -211,7 +211,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider('socket').getSocketTransaction({
@@ -225,7 +225,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {Array<String>} array of tickers
    */
   getExcludedTokenList() {
@@ -781,10 +781,14 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {OPToken}
    */
   createToken(args) {
-    return new OPToken({
-      parent: this,
-      ...args,
-    });
+    return new OPToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

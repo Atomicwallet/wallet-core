@@ -40,7 +40,7 @@ const TERRA_SDK = 'terraSdk';
 class LUNACoin extends StakingMixin(HasProviders(Coin)) {
   #privateKey;
 
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -59,7 +59,7 @@ class LUNACoin extends StakingMixin(HasProviders(Coin)) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 

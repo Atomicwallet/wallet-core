@@ -50,7 +50,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
    * @param  {array}  explorers the explorers
    * @param  {<type>} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, network, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, network, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -65,7 +65,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
       network,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 

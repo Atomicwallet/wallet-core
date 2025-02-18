@@ -5,8 +5,8 @@ import { Token } from '../abstract';
 const TOKEN_GAS_LIMIT = '150000';
 
 class MATICToken extends Token {
-  constructor(...args) {
-    super(...args);
+  constructor(config, db, configManager) {
+    super(config, db, configManager);
 
     this.gasLimit = TOKEN_GAS_LIMIT;
     this.coefficient = 1;

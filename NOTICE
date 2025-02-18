@@ -44,6 +44,12 @@ This project includes software developed by third parties.
    - Publisher: The Babel Team
    - Email: N/A
 
+ (vbabel/core)
+   - License: MIT
+   - Repository: https://github.com/babel/babel
+   - Publisher: The Babel Team
+   - Email: N/A
+
  (vbabel/generator)
    - License: MIT
    - Repository: https://github.com/babel/babel
@@ -830,6 +836,18 @@ This project includes software developed by third parties.
    - Publisher: N/A
    - Email: N/A
 
+ (vdiscoveryjs/json-ext)
+   - License: MIT
+   - Repository: https://github.com/discoveryjs/json-ext
+   - Publisher: Roman Dvornov
+   - Email: rdvornov@gmail.com
+
+ (vdiscoveryjs/json-ext)
+   - License: MIT
+   - Repository: https://github.com/discoveryjs/json-ext
+   - Publisher: Roman Dvornov
+   - Email: rdvornov@gmail.com
+
  (velrondnetwork/bls-wasm)
    - License: BSD-3-Clause
    - Repository: https://github.com/herumi/bls-wasm
@@ -1298,6 +1316,12 @@ This project includes software developed by third parties.
    - Publisher: Justin Ridgewell
    - Email: justin@ridgewell.name
 
+ (vjridgewell/source-map)
+   - License: MIT
+   - Repository: https://github.com/jridgewell/source-map
+   - Publisher: Justin Ridgewell
+   - Email: justin@ridgewell.name
+
  (vjridgewell/sourcemap-codec)
    - License: MIT
    - Repository: https://github.com/jridgewell/sourcemap-codec
@@ -1430,6 +1454,12 @@ This project includes software developed by third parties.
    - Publisher: N/A
    - Email: N/A
 
+ (vnoble/ciphers)
+   - License: MIT
+   - Repository: https://github.com/paulmillr/noble-ciphers
+   - Publisher: Paul Miller
+   - Email: N/A
+
  (vnoble/curves)
    - License: MIT
    - Repository: https://github.com/paulmillr/noble-curves
@@ -1457,18 +1487,6 @@ This project includes software developed by third parties.
  (vnoble/ed25519)
    - License: MIT
    - Repository: https://github.com/paulmillr/noble-ed25519
-   - Publisher: Paul Miller
-   - Email: N/A
-
- (vnoble/hashes)
-   - License: MIT
-   - Repository: https://github.com/paulmillr/noble-hashes
-   - Publisher: Paul Miller
-   - Email: N/A
-
- (vnoble/hashes)
-   - License: MIT
-   - Repository: https://github.com/paulmillr/noble-hashes
    - Publisher: Paul Miller
    - Email: N/A
 
@@ -1573,6 +1591,12 @@ This project includes software developed by third parties.
    - Repository: https://github.com/un-ts/pkgr
    - Publisher: JounQin
    - Email: admin@1stg.me
+
+ (vpolka/url)
+   - License: MIT
+   - Repository: https://github.com/lukeed/polka
+   - Publisher: Luke Edwards
+   - Email: luke@lukeed.com
 
  (vpolkadot-api/json-rpc-provider-proxy)
    - License: MIT
@@ -2440,7 +2464,7 @@ This project includes software developed by third parties.
 
  (vtronweb3/google-protobuf)
    - License: (BSD-3-Clause AND Apache-2.0)
-   - Repository: https://github.com/start940315/protobuf-javascript-js
+   - Repository: https://github.com/tronweb3/protobuf-javascript
    - Publisher: Google Protocol Buffers Team
    - Email: N/A
 
@@ -2470,7 +2494,7 @@ This project includes software developed by third parties.
 
  (vtypes/axios)
    - License: MIT
-   - Repository: N/A
+   - Repository: https://github.com/mzabriskie/axios
    - Publisher: N/A
    - Email: N/A
 
@@ -2588,6 +2612,12 @@ This project includes software developed by third parties.
    - Publisher: N/A
    - Email: N/A
 
+ (vtypes/dotenv)
+   - License: MIT
+   - Repository: N/A
+   - Publisher: N/A
+   - Email: N/A
+
  (vtypes/duplexify)
    - License: MIT
    - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -2601,6 +2631,24 @@ This project includes software developed by third parties.
    - Email: N/A
 
  (vtypes/elliptic)
+   - License: MIT
+   - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+   - Publisher: N/A
+   - Email: N/A
+
+ (vtypes/eslint-scope)
+   - License: MIT
+   - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+   - Publisher: N/A
+   - Email: N/A
+
+ (vtypes/eslint)
+   - License: MIT
+   - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+   - Publisher: N/A
+   - Email: N/A
+
+ (vtypes/estree)
    - License: MIT
    - Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
    - Publisher: N/A
@@ -3116,6 +3164,126 @@ This project includes software developed by third parties.
    - Publisher: Yuriy Naydenov
    - Email: ebceu44@gmail.com
 
+ (vwebassemblyjs/ast)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/floating-point-hex-parser)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Mauro Bringolf
+   - Email: N/A
+
+ (vwebassemblyjs/helper-api-error)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/helper-buffer)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/helper-numbers)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/helper-wasm-bytecode)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/helper-wasm-section)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/ieee754)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: N/A
+   - Email: N/A
+
+ (vwebassemblyjs/leb128)
+   - License: Apache-2.0
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: N/A
+   - Email: N/A
+
+ (vwebassemblyjs/utf8)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/wasm-edit)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/wasm-gen)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/wasm-opt)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/wasm-parser)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebassemblyjs/wast-printer)
+   - License: MIT
+   - Repository: https://github.com/xtuc/webassemblyjs
+   - Publisher: Sven Sauleau
+   - Email: N/A
+
+ (vwebpack-cli/configtest)
+   - License: MIT
+   - Repository: https://github.com/webpack/webpack-cli
+   - Publisher: N/A
+   - Email: N/A
+
+ (vwebpack-cli/info)
+   - License: MIT
+   - Repository: https://github.com/webpack/webpack-cli
+   - Publisher: N/A
+   - Email: N/A
+
+ (vwebpack-cli/serve)
+   - License: MIT
+   - Repository: https://github.com/webpack/webpack-cli
+   - Publisher: N/A
+   - Email: N/A
+
+ (vxtuc/ieee754)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/feross/ieee754
+   - Publisher: Feross Aboukhadijeh
+   - Email: feross@feross.org
+
+ (vxtuc/long)
+   - License: Apache-2.0
+   - Repository: https://github.com/dcodeIO/long.js
+   - Publisher: Daniel Wirtz
+   - Email: dcode@dcode.io
+
  (vzilliqa-js/account)
    - License: GPL-3.0
    - Repository: https://github.com/Zilliqa/zilliqa-developer
@@ -3236,13 +3404,37 @@ agent-base (v6.0.2)
    - Publisher: Nathan Rajlich
    - Email: nathan@tootallnate.net
 
-agentkeepalive (v4.5.0)
+agentkeepalive (v4.6.0)
    - License: MIT
    - Repository: https://github.com/node-modules/agentkeepalive
    - Publisher: fengmk2
    - Email: fengmk2@gmail.com
 
+ajv-formats (v2.1.1)
+   - License: MIT
+   - Repository: https://github.com/ajv-validator/ajv-formats
+   - Publisher: Evgeny Poberezkin
+   - Email: N/A
+
+ajv-keywords (v3.5.2)
+   - License: MIT
+   - Repository: https://github.com/epoberezkin/ajv-keywords
+   - Publisher: Evgeny Poberezkin
+   - Email: N/A
+
+ajv-keywords (v5.1.0)
+   - License: MIT
+   - Repository: https://github.com/epoberezkin/ajv-keywords
+   - Publisher: Evgeny Poberezkin
+   - Email: N/A
+
 ajv (v6.12.6)
+   - License: MIT
+   - Repository: https://github.com/ajv-validator/ajv
+   - Publisher: Evgeny Poberezkin
+   - Email: N/A
+
+ajv (v8.17.1)
    - License: MIT
    - Repository: https://github.com/ajv-validator/ajv
    - Publisher: Evgeny Poberezkin
@@ -3380,12 +3572,6 @@ arr-union (v3.1.0)
    - Publisher: Jon Schlinkert
    - Email: N/A
 
-array-buffer-byte-length (v1.0.1)
-   - License: MIT
-   - Repository: https://github.com/inspect-js/array-buffer-byte-length
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
 array-buffer-byte-length (v1.0.2)
    - License: MIT
    - Repository: https://github.com/inspect-js/array-buffer-byte-length
@@ -3518,6 +3704,12 @@ async-each (v1.0.6)
    - Publisher: Paul Miller
    - Email: N/A
 
+async-function (v1.0.0)
+   - License: MIT
+   - Repository: https://github.com/ljharb/async-function
+   - Publisher: Jordan Harbamd
+   - Email: ljharb@gmail.com
+
 async-limiter (v1.0.1)
    - License: MIT
    - Repository: https://github.com/strml/async-limiter
@@ -3554,16 +3746,16 @@ atob (v2.1.2)
    - Publisher: AJ ONeal
    - Email: coolaj86@gmail.com
 
+atomic-core-adapters (v1.0.0)
+   - License: GPL-3.0*
+   - Repository: N/A
+   - Publisher: Atomic Protocol Systems OÜ
+   - Email: N/A
+
 atomic-sleep (v1.0.0)
    - License: MIT
    - Repository: https://github.com/davidmarkclements/atomic-sleep
    - Publisher: David Mark Clements
-   - Email: N/A
-
-atomic-wallet-core-adapters (v1.0.0)
-   - License: GPL-3.0*
-   - Repository: N/A
-   - Publisher: Atomic Protocol Systems OÜ
    - Email: N/A
 
 available-typed-arrays (v1.0.7)
@@ -3751,6 +3943,12 @@ babel-jest (v29.7.0)
    - Repository: https://github.com/jestjs/jest
    - Publisher: N/A
    - Email: N/A
+
+babel-loader (v9.2.1)
+   - License: MIT
+   - Repository: https://github.com/babel/babel-loader
+   - Publisher: Luis Couto
+   - Email: hello@luiscouto.pt
 
 babel-messages (v6.23.0)
    - License: MIT
@@ -4064,6 +4262,12 @@ base-x (v4.0.0)
    - Publisher: Daniel Cousens
    - Email: N/A
 
+base-x (v5.0.0)
+   - License: MIT
+   - Repository: https://github.com/cryptocoinjs/base-x
+   - Publisher: Daniel Cousens
+   - Email: N/A
+
 base32.js (v0.1.0)
    - License: MIT
    - Repository: https://github.com/mikepb/base32.js
@@ -4233,6 +4437,12 @@ bignumber.js (v9.1.2)
    - Email: M8ch88l@gmail.com
 
 binary-extensions (v1.13.1)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/binary-extensions
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
+binary-extensions (v2.3.0)
    - License: MIT
    - Repository: https://github.com/sindresorhus/binary-extensions
    - Publisher: Sindre Sorhus
@@ -4418,12 +4628,6 @@ bluebird (v3.7.2)
    - Publisher: Petka Antonov
    - Email: petka_antonov@hotmail.com
 
-bn.js (v2.2.0)
-   - License: MIT
-   - Repository: https://github.com/indutny/bn.js
-   - Publisher: Fedor Indutny
-   - Email: fedor@indutny.com
-
 bn.js (v4.11.6)
    - License: MIT
    - Repository: https://github.com/indutny/bn.js
@@ -4586,7 +4790,13 @@ browserify-sign (v4.2.3)
    - Publisher: N/A
    - Email: N/A
 
-browserslist (v4.24.3)
+browserify-zlib (v0.2.0)
+   - License: MIT
+   - Repository: https://github.com/devongovett/browserify-zlib
+   - Publisher: Devon Govett
+   - Email: devongovett@gmail.com
+
+browserslist (v4.24.4)
    - License: MIT
    - Repository: https://github.com/browserslist/browserslist
    - Publisher: Andrey Sitnik
@@ -4617,6 +4827,12 @@ bs58 (v4.0.1)
    - Email: N/A
 
 bs58 (v5.0.0)
+   - License: MIT
+   - Repository: https://github.com/cryptocoinjs/bs58
+   - Publisher: N/A
+   - Email: N/A
+
+bs58 (v6.0.0)
    - License: MIT
    - Repository: https://github.com/cryptocoinjs/bs58
    - Publisher: N/A
@@ -4693,6 +4909,12 @@ buffer-to-arraybuffer (v0.0.5)
    - Repository: https://github.com/miguelmota/buffer-to-arraybuffer
    - Publisher: Miguel Mota
    - Email: hello@miguelmota.com
+
+buffer-to-uint8array (v1.1.0)
+   - License: MIT
+   - Repository: https://github.com/substack/buffer-to-uint8array
+   - Publisher: substack
+   - Email: N/A
 
 buffer-xor (v1.0.3)
    - License: MIT
@@ -4826,7 +5048,7 @@ camelcase (v6.3.0)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
-caniuse-lite (v1.0.30001690)
+caniuse-lite (v1.0.30001697)
    - License: CC-BY-4.0
    - Repository: https://github.com/browserslist/caniuse-lite
    - Publisher: Ben Briggs
@@ -4916,11 +5138,23 @@ chokidar (v1.7.0)
    - Publisher: Paul Miller
    - Email: N/A
 
+chokidar (v3.6.0)
+   - License: MIT
+   - Repository: https://github.com/paulmillr/chokidar
+   - Publisher: Paul Miller
+   - Email: N/A
+
 chownr (v1.1.4)
    - License: ISC
    - Repository: https://github.com/isaacs/chownr
    - Publisher: Isaac Z. Schlueter
    - Email: i@izs.me
+
+chrome-trace-event (v1.0.4)
+   - License: MIT
+   - Repository: https://github.com/samccone/chrome-trace-event
+   - Publisher: Trent Mick, Sam Saccone
+   - Email: N/A
 
 ci-info (v3.9.0)
    - License: MIT
@@ -4940,7 +5174,7 @@ cipher-base (v1.0.6)
    - Publisher: Calvin Metcalf
    - Email: calvin.metcalf@gmail.com
 
-cjs-module-lexer (v1.4.1)
+cjs-module-lexer (v1.4.3)
    - License: MIT
    - Repository: https://github.com/nodejs/cjs-module-lexer
    - Publisher: Guy Bedford
@@ -4963,6 +5197,12 @@ cliui (v8.0.1)
    - Repository: https://github.com/yargs/cliui
    - Publisher: Ben Coe
    - Email: ben@npmjs.com
+
+clone-deep (v4.0.1)
+   - License: MIT
+   - Repository: https://github.com/jonschlinkert/clone-deep
+   - Publisher: Jon Schlinkert
+   - Email: N/A
 
 clone-response (v1.0.3)
    - License: MIT
@@ -5053,6 +5293,18 @@ commander (v7.2.0)
    - Repository: https://github.com/tj/commander.js
    - Publisher: TJ Holowaychuk
    - Email: tj@vision-media.ca
+
+commander (v9.5.0)
+   - License: MIT
+   - Repository: https://github.com/tj/commander.js
+   - Publisher: TJ Holowaychuk
+   - Email: tj@vision-media.ca
+
+common-path-prefix (v3.0.0)
+   - License: ISC
+   - Repository: https://github.com/novemberborn/common-path-prefix
+   - Publisher: Mark Wubben
+   - Email: N/A
 
 compare-versions (v3.6.0)
    - License: MIT
@@ -5162,7 +5414,7 @@ copy-descriptor (v0.1.1)
    - Publisher: Jon Schlinkert
    - Email: N/A
 
-core-js-compat (v3.39.0)
+core-js-compat (v3.40.0)
    - License: MIT
    - Repository: https://github.com/zloirock/core-js
    - Publisher: Denis Pushkarev
@@ -5282,7 +5534,13 @@ cross-fetch (v2.2.6)
    - Publisher: Leonardo Quixada
    - Email: lquixada@gmail.com
 
-cross-fetch (v3.1.8)
+cross-fetch (v3.2.0)
+   - License: MIT
+   - Repository: https://github.com/lquixada/cross-fetch
+   - Publisher: Leonardo Quixada
+   - Email: lquixada@gmail.com
+
+cross-fetch (v4.1.0)
    - License: MIT
    - Repository: https://github.com/lquixada/cross-fetch
    - Publisher: Leonardo Quixada
@@ -5336,33 +5594,15 @@ data-uri-to-buffer (v4.0.1)
    - Publisher: Nathan Rajlich
    - Email: nathan@tootallnate.net
 
-data-view-buffer (v1.0.1)
-   - License: MIT
-   - Repository: https://github.com/ljharb/data-view-buffer
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
 data-view-buffer (v1.0.2)
    - License: MIT
    - Repository: https://github.com/inspect-js/data-view-buffer
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
-data-view-byte-length (v1.0.1)
-   - License: MIT
-   - Repository: https://github.com/ljharb/data-view-byte-length
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
 data-view-byte-length (v1.0.2)
    - License: MIT
    - Repository: https://github.com/inspect-js/data-view-byte-length
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
-data-view-byte-offset (v1.0.0)
-   - License: MIT
-   - Repository: https://github.com/ljharb/data-view-byte-offset
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
@@ -5382,6 +5622,12 @@ dayjs (v1.8.15)
    - License: MIT
    - Repository: https://github.com/iamkun/dayjs
    - Publisher: iamkun
+   - Email: N/A
+
+debounce (v1.2.1)
+   - License: MIT
+   - Repository: https://github.com/component/debounce
+   - Publisher: N/A
    - Email: N/A
 
 debug (v2.6.9)
@@ -5420,7 +5666,7 @@ debug (v4.4.0)
    - Publisher: Josh Junon
    - Email: N/A
 
-decimal.js (v10.4.3)
+decimal.js (v10.5.0)
    - License: MIT
    - Repository: https://github.com/MikeMcl/decimal.js
    - Publisher: Michael Mclaughlin
@@ -5690,6 +5936,12 @@ dotenv (v16.4.7)
    - Publisher: N/A
    - Email: N/A
 
+dotenv (v6.2.0)
+   - License: BSD-2-Clause
+   - Repository: https://github.com/motdotla/dotenv
+   - Publisher: N/A
+   - Email: N/A
+
 dotenv (v8.2.0)
    - License: BSD-2-Clause
    - Repository: https://github.com/motdotla/dotenv
@@ -5786,31 +6038,13 @@ ejs (v3.1.10)
    - Publisher: Matthew Eernisse
    - Email: mde@fleegix.org
 
-electron-to-chromium (v1.5.76)
+electron-to-chromium (v1.5.93)
    - License: ISC
    - Repository: https://github.com/kilian/electron-to-chromium
    - Publisher: Kilian Valkhof
    - Email: N/A
 
-elliptic (v3.1.0)
-   - License: MIT
-   - Repository: https://github.com/indutny/elliptic
-   - Publisher: Fedor Indutny
-   - Email: fedor@indutny.com
-
-elliptic (v6.4.0)
-   - License: MIT
-   - Repository: https://github.com/indutny/elliptic
-   - Publisher: Fedor Indutny
-   - Email: fedor@indutny.com
-
-elliptic (v6.5.4)
-   - License: MIT
-   - Repository: https://github.com/indutny/elliptic
-   - Publisher: Fedor Indutny
-   - Email: fedor@indutny.com
-
-elliptic (v6.6.1)
+elliptic (v6.5.5)
    - License: MIT
    - Repository: https://github.com/indutny/elliptic
    - Publisher: Fedor Indutny
@@ -5858,7 +6092,7 @@ engine.io-client (v3.3.3)
    - Publisher: N/A
    - Email: N/A
 
-engine.io-client (v6.6.2)
+engine.io-client (v6.6.3)
    - License: MIT
    - Repository: https://github.com/socketio/socket.io
    - Publisher: N/A
@@ -5876,16 +6110,16 @@ engine.io-parser (v5.2.3)
    - Publisher: N/A
    - Email: N/A
 
-enhanced-resolve (v5.17.1)
+enhanced-resolve (v5.18.1)
    - License: MIT
    - Repository: https://github.com/webpack/enhanced-resolve
    - Publisher: Tobias Koppers @sokra
    - Email: N/A
 
-enhanced-resolve (v5.18.0)
+envinfo (v7.14.0)
    - License: MIT
-   - Repository: https://github.com/webpack/enhanced-resolve
-   - Publisher: Tobias Koppers @sokra
+   - Repository: https://github.com/tabrindle/envinfo
+   - Publisher: tabrindle@gmail.com
    - Email: N/A
 
 eosjs-ecc (v4.0.7)
@@ -5918,12 +6152,6 @@ error-polyfill (v0.1.3)
    - Publisher: László Lajos Jánszky
    - Email: N/A
 
-es-abstract (v1.23.6)
-   - License: MIT
-   - Repository: https://github.com/ljharb/es-abstract
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
 es-abstract (v1.23.9)
    - License: MIT
    - Repository: https://github.com/ljharb/es-abstract
@@ -5954,15 +6182,15 @@ es-iterator-helpers (v1.2.1)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
-es-object-atoms (v1.0.0)
+es-module-lexer (v1.6.0)
+   - License: MIT
+   - Repository: https://github.com/guybedford/es-module-lexer
+   - Publisher: Guy Bedford
+   - Email: N/A
+
+es-object-atoms (v1.1.1)
    - License: MIT
    - Repository: https://github.com/ljharb/es-object-atoms
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
-es-set-tostringtag (v2.0.3)
-   - License: MIT
-   - Repository: https://github.com/es-shims/es-set-tostringtag
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
@@ -6062,7 +6290,7 @@ eslint-compat-utils (v0.5.1)
    - Publisher: Yosuke Ota
    - Email: N/A
 
-eslint-config-next (v15.1.4)
+eslint-config-next (v15.1.6)
    - License: MIT
    - Repository: https://github.com/vercel/next.js
    - Publisher: N/A
@@ -6146,7 +6374,7 @@ eslint-plugin-react-hooks (v5.1.0)
    - Publisher: N/A
    - Email: N/A
 
-eslint-plugin-react (v7.37.3)
+eslint-plugin-react (v7.37.4)
    - License: MIT
    - Repository: https://github.com/jsx-eslint/eslint-plugin-react
    - Publisher: Yannick Croissant
@@ -6157,6 +6385,12 @@ eslint-plugin-standard (v5.0.0)
    - Repository: https://github.com/standard/eslint-plugin-standard
    - Publisher: Feross Aboukhadijeh
    - Email: feross@feross.org
+
+eslint-scope (v5.1.1)
+   - License: BSD-2-Clause
+   - Repository: https://github.com/eslint/eslint-scope
+   - Publisher: N/A
+   - Email: N/A
 
 eslint-scope (v7.2.2)
    - License: BSD-2-Clause
@@ -6224,6 +6458,12 @@ esrecurse (v4.3.0)
    - Publisher: N/A
    - Email: N/A
 
+estraverse (v4.3.0)
+   - License: BSD-2-Clause
+   - Repository: https://github.com/estools/estraverse
+   - Publisher: N/A
+   - Email: N/A
+
 estraverse (v5.3.0)
    - License: BSD-2-Clause
    - Repository: https://github.com/estools/estraverse
@@ -6272,13 +6512,13 @@ ethereum-cryptography (v0.1.3)
    - Publisher: N/A
    - Email: N/A
 
-ethereum-cryptography (v2.0.0)
+ethereum-cryptography (v2.2.1)
    - License: MIT
    - Repository: https://github.com/ethereum/js-ethereum-cryptography
    - Publisher: N/A
    - Email: N/A
 
-ethereum-cryptography (v2.2.1)
+ethereum-cryptography (v3.0.0)
    - License: MIT
    - Repository: https://github.com/ethereum/js-ethereum-cryptography
    - Publisher: N/A
@@ -6302,7 +6542,7 @@ ethers (v5.7.2)
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
-ethers (v6.13.4)
+ethers (v6.13.5)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -6536,12 +6776,6 @@ fast-glob (v3.3.1)
    - Publisher: Denis Malinochkin
    - Email: N/A
 
-fast-glob (v3.3.2)
-   - License: MIT
-   - Repository: https://github.com/mrmlnc/fast-glob
-   - Publisher: Denis Malinochkin
-   - Email: N/A
-
 fast-glob (v3.3.3)
    - License: MIT
    - Repository: https://github.com/mrmlnc/fast-glob
@@ -6596,7 +6830,19 @@ fast-stable-stringify (v1.0.0)
    - Publisher: Nicky Out
    - Email: N/A
 
-fastq (v1.17.1)
+fast-uri (v3.0.6)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/fastify/fast-uri
+   - Publisher: Vincent Le Goff
+   - Email: vince.legoff@gmail.com
+
+fastest-levenshtein (v1.0.16)
+   - License: MIT
+   - Repository: https://github.com/ka-weihe/fastest-levenshtein
+   - Publisher: Kasper U. Weihe
+   - Email: N/A
+
+fastq (v1.19.0)
    - License: ISC
    - Repository: https://github.com/mcollina/fastq
    - Publisher: Matteo Collina
@@ -6668,6 +6914,12 @@ finalhandler (v1.3.1)
    - Publisher: Douglas Christopher Wilson
    - Email: doug@somethingdoug.com
 
+find-cache-dir (v4.0.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/find-cache-dir
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
 find-up (v4.1.0)
    - License: MIT
    - Repository: https://github.com/sindresorhus/find-up
@@ -6675,6 +6927,12 @@ find-up (v4.1.0)
    - Email: sindresorhus@gmail.com
 
 find-up (v5.0.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/find-up
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
+find-up (v6.3.0)
    - License: MIT
    - Repository: https://github.com/sindresorhus/find-up
    - Publisher: Sindre Sorhus
@@ -6691,6 +6949,12 @@ flat-options (v0.1.3)
    - Repository: https://github.com/vitalets/flat-options
    - Publisher: Vitaliy Potapov
    - Email: noginsk@rambler.ru
+
+flat (v5.0.2)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/hughsk/flat
+   - Publisher: Hugh Kennedy
+   - Email: hughskennedy@gmail.com
 
 flatted (v3.3.2)
    - License: ISC
@@ -6710,7 +6974,7 @@ follow-redirects (v1.5.10)
    - Publisher: Ruben Verborgh
    - Email: ruben@verborgh.org
 
-for-each (v0.3.3)
+for-each (v0.3.4)
    - License: MIT
    - Repository: https://github.com/Raynos/for-each
    - Publisher: Raynos
@@ -6848,12 +7112,6 @@ function-bind (v1.1.2)
    - Publisher: Raynos
    - Email: raynos2@gmail.com
 
-function.prototype.name (v1.1.7)
-   - License: MIT
-   - Repository: https://github.com/es-shims/Function.prototype.name
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
 function.prototype.name (v1.1.8)
    - License: MIT
    - Repository: https://github.com/es-shims/Function.prototype.name
@@ -6883,12 +7141,6 @@ get-caller-file (v2.0.5)
    - Repository: https://github.com/stefanpenner/get-caller-file
    - Publisher: Stefan Penner
    - Email: N/A
-
-get-intrinsic (v1.2.6)
-   - License: MIT
-   - Repository: https://github.com/ljharb/get-intrinsic
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
 
 get-intrinsic (v1.2.7)
    - License: MIT
@@ -6932,7 +7184,7 @@ get-symbol-description (v1.1.0)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
-get-tsconfig (v4.8.1)
+get-tsconfig (v4.10.0)
    - License: MIT
    - Repository: https://github.com/privatenumber/get-tsconfig
    - Publisher: Hiroki Osame
@@ -6979,6 +7231,12 @@ glob-parent (v6.0.2)
    - Repository: https://github.com/gulpjs/glob-parent
    - Publisher: Gulp Team
    - Email: team@gulpjs.com
+
+glob-to-regexp (v0.4.1)
+   - License: BSD-2-Clause
+   - Repository: https://github.com/fitzgen/glob-to-regexp
+   - Publisher: Nick Fitzgerald
+   - Email: fitzgen@gmail.com
 
 glob (v7.1.2)
    - License: ISC
@@ -7106,6 +7364,12 @@ growl (v1.10.5)
    - Publisher: TJ Holowaychuk
    - Email: tj@vision-media.ca
 
+gzip-size (v6.0.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/gzip-size
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
 har-schema (v2.0.0)
    - License: ISC
    - Repository: https://github.com/ahmadnassri/har-schema
@@ -7124,7 +7388,7 @@ has-ansi (v2.0.0)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
-has-bigints (v1.0.2)
+has-bigints (v1.1.0)
    - License: MIT
    - Repository: https://github.com/ljharb/has-bigints
    - Publisher: Jordan Harband
@@ -7316,7 +7580,7 @@ http-https (v1.0.0)
    - Publisher: Isaac Z. Schlueter
    - Email: i@izs.me
 
-http-parser-js (v0.5.8)
+http-parser-js (v0.5.9)
    - License: MIT
    - Repository: https://github.com/creationix/http-parser-js
    - Publisher: Tim Caswell
@@ -7406,7 +7670,7 @@ immediate (v3.0.6)
    - Publisher: N/A
    - Email: N/A
 
-import-fresh (v3.3.0)
+import-fresh (v3.3.1)
    - License: MIT
    - Repository: https://github.com/sindresorhus/import-fresh
    - Publisher: Sindre Sorhus
@@ -7466,6 +7730,12 @@ internal-slot (v1.1.0)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
+interpret (v3.1.1)
+   - License: MIT
+   - Repository: https://github.com/gulpjs/interpret
+   - Publisher: Gulp Team
+   - Email: team@gulpjs.com
+
 invariant (v2.2.4)
    - License: MIT
    - Repository: https://github.com/zertosh/invariant
@@ -7514,7 +7784,7 @@ is-arrow-function (v2.0.3)
    - Publisher: Jordan Harband
    - Email: N/A
 
-is-async-function (v2.0.0)
+is-async-function (v2.1.1)
    - License: MIT
    - Repository: https://github.com/inspect-js/is-async-function
    - Publisher: Jordan Harband
@@ -7532,7 +7802,13 @@ is-binary-path (v1.0.1)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
-is-boolean-object (v1.2.1)
+is-binary-path (v2.1.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/is-binary-path
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
+is-boolean-object (v1.2.2)
    - License: MIT
    - Repository: https://github.com/inspect-js/is-boolean-object
    - Publisher: Jordan Harband
@@ -7562,7 +7838,7 @@ is-callable (v1.2.7)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
-is-core-module (v2.16.0)
+is-core-module (v2.16.1)
    - License: MIT
    - Repository: https://github.com/inspect-js/is-core-module
    - Publisher: Jordan Harband
@@ -7676,7 +7952,7 @@ is-generator-fn (v2.1.0)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
-is-generator-function (v1.0.10)
+is-generator-function (v1.1.0)
    - License: MIT
    - Repository: https://github.com/inspect-js/is-generator-function
    - Publisher: Jordan Harband
@@ -7711,12 +7987,6 @@ is-nan (v1.3.2)
    - Repository: https://github.com/es-shims/is-nan
    - Publisher: Jordan Harband
    - Email: N/A
-
-is-negative-zero (v2.0.3)
-   - License: MIT
-   - Repository: https://github.com/inspect-js/is-negative-zero
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
 
 is-number-object (v1.1.1)
    - License: MIT
@@ -7796,12 +8066,6 @@ is-set (v2.0.3)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
-is-shared-array-buffer (v1.0.3)
-   - License: MIT
-   - Repository: https://github.com/inspect-js/is-shared-array-buffer
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
 is-shared-array-buffer (v1.0.4)
    - License: MIT
    - Repository: https://github.com/inspect-js/is-shared-array-buffer
@@ -7826,12 +8090,6 @@ is-symbol (v1.1.1)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
-is-typed-array (v1.1.14)
-   - License: MIT
-   - Repository: https://github.com/inspect-js/is-typed-array
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
 is-typed-array (v1.1.15)
    - License: MIT
    - Repository: https://github.com/inspect-js/is-typed-array
@@ -7850,7 +8108,7 @@ is-weakmap (v2.0.2)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
-is-weakref (v1.1.0)
+is-weakref (v1.1.1)
    - License: MIT
    - Repository: https://github.com/inspect-js/is-weakref
    - Publisher: Jordan Harband
@@ -8156,6 +8414,12 @@ jest-watcher (v29.7.0)
    - Publisher: N/A
    - Email: N/A
 
+jest-worker (v27.5.1)
+   - License: MIT
+   - Repository: https://github.com/facebook/jest
+   - Publisher: N/A
+   - Email: N/A
+
 jest-worker (v29.7.0)
    - License: MIT
    - Repository: https://github.com/jestjs/jest
@@ -8325,6 +8589,12 @@ json-parse-even-better-errors (v2.3.1)
    - Email: kzm@zkat.tech
 
 json-schema-traverse (v0.4.1)
+   - License: MIT
+   - Repository: https://github.com/epoberezkin/json-schema-traverse
+   - Publisher: Evgeny Poberezkin
+   - Email: N/A
+
+json-schema-traverse (v1.0.0)
    - License: MIT
    - Repository: https://github.com/epoberezkin/json-schema-traverse
    - Publisher: Evgeny Poberezkin
@@ -8558,6 +8828,12 @@ lines-and-columns (v1.2.4)
    - Publisher: Brian Donovan
    - Email: brian@donovans.cc
 
+loader-runner (v4.3.0)
+   - License: MIT
+   - Repository: https://github.com/webpack/loader-runner
+   - Publisher: Tobias Koppers @sokra
+   - Email: N/A
+
 loady (v0.0.5)
    - License: MIT
    - Repository: https://github.com/chjj/loady
@@ -8571,6 +8847,12 @@ locate-path (v5.0.0)
    - Email: sindresorhus@gmail.com
 
 locate-path (v6.0.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/locate-path
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
+locate-path (v7.2.0)
    - License: MIT
    - Repository: https://github.com/sindresorhus/locate-path
    - Publisher: Sindre Sorhus
@@ -8660,7 +8942,7 @@ loglevel (v1.7.1)
    - Publisher: Tim Perry
    - Email: pimterry@gmail.com
 
-loglevel (v1.8.1)
+loglevel (v1.9.2)
    - License: MIT
    - Repository: https://github.com/pimterry/loglevel
    - Publisher: Tim Perry
@@ -8684,7 +8966,7 @@ long (v4.0.0)
    - Publisher: Daniel Wirtz
    - Email: dcode@dcode.io
 
-long (v5.2.3)
+long (v5.2.4)
    - License: Apache-2.0
    - Repository: https://github.com/dcodeIO/long.js
    - Publisher: Daniel Wirtz
@@ -8755,12 +9037,6 @@ map-visit (v1.0.0)
    - Repository: https://github.com/jonschlinkert/map-visit
    - Publisher: Jon Schlinkert
    - Email: N/A
-
-math-intrinsics (v1.0.0)
-   - License: MIT
-   - Repository: https://github.com/es-shims/math-intrinsics
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
 
 math-intrinsics (v1.1.0)
    - License: MIT
@@ -9032,6 +9308,12 @@ more-entropy (v0.0.7)
    - Publisher: N/A
    - Email: N/A
 
+mrmime (v2.0.0)
+   - License: MIT
+   - Repository: https://github.com/lukeed/mrmime
+   - Publisher: Luke Edwards
+   - Email: luke.edwards05@gmail.com
+
 ms (v2.0.0)
    - License: MIT
    - Repository: https://github.com/zeit/ms
@@ -9097,6 +9379,12 @@ mustache (v4.2.0)
    - Repository: https://github.com/janl/mustache.js
    - Publisher: mustache.js Authors
    - Email: http://github.com/janl/mustache.js
+
+mylas (v2.1.13)
+   - License: MIT
+   - Repository: https://github.com/raouldeheer/Mylas
+   - Publisher: Raoul de Heer
+   - Email: N/A
 
 nan (v2.22.0)
    - License: MIT
@@ -9191,6 +9479,12 @@ negotiator (v0.6.3)
 nem-sdk (v1.6.7)
    - License: MIT
    - Repository: https://github.com/QuantumMechanics/NEM-sdk
+   - Publisher: N/A
+   - Email: N/A
+
+neo-async (v2.6.2)
+   - License: MIT
+   - Repository: https://github.com/suguru03/neo-async
    - Publisher: N/A
    - Email: N/A
 
@@ -9392,7 +9686,7 @@ object-hash (v3.0.0)
    - Publisher: Scott Puleo
    - Email: puleos@gmail.com
 
-object-inspect (v1.13.3)
+object-inspect (v1.13.4)
    - License: MIT
    - Repository: https://github.com/inspect-js/object-inspect
    - Publisher: James Halliday
@@ -9416,12 +9710,6 @@ object-visit (v1.0.1)
    - Publisher: Jon Schlinkert
    - Email: N/A
 
-object.assign (v4.1.5)
-   - License: MIT
-   - Repository: https://github.com/ljharb/object.assign
-   - Publisher: Jordan Harband
-   - Email: N/A
-
 object.assign (v4.1.7)
    - License: MIT
    - Repository: https://github.com/ljharb/object.assign
@@ -9440,7 +9728,7 @@ object.fromentries (v2.0.8)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
-object.getprototypeof (v1.0.6)
+object.getprototypeof (v1.0.7)
    - License: MIT
    - Repository: https://github.com/es-shims/Object.getPrototypeOf
    - Publisher: Jordan Harband
@@ -9463,12 +9751,6 @@ object.pick (v1.3.0)
    - Repository: https://github.com/jonschlinkert/object.pick
    - Publisher: Jon Schlinkert
    - Email: N/A
-
-object.values (v1.2.0)
-   - License: MIT
-   - Repository: https://github.com/es-shims/Object.values
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
 
 object.values (v1.2.1)
    - License: MIT
@@ -9511,6 +9793,12 @@ ontology-ts-sdk (v1.0.22)
    - Repository: https://github.com/ontio/ontology-ts-sdk
    - Publisher: ontologyNetwork
    - Email: N/A
+
+opener (v1.5.2)
+   - License: (WTFPL OR MIT)
+   - Repository: https://github.com/domenic/opener
+   - Publisher: Domenic Denicola
+   - Email: d@domenic.me
 
 optionator (v0.9.4)
    - License: MIT
@@ -9566,6 +9854,12 @@ p-limit (v3.1.0)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
+p-limit (v4.0.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/p-limit
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
 p-locate (v4.1.0)
    - License: MIT
    - Repository: https://github.com/sindresorhus/p-locate
@@ -9573,6 +9867,12 @@ p-locate (v4.1.0)
    - Email: sindresorhus@gmail.com
 
 p-locate (v5.0.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/p-locate
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
+p-locate (v6.0.0)
    - License: MIT
    - Repository: https://github.com/sindresorhus/p-locate
    - Publisher: Sindre Sorhus
@@ -9651,6 +9951,12 @@ pascalcase (v0.1.1)
    - Email: N/A
 
 path-exists (v4.0.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/path-exists
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
+path-exists (v5.0.0)
    - License: MIT
    - Repository: https://github.com/sindresorhus/path-exists
    - Publisher: Sindre Sorhus
@@ -9769,6 +10075,18 @@ pkg-dir (v4.2.0)
    - Repository: https://github.com/sindresorhus/pkg-dir
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
+
+pkg-dir (v7.0.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/pkg-dir
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
+plimit-lit (v1.6.1)
+   - License: MIT
+   - Repository: https://github.com/joelvoss/plimit-lit
+   - Publisher: Joel Voß
+   - Email: mail@joelvoss.com
 
 posix-character-classes (v0.1.1)
    - License: MIT
@@ -10004,7 +10322,7 @@ qs (v6.13.0)
    - Publisher: N/A
    - Email: N/A
 
-qs (v6.13.1)
+qs (v6.14.0)
    - License: BSD-3-Clause
    - Repository: https://github.com/ljharb/qs
    - Publisher: N/A
@@ -10028,11 +10346,23 @@ querystring-es3 (v0.2.1)
    - Publisher: Irakli Gozalishvili
    - Email: rfobic@gmail.com
 
+querystring (v0.2.1)
+   - License: MIT
+   - Repository: https://github.com/Gozala/querystring
+   - Publisher: Irakli Gozalishvili
+   - Email: rfobic@gmail.com
+
 querystringify (v2.2.0)
    - License: MIT
    - Repository: https://github.com/unshiftio/querystringify
    - Publisher: Arnout Kazemier
    - Email: N/A
+
+queue-lit (v1.5.2)
+   - License: MIT
+   - Repository: https://github.com/joelvoss/queue-lit
+   - Publisher: Joel Voß
+   - Email: mail@joelvoss.com
 
 queue-microtask (v1.2.3)
    - License: MIT
@@ -10130,13 +10460,19 @@ readable-stream (v3.6.2)
    - Publisher: N/A
    - Email: N/A
 
-readable-stream (v4.6.0)
+readable-stream (v4.7.0)
    - License: MIT
    - Repository: https://github.com/nodejs/readable-stream
    - Publisher: N/A
    - Email: N/A
 
 readdirp (v2.2.1)
+   - License: MIT
+   - Repository: https://github.com/paulmillr/readdirp
+   - Publisher: Thorsten Lorenz
+   - Email: thlorenz@gmx.de
+
+readdirp (v3.6.0)
    - License: MIT
    - Repository: https://github.com/paulmillr/readdirp
    - Publisher: Thorsten Lorenz
@@ -10154,6 +10490,12 @@ real-require (v0.2.0)
    - Publisher: Paolo Insogna
    - Email: shogun@cowtech.it
 
+rechoir (v0.8.0)
+   - License: MIT
+   - Repository: https://github.com/gulpjs/rechoir
+   - Publisher: Gulp Team
+   - Email: team@gulpjs.com
+
 reconnecting-websocket (v4.4.0)
    - License: MIT
    - Repository: https://github.com/pladaria/reconnecting-websocket
@@ -10161,18 +10503,6 @@ reconnecting-websocket (v4.4.0)
    - Email: pedro.ladaria@gmail.com
 
 reflect.getprototypeof (v1.0.10)
-   - License: MIT
-   - Repository: https://github.com/es-shims/Reflect.getPrototypeOf
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
-reflect.getprototypeof (v1.0.8)
-   - License: MIT
-   - Repository: https://github.com/es-shims/Reflect.getPrototypeOf
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
-reflect.getprototypeof (v1.0.9)
    - License: MIT
    - Repository: https://github.com/es-shims/Reflect.getPrototypeOf
    - Publisher: Jordan Harband
@@ -10238,7 +10568,7 @@ regex-not (v1.0.2)
    - Publisher: Jon Schlinkert
    - Email: N/A
 
-regexp.prototype.flags (v1.5.3)
+regexp.prototype.flags (v1.5.4)
    - License: MIT
    - Repository: https://github.com/es-shims/RegExp.prototype.flags
    - Publisher: Jordan Harband
@@ -10316,6 +10646,12 @@ require-directory (v2.1.1)
    - Publisher: Troy Goode
    - Email: troygoode@gmail.com
 
+require-from-string (v2.0.2)
+   - License: MIT
+   - Repository: https://github.com/floatdrop/require-from-string
+   - Publisher: Vsevolod Strukchinsky
+   - Email: floatdrop@gmail.com
+
 requires-port (v1.0.0)
    - License: MIT
    - Repository: https://github.com/unshiftio/requires-port
@@ -10365,12 +10701,6 @@ resolve.exports (v2.0.3)
    - Email: luke.edwards05@gmail.com
 
 resolve (v1.22.10)
-   - License: MIT
-   - Repository: https://github.com/browserify/resolve
-   - Publisher: James Halliday
-   - Email: mail@substack.net
-
-resolve (v1.22.9)
    - License: MIT
    - Repository: https://github.com/browserify/resolve
    - Publisher: James Halliday
@@ -10478,12 +10808,6 @@ rpc-websockets (v7.11.2)
    - Publisher: Elpheria
    - Email: N/A
 
-rpc-websockets (v7.5.1)
-   - License: LGPL-3.0-only
-   - Repository: https://github.com/elpheria/rpc-websockets
-   - Publisher: Elpheria
-   - Email: N/A
-
 run-parallel (v1.2.0)
    - License: MIT
    - Repository: https://github.com/feross/run-parallel
@@ -10562,6 +10886,18 @@ schema-inspector (v2.1.0)
    - Publisher: Sebastien Chopin
    - Email: N/A
 
+schema-utils (v3.3.0)
+   - License: MIT
+   - Repository: https://github.com/webpack/schema-utils
+   - Publisher: webpack Contrib
+   - Email: N/A
+
+schema-utils (v4.3.0)
+   - License: MIT
+   - Repository: https://github.com/webpack/schema-utils
+   - Publisher: webpack Contrib
+   - Email: N/A
+
 scrypt-async (v2.0.1)
    - License: BSD*
    - Repository: https://github.com/dchest/scrypt-async-js
@@ -10634,7 +10970,7 @@ semver (v6.3.1)
    - Publisher: GitHub Inc.
    - Email: N/A
 
-semver (v7.6.3)
+semver (v7.7.1)
    - License: ISC
    - Repository: https://github.com/npm/node-semver
    - Publisher: GitHub Inc.
@@ -10645,6 +10981,12 @@ send (v0.19.0)
    - Repository: https://github.com/pillarjs/send
    - Publisher: TJ Holowaychuk
    - Email: tj@vision-media.ca
+
+serialize-javascript (v6.0.2)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/yahoo/serialize-javascript
+   - Publisher: Eric Ferraiuolo
+   - Email: edf@ericf.me
 
 serve-static (v1.16.2)
    - License: MIT
@@ -10712,6 +11054,12 @@ sha.js (v2.4.11)
    - Publisher: Dominic Tarr
    - Email: dominic.tarr@gmail.com
 
+shallow-clone (v3.0.1)
+   - License: MIT
+   - Repository: https://github.com/jonschlinkert/shallow-clone
+   - Publisher: Jon Schlinkert
+   - Email: N/A
+
 shebang-command (v2.0.0)
    - License: MIT
    - Repository: https://github.com/kevva/shebang-command
@@ -10777,6 +11125,12 @@ simple-get (v3.1.1)
    - Repository: https://github.com/feross/simple-get
    - Publisher: Feross Aboukhadijeh
    - Email: feross@feross.org
+
+sirv (v2.0.4)
+   - License: MIT
+   - Repository: https://github.com/lukeed/sirv
+   - Publisher: Luke Edwards
+   - Email: luke@lukeed.com
 
 sisteransi (v1.0.5)
    - License: MIT
@@ -10916,6 +11270,12 @@ source-map-support (v0.5.13)
    - Publisher: N/A
    - Email: N/A
 
+source-map-support (v0.5.21)
+   - License: MIT
+   - Repository: https://github.com/evanw/node-source-map-support
+   - Publisher: N/A
+   - Email: N/A
+
 source-map-url (v0.4.1)
    - License: MIT
    - Repository: https://github.com/lydell/source-map-url
@@ -10933,6 +11293,12 @@ source-map (v0.6.1)
    - Repository: https://github.com/mozilla/source-map
    - Publisher: Nick Fitzgerald
    - Email: nfitzgerald@mozilla.com
+
+spark-md5 (v3.0.1)
+   - License: WTFPL
+   - Repository: https://github.com/satazor/js-spark-md5
+   - Publisher: André Cruz
+   - Email: andremiguelcruz@msn.com
 
 spark-md5 (v3.0.2)
    - License: (WTFPL OR MIT)
@@ -11047,6 +11413,12 @@ str2buf (v1.3.0)
    - Repository: https://github.com/kevlened/str2buf
    - Publisher: N/A
    - Email: N/A
+
+stream-browserify (v3.0.0)
+   - License: MIT
+   - Repository: https://github.com/browserify/stream-browserify
+   - Publisher: James Halliday
+   - Email: mail@substack.net
 
 stream-combiner (v0.0.4)
    - License: MIT
@@ -11252,7 +11624,7 @@ tapable (v2.2.1)
    - Publisher: Tobias Koppers @sokra
    - Email: N/A
 
-tar-fs (v2.1.1)
+tar-fs (v2.1.2)
    - License: MIT
    - Repository: https://github.com/mafintosh/tar-fs
    - Publisher: Mathias Buus
@@ -11269,6 +11641,18 @@ tar (v4.4.19)
    - Repository: https://github.com/npm/node-tar
    - Publisher: Isaac Z. Schlueter
    - Email: i@izs.me
+
+terser-webpack-plugin (v5.3.11)
+   - License: MIT
+   - Repository: https://github.com/webpack-contrib/terser-webpack-plugin
+   - Publisher: webpack Contrib Team
+   - Email: N/A
+
+terser (v5.38.0)
+   - License: BSD-2-Clause
+   - Repository: https://github.com/terser/terser
+   - Publisher: Mihai Bazon
+   - Email: mihai.bazon@gmail.com
 
 test-exclude (v6.0.0)
    - License: ISC
@@ -11426,6 +11810,12 @@ tonweb (v0.0.60)
    - Publisher: N/A
    - Email: N/A
 
+totalist (v3.0.1)
+   - License: MIT
+   - Repository: https://github.com/lukeed/totalist
+   - Publisher: Luke Edwards
+   - Email: luke.edwards05@gmail.com
+
 tough-cookie (v2.5.0)
    - License: BSD-3-Clause
    - Repository: https://github.com/salesforce/tough-cookie
@@ -11462,7 +11852,7 @@ ts-api-utils (v1.4.3)
    - Publisher: JoshuaKGoldberg
    - Email: npm@joshuakgoldberg.com
 
-ts-api-utils (v2.0.0)
+ts-api-utils (v2.0.1)
    - License: MIT
    - Repository: https://github.com/JoshuaKGoldberg/ts-api-utils
    - Publisher: JoshuaKGoldberg
@@ -11479,6 +11869,12 @@ ts-node (v10.9.2)
    - Repository: https://github.com/TypeStrong/ts-node
    - Publisher: Blake Embrey
    - Email: hello@blakeembrey.com
+
+tsc-alias (v1.8.10)
+   - License: MIT
+   - Repository: https://github.com/justkey007/tsc-alias
+   - Publisher: Juskey B.
+   - Email: N/A
 
 tsconfig-paths (v3.15.0)
    - License: MIT
@@ -11576,12 +11972,6 @@ type (v2.7.3)
    - Publisher: Mariusz Nowak
    - Email: medyk@medikoo.com
 
-typed-array-buffer (v1.0.2)
-   - License: MIT
-   - Repository: https://github.com/ljharb/typed-array-buffer
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
 typed-array-buffer (v1.0.3)
    - License: MIT
    - Repository: https://github.com/inspect-js/typed-array-buffer
@@ -11591,12 +11981,6 @@ typed-array-buffer (v1.0.3)
 typed-array-byte-length (v1.0.3)
    - License: MIT
    - Repository: https://github.com/inspect-js/typed-array-byte-length
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
-typed-array-byte-offset (v1.0.3)
-   - License: MIT
-   - Repository: https://github.com/inspect-js/typed-array-byte-offset
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
@@ -11744,7 +12128,7 @@ unset-value (v1.0.0)
    - Publisher: Jon Schlinkert
    - Email: N/A
 
-update-browserslist-db (v1.1.1)
+update-browserslist-db (v1.1.2)
    - License: MIT
    - Repository: https://github.com/browserslist/update-db
    - Publisher: Andrey Sitnik
@@ -11948,6 +12332,12 @@ walker (v1.0.8)
    - Publisher: Naitik Shah
    - Email: n@daaku.org
 
+watchpack (v2.4.2)
+   - License: MIT
+   - Repository: https://github.com/webpack/watchpack
+   - Publisher: Tobias Koppers @sokra
+   - Email: N/A
+
 web-streams-polyfill (v3.3.3)
    - License: MIT
    - Repository: https://github.com/MattiasBuelens/web-streams-polyfill
@@ -12098,6 +12488,36 @@ webidl-conversions (v3.0.1)
    - Publisher: Domenic Denicola
    - Email: d@domenic.me
 
+webpack-bundle-analyzer (v4.10.2)
+   - License: MIT
+   - Repository: https://github.com/webpack-contrib/webpack-bundle-analyzer
+   - Publisher: Yury Grunin
+   - Email: grunin.ya@ya.ru
+
+webpack-cli (v6.0.1)
+   - License: MIT
+   - Repository: https://github.com/webpack/webpack-cli
+   - Publisher: N/A
+   - Email: N/A
+
+webpack-merge (v6.0.1)
+   - License: MIT
+   - Repository: https://github.com/survivejs/webpack-merge
+   - Publisher: Juho Vepsalainen
+   - Email: bebraw@gmail.com
+
+webpack-sources (v3.2.3)
+   - License: MIT
+   - Repository: https://github.com/webpack/webpack-sources
+   - Publisher: Tobias Koppers @sokra
+   - Email: N/A
+
+webpack (v5.97.1)
+   - License: MIT
+   - Repository: https://github.com/webpack/webpack
+   - Publisher: Tobias Koppers @sokra
+   - Email: N/A
+
 websocket-as-promised (v0.8.0)
    - License: MIT
    - Repository: https://github.com/vitalets/websocket-as-promised
@@ -12158,12 +12578,6 @@ which-collection (v1.0.2)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
-which-typed-array (v1.1.16)
-   - License: MIT
-   - Repository: https://github.com/inspect-js/which-typed-array
-   - Publisher: Jordan Harband
-   - Email: ljharb@gmail.com
-
 which-typed-array (v1.1.18)
    - License: MIT
    - Repository: https://github.com/inspect-js/which-typed-array
@@ -12199,6 +12613,12 @@ wifgrs (v4.0.0)
    - Repository: https://github.com/groestlcoin/wifgrs
    - Publisher: Daniel Cousens
    - Email: N/A
+
+wildcard (v2.0.1)
+   - License: MIT
+   - Repository: https://github.com/DamonOehlman/wildcard
+   - Publisher: Damon Oehlman
+   - Email: damon.oehlman@gmail.com
 
 word-wrap (v1.2.5)
    - License: MIT
@@ -12381,6 +12801,12 @@ yn (v3.1.1)
    - Email: sindresorhus@gmail.com
 
 yocto-queue (v0.1.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/yocto-queue
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
+yocto-queue (v1.1.1)
    - License: MIT
    - Repository: https://github.com/sindresorhus/yocto-queue
    - Publisher: Sindre Sorhus

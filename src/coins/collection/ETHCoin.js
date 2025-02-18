@@ -10,7 +10,7 @@ import StakableMaticETHToken from 'src/tokens/StakableMaticETHToken';
 import { Amount } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
-import LazyLoadedLib from 'src/utils/lazyLoadedLib.ts';
+import LazyLoadedLib from 'src/utils/lazyLoadedLib';
 
 import { StakingMixin, NftMixin } from '../mixins';
 import HasProviders from '../mixins/HasProviders';
@@ -49,18 +49,22 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      dependencies: {
-        web3: new LazyLoadedLib(() => import('web3')),
-        hdkey: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        dependencies: {
+          web3: new LazyLoadedLib(() => import('web3')),
+          hdkey: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.derivation = DERIVATION;
 
@@ -178,7 +182,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider('socket').getSocketTransaction({
@@ -192,7 +196,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {Array<String>} array of tickers
    */
   getExcludedTokenList() {
@@ -713,7 +717,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
 
   async calculateAvailableForStake() {
     // we can exactly calculate available balance,
-    // because each smart-contarct can require various gasLimit values
+    // because each smart-contract can require various gasLimit values
 
     const stakingFees = await this.getFee({ gasLimit: this.stakingGasLimit });
     const doubleRegularFees = await this.getFee();
@@ -769,16 +773,24 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
    */
   createToken(args) {
     if (args.isStakable) {
-      return new StakableMaticETHToken({
-        parent: this,
-        ...args,
-      });
+      return new StakableMaticETHToken(
+        {
+          parent: this,
+          ...args,
+        },
+        this.db,
+        this.configManager,
+      );
     }
 
-    return new ETHToken({
-      parent: this,
-      ...args,
-    });
+    return new ETHToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

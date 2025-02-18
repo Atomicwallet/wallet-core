@@ -6,6 +6,8 @@ import EVMCoin from '../EVMCoin';
 import { generateId } from './generateId';
 import type { EVMExplorerConfig, EVMFeeConfig, EVMSpecific, EVMUserConfig } from './types';
 
+export { default as EVMCoin } from '../EVMCoin';
+
 export const generateExplorerConfig = ({ chainId, rpcBaseUrl }: EVMSpecific): EVMExplorerConfig => {
   return {
     className: 'Web3Explorer',

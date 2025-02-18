@@ -5,11 +5,6 @@ import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
 import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
-// workaround to send signed transaction to specific url by currency
-// const sendTransactionTo = {
-//   DASH: 'http://insight.dash.show/api/tx/send',
-// }
-
 class InsightExplorer extends Explorer {
   constructor(...args) {
     super(...args);
@@ -202,10 +197,10 @@ class InsightExplorer extends Explorer {
   }
 
   /**
-   * Gets the trasaction amount.
+   * Gets the transaction amount.
    *
-   * @param {Object} tx The trasaction
-   * @return {Number} The trasaction amount.
+   * @param {Object} tx The transaction
+   * @return {Number} The transaction amount.
    */
   getTxValue(selfAddress, tx) {
     let valueIn = new this.wallet.BN(0);
@@ -239,17 +234,17 @@ class InsightExplorer extends Explorer {
   }
 
   /**
-   * Gets the trasaction direction.
+   * Gets the transaction direction.
    *
-   * @param {Object} tx The trasaction
-   * @return {Boolean} The trasaction direction.
+   * @param {Object} tx The transaction
+   * @return {Boolean} The transaction direction.
    */
   getTxDirection(selfAddress, tx) {
     return tx.vin && !tx.vin.find(({ addr }) => addr === selfAddress);
   }
 
   /**
-   * Gets the trasaction recipient.
+   * Gets the transaction recipient.
    *
    * @param {Object} tx The transaction response.
    * @return {(Boolean|String)} The transaction recipient.

@@ -3,10 +3,10 @@ import { Token } from '../abstract';
 export default class ONTToken extends Token {
   #parent;
 
-  constructor(args) {
-    super(args);
+  constructor(config, db, configManageer) {
+    super(config, db, configManageer);
     this.id = this.ticker;
-    this.#parent = args.parent;
+    this.#parent = config.parent;
   }
 
   async createTransaction({ address, amount }) {

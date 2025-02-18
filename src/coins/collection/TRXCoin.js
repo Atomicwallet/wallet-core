@@ -46,7 +46,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @param {Array}  explorers the explorers
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -61,7 +61,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       feeData,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -135,10 +135,14 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {TRXToken}
    */
   createToken(args) {
-    return new TRXToken({
-      parent: this,
-      ...args,
-    });
+    return new TRXToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

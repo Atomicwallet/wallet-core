@@ -88,7 +88,7 @@ export default abstract class Coin extends AbstractWallet {
 
   abstract removeTokenFromDb(args: unknown): void;
 
-  constructor(config: CoinConfigType, configManager?: IConfigManager, db?: IDataBase) {
+  constructor(config: CoinConfigType, db?: IDataBase, configManager?: IConfigManager) {
     super(config, db, configManager);
 
     this.dependencies = config.dependencies || {};

@@ -24,6 +24,8 @@ export type TokenCreationArgs = {
   visibility: boolean;
   confirmed: boolean;
   config: CoinConfigType;
+  uniqueField: string;
+  parentTicker: string;
   notify?: boolean;
   memoRegexp?: string;
 };

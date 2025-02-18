@@ -9,14 +9,15 @@ const HTTP_OK = 200;
  */
 export default class NftToken {
   static ipfsGateway = DEFAULT_IPFS_GATEWAY;
-  private contractAddress: string | null;
-  private tokenId: string;
-  private coinId: string;
-  private blockchain: string | undefined;
-  private tokenStandard: string;
-  private name: string;
-  private description: string | undefined;
-  private imageUrl: string;
+  contractAddress: string | null;
+  tokenId: string;
+  coinId: string;
+  blockchain: string | undefined;
+  tokenStandard: string;
+  name: string;
+  description: string | undefined;
+  imageUrl: string;
+  expiredAt?: number | string;
 
   /**
    * Create a NFT
@@ -30,6 +31,7 @@ export default class NftToken {
     name: string,
     description: string | undefined = undefined,
     imageUrl: string,
+    expiredAt?: number | string,
   ) {
     this.contractAddress = contractAddress;
     this.tokenId = tokenId;
@@ -39,6 +41,7 @@ export default class NftToken {
     this.name = name;
     this.description = description;
     this.imageUrl = imageUrl;
+    this.expiredAt = expiredAt;
   }
 
   /**

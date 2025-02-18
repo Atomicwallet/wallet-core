@@ -3,10 +3,13 @@
 // * https://www.typescriptlang.org/ja/tsconfig
 
 {
-  "include": ["./src/**/*.ts", "./src/@types/**/*.ts", "./src/__tests__/**/*.test.ts"],
+  "include": ["./src/**/*.ts", "./src/@types/**/*.ts"],
   "exclude": [
     "./node_modules",
-    "./tests/**/*.ts"
+    "./src/cli/**/*",
+    "./src/__tests__/**/*.test.ts",
+    "./src/__tests__/**/*",
+    "./src/**/*.test.ts"
   ],
   "ts-node": {
     "compilerOptions": {
@@ -22,6 +25,9 @@
     "require": ["tsconfig-paths/register"]
   },
   "compilerOptions": {
+   "paths": {
+      "src/*": ["./src/*"]
+    },
     "allowJs": true,
     "declaration": true,
     "declarationMap": false,
@@ -56,7 +62,7 @@
     "moduleResolution": "node",
     "preserveSymlinks": false,
     "rootDir": "src",
-    "typeRoots": ["node_modules/@types", "src/@types"],
+    "types": ["jest", "node"],
 
     // Source Maps
     "inlineSourceMap": false, // use 'sourceMap'
@@ -81,7 +87,6 @@
     "disableReferencedProjectLoad": false,
     "disableSizeLimit": false,
     "emitBOM": false,
-    "emitDeclarationOnly": false,
     "explainFiles": false,
     "extendedDiagnostics": false,
     "forceConsistentCasingInFileNames": true,
@@ -98,7 +103,7 @@
     "noResolve": false,
     "noStrictGenericChecks": false,
     "resolveJsonModule": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "suppressExcessPropertyErrors": false,
     "suppressImplicitAnyIndexErrors": false,
     "traceResolution": false,
@@ -107,6 +112,6 @@
   },
   "tsc-alias": {
     "verbose": false,
-    "resolveFullPaths": true,
+    "resolveFullPaths": true
   }
 }

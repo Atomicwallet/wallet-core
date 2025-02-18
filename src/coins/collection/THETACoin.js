@@ -32,7 +32,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
   #privateKey;
   #feeTokenWallet;
 
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, network = THETA_TICKER, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, network = THETA_TICKER, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -47,7 +47,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
       network,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.setExplorersModules([ThetaExplorer, ThetaJSExplorer]);
 
@@ -92,10 +92,14 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
   }
 
   createToken(args) {
-    return new THETAToken({
-      parent: this,
-      ...args,
-    });
+    return new THETAToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   getTokenList() {

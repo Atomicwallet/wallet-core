@@ -127,10 +127,10 @@ class PolyscanExplorer extends Explorer {
   }
 
   /**
-   * Gets the trasaction direction.
+   * Gets the transaction direction.
    * @override
-   * @param {Transaction} tx The trasaction
-   * @return {Boolean} The trasaction direction.
+   * @param {Transaction} tx The transaction
+   * @return {Boolean} The transaction direction.
    */
   getTxDirection(selfAddress, tx) {
     return selfAddress.toLowerCase() !== tx.from.toLowerCase();

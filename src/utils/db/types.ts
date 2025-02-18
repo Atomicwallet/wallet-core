@@ -7,29 +7,33 @@ import { IAddrCacheElement } from '../types';
 export type TableElementKey = string | number;
 export type TableElement = Record<string, unknown>;
 
-export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'configs' | 'nfts';
+export type TableNames = 'transactions' | 'tokens' | 'addrCache' | 'nfts' | 'sentNfts' | 'configs';
 
 export type TableTypes = {
   transactions: Transaction;
   tokens: Token;
   nfts: NftToken;
+  sentNfts: NftToken;
   addrCache: IAddrCacheElement;
   configs: TableElement;
 };
 
 export interface ITable<T> {
-  get(id: TableElementKey): Promise<Partial<T> | undefined>;
-  getAll(): Promise<Partial<T>[]>;
+  get(conditions: Partial<T>): Promise<Partial<T> | undefined>;
+  getAll(conditions: Partial<T>): Promise<Partial<T>[]>;
   put(item: T): Promise<TableElementKey>;
-  update(id: TableElementKey, changes: Partial<T>): Promise<T>;
-  delete(id: TableElementKey): Promise<void>;
-  batchPut(items: T[]): Promise<TableElementKey[]>;
+  update(id: TableElementKey, changes: Partial<T>): Promise<TableElementKey>;
+  delete(id: string): Promise<void>;
+  batchPut(items: T[]): Promise<TableElementKey | TableElementKey[]>;
   batchDelete(ids: TableElementKey[]): Promise<void>;
   batchUpdate(ids: TableElementKey[], changes: Partial<T>): Promise<T[]>;
 }
 
+export type dbTablesType = {
+  [tableName in TableNames]: ITable<TableTypes[tableName]>;
+};
+
 export interface IDataBase {
-  tables: {
-    [tableName in TableNames]: ITable<TableTypes[tableName]>;
-  };
+  tables: Partial<dbTablesType>;
+  table: <T extends TableNames>(dbTable: T) => ITable<TableTypes[T]>;
 }
