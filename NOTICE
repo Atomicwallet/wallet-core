@@ -6368,12 +6368,6 @@ dotenv (v16.4.7)
    - Publisher: N/A
    - Email: N/A
 
-dotenv (v6.2.0)
-   - License: BSD-2-Clause
-   - Repository: https://github.com/motdotla/dotenv
-   - Publisher: N/A
-   - Email: N/A
-
 dotenv (v8.2.0)
    - License: BSD-2-Clause
    - Repository: https://github.com/motdotla/dotenv
