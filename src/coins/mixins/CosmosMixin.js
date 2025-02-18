@@ -10,7 +10,7 @@ import { CosmosTxTypes } from '../libs';
 const CosmosMixin = (superclass) =>
   class extends superclass {
     #privateKey;
-    constructor(config) {
+    constructor(config, db, configManager) {
       super(...arguments);
 
       this.denom = 'uatom';

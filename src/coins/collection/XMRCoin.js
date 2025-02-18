@@ -24,7 +24,7 @@ class XMRCoin extends HasProviders(Coin) {
    * @param {Explorer[]}  explorers the explorers
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id, atomicId }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id, atomicId }, db, configManager) {
     const config = {
       id,
       alias,
@@ -39,7 +39,7 @@ class XMRCoin extends HasProviders(Coin) {
       atomicId,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 

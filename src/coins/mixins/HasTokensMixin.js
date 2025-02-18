@@ -1,22 +1,13 @@
 import { Token } from 'src/abstract';
 import { UndeclaredAbstractMethodError } from 'src/errors';
 import InternalError from 'src/errors/InternalError';
-import { db, getTokenId } from 'src/utils';
+import { getTokenId } from 'src/utils';
 import { INTERNAL_ERROR } from 'src/utils/const';
 
 const MAX_TICKER_LENGTH = 9;
 const MAX_NAME_LENGTH = 30;
 const TOKEN_SOURCE_USER = 'user';
 const TOKEN_SOURCE_PREDEFINED_LIST = 'list';
-
-let preloadedTokens = null;
-
-export function loadTokensFromDb() {
-  if (!preloadedTokens) {
-    preloadedTokens = db.tokens.toArray();
-  }
-  return preloadedTokens;
-}
 
 /*
 
@@ -34,8 +25,8 @@ Token integration guide:
 
 const HasTokensMixin = (superclass) =>
   class extends superclass {
-    constructor(args) {
-      super(args);
+    constructor(config, db, configManager) {
+      super(config, db, configManager);
 
       this.tokens = {};
     }
@@ -46,8 +37,9 @@ const HasTokensMixin = (superclass) =>
      * @returns {Promise<items>} - items was inserted
      */
     async _insertBatchTokens(items) {
-      await db.tokens.bulkPut(items);
-      preloadedTokens = null;
+      const db = this.getDbTable('tokens');
+
+      await db.batchPut(items);
 
       return items;
     }
@@ -65,16 +57,17 @@ const HasTokensMixin = (superclass) =>
     }
 
     async _updateToken(token) {
-      const tokenItem = await db.tokens
-        .where({
+      const db = this.getDbTable('tokens');
+
+      const tokenItem = await db
+        .get({
           uniqueField: token.uniqueField,
         })
-        .first()
         .catch(() => {});
 
       if (tokenItem && tokenItem.id) {
-        await db.tokens.update(tokenItem.id, token);
-        preloadedTokens = null;
+        await db.update(tokenItem.id, token);
+
         return token;
       }
 
@@ -82,17 +75,18 @@ const HasTokensMixin = (superclass) =>
     }
 
     async _removeToken(uniqueField) {
-      const tokenItem = await db.tokens
-        .where({
+      const db = this.getDbTable('tokens');
+
+      const tokenItem = await db
+        .get({
           uniqueField,
         })
         .first()
         .catch(() => {});
 
       if (tokenItem && tokenItem.id) {
-        await db.tokens.delete(tokenItem.id);
+        await db.delete(tokenItem.id);
       }
-      preloadedTokens = null;
     }
 
     /**
@@ -100,7 +94,9 @@ const HasTokensMixin = (superclass) =>
      * @returns {Promise<tokens>}  - an object with selected tokens rows
      */
     async loadTokensFromDb(parentTicker, filterFun = (token) => token.parentTicker === parentTicker) {
-      const allTokens = await loadTokensFromDb();
+      const db = this.getDbTable('tokens');
+
+      const allTokens = db.getAll();
 
       return parentTicker ? allTokens.filter(filterFun) : allTokens;
     }
@@ -207,8 +203,10 @@ const HasTokensMixin = (superclass) =>
           return token.source === source && !token.isCustom && !processedUniques.includes(token.uniqueField);
         });
 
+        const db = this.getDbTable('tokens');
+
         const inserted =
-          processedUniques.length > 0 ? await db.tokens.where('uniqueField').anyOf(processedUniques).toArray() : [];
+          processedUniques.length > 0 ? await db.getAll('uniqueField').anyOf(processedUniques).toArray() : [];
 
         const insertedUniques = inserted.map((token) => token.uniqueField);
 
@@ -541,18 +539,6 @@ const HasTokensMixin = (superclass) =>
      * @return {any[]}
      */
     createTokens(tokens = [], wallets) {
-      /*
-    // safety check against double creation
-
-    const createdTokenTickers = wallets
-      .filter((coin) => coin.parent.ticker === this.ticker)
-      .filter((coin) => cocreateTokensin.parent.ticker !== coin.ticker)
-      .map(token => token.ticker)
-
-    const tokensToCreate = tokens
-      .filter((token) => !createdTokenTickers.includes(token.ticker))
-    */
-
       const tokensToCreate = tokens;
       const createdTokens = [];
 
@@ -614,18 +600,23 @@ const HasTokensMixin = (superclass) =>
     }
 
     async getUniquesAndDuplicates(tokens) {
-      const collection = await db.tokens.where(['parentTicker', 'uniqueField']).anyOf(
+      const db = this.getDbTable('tokens');
+      const dbTokens = await db.getAll();
+
+      const validPairs = new Set(
         tokens
-          .filter((token) => {
-            return token?.uniqueField && token?.parentTicker;
-          })
-          .map((token) => [token.parentTicker, token.uniqueField]),
+          .filter((token) => token?.parentTicker && token?.uniqueField)
+          .map((token) => `${token.parentTicker}|${token.uniqueField}`),
       );
+
+      const collection = dbTokens.filter(({ parentTicker, uniqueField }) => {
+        return validPairs.has(`${parentTicker}|${uniqueField}`);
+      });
 
       const uniques = {};
       const duplicates = [];
 
-      await collection.each((token) => {
+      collection.forEach((token) => {
         if (!uniques[token.uniqueField]) {
           uniques[token.uniqueField] = token.id;
         } else {
@@ -637,33 +628,32 @@ const HasTokensMixin = (superclass) =>
     }
 
     async deleteDuplicates(tokens) {
+      const db = this.getDbTable('tokens');
+
       try {
         const [, duplicates] = await this.getUniquesAndDuplicates(tokens);
 
-        const result = db.tokens.where('id').anyOf(duplicates).delete();
-
-        preloadedTokens = null;
-        return result;
+        await Promise.all(
+          duplicates.map((duplicate) => {
+            return db.delete(duplicate.id);
+          }),
+        );
       } catch (error) {
         console.error(error);
-
-        return undefined;
       }
     }
 
     async bulkDeleteWhereNotInList(listFilter) {
-      const tokensNotInProcessedList = await db.tokens
-        .where('parentTicker')
-        .equals(this.id)
-        .filter(listFilter)
-        .toArray();
+      const db = this.getDbTable('tokens');
 
-      await db.tokens
-        .where('id')
-        .anyOf(tokensNotInProcessedList.map((token) => token.id))
-        .delete();
+      const allTokens = await db.getAll();
+      const tokensForCurrentParentTicker = allTokens.filter((token) => token.parentTicker === this.id);
 
-      preloadedTokens = null;
+      const tokensNotInProcessedList = tokensForCurrentParentTicker.filter(listFilter);
+
+      if (tokensNotInProcessedList.length > 0) {
+        await Promise.all(tokensNotInProcessedList.map((token) => db.delete(token.id)));
+      }
     }
   };
 

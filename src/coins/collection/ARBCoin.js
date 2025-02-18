@@ -11,6 +11,7 @@ import BlockbookV2WithBlockscannerExplorer from 'src/explorers/extended/Blockboo
 import Transaction from 'src/explorers/Transaction';
 import { ARBToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
 
@@ -63,21 +64,25 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      chainId: config.chainId ?? ARB_CHAIN_ID,
-      l2Name: ID,
-      network: config.network ?? NETWORK,
-      dependencies: {
-        [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        chainId: config.chainId ?? ARB_CHAIN_ID,
+        l2Name: ID,
+        network: config.network ?? NETWORK,
+        dependencies: {
+          [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
+          [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.setExplorersModules([
       Web3Explorer,
@@ -211,7 +216,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider('socket').getSocketTransaction({
@@ -225,7 +230,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {Array<String>} array of tickers
    */
   getExcludedTokenList() {
@@ -370,7 +375,9 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         feeTicker: this.ticker,
       });
 
-      // TODO implement history data storage
+      const db = this.getDbTable('transactions');
+
+      await db.put(newTx);
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,
@@ -728,10 +735,14 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {ARBToken}
    */
   createToken(args) {
-    return new ARBToken({
-      parent: this,
-      ...args,
-    });
+    return new ARBToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**
@@ -769,7 +780,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<object|object[]>}
    */
   async #getForcedConfigOrFallback(configKey) {
-    return {};
+    return this.configManager?.get(configKey);
   }
 
   /**
@@ -778,7 +789,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    */
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
-    return this.#getForcedConfigOrFallback(); // TOKENS_CONFIG_KEY;
+    return this.#getForcedConfigOrFallback(ConfigKey.ArbitrumTokens);
   }
 
   /**
@@ -787,7 +798,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<Array>}
    */
   getBannedTokenList() {
-    return this.#getForcedConfigOrFallback(); // BANNED_TOKENS_CONFIG_KEY;
+    return this.#getForcedConfigOrFallback(ConfigKey.ArbitrumTokensBanned);
   }
 
   /**

@@ -6,6 +6,7 @@ import Web3Explorer from 'src/explorers/collection/Web3Explorer';
 import Transaction from 'src/explorers/Transaction';
 import { EVMToken } from 'src/tokens';
 import { Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
@@ -111,7 +112,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @param {boolean} [config.isTestnet=false]
    * @param {boolean} [config.isCustom=false]
    */
-  constructor(config, configManager, logger) {
+  constructor(config, db, configManager, logger) {
     const { id, isL2, isUseModeratedGasPrice = false, isUseEIP1559 = false, feeData, explorers } = config;
 
     super(
@@ -125,6 +126,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
           [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
         },
       },
+      db,
       configManager,
       logger,
     );
@@ -329,7 +331,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider(SOCKET_PROVIDER_OPERATION).getSocketTransaction({
@@ -761,9 +763,9 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<number>}
    */
   async _getGasPriceL1FromConfig() {
-    // @TODO implement l1 gas config
+    const price = await this.configManager?.get(ConfigKey.EthereumGasPrice);
 
-    return null;
+    return (price && price.fast) ?? this.maxGasPriceL1;
   }
 
   /**
@@ -960,10 +962,14 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {EVMToken}
    */
   createToken(args) {
-    return new EVMToken({
-      parent: this,
-      ...args,
-    });
+    return new EVMToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**
@@ -1028,7 +1034,9 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    return [];
+    const tokens = await this.configManager.get(this.#tokensConfigName);
+
+    return tokens ?? [];
   }
 
   /**
@@ -1037,8 +1045,10 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @async
    * @returns {Promise<string[]>} - Array of contract addresses
    */
-  getBannedTokenList() {
-    return [];
+  async getBannedTokenList() {
+    const banned = await this.configManager?.get(this.#bannedTokensConfigName);
+
+    return banned ?? [];
   }
 
   /**

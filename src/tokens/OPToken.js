@@ -1,8 +1,8 @@
 import { Token } from '../abstract';
 
 class OPToken extends Token {
-  constructor(...args) {
-    super(...args);
+  constructor(config, db, configManager) {
+    super(config, db, configManager);
 
     this.gasLimit = '150000';
     this.coefficient = 1;

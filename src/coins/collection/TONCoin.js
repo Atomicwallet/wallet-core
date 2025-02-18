@@ -3,6 +3,7 @@ import { ExternalError, UnknownConfigKeyError } from 'src/errors';
 import TonwebExplorer from 'src/explorers/collection/TonwebExplorer';
 import { TONToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
 import { HasProviders, HasTokensMixin } from '../mixins';
@@ -32,7 +33,7 @@ const CHECK_TX_UPDATE_TIMEOUT = 3000;
 class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
   #privateKey;
 
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -47,7 +48,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
       feeData,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.setExplorersModules([TonwebExplorer]);
 
@@ -240,9 +241,9 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.TonTokens);
 
-    return [];
+    return tokens ?? [];
   }
 
   /**
@@ -251,10 +252,10 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @async
    * @returns {Promise<string[]>} - Array of contract addresses
    */
-  getBannedTokenList() {
-    // @TODO implement fetch banned tokens list
+  async getBannedTokenList() {
+    const banned = await this.configManager?.get(ConfigKey.TonTokensBanned);
 
-    return [];
+    return banned ?? [];
   }
 
   /**
@@ -306,10 +307,14 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @return {TONToken}
    */
   createToken(args) {
-    return new TONToken({
-      parent: this,
-      ...args,
-    });
+    return new TONToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

@@ -55,20 +55,6 @@ class GastrackerExplorer extends Explorer {
   getTxConfirmations(tx) {
     return tx.confirmations;
   }
-
-  // async sendTransaction (rawtx) {
-  //   return new Promise((resolve, reject) => {
-  //     this.wallet.coreLibrary.eth.sendSignedTransaction(rawtx)
-  //       .on('transactionHash', (hash) => {
-  //         resolve({ txid: hash })
-  //       })
-  //       .catch((error) => {
-  //         const modifiedError = new ExplorerRequestError({ type: SEND_TRANSACTION_TYPE, error, instance: this })
-
-  //         reject(modifiedError)
-  //       })
-  //   })
-  // }
 }
 
 export default GastrackerExplorer;

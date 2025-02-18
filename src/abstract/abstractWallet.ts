@@ -13,13 +13,14 @@ import type {
   WalletTicker,
   TokenCreationArgs,
   CoinConfigType,
-  ConfigManagerInterface,
-  LoggerInterface,
+  ILogger,
 } from 'src/abstract';
 import type Explorer from 'src/explorers/explorer';
 import { Emitter, defaultConfigManager, defaultLogger } from 'src/utils';
+import { IConfigManager } from 'src/utils/configManager';
 import { WALLETS } from 'src/utils/const';
 import { toMinimal, toCurrency } from 'src/utils/convert';
+import { BaseDatabase, IDataBase, ITable, TableNames, TableTypes } from 'src/utils/db';
 
 const SEND_TIMEOUT = 5000;
 const delayed = {};
@@ -42,8 +43,10 @@ export default abstract class AbstractWallet {
   indivisibleBalance: null | BN = null;
   divisibleBalance: null | string = null;
 
-  #configManager: ConfigManagerInterface;
-  #logger: LoggerInterface;
+  configManager: IConfigManager;
+
+  db: IDataBase;
+  logger: ILogger;
 
   abstract gasPriceConfig?: IGasPriceConfig;
   abstract gasLimit?: string | number | BN;
@@ -78,15 +81,17 @@ export default abstract class AbstractWallet {
 
   constructor(
     { name, ticker, decimal, memoRegexp }: CoinConfigType | TokenCreationArgs,
-    configManager?: ConfigManagerInterface,
-    logger?: LoggerInterface,
+    db?: IDataBase,
+    configManager?: IConfigManager,
+    logger?: ILogger,
   ) {
     this.#name = name;
     this.#ticker = ticker;
     this.#decimal = decimal;
 
-    this.#configManager = configManager ?? defaultConfigManager;
-    this.#logger = logger ?? defaultLogger;
+    this.configManager = configManager ?? defaultConfigManager;
+    this.logger = logger ?? defaultLogger;
+    this.db = db ?? new BaseDatabase();
     this.alias = 'atomic';
     this.memoRegexp = memoRegexp;
   }
@@ -125,6 +130,10 @@ export default abstract class AbstractWallet {
 
   get eventEmitter() {
     return Emitter;
+  }
+
+  getDbTable<T extends TableNames>(tableName: T): ITable<TableTypes[T]> {
+    return this.db.table(tableName);
   }
 
   isStakingSupported(): boolean {

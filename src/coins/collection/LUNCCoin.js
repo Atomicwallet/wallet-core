@@ -5,7 +5,9 @@ import TerraClassicLCDExplorer from 'src/explorers/collection/TerraClassicLCDExp
 import TerraMantleExplorer from 'src/explorers/collection/TerraMantleExplorer';
 import LUNCToken from 'src/tokens/LUNCToken';
 import { Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 
+import TOKENS_CACHE from '../../resources/eth/tokens.json';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 export const LUNC_SEND_TYPES = {
@@ -41,7 +43,7 @@ const TERRA_SDK = 'terraSdk';
 class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   #privateKey;
 
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, isTestnet, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -60,7 +62,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -127,15 +129,19 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   createToken(args) {
-    return new LUNCToken({
-      parent: this,
-      ...args,
-      config: { ...this.feeData, ...args.config },
-    });
+    return new LUNCToken(
+      {
+        parent: this,
+        ...args,
+        config: { ...this.feeData, ...args.config },
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {string[]} array of tickers
    */
   getExcludedTokenList() {
@@ -467,9 +473,9 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<Array>}
    */
   async getTokenList() {
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager?.get(ConfigKey.LunaClassicTokens);
 
-    return [];
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -637,10 +643,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<Object.<string, string>>}
    */
   getGasPricesList() {
-    // @TODO implement gasprice estimation
-    return Promise.resolve({
-      uluna: '28.325',
-    });
+    return this.configManager?.get(ConfigKey.LunaClassicGasPrice);
   }
 
   async getBalance() {

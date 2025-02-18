@@ -10,8 +10,10 @@ import FlareClaimContractABI from 'src/tokens/ABI/ERC-20/FlareClaimContract';
 import FTSORewardsABI from 'src/tokens/ABI/ERC-20/FlareRewardsManagerContract';
 import WFLRAbi from 'src/tokens/ABI/ERC-20/WFLR';
 import { Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
+import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import { HasProviders, HasTokensMixin, StakingMixin, Web3Mixin } from '../mixins';
 
 const web3LazyLoaded = new LazyLoadedLib(() => import('web3'));
@@ -50,7 +52,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
    * @param {*} notify
    * @param { boolean } socket
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -65,7 +67,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
       feeData,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -137,7 +139,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider('socket').getSocketTransaction({
@@ -561,10 +563,14 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
    * @return {ETHToken}
    */
   createToken(args) {
-    return new FLRToken({
-      parent: this,
-      ...args,
-    });
+    return new FLRToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**
@@ -600,9 +606,9 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.FlareTokens);
 
-    return TOKENS_CACHE;
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -610,7 +616,9 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    return [];
+    const banned = await this.configManager.get(ConfigKey.FlareTokensBanned);
+
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   gasPrice() {
@@ -810,7 +818,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
     const { manager: rewardsManagerInterface } = await this.#getRewardsManagerInterface();
 
     const claimContractAddress = await rewardsManagerInterface.methods.claimSetupManager().call();
-    const executorsList = []; // @TODO implement fetch executors list
+    const executorsList = (await this.configManager.get(ConfigKey.FlareClaimExecutors)) ?? [];
 
     const executorsAddresses = executorsList.map(({ address }) => address);
     const executorsFees = executorsList
@@ -977,7 +985,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
       delegatedVotes,
     });
     const rewards = new Amount(this.calculateRewards(unclaimedRewards), this);
-    const executorsList = []; // @TODO implement fetch executors list
+    const executorsList = (await this.configManager.get(ConfigKey.FlareClaimExecutors)) ?? [];
     const executorsFees = executorsList.reduce((acc, { fee }) => {
       acc = acc.add(new this.BN(this.toMinimalUnit(fee)));
       return acc;

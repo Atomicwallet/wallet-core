@@ -36,10 +36,10 @@ class DcrDataExplorer extends Explorer {
   }
 
   /**
-   * Gets the trasaction amount.
+   * Gets the transaction amount.
    *
-   * @param {Object} tx The trasaction
-   * @return {Number} The trasaction amount.
+   * @param {Object} tx The transaction
+   * @return {Number} The transaction amount.
    */
   getTxValue(selfAddress, tx) {
     let valueIn = new this.wallet.BN(0);
@@ -72,10 +72,10 @@ class DcrDataExplorer extends Explorer {
   }
 
   /**
-   * Gets the trasaction direction.
+   * Gets the transaction direction.
    *
-   * @param {Object} tx The trasaction
-   * @return {Boolean} The trasaction direction.
+   * @param {Object} tx The transaction
+   * @return {Boolean} The transaction direction.
    */
   getTxDirection(selfAddress, tx) {
     return (
@@ -87,7 +87,7 @@ class DcrDataExplorer extends Explorer {
   }
 
   /**
-   * Gets the trasaction recipient.
+   * Gets the transaction recipient.
    *
    * @param {Object} tx The transaction response.
    * @return {(Boolean|String)} The transaction recipient.

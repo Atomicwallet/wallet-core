@@ -10,6 +10,7 @@ import BANNED_TOKENS_CACHE from 'src/resources/ftm/tokens-banned.json';
 import TOKENS_CACHE from 'src/resources/ftm/tokens.json';
 import { FTMToken } from 'src/tokens';
 import { getTokenId, Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
 
@@ -58,18 +59,22 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      dependencies: {
-        [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
-        [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        dependencies: {
+          [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
+          [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.derivation = DERIVATION;
 
@@ -198,7 +203,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider('socket').getSocketTransaction({
@@ -212,7 +217,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {Array<String>} array of tickers
    */
   getExcludedTokenList() {
@@ -380,7 +385,9 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         feeTicker: feeTicker ?? coin.feeTicker ?? this.ticker,
       });
 
-      // TODO implement history data storage
+      const db = this.getDbTable('transactions');
+
+      await db.put(newTx);
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,
@@ -757,7 +764,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
   async calculateAvailableForStake() {
     // we can exactly calculate available balance,
-    // because each smart-contarct can require various gasLimit values
+    // because each smart-contract can require various gasLimit values
 
     const stakingFees = await this.getFee({ gasLimit: this.stakingGasLimit });
     const doubleRegularFees = await this.getFee();
@@ -812,10 +819,14 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @return {FTMToken}
    */
   createToken(args) {
-    return new FTMToken({
-      parent: this,
-      ...args,
-    });
+    return new FTMToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**
@@ -851,9 +862,9 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.FantomTokens);
 
-    return TOKENS_CACHE;
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -861,9 +872,8 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    // @TODO implement fetch banned tokens list
-
-    return BANNED_TOKENS_CACHE;
+    const banned = await this.configManager.get(ConfigKey.FantomTokensBanned);
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   /**

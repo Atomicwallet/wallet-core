@@ -1,6 +1,6 @@
-import { LoggerInterface } from 'src/abstract';
+import { ILogger } from 'src/abstract';
 
-class DefaultLogger implements LoggerInterface {
+class DefaultLogger implements ILogger {
   error(errorObject: Record<string, string>): void {
     const msg = JSON.stringify(errorObject);
 
@@ -16,7 +16,7 @@ class DefaultLogger implements LoggerInterface {
   warn(warnObject: Record<string, string>): void {
     const msg = JSON.stringify(warnObject);
 
-    console.warn(warnObject);
+    console.warn(msg);
   }
 }
 

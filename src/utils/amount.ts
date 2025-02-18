@@ -69,30 +69,6 @@ export default class Amount {
   *    which should mutate inner `this.amount` state
   *  */
 
-  // toFiat(fiatTicker: string, withTicker = false): string {
-  //   if (!fiatTicker) {
-  //     throw new Error(`${this.ticker}: Fiat ticker should be defined`);
-  //   }
-  //
-  //   const { rate } =
-  //     Rates.getRate({ id: this.id, confirmed: this.confirmed }, fiatTicker) ||
-  //     {};
-  //
-  //   if (!rate) {
-  //     throw new Error(
-  //       `${this.ticker}: Fiat rate for ${fiatTicker} is not exist yet`,
-  //     );
-  //   }
-  //
-  //   const fiatAmount: string = new BigNumber(
-  //     toCurrency(this.amount, this.decimal),
-  //   )
-  //     .multipliedBy(rate)
-  //     .toFormat();
-  //
-  //   return `${this.#formatFiat(fiatAmount)} ${withTicker ? fiatTicker : ''}`.trim();
-  // }
-
   #formatFiat(amountString: string): string {
     const bn = new BigNumber(amountString);
 

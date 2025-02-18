@@ -10,6 +10,7 @@ import BANNED_TOKENS_CACHE from 'src/resources/trx/tokens-banned.json';
 import TOKENS_CACHE from 'src/resources/trx/tokens.json';
 import { TRXToken } from 'src/tokens';
 import { LazyLoadedLib, Amount } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from 'src/utils/const';
 
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
@@ -45,7 +46,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @param {Array}  explorers the explorers
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -60,7 +61,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       feeData,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -134,10 +135,14 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {TRXToken}
    */
   createToken(args) {
-    return new TRXToken({
-      parent: this,
-      ...args,
-    });
+    return new TRXToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**
@@ -769,9 +774,9 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.TrxTokens);
 
-    return TOKENS_CACHE;
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -779,7 +784,9 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<string[]>}
    */
   async getBannedTokenList() {
-    return BANNED_TOKENS_CACHE;
+    const banned = await this.configManager.get(ConfigKey.TrxTokensBanned);
+
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 }
 

@@ -1,7 +1,9 @@
 import BN from 'bn.js';
-import { AbstractWallet, type Coin, ConfigManagerInterface } from 'src/abstract';
+import { AbstractWallet, type Coin } from 'src/abstract';
 import type Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
+import { IConfigManager } from 'src/utils/configManager';
+import { IDataBase } from 'src/utils/db';
 import { HISTORY_WALLET_UPDATED } from 'src/utils/eventTopics';
 
 import type {
@@ -26,6 +28,7 @@ export default abstract class Token extends AbstractWallet {
   visibility: boolean;
   source: TokenSource;
   config?: CoinConfigType;
+  uniqueField: string;
   BN: typeof BN;
 
   fields = { paymentId: false };
@@ -36,8 +39,8 @@ export default abstract class Token extends AbstractWallet {
   /**
    * Constructs a new instance of the class.
    */
-  constructor(args: TokenCreationArgs, configManager?: ConfigManagerInterface) {
-    super(args, configManager);
+  constructor(args: TokenCreationArgs, db?: IDataBase, configManager?: IConfigManager) {
+    super(args, db, configManager);
 
     this.#parent = args.parent;
     this.#contract = args.contract;
@@ -50,6 +53,7 @@ export default abstract class Token extends AbstractWallet {
     this.source = args.source;
     this.visibility = args.visibility;
     this.confirmed = args.confirmed;
+    this.uniqueField = args.uniqueField;
 
     this.decimal = args.decimal;
 
@@ -74,7 +78,7 @@ export default abstract class Token extends AbstractWallet {
     this.manageEvents();
   }
 
-  get id() {
+  get id(): string {
     return this.#id;
   }
 
@@ -123,6 +127,10 @@ export default abstract class Token extends AbstractWallet {
    * Should be removed
    */
   get deprecatedParent() {
+    return this.#parent.id;
+  }
+
+  get parentTicker() {
     return this.#parent.id;
   }
 
@@ -243,7 +251,10 @@ export default abstract class Token extends AbstractWallet {
       if (txs.length > 0) {
         const tokenTransactions = txs.filter((tx: any) => tx.walletId === this.#id);
 
-        // TODO implement history data storage
+        const db = this.getDbTable('transactions');
+
+        await db.batchPut(tokenTransactions);
+
         const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions);
 
         this.eventEmitter.emit(topic, payload);
@@ -267,7 +278,10 @@ export default abstract class Token extends AbstractWallet {
       if (txs.length > 0) {
         const tokenTransactions = txs.filter((tx: any) => tx.walletId === this.#id);
 
-        // TODO implement history data storage
+        const db = this.getDbTable('transactions');
+
+        await db.batchPut(tokenTransactions);
+
         const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions);
 
         this.eventEmitter.emit(topic, payload);

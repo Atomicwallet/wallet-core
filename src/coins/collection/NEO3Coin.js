@@ -24,7 +24,7 @@ const UNSPENDABLE_BALANCE = '0';
 class NEO3Coin extends Neo3Mixin(NeoMixin(HasProviders(HasTokensMixin(Coin)))) {
   #feeTokenWallet;
 
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -39,7 +39,7 @@ class NEO3Coin extends Neo3Mixin(NeoMixin(HasProviders(HasTokensMixin(Coin)))) {
       dependencies: { coreLib: new LazyLoadedLib(() => import('neo3')) },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -86,10 +86,14 @@ class NEO3Coin extends Neo3Mixin(NeoMixin(HasProviders(HasTokensMixin(Coin)))) {
   }
 
   createToken(args) {
-    return new NEOToken({
-      parent: this,
-      ...args,
-    });
+    return new NEOToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   getTokenList() {

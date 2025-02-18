@@ -8,8 +8,8 @@ const NftMixin = (superclass) =>
      *
      * Checks getProvider method for existence and throws if not.
      */
-    constructor() {
-      super(...arguments);
+    constructor(args, db, configManager) {
+      super(args, db, configManager);
 
       if (typeof super.getProvider !== 'function') {
         throw new InternalError({ type: INTERNAL_ERROR, instance: this });
@@ -76,7 +76,7 @@ const NftMixin = (superclass) =>
         });
       }
 
-      // TODO implement history data storage
+      // TODO implement nfts collection data storage
 
       return transferResponse;
     }

@@ -1,8 +1,8 @@
 import { Token } from '../abstract';
 
 export default class BNBToken extends Token {
-  constructor(args) {
-    super(args);
+  constructor(config, db, configManager) {
+    super(config, db, configManager);
     this.fields.paymentId = true;
     this.balances = {};
   }
@@ -41,41 +41,7 @@ export default class BNBToken extends Token {
     return this.balance;
   }
 
-  // async getTransactions () {
-  //   return this.transactions
-  // }
-
   getUserTicker() {
     return this.ticker.split('-')[0];
   }
-
-  // Rewards calculation draft
-  //
-  // get reward () {
-  //   if (this.getUserTicker() !== 'AWC') {
-  //     return undefined
-  //   }
-  //   const reward = this.rewards.find(
-  //     (item) => this.staked >= item.min && this.staked <= item.max
-  //   )
-  //
-  //   if (!reward) {
-  //     const maxReward = this.rewards[this.rewards.length - 1]
-  //
-  //     return this.staked >= maxReward.min
-  //       ? maxReward.persent
-  //       : this.staking.reward
-  //   }
-  //
-  //   return reward.persent
-  // }
-  //
-  // get stakingComputed () {
-  //   return {
-  //     available: this.available,
-  //     staked: this.staked,
-  //     total: this.total,
-  //     reward: this.reward,
-  //   }
-  // }
 }

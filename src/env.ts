@@ -1,3 +1,4 @@
+// @ts-expect-error declarations
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -11,8 +12,9 @@ const requiredEnv = (key: string) => {
   return requiredKey;
 };
 
-const getEnv = (key: string) => {
-  return process.env[key];
+const getEnv = (key: string): string | undefined => {
+  // @ts-expect-error web-based usage
+  return (window && window.envVariables && window.envVariables[key]) ?? process.env[key];
 };
 
 export const IS_IOS = !!getEnv('IS_IOS');

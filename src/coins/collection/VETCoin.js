@@ -34,7 +34,7 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @param {Array}  explorers the explorers
    * @param {String} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -49,7 +49,7 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
       socket,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -102,10 +102,14 @@ class VETCoin extends HasProviders(HasTokensMixin(Coin)) {
    * @return {VETToken}
    */
   createToken(args) {
-    return new VETToken({
-      parent: this,
-      ...args,
-    });
+    return new VETToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   #initFeeTokenWallet() {

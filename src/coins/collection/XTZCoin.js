@@ -36,7 +36,7 @@ class XTZCoin extends HasProviders(Coin) {
    * @param  {array}  explorers the explorers
    * @param  {<type>} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -51,7 +51,7 @@ class XTZCoin extends HasProviders(Coin) {
       feeData,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -454,7 +454,6 @@ class XTZCoin extends HasProviders(Coin) {
   getTransaction(txid) {
     return this.getProvider('history').getTransaction(this.address, txid);
   }
-
 
   setPrivateKey(privateKey) {
     this.#privateKey = privateKey;

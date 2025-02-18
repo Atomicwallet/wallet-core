@@ -86,7 +86,7 @@ const CosmosMixinV2 = (superclass) =>
   class extends StakingMixin(superclass) {
     #privateKey;
 
-    constructor(config) {
+    constructor(config, db, configManager) {
       config.dependencies = {
         bech32: new LazyLoadedLib(() => import('bech32')),
         proto: new LazyLoadedLib(() => import('@cosmjs/proto-signing')),
@@ -97,7 +97,7 @@ const CosmosMixinV2 = (superclass) =>
         ...(config.dependencies || {}),
       };
 
-      super(config);
+      super(config, db, configManager);
       this.gasPrice = config.feeData.gasPrice || GAS_PRICE;
       this.useGasEstimate = config.feeData.useGasEstimate || false;
       this.estimatedGasCoefficient = config.feeData.estimatedGasCoefficient || ESTIMATED_GAS_COEFFICIENT;

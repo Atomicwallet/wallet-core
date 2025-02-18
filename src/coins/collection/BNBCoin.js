@@ -6,6 +6,7 @@ import BinanceDex from 'src/explorers/collection/BinanceDex';
 import BinanceExplorer from 'src/explorers/collection/BinanceExplorer';
 import { BNBToken } from 'src/tokens';
 import { Amount, LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
@@ -46,7 +47,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @param {*} txWebUrl
    * @memberof BNBCoin
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -64,7 +65,7 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.setExplorersModules([BinanceExplorer, BinanceBCExplorer, BinanceDex]);
 
@@ -516,11 +517,11 @@ class BNBCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {BNBToken}
    */
   createToken(args) {
-    return new BNBToken({ parent: this, ...args });
+    return new BNBToken({ parent: this, ...args }, this.db, this.configManager);
   }
 
-  async getTokenList() {
-    return []; // @TODO implement external tokens list fetcher
+  getTokenList() {
+    return this.configManager.get(ConfigKey.BnbTokens);
   }
 
   /**

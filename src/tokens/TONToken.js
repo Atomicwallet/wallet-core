@@ -10,10 +10,10 @@ class TONToken extends Token {
 
   fields = { paymentId: true };
 
-  constructor(args) {
-    super(args);
-    this.#parent = args.parent;
-    this.mint = args.mint;
+  constructor(config, db, configManager) {
+    super(config, db, configManager);
+    this.#parent = config.parent;
+    this.mint = config.mint;
 
     this._getJettonWalletAddress();
   }
@@ -72,7 +72,10 @@ class TONToken extends Token {
       if (txs.length > 0) {
         const tokenTransactions = txs.filter((tx) => tx.walletId === this.id);
 
-        // TODO implement history data storage
+        const db = this.getDbTable('transactions');
+
+        await db.batchPut(tokenTransactions);
+
         const { topic, payload } = HISTORY_WALLET_UPDATED(this.id, tokenTransactions);
 
         this.eventEmitter.emit(topic, payload);

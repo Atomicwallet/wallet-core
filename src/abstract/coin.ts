@@ -2,7 +2,6 @@ import BN from 'bn.js';
 import isEqual from 'lodash/isEqual';
 import type {
   CoinConfigType,
-  ConfigManagerInterface,
   FeeDataType,
   Numeric,
   RawTxBinary,
@@ -16,7 +15,9 @@ import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } fr
 import type Explorer from 'src/explorers/explorer';
 import type Transaction from 'src/explorers/Transaction';
 import { IKeysObject, type LazyLoadedLib, TxNotifier } from 'src/utils';
+import { IConfigManager } from 'src/utils/configManager';
 import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils/const';
+import { IDataBase } from 'src/utils/db';
 
 const WALLETS_WITH_CUSTOM_TOKENS = ['ETH'];
 const CHECK_TX_UPDATE_TIMEOUT = 3000;
@@ -87,8 +88,8 @@ export default abstract class Coin extends AbstractWallet {
 
   abstract removeTokenFromDb(args: unknown): void;
 
-  constructor(config: CoinConfigType, configManager?: ConfigManagerInterface) {
-    super(config, configManager);
+  constructor(config: CoinConfigType, db?: IDataBase, configManager?: IConfigManager) {
+    super(config, db, configManager);
 
     this.dependencies = config.dependencies || {};
     this.config = config;
@@ -527,7 +528,7 @@ export default abstract class Coin extends AbstractWallet {
    * Gets the transactions.
    */
   // @TODO `any` until explorer types is not defined
-  async getTransactions(args: any) {
+  async getTransactions(args: any): Promise<Transaction[]> {
     if (this.explorer) {
       if (!this.address) {
         throw new Error(`[${this.ticker}] getTransactions error: address is not loaded`);

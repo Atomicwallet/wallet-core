@@ -1,12 +1,16 @@
 import { Coin } from 'src/abstract';
+import { HasBlockScanner, HasProviders, HasTokensMixin } from 'src/coins/mixins';
+import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from 'src/coins/mixins/HasProviders';
 import { NftMixin } from 'src/coins/nfts/mixins';
 import SolanaNodeExplorer from 'src/explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from 'src/explorers/collection/SolanaTritonExplorer';
 import { SOLToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
+import { STAKE_ADDR_TYPE } from 'src/utils/const';
 
-import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
-import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from '../mixins/HasProviders';
+import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
+import TOKENS_CACHE from '../../resources/eth/tokens.json';
 
 const NAME = 'Solana';
 const TICKER = 'SOL';
@@ -30,19 +34,23 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      dependencies: {
-        [solanaWeb3Lib]: new LazyLoadedLib(() => import('@solana/web3.js')),
-        [hdKeyLib]: new LazyLoadedLib(() => import('ed25519-hd-key')),
-        [tweetnaclLib]: new LazyLoadedLib(() => import('tweetnacl')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        dependencies: {
+          [solanaWeb3Lib]: new LazyLoadedLib(() => import('@solana/web3.js')),
+          [hdKeyLib]: new LazyLoadedLib(() => import('ed25519-hd-key')),
+          [tweetnaclLib]: new LazyLoadedLib(() => import('tweetnacl')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.derivation = DERIVATION;
 
@@ -255,7 +263,11 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
     transaction.feePayer = authorized.staker;
     transaction.sign(...signers);
 
-    // @TODO implement new staking address storage
+    const db = this.getDbTable('addrCache');
+
+    const address = stakePubkey.toBase58();
+
+    await db.put({ id: address, ticker: this.ticker, type: STAKE_ADDR_TYPE, address });
 
     return transaction.serialize();
   }
@@ -386,7 +398,9 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    return [];
+    const tokens = await this.configManager.get(ConfigKey.SolTokens);
+
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -395,10 +409,9 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
    * @async
    * @returns {Promise<string[]>} - Array of contract addresses
    */
-  getBannedTokenList() {
-    // @TODO implement fetch tokens list
-
-    return [];
+  async getBannedTokenList() {
+    const banned = await this.configManager.get(ConfigKey.SolTokensBanned);
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   /**
@@ -480,10 +493,14 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
    * @return {SOLToken}
    */
   createToken(args) {
-    return new SOLToken({
-      parent: this,
-      ...args,
-    });
+    return new SOLToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**

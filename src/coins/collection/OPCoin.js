@@ -8,6 +8,7 @@ import BANNED_TOKENS_CACHE from 'src/resources/op/tokens-banned.json';
 import TOKENS_CACHE from 'src/resources/op/tokens.json';
 import { OPToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
 
@@ -64,7 +65,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @param  {Explorer[]}  explorers the explorers
    * @param  {string} txWebUrl the transmit web url
    */
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -86,7 +87,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
       },
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.derivation = DERIVATION;
 
@@ -210,7 +211,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
       }
     });
 
-    // confirmed transacion message received, balance update needed
+    // confirmed transaction message received, balance update needed
     this.eventEmitter.on('confirm', async ({ address, hash, ticker }) => {
       if (this.ticker === ticker) {
         this.getProvider('socket').getSocketTransaction({
@@ -224,7 +225,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {Array<String>} array of tickers
    */
   getExcludedTokenList() {
@@ -381,7 +382,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
         feeTicker: this.ticker,
       });
 
-      // TODO implement history data storage
+      const db = this.getDbTable('transactions');
+
+      await db.batchPut(newTx);
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,
@@ -778,10 +781,14 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @return {OPToken}
    */
   createToken(args) {
-    return new OPToken({
-      parent: this,
-      ...args,
-    });
+    return new OPToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**
@@ -820,9 +827,9 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
   async getTokenList() {
     this.bannedTokens = await this.getBannedTokenList();
 
-    // @TODO implement fetch tokens list
+    const tokens = await this.configManager.get(ConfigKey.OptimismTokens);
 
-    return TOKENS_CACHE;
+    return tokens ?? TOKENS_CACHE;
   }
 
   /**
@@ -830,9 +837,8 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    // @TODO implement fetch banned tokens list
-
-    return BANNED_TOKENS_CACHE;
+    const banned = await this.configManager.get(ConfigKey.OptimismTokensBanned);
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   /**

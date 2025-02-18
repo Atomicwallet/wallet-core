@@ -68,7 +68,6 @@ class RippleExplorer extends Explorer {
   modifyTransactionsResponse(response, address) {
     this.currentLedgerVersion = response.ledger_index_max;
 
-    // return super.modifyTransactionsResponse(response.transactions)
     return response.transactions.map(({ tx }) => this.modifyTransactionResponse(tx, address));
   }
 
@@ -105,10 +104,10 @@ class RippleExplorer extends Explorer {
   }
 
   /**
-   * Gets the trasaction amount.
+   * Gets the transaction amount.
    *
-   * @param {Object} tx The trasaction
-   * @return {Number} The trasaction amount.
+   * @param {Object} tx The transaction
+   * @return {Number} The transaction amount.
    */
   getTxValue(selfAddress, tx) {
     return Number(this.wallet.toCurrencyUnit(tx.Amount));

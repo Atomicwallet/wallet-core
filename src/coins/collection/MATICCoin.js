@@ -10,8 +10,10 @@ import BlockbookV2WithBlockscannerExplorer from 'src/explorers/extended/Blockboo
 import { MATICToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
 import applyCoefficient from 'src/utils/applyCoefficient';
+import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
+import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
@@ -43,19 +45,23 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    *
    * @param  {object} config
    */
-  constructor(config) {
-    super({
-      ...config,
-      name: config.name ?? NAME,
-      ticker: config.ticker ?? TICKER,
-      decimal: DECIMAL,
-      unspendableBalance: UNSPENDABLE_BALANCE,
-      chainId: config.chainId ?? MATIC_CHAIN_ID,
-      dependencies: {
-        web3: new LazyLoadedLib(() => import('web3')),
-        hdkey: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+  constructor(config, db, configManager) {
+    super(
+      {
+        ...config,
+        name: config.name ?? NAME,
+        ticker: config.ticker ?? TICKER,
+        decimal: DECIMAL,
+        unspendableBalance: UNSPENDABLE_BALANCE,
+        chainId: config.chainId ?? MATIC_CHAIN_ID,
+        dependencies: {
+          web3: new LazyLoadedLib(() => import('web3')),
+          hdkey: new LazyLoadedLib(() => import('ethereumjs-wallet')),
+        },
       },
-    });
+      db,
+      configManager,
+    );
 
     this.derivation = DERIVATION;
 
@@ -158,7 +164,7 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
   }
 
   /**
-   * List to be exluded from wallets list
+   * List to be excluded from wallets list
    * @return {string[]} array of tickers
    */
   getExcludedTokenList() {
@@ -465,9 +471,22 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
   }
 
   async getModerateGasPrice() {
-    // @TODO implement fetch moderated gas config
+    try {
+      const moderatedGasPrice = await this.configManager.get(ConfigKey.PolygonGasPrice);
 
-    return {};
+      if (moderatedGasPrice && moderatedGasPrice.fastest && moderatedGasPrice.safeLow) {
+        return {
+          fastest: new this.BN(moderatedGasPrice.fastest).mul(new this.BN(GWEI)),
+          safeLow: new this.BN(moderatedGasPrice.safeLow).mul(new this.BN(GWEI)),
+        };
+      }
+
+      throw new Error(`${this.ticker}: failed to get gas price`);
+    } catch (error) {
+      console.warn(error);
+
+      return {};
+    }
   }
 
   async estimateGas() {
@@ -539,10 +558,14 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    * @return {MATICToken}
    */
   createToken(args) {
-    return new MATICToken({
-      parent: this,
-      ...args,
-    });
+    return new MATICToken(
+      {
+        parent: this,
+        ...args,
+      },
+      this.db,
+      this.configManager,
+    );
   }
 
   /**
@@ -579,10 +602,8 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    * @param {string} configName
    * @returns {Promise<Array>}
    */
-  async getTokenLists(configName) {
-    // @TODO implement fetch tokens list
-
-    return [];
+  getTokenLists(configName) {
+    return this.configManager?.get(configName);
   }
 
   /**
@@ -590,7 +611,9 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    * @returns {Promise<Array>}
    */
   async getTokenList() {
-    return [];
+    const tokens = await this.getTokenLists(ConfigKey.PolygonTokens);
+
+    return tokens ?? [];
   }
 
   /**
@@ -598,7 +621,9 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
    * @returns {Promise<Array>}
    */
   async getBannedTokenList() {
-    return this.getTokenLists('polygon-tokens-banned');
+    const banned = await this.getTokenLists(ConfigKey.PolygonTokensBanned);
+
+    return banned ?? BANNED_TOKENS_CACHE;
   }
 
   /**

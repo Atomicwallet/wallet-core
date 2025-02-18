@@ -1,8 +1,9 @@
-import { Token } from '../abstract';
+import { Token } from 'src/abstract';
+import { ConfigKey } from 'src/utils/configManager';
 
 class FTMToken extends Token {
-  constructor(...args) {
-    super(...args);
+  constructor(config, db, configManager) {
+    super(config, db, configManager);
 
     this.gasLimit = '150000';
     this.coefficient = 1;
@@ -27,7 +28,7 @@ class FTMToken extends Token {
    * @return {Promise<Object>} The ERC20 fee settings
    */
   getFeeSettings() {
-    return {}; // @TODO implement get fee setting
+    return this.configManager?.get(ConfigKey.FantomGasPrice);
   }
 
   /* @TODO DEPRECATED

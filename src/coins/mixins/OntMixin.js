@@ -1,6 +1,6 @@
 import base58check from 'base58check';
 import { ExplorerRequestError } from 'src/errors';
-import { LazyLoadedLib } from 'src/utils';
+import { LazyLoadedLib, SEND_TRANSACTION_TYPE } from 'src/utils';
 
 const ontologySdkLib = new LazyLoadedLib(() => import('ontology-ts-sdk'));
 
@@ -14,8 +14,8 @@ const CLAIM_THRESHOLD = 0.03; // claim if unbonding+rewards more then this value
 const OntMixin = (superclass) =>
   class extends superclass {
     #privateKey;
-    constructor(config) {
-      super(config);
+    constructor(config, db, configManager) {
+      super(config, db, configManager);
 
       this.gasLimit = (config && config.feeData.gasLimit) || GAS_LIMIT;
       this.gasPrice = (config && config.feeData.gasPrice) || GAS_PRICE;
@@ -245,6 +245,26 @@ const OntMixin = (superclass) =>
 
     setPrivateKey(privateKey) {
       this.#privateKey = privateKey;
+    }
+
+    async sendTransaction(rawtx) {
+      const { CONST, RestClient } = await ontologySdkLib.get();
+
+      try {
+        const client = new RestClient(CONST.MAIN_ONT_URL.REST_URL);
+
+        const response = await client.sendRawTransaction(rawtx);
+
+        return {
+          txid: response.Result,
+        };
+      } catch (error) {
+        throw new ExplorerRequestError({
+          type: SEND_TRANSACTION_TYPE,
+          error,
+          instance: this,
+        });
+      }
     }
   };
 

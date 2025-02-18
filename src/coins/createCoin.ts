@@ -1,24 +1,24 @@
-import type { Coin, CoinConfigType, ConfigManagerInterface, LoggerInterface } from 'src/abstract';
+import type { Coin, CoinConfigType, ILogger } from 'src/abstract';
 import { createEVMCoin } from 'src/coins/collection/EVM';
 import type { EVMConfig, EVMUserConfig } from 'src/coins/collection/EVM/types';
+import { IConfigManager } from 'src/utils/configManager';
+import { IDataBase } from 'src/utils/db';
 
 export type CoinDataConfig = CoinConfigType & Partial<EVMUserConfig> & Partial<EVMConfig> & { walletType?: string };
 
 /**
  * Creates new coin instance
- * @param CoinClass
- * @param coinData
- * @return {Coin}
  */
 export default function createCoin(
   CoinClass: unknown,
   coinData: CoinDataConfig,
-  configManager?: ConfigManagerInterface,
-  logger?: LoggerInterface,
+  db?: IDataBase,
+  configManager?: IConfigManager,
+  logger?: ILogger,
 ): Coin {
   if (coinData.walletType === 'EVM') {
     // @todo define proper return type
-    return createEVMCoin(coinData, configManager, logger) as unknown as Coin;
+    return createEVMCoin(coinData, db, configManager, logger) as unknown as Coin;
   }
 
   // @ts-expect-error define generic type
@@ -50,6 +50,7 @@ export default function createCoin(
       derivation: coinData.derivation,
       decimal: coinData.decimal,
     },
+    db,
     configManager,
     logger,
   );

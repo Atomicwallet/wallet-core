@@ -1,8 +1,9 @@
 import { Token } from '../abstract';
+import { ConfigKey } from '../utils/configManager';
 
 class FLRToken extends Token {
-  constructor(...args) {
-    super(...args);
+  constructor(config, db, configManager) {
+    super(config, db, configManager);
 
     this.gasLimit = '150000';
     this.coefficient = 1;
@@ -27,7 +28,7 @@ class FLRToken extends Token {
    * @return {Promise<Object>} The ERC20 fee settings
    */
   getFeeSettings() {
-    return {}; // @TODO implement fetch fee settings
+    return this.configManager?.get(ConfigKey.EthereumGasPrice);
   }
 
   /* @TODO DEPRECATED

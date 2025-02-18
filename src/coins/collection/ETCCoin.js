@@ -24,7 +24,7 @@ class ETCCoin extends Coin {
   web3BaseUrl;
   web3;
 
-  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }) {
+  constructor({ alias, notify, feeData, explorers, txWebUrl, socket, id }, db, configManager) {
     const config = {
       id,
       alias,
@@ -38,7 +38,7 @@ class ETCCoin extends Coin {
       socket,
     };
 
-    super(config);
+    super(config, db, configManager);
 
     this.setExplorersModules([BlockscoutExplorer, Web3Explorer]);
 

@@ -388,7 +388,7 @@ export default class Explorer {
   /**
    * Get a transactions list for a wallet
    *
-   * @return {Promise<Object[]>}
+   * @return {Promise<Transaction[]>}
    */
   async getTransactions({ address, offset, limit, pageNum }) {
     if (
