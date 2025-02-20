@@ -1,34 +1,34 @@
 export class BaseTable {
     async get(conditions) {
-        console.log('Base DB used, not implemented.');
+        console.log('Base DB used, `get` not implemented.');
         return Promise.resolve(undefined);
     }
     async getAll(conditions) {
-        console.log('Base DB used, not implemented.');
+        console.log('Base DB used, `getAll` not implemented.');
         return Promise.resolve([]);
     }
     async put(item) {
-        console.log('Base DB used, not implemented.');
+        console.log('Base DB used, `put` not implemented.');
         return Promise.resolve('');
     }
     async update(id, changes) {
-        console.log('Base DB used, not implemented.');
+        console.log('Base DB used, `update` not implemented.');
         return Promise.reject(new Error('Not implemented.'));
     }
     async delete(id) {
-        console.log('Base DB used, not implemented.');
+        console.log('Base DB used, `delete` not implemented.');
         return Promise.resolve();
     }
     batchDelete(ids) {
-        console.log('Base DB used, not implemented.');
+        console.log('Base DB used, `batchDelete` not implemented.');
         return Promise.resolve(undefined);
     }
     batchPut(items) {
-        console.log('Base DB used, not implemented.');
+        console.log('Base DB used, `batchPut` not implemented.');
         return Promise.reject(new Error('Not implemented.'));
     }
     batchUpdate(ids, changes) {
-        console.log('Base DB used, not implemented.');
+        console.log('Base DB used, `batchUpdate` not implemented.');
         return Promise.resolve([]);
     }
 }
