@@ -3,7 +3,7 @@ import { Token } from '../abstract/index.js';
 export default class THETAToken extends Token {
     #parent;
     constructor(config, db, configManageer) {
-        super(config);
+        super(config, db, configManageer);
         this.id = this.ticker;
         this.#parent = config.parent;
     }
