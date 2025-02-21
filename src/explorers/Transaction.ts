@@ -3,7 +3,7 @@ import type Explorer from 'src/explorers/explorer';
 
 export interface TransactionFields {
   id?: string;
-  wallet: Coin | Token;
+  wallet?: Coin | Token;
   walletid?: string;
   explorer: Explorer | string;
   txid: string;
@@ -21,7 +21,7 @@ export interface TransactionFields {
 }
 
 export default class Transaction implements TransactionFields {
-  wallet: Coin | Token;
+  wallet?: Coin | Token;
   walletid?: string;
   explorer: Explorer | string;
   txid: string;
@@ -57,7 +57,7 @@ export default class Transaction implements TransactionFields {
     this.datetime = fields.datetime;
     this.timestamp = fields.timestamp || this.datetime.getTime();
     this.wallet = fields.wallet;
-    this.walletid = fields.wallet.id;
+    this.walletid = fields.walletid;
     this.explorer = fields.explorer;
     this.txid = fields.txid;
     this.direction = fields.direction;
