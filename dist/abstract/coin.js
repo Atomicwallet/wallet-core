@@ -457,8 +457,7 @@ export default class Coin extends AbstractWallet {
                 instance: this,
             });
         }
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
+        // @ts-expect-error def
         const explorer = new ExplorerModule({ wallet: this, config });
         this.explorers.push(explorer);
         return explorer;
