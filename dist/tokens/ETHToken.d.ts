@@ -3,7 +3,7 @@ declare class ETHToken extends Token {
     constructor(config: any, db: any, configManager: any);
     gasLimit: string;
     coefficient: number;
-    getTransactions(): Promise<import("../explorers/Transaction.js").default[]>;
+    getTransactions(): Promise<import("../index.js").Transaction[]>;
     createTransaction({ address, amount, custom, userGasPrice, gasLimit, multiplier, nonce, }: {
         address: any;
         amount: any;

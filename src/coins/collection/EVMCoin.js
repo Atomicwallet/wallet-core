@@ -185,6 +185,12 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     this.#tokensConfigName = `${tokenConfigPrefix}-tokens`;
     this.#bannedTokensConfigName = `${tokenConfigPrefix}-tokens-banned`;
 
+    this.#gasPriceConfigName &&
+      configManager.register(this.#gasPriceConfigName, { cacheTtl: MODERATED_GAS_PRICE_TIMEOUT });
+
+    configManager.register(this.#tokensConfigName);
+    configManager.register(this.#bannedTokensConfigName);
+
     // @TODO implement gas price config fetch by evm nave
 
     this.web3BaseUrl = explorers.find(({ className }) => className === 'Web3Explorer')?.baseUrl;

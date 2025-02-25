@@ -5,7 +5,7 @@ declare class OPToken extends Token {
     coefficient: number;
     getInfo(): Promise<{
         balance: string;
-        transactions: import("../explorers/Transaction.js").default[];
+        transactions: import("../index.js").Transaction[];
     }>;
     createTransaction({ address, amount, custom, userGasPrice, gasLimit, multiplier, nonce, }: {
         address: any;
