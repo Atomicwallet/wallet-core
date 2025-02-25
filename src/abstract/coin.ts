@@ -14,6 +14,7 @@ import { CoinFeature } from 'src/coins/constants';
 import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } from 'src/errors';
 import type Explorer from 'src/explorers/explorer';
 import Transaction, { TransactionInfoFields } from 'src/explorers/Transaction';
+import { ExplorerConfig } from 'src/explorers/types';
 import { IKeysObject, type LazyLoadedLib, TxNotifier } from 'src/utils';
 import { IConfigManager } from 'src/utils/configManager';
 import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils/const';
@@ -54,7 +55,7 @@ export default abstract class Coin extends AbstractWallet {
   txWebUrl: string;
   confirmed: boolean;
   nonce?: Numeric;
-  balances?: unknown;
+  balances?: Record<string, string | number | BN>;
   socket?: boolean;
 
   fee?: Numeric;
@@ -556,10 +557,9 @@ export default abstract class Coin extends AbstractWallet {
   /**
    * Return available balance for send
    */
-  async availableBalance(fees: any) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const balance = (this.balances?.available && this.toMinimalUnit(this.balances?.available)) || this.balance;
+  async availableBalance(fees?: string | BN): Promise<string> {
+    const balance =
+      (this.balances?.available && this.toMinimalUnit(this.balances?.available as string | BN)) ?? this.balance;
 
     if (!balance) {
       return '';
@@ -578,7 +578,7 @@ export default abstract class Coin extends AbstractWallet {
   /**
    * Check amount + fee < balance
    */
-  async isAvailableForSend(amount: string, fee: string) {
+  async isAvailableForSend(amount: string, fee?: string): Promise<boolean> {
     // @ TODO empty string is always true
     if (Number(amount) < 0) {
       return false;
@@ -600,8 +600,7 @@ export default abstract class Coin extends AbstractWallet {
     return amountToSpend.lte(availableBalance);
   }
 
-  // @TODO define Explorer types
-  createExplorer(config: any) {
+  createExplorer(config: ExplorerConfig) {
     /**
      * @TODO Remove after fixing moralis class name
      */
@@ -624,7 +623,7 @@ export default abstract class Coin extends AbstractWallet {
     return explorer;
   }
 
-  processExplorerConfig(config: any) {
+  processExplorerConfig(config: ExplorerConfig) {
     const explorer = this.explorers.find((item) => isEqual(config, item.config)) ?? this.createExplorer(config);
 
     if (!explorer) {
@@ -689,11 +688,11 @@ export default abstract class Coin extends AbstractWallet {
     txWebUrl,
     submitUrl,
   }: {
-    explorers: object[];
+    explorers: ExplorerConfig[];
     txWebUrl: string;
     submitUrl: string;
   }) {
-    explorers.forEach((exData: object) => {
+    explorers.forEach((exData: ExplorerConfig) => {
       try {
         this.processExplorerConfig({
           ...exData,
