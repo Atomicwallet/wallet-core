@@ -3,7 +3,7 @@ import type { CoinConfigType, FeeDataType, Numeric, RawTxBinary, RawTxHex, RawTx
 import { AbstractWallet } from '../abstract/index.js';
 import { CoinFeature } from '../coins/constants.js';
 import type Explorer from '../explorers/explorer.js';
-import type Transaction from '../explorers/Transaction.js';
+import Transaction, { TransactionInfoFields } from '../explorers/Transaction.js';
 import { IKeysObject, type LazyLoadedLib, TxNotifier } from '../utils/index.js';
 import { IConfigManager } from '../utils/configManager/index.js';
 import { IDataBase } from '../utils/db/index.js';
@@ -173,7 +173,7 @@ export default abstract class Coin extends AbstractWallet {
      * Gets the wallet.
      */
     loadWallet(seed?: Buffer, mnemonic?: string): Promise<IKeysObject>;
-    checkTransaction(txInfo: any): Promise<void>;
+    checkTransaction(txInfo: TransactionInfoFields): Promise<void>;
     /**
      * Gets the information about a wallet.
      */

@@ -26,6 +26,7 @@ export default class Transaction {
         this.memo = fields.memo;
         this.confirmations = fields.confirmations;
         this.fee = fields.fee;
+        this.feeTicker = fields.feeTicker;
         this.date = this.getDate();
         this.time = this.getTime();
     }

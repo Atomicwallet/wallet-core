@@ -17,7 +17,18 @@ export interface TransactionFields {
     timestamp?: number;
     recepient?: string;
     fee?: string;
+    feeTicker?: string;
 }
+export type TransactionInfoFields = TransactionFields & {
+    address: string;
+    nonce: string | number;
+    amount: string;
+    memo: string | number;
+    fee: string;
+    feeTicker: string;
+} & {
+    wallet: Coin | Token;
+};
 export default class Transaction implements TransactionFields {
     wallet?: Coin | Token;
     walletid?: string;
@@ -35,6 +46,7 @@ export default class Transaction implements TransactionFields {
     date: string;
     time: string;
     fee?: string;
+    feeTicker?: string;
     constructor(fields: TransactionFields);
     getDateTime(): Date;
     getDate(): string;

@@ -338,17 +338,20 @@ export default class Coin extends AbstractWallet {
     async loadWallet(seed, mnemonic) {
         throw new UndeclaredAbstractMethodError('async loadWallet', this);
     }
-    // @TODO txInfo type set to `any` until explorer types is not defined
     async checkTransaction(txInfo) {
         try {
-            await this.explorer?.checkTransaction(this.address, txInfo);
+            const tx = await this.explorer?.checkTransaction(this.address, txInfo);
+            if (tx) {
+                const db = this.getDbTable('transactions');
+                db.put(tx);
+            }
         }
         catch (error) {
             console.warn(this.ticker, 'Unable to check transaction');
         }
         this.eventEmitter.emit('socket::newtx::outgoing', {
             id: this.id,
-            ticker: txInfo.coin.ticker,
+            ticker: txInfo.ticker,
         });
         setTimeout(async () => {
             await this.getBalance();
@@ -386,7 +389,6 @@ export default class Coin extends AbstractWallet {
     /**
      * Gets the transactions.
      */
-    // @TODO `any` until explorer types is not defined
     async getTransactions(args) {
         if (this.explorer) {
             if (!this.address) {

@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 import { AbstractWallet, type Coin } from '../abstract/index.js';
-import type Transaction from '../explorers/Transaction.js';
+import Transaction, { TransactionInfoFields } from '../explorers/Transaction.js';
 import { IConfigManager } from '../utils/configManager/index.js';
 import { IDataBase } from '../utils/db/index.js';
 import type { CreateTxParams, RawTxBinary, RawTxHex, RawTxObject, TxHash, TokenCreationArgs, TokenSource, CoinConfigType } from './index.js';
@@ -95,7 +95,7 @@ export default abstract class Token extends AbstractWallet {
     estimateGas(amount: BN | string, address: string, contract: string, defaultGas?: BN | string | number): Promise<BN | number | string>;
     getTokenTransactions(): Promise<Transaction[]>;
     getTransactions(offset: number, limit: number): Promise<Transaction[]>;
-    checkTransaction(args: any): Promise<void>;
+    checkTransaction(args: TransactionInfoFields): Promise<void>;
     getTransaction(txId: TxHash): Promise<object | undefined>;
     /**
      * Update dynamic data set
