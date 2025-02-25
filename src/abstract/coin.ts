@@ -13,7 +13,7 @@ import { AbstractWallet } from 'src/abstract';
 import { CoinFeature } from 'src/coins/constants';
 import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } from 'src/errors';
 import type Explorer from 'src/explorers/explorer';
-import type Transaction from 'src/explorers/Transaction';
+import Transaction, { TransactionInfoFields } from 'src/explorers/Transaction';
 import { IKeysObject, type LazyLoadedLib, TxNotifier } from 'src/utils';
 import { IConfigManager } from 'src/utils/configManager';
 import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils/const';
@@ -467,17 +467,21 @@ export default abstract class Coin extends AbstractWallet {
     throw new UndeclaredAbstractMethodError('async loadWallet', this);
   }
 
-  // @TODO txInfo type set to `any` until explorer types is not defined
-  async checkTransaction(txInfo: any) {
+  async checkTransaction(txInfo: TransactionInfoFields): Promise<void> {
     try {
-      await this.explorer?.checkTransaction(this.address, txInfo);
+      const tx = await this.explorer?.checkTransaction(this.address, txInfo);
+
+      if (tx) {
+        const db = this.getDbTable('transactions');
+        db.put(tx);
+      }
     } catch (error) {
       console.warn(this.ticker, 'Unable to check transaction');
     }
 
     this.eventEmitter.emit('socket::newtx::outgoing', {
       id: this.id,
-      ticker: txInfo.coin.ticker,
+      ticker: txInfo.ticker,
     });
 
     setTimeout(async () => {
@@ -527,7 +531,6 @@ export default abstract class Coin extends AbstractWallet {
   /**
    * Gets the transactions.
    */
-  // @TODO `any` until explorer types is not defined
   async getTransactions(args: any): Promise<Transaction[]> {
     if (this.explorer) {
       if (!this.address) {
