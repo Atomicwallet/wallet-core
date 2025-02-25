@@ -1,7 +1,7 @@
 import BN from 'bn.js';
 import { AbstractWallet, type Coin } from 'src/abstract';
 import Transaction, { TransactionInfoFields } from 'src/explorers/Transaction';
-import { getTokenId } from 'src/utils';
+import { GetFeeArgs, getTokenId } from 'src/utils';
 import { IConfigManager } from 'src/utils/configManager';
 import { IDataBase } from 'src/utils/db';
 import { HISTORY_WALLET_UPDATED } from 'src/utils/eventTopics';
@@ -36,9 +36,6 @@ export default abstract class Token extends AbstractWallet {
   isSetBalance: boolean;
   notify: boolean;
 
-  /**
-   * Constructs a new instance of the class.
-   */
   constructor(args: TokenCreationArgs, db?: IDataBase, configManager?: IConfigManager) {
     super(args, db, configManager);
 
@@ -60,14 +57,6 @@ export default abstract class Token extends AbstractWallet {
     if (args.config) {
       this.config = args.config;
     }
-
-    // Object.entries(args).forEach(([key, val]) => {
-    //   if (key === 'parent') {
-    //     this.#parent = val
-    //   } else {
-    //     this[key] = val
-    //   }
-    // })
 
     this.BN = BN;
     this.balance = '';
@@ -94,16 +83,10 @@ export default abstract class Token extends AbstractWallet {
     this.#contract = contract;
   }
 
-  /**
-   * Address
-   */
   get address(): string {
     return this.#parent.address;
   }
 
-  /**
-   * Token network
-   */
   get network(): string {
     return this.#parent.id;
   }
@@ -112,9 +95,6 @@ export default abstract class Token extends AbstractWallet {
     return this.#parent.networkType;
   }
 
-  /**
-   * Get fee wallet instance
-   */
   get feeWallet() {
     return this.#parent;
   }
@@ -134,16 +114,10 @@ export default abstract class Token extends AbstractWallet {
     return this.#parent.id;
   }
 
-  /**
-   * Transaction base url
-   */
   get txWebUrl() {
     return this.#parent.txWebUrl;
   }
 
-  /**
-   * Parent corelib
-   */
   get coreLibrary() {
     return this.#parent.coreLibrary;
   }
@@ -163,16 +137,10 @@ export default abstract class Token extends AbstractWallet {
     return this.#parent.getTxLimit();
   }
 
-  /**
-   * Gets the wallet.
-   */
   async loadWallet(mnemonic: string) {
     return this;
   }
 
-  /**
-   * Validates wallet address
-   */
   async validateAddress(address: string) {
     return this.#parent.validateAddress(address);
   }
@@ -192,9 +160,6 @@ export default abstract class Token extends AbstractWallet {
     return this.#parent.sendTransaction(args);
   }
 
-  /**
-   * Gets the information about a wallet.
-   */
   async getInfo() {
     if (this.#parent.getTokenInfo) {
       this.balance = await this.#parent.getTokenInfo({
@@ -207,9 +172,6 @@ export default abstract class Token extends AbstractWallet {
     };
   }
 
-  /**
-   * Gets the available balance.
-   */
   async availableBalance() {
     return this.divisibleBalance ? String(this.divisibleBalance) : '0';
   }
@@ -218,16 +180,7 @@ export default abstract class Token extends AbstractWallet {
     return this.#parent.indivisibleBalance?.gte(new this.BN(fee));
   }
 
-  /**
-   * Gets the fee.
-   *
-   * @param {String} amount Amount to transfer in satoshis
-   * @param {Boolean} isSendAll
-   * @param {String} userGasPrice optional custom gas price
-   * @param {String} userGasLimit optional custom gas limit
-   * @return {Promise<BN>} The fee big number
-   */
-  getFee(args: any) {
+  getFee(args: Partial<GetFeeArgs>) {
     return this.#parent.getFee(args);
   }
 

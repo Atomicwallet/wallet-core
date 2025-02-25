@@ -15,7 +15,7 @@ import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } fr
 import type Explorer from 'src/explorers/explorer';
 import Transaction, { TransactionInfoFields } from 'src/explorers/Transaction';
 import { ExplorerConfig } from 'src/explorers/types';
-import { IKeysObject, type LazyLoadedLib, TxNotifier } from 'src/utils';
+import { GetFeeArgs, IKeysObject, type LazyLoadedLib, TxNotifier } from 'src/utils';
 import { IConfigManager } from 'src/utils/configManager';
 import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils/const';
 import { IDataBase } from 'src/utils/db';
@@ -267,7 +267,7 @@ export default abstract class Coin extends AbstractWallet {
       toMinimalUnit: (value: string) => this.toMinimalUnit(value),
       getClient: () => this.getClient?.(),
       tokens: () => this.tokens,
-      getFee: (feeObject: unknown) => this.getFee(feeObject),
+      getFee: (getFeeArgs: Partial<GetFeeArgs>) => this.getFee(getFeeArgs),
       getTokens: () => this.tokens,
       getProvider: (usedFor: string) => this.getProvider(usedFor),
       getTRC20Fee: (feeTRC20Object: unknown) => this.getTRC20Fee(feeTRC20Object),
@@ -429,7 +429,7 @@ export default abstract class Coin extends AbstractWallet {
    *
    * @return {BN} The fee big number
    */
-  async getFee(args?: unknown): Promise<BN> {
+  async getFee(args?: Partial<GetFeeArgs>): Promise<BN> {
     return new this.BN(this.fee || 0);
   }
 
