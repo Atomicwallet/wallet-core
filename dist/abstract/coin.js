@@ -169,7 +169,7 @@ export default class Coin extends AbstractWallet {
             toMinimalUnit: (value) => this.toMinimalUnit(value),
             getClient: () => this.getClient?.(),
             tokens: () => this.tokens,
-            getFee: (feeObject) => this.getFee(feeObject),
+            getFee: (getFeeArgs) => this.getFee(getFeeArgs),
             getTokens: () => this.tokens,
             getProvider: (usedFor) => this.getProvider(usedFor),
             getTRC20Fee: (feeTRC20Object) => this.getTRC20Fee(feeTRC20Object),

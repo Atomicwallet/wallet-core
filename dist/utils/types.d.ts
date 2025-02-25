@@ -1,3 +1,4 @@
+import { Numeric } from '../abstract/index.js';
 import { ExplorerConfig } from '../explorers/types/index.js';
 export interface IKeys {
     seed: Buffer;
@@ -30,3 +31,15 @@ export interface IAddrCacheElement {
     type: string;
     address: string;
 }
+export type GetFeeArgs = {
+    feePerByte: Numeric;
+    userGasPrice: Numeric;
+    utxos: Array<Record<string, number>>;
+    gasLimit: Numeric;
+    address: string;
+    sendAmount: Numeric;
+    isToken: boolean;
+    contract: string;
+    denom: string | Numeric;
+    custom: unknown;
+};

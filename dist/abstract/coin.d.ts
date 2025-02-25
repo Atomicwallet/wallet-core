@@ -5,7 +5,7 @@ import { CoinFeature } from '../coins/constants.js';
 import type Explorer from '../explorers/explorer.js';
 import Transaction, { TransactionInfoFields } from '../explorers/Transaction.js';
 import { ExplorerConfig } from '../explorers/types/index.js';
-import { IKeysObject, type LazyLoadedLib, TxNotifier } from '../utils/index.js';
+import { GetFeeArgs, IKeysObject, type LazyLoadedLib, TxNotifier } from '../utils/index.js';
 import { IConfigManager } from '../utils/configManager/index.js';
 import { IDataBase } from '../utils/db/index.js';
 type ExplorersModules = {
@@ -112,7 +112,7 @@ export default abstract class Coin extends AbstractWallet {
         toMinimalUnit: (value: string) => string;
         getClient: () => unknown;
         tokens: () => TokensObject | undefined;
-        getFee: (feeObject: unknown) => Promise<BN>;
+        getFee: (getFeeArgs: Partial<GetFeeArgs>) => Promise<BN>;
         getTokens: () => TokensObject | undefined;
         getProvider: (usedFor: string) => Explorer;
         getTRC20Fee: (feeTRC20Object: unknown) => string;
@@ -153,7 +153,7 @@ export default abstract class Coin extends AbstractWallet {
      *
      * @return {BN} The fee big number
      */
-    getFee(args?: unknown): Promise<BN>;
+    getFee(args?: Partial<GetFeeArgs>): Promise<BN>;
     /**
      * Gets the address.
      */
