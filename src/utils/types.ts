@@ -1,3 +1,4 @@
+import { Numeric } from 'src/abstract';
 import { ExplorerConfig } from 'src/explorers/types';
 
 export interface IKeys {
@@ -35,3 +36,16 @@ export interface IAddrCacheElement {
   type: string;
   address: string;
 }
+
+export type GetFeeArgs = {
+  feePerByte: Numeric;
+  userGasPrice: Numeric;
+  utxos: Array<Record<string, number>>;
+  gasLimit: Numeric;
+  address: string;
+  sendAmount: Numeric;
+  isToken: boolean;
+  contract: string;
+  denom: string | Numeric;
+  custom: unknown;
+};
