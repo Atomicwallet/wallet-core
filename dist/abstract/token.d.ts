@@ -103,20 +103,5 @@ export default abstract class Token extends AbstractWallet {
     updateTokenParamsFromServer(data: CoinConfigType): void;
     isTagShown(): boolean;
     manageEvents(): void;
-    /**
-     * isActivated getter
-     * Allows to determine if a token is activated.
-     */
-    get isActivated(): undefined;
-    /**
-     * Activates token
-     * Also activates the parent coin and all associated tokens.
-     */
-    activate(): Promise<void>;
-    /**
-     * Deactivates token
-     * Also deactivates the parent coin and all associated tokens.
-     */
-    deactivate(): void;
     removeTokenFromDb(args: object[]): void;
 }

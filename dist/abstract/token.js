@@ -249,27 +249,6 @@ export default class Token extends AbstractWallet {
             });
         });
     }
-    /**
-     * isActivated getter
-     * Allows to determine if a token is activated.
-     */
-    get isActivated() {
-        return this.#parent.isActivated;
-    }
-    /**
-     * Activates token
-     * Also activates the parent coin and all associated tokens.
-     */
-    async activate() {
-        return this.#parent.activate();
-    }
-    /**
-     * Deactivates token
-     * Also deactivates the parent coin and all associated tokens.
-     */
-    deactivate() {
-        return this.#parent.deactivate();
-    }
     removeTokenFromDb(args) {
         return this.#parent.removeTokenFromDb(args);
     }

@@ -538,28 +538,6 @@ export default class Coin extends AbstractWallet {
         return this.canRun('createTokenTransaction') ? this.createTokenTransaction(params) : {};
     }
     /**
-     * isActivated getter
-     * Allows to determine if a coin is activated.
-     */
-    get isActivated() {
-        return undefined;
-        // return activeWalletsList.isActive(this);
-    }
-    /**
-     * Activates coin
-     * Also activates all associated tokens.
-     */
-    async activate() {
-        // activeWalletsList.activate(this);
-    }
-    /**
-     * Deactivates coin
-     * Also deactivates all associated tokens.
-     */
-    deactivate() {
-        // activeWalletsList.deactivate(this);
-    }
-    /**
      * Is feature supported by this coin network.
      */
     isFeatureSupported(feature) {

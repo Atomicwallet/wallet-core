@@ -472,6 +472,8 @@ const StakingMixin = (superclass) =>
         return this.#predefinedValidators;
       }
 
+      this.configManager?.register(this.getPredefineValidatorsConfigName());
+
       const validators = await this.configManager?.get(this.getPredefineValidatorsConfigName());
 
       this.#predefinedValidators = validators ?? this.getDefaultValidators();

@@ -219,21 +219,6 @@ export default abstract class Coin extends AbstractWallet {
     getUnspentOutputs(): Promise<any>;
     createTokenTransactionOnce(params: any): {};
     /**
-     * isActivated getter
-     * Allows to determine if a coin is activated.
-     */
-    get isActivated(): undefined;
-    /**
-     * Activates coin
-     * Also activates all associated tokens.
-     */
-    activate(): Promise<void>;
-    /**
-     * Deactivates coin
-     * Also deactivates all associated tokens.
-     */
-    deactivate(): void;
-    /**
      * Is feature supported by this coin network.
      */
     isFeatureSupported(feature: CoinFeature): boolean;
