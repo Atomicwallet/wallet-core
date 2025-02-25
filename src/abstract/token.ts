@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 import { AbstractWallet, type Coin } from 'src/abstract';
-import type Transaction from 'src/explorers/Transaction';
+import Transaction, { TransactionInfoFields } from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
 import { IConfigManager } from 'src/utils/configManager';
 import { IDataBase } from 'src/utils/db';
@@ -299,7 +299,7 @@ export default abstract class Token extends AbstractWallet {
     }
   }
 
-  checkTransaction(args: any) {
+  checkTransaction(args: TransactionInfoFields) {
     return this.#parent.checkTransaction(args);
   }
 
