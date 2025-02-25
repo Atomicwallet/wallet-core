@@ -413,9 +413,7 @@ export default class Coin extends AbstractWallet {
      * Return available balance for send
      */
     async availableBalance(fees) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const balance = (this.balances?.available && this.toMinimalUnit(this.balances?.available)) || this.balance;
+        const balance = (this.balances?.available && this.toMinimalUnit(this.balances?.available)) ?? this.balance;
         if (!balance) {
             return '';
         }
@@ -446,7 +444,6 @@ export default class Coin extends AbstractWallet {
         }
         return amountToSpend.lte(availableBalance);
     }
-    // @TODO define Explorer types
     createExplorer(config) {
         /**
          * @TODO Remove after fixing moralis class name

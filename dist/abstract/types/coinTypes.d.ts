@@ -1,4 +1,5 @@
 import { type Token } from '../../abstract/index.js';
+import { ExplorerConfig } from '../../explorers/types/index.js';
 import type { LazyLoadedLib } from '../../utils/index.js';
 export type TokensObject = {
     [key: string]: Token;
@@ -28,7 +29,7 @@ export type CoinConfigType = {
     feeData: {
         [key: string]: unknown;
     };
-    explorers: object[];
+    explorers: ExplorerConfig[];
     txWebUrl: string;
     submitUrl: string;
     coreLibrary?: unknown;

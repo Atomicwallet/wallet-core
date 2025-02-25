@@ -1,3 +1,4 @@
+import { ExplorerConfig } from '../explorers/types/index.js';
 export interface IKeys {
     seed: Buffer;
     phrase: string;
@@ -9,17 +10,13 @@ export interface IKeysObject {
     privateKey: string;
     balance?: string;
 }
-export interface IConfigExplorer {
-    baseUrl: string;
-    className: string;
-}
 export interface IConfigFeeData {
     coefficient: number;
     feePerByte: string;
 }
 export interface IConfig {
     className: string;
-    explorers: IConfigExplorer[];
+    explorers: ExplorerConfig[];
     feeData: IConfigFeeData;
     feesEstimateUrl: string;
     id: string;

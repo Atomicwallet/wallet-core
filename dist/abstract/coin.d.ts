@@ -4,6 +4,7 @@ import { AbstractWallet } from '../abstract/index.js';
 import { CoinFeature } from '../coins/constants.js';
 import type Explorer from '../explorers/explorer.js';
 import Transaction, { TransactionInfoFields } from '../explorers/Transaction.js';
+import { ExplorerConfig } from '../explorers/types/index.js';
 import { IKeysObject, type LazyLoadedLib, TxNotifier } from '../utils/index.js';
 import { IConfigManager } from '../utils/configManager/index.js';
 import { IDataBase } from '../utils/db/index.js';
@@ -35,7 +36,7 @@ export default abstract class Coin extends AbstractWallet {
     txWebUrl: string;
     confirmed: boolean;
     nonce?: Numeric;
-    balances?: unknown;
+    balances?: Record<string, string | number | BN>;
     socket?: boolean;
     fee?: Numeric;
     tokens?: TokensObject;
@@ -192,13 +193,13 @@ export default abstract class Coin extends AbstractWallet {
     /**
      * Return available balance for send
      */
-    availableBalance(fees: any): Promise<string>;
+    availableBalance(fees?: string | BN): Promise<string>;
     /**
      * Check amount + fee < balance
      */
-    isAvailableForSend(amount: string, fee: string): Promise<boolean>;
-    createExplorer(config: any): any;
-    processExplorerConfig(config: any): any;
+    isAvailableForSend(amount: string, fee?: string): Promise<boolean>;
+    createExplorer(config: ExplorerConfig): any;
+    processExplorerConfig(config: ExplorerConfig): any;
     /**
      * Process config feeData.
      */
