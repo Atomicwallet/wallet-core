@@ -637,7 +637,7 @@ export default abstract class Coin extends AbstractWallet {
   /**
    * Process config feeData.
    */
-  private setFeeData(feeData = {}) {
+  private setFeeData(feeData: FeeDataType = {}) {
     this.feeData = feeData;
     Object.entries(feeData).forEach(([key, value]) => {
       if (
