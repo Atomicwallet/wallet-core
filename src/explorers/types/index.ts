@@ -5,4 +5,5 @@ export type ExplorerConfig = {
   usedFor?: Array<string>;
   txLimit?: string | number;
   defaultRequestTimeout?: string | number;
+  submitUrl?: string;
 };
