@@ -14,11 +14,10 @@ export default function createCoin(
   coinData: CoinDataConfig,
   db?: IDataBase,
   configManager?: IConfigManager,
-  logger?: ILogger,
 ): Coin {
   if (coinData.walletType === 'EVM') {
     // @todo define proper return type
-    return createEVMCoin(coinData, db, configManager, logger) as unknown as Coin;
+    return createEVMCoin(coinData, db, configManager) as unknown as Coin;
   }
 
   // @ts-expect-error define generic type
@@ -52,6 +51,5 @@ export default function createCoin(
     },
     db,
     configManager,
-    logger,
   );
 }
