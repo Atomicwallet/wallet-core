@@ -1,6 +1,8 @@
 import { Numeric } from 'src/abstract';
 import { ExplorerConfig } from 'src/explorers/types';
 
+export type Construct = { constructor: { name: string } };
+
 export interface IKeys {
   seed: Buffer;
   phrase: string;
