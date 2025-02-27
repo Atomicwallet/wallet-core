@@ -1,4 +1,3 @@
-export { default as logger } from './logger/index.js';
 export { default as hashCode } from '../utils/hashCode.js';
 export { default as hex2a } from '../utils/hex2a.js';
 export { default as chunkArray } from '../utils/chunkArray.js';
