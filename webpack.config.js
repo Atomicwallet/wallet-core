@@ -51,6 +51,7 @@ module.exports = {
       fs: false,
       net: false,
       tls: false,
+      vm: false,
     },
   },
   externals: {
