@@ -10,7 +10,7 @@ export interface ILogger {
   error<T extends Construct, C extends Error>(error: ErrorObject<T, C>): void;
 }
 
-export class BaseLogger {
+export class BaseLogger implements ILogger {
   log<T extends Construct, C extends Error>(error: ErrorObject<T, C>): void {
     console.log(error);
   }
