@@ -13,10 +13,9 @@ import type {
   WalletTicker,
   TokenCreationArgs,
   CoinConfigType,
-  ILogger,
 } from 'src/abstract';
 import type Explorer from 'src/explorers/explorer';
-import { Emitter, defaultConfigManager, defaultLogger } from 'src/utils';
+import { Emitter, defaultConfigManager } from 'src/utils';
 import { IConfigManager } from 'src/utils/configManager';
 import { WALLETS } from 'src/utils/const';
 import { toMinimal, toCurrency } from 'src/utils/convert';
@@ -46,7 +45,6 @@ export default abstract class AbstractWallet {
   configManager: IConfigManager;
 
   db: IDataBase;
-  logger: ILogger;
 
   abstract gasPriceConfig?: IGasPriceConfig;
   abstract gasLimit?: string | number | BN;
@@ -83,14 +81,12 @@ export default abstract class AbstractWallet {
     { name, ticker, decimal, memoRegexp }: CoinConfigType | TokenCreationArgs,
     db?: IDataBase,
     configManager?: IConfigManager,
-    logger?: ILogger,
   ) {
     this.#name = name;
     this.#ticker = ticker;
     this.#decimal = decimal;
 
     this.configManager = configManager ?? defaultConfigManager;
-    this.logger = logger ?? defaultLogger;
     this.db = db ?? new BaseDatabase();
     this.alias = 'atomic';
     this.memoRegexp = memoRegexp;
