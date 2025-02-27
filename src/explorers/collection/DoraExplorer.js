@@ -1,6 +1,6 @@
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
-
+import { logger } from 'src/utils';
 const MS = 1000;
 
 class DoraExplorer extends Explorer {
@@ -33,7 +33,7 @@ class DoraExplorer extends Explorer {
     try {
       apiBalances = await this.request(`balance/${address}`);
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
 
     const balances = {

@@ -1,7 +1,7 @@
 import { ExplorerRequestError } from 'src/errors';
 import { TxTypes } from 'src/explorers/enum';
 import Explorer from 'src/explorers/explorer';
-import { getTokenId } from 'src/utils';
+import { logger, getTokenId } from 'src/utils';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
 
@@ -59,7 +59,7 @@ class CovalentHQExplorer extends Explorer {
 
       return tokens.map((token) => this.#mapToTokenFormat(token));
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       return [];
     }

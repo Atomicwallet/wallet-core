@@ -9,7 +9,7 @@ import Transaction from 'src/explorers/Transaction';
 import BANNED_TOKENS_CACHE from 'src/resources/ftm/tokens-banned.json';
 import TOKENS_CACHE from 'src/resources/ftm/tokens.json';
 import { FTMToken } from 'src/tokens';
-import { getTokenId, Amount, LazyLoadedLib } from 'src/utils';
+import { getTokenId, Amount, LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { toCurrency } from 'src/utils/convert';
@@ -17,7 +17,6 @@ import { toCurrency } from 'src/utils/convert';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
-
 const NAME = 'Fantom';
 const TICKER = 'FTM';
 const DERIVATION = "m/44'/1007'/0'/0/0";
@@ -391,7 +390,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,
-        ticker: coin.ticker,
+        ticker: wallet.ticker,
       });
 
       setTimeout(async () => {
@@ -944,7 +943,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
       this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
     return this.gasPriceConfig;
   }

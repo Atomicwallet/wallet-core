@@ -3,9 +3,9 @@
  * https://github.com/near/near-wallet/blob/0da7e823492fb9411717d62a3363849ab7e02e15/packages/frontend/src/utils/explorer-api.js#L7
  */
 import Explorer from 'src/explorers/explorer';
+import { logger } from 'src/utils';
 
 const TRANSFER_ACTION = 'TRANSFER';
-
 class NearHelperExplorer extends Explorer {
   getAllowedTickers() {
     return ['NEAR'];
@@ -17,7 +17,7 @@ class NearHelperExplorer extends Explorer {
 
       return txs;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       return [];
     }

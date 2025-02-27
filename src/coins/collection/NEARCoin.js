@@ -3,11 +3,10 @@ import lodash from 'lodash';
 import { Coin } from 'src/abstract';
 import NearblocksExplorer from 'src/explorers/collection/NearblocksExplorer';
 import NearRPCExplorer from 'src/explorers/collection/NearRPCExplorer';
-import { Amount, LazyLoadedLib } from 'src/utils';
+import { Amount, LazyLoadedLib, logger } from 'src/utils';
 import sha256 from 'src/utils/sha256';
 
 import { HasBlockScanner, HasProviders, StakingMixin } from '../mixins';
-
 const nearApiLib = new LazyLoadedLib(() => import('near-api-js'));
 const nearSeedPhraseLib = new LazyLoadedLib(() => import('near-seed-phrase'));
 
@@ -128,7 +127,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
         address: this.address,
       };
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       return this;
     }
@@ -420,7 +419,7 @@ class NEARCoin extends StakingMixin(HasBlockScanner(HasProviders(Coin))) {
       this.balance = balance;
       this.unspendableBalance = unspendable;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
   }
 

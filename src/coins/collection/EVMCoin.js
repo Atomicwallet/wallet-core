@@ -5,7 +5,7 @@ import EtherscanExplorer from 'src/explorers/collection/EtherscanExplorer';
 import Web3Explorer from 'src/explorers/collection/Web3Explorer';
 import Transaction from 'src/explorers/Transaction';
 import { EVMToken } from 'src/tokens';
-import { Amount, LazyLoadedLib } from 'src/utils';
+import { Amount, LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
@@ -13,7 +13,6 @@ import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 import HasProviders from '../mixins/HasProviders';
 import HasTokensMixin from '../mixins/HasTokensMixin';
 import Web3Mixin from '../mixins/Web3Mixin';
-
 const DECIMAL = 18;
 const DEFAULT_MIN_GAS = 21000;
 const UNSPENDABLE_BALANCE = 0;
@@ -538,7 +537,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
       // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
       if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-        // @TODO implement logger
+        logger.log({ instance: this, error });
       }
       // Fallback value
       return this.maxGasLimit;
@@ -674,7 +673,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
 
       return this.nonce;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
       return undefined;
     }
   }
@@ -860,7 +859,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
     const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
       // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
       if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-        // @TODO implement logger
+        logger.log({ instance: this, error });
       }
       // Fallback value
       return contractAddress ? this.maxGasLimit : this.gasLimit;

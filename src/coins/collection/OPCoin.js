@@ -388,7 +388,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
 
       this.eventEmitter.emit('socket::newtx::outgoing', {
         id: this.id,
-        ticker: coin.ticker,
+        ticker: wallet.ticker,
       });
 
       setTimeout(async () => {

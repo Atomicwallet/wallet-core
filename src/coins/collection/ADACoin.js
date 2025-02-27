@@ -2,7 +2,7 @@ import Coin from 'src/abstract/coin';
 import { DEFAULT_ADALITE_SUBMIT_URL, IS_IOS } from 'src/env';
 import { WalletError } from 'src/errors';
 import { AdaAtomicExplorer, YoroExplorer } from 'src/explorers/collection';
-import { LazyLoadedLib, preventConcurrent } from 'src/utils';
+import { LazyLoadedLib, logger, preventConcurrent } from 'src/utils';
 import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 
 import { HasProviders } from '../mixins';
@@ -180,7 +180,7 @@ class ADACoin extends HasProviders(Coin) {
 
       this.address = await coreLibrary.getAddressByPrivateKey();
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
       console.error('ADA load walled failed, core library is not initialized');
     }
 

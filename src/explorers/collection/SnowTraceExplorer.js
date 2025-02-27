@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import { TxTypes } from 'src/explorers/enum';
 import Explorer from 'src/explorers/explorer';
+import { logger } from 'src/utils';
 
 import { erc721Abi } from './ETHNftExplorer.js';
 
@@ -18,7 +19,7 @@ class SnowTraceExplorer extends Explorer {
     try {
       return super.getTransactions(...args);
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
       return [];
     }
   }
@@ -154,7 +155,7 @@ class SnowTraceExplorer extends Explorer {
         safeLow: response.result.SafeGasPrice,
       };
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
       return {};
     }
   }

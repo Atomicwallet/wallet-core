@@ -1,4 +1,4 @@
-import { COSMOS_MSG_TO_TYPE } from 'src/explorers/enum';
+import { COSMOS_MSG_TO_TYPE, TxTypes } from 'src/explorers/enum';
 import Explorer from 'src/explorers/explorer';
 
 export default class TerraFCDExplorer extends Explorer {

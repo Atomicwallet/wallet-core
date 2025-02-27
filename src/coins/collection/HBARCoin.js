@@ -9,7 +9,7 @@ import HashnodeExplorer from 'src/explorers/collection//HashnodeExplorer';
 import HederaMirrorNodeExplorer from 'src/explorers/collection//HederaMirrorNodeExplorer';
 import HederaStakingExplorer from 'src/explorers/collection//HederaStakingExplorer';
 import KabutoExplorer from 'src/explorers/collection/KabutoExplorer';
-import { Amount, LazyLoadedLib } from 'src/utils';
+import { Amount, LazyLoadedLib, logger } from 'src/utils';
 import { WALLET_ERROR } from 'src/utils/const';
 
 import { HasProviders, StakingMixin } from '../mixins';
@@ -19,7 +19,6 @@ const TICKER = 'HBAR';
 const DERIVATION = "m/44'/3030'/0'/0/0";
 const DECIMAL = 8;
 const UNSPENDABLE_BALANCE = '100000000';
-
 const HEDERA_SDK = 'hederaSdk';
 
 class HBARCoin extends StakingMixin(HasProviders(Coin)) {
@@ -177,7 +176,7 @@ class HBARCoin extends StakingMixin(HasProviders(Coin)) {
 
         this.address = accountId;
       } catch (error) {
-        // @TODO implement logger
+        logger.log({ instance: this, error });
       }
     }
 

@@ -3,10 +3,9 @@ import { Coin } from 'src/abstract';
 import { BitcoinLikeFeeMixin, BitcoreMixin } from 'src/coins/mixins';
 import { BlockbookV2Explorer } from 'src/explorers/collection';
 import fees from 'src/resources/wallets_fee.json';
-import { LazyLoadedLib } from 'src/utils';
+import { LazyLoadedLib, logger } from 'src/utils';
 import { LIB_NAME_INDEX } from 'src/utils/const';
 import { sanitizeString } from 'src/utils/sanitize';
-
 const { BITCORE } = LIB_NAME_INDEX;
 const NAME = 'Bitcoin';
 const TICKER = 'BTC';
@@ -140,8 +139,8 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
           }
         }
       }
-    } catch {
-      // @TODO implement logger
+    } catch (error) {
+      logger.log({ instance: this, error });
     }
 
     return this.feeRecommended;

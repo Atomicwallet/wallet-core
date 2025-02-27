@@ -12,8 +12,8 @@
   },
   "scripts": {
     "build": "tsc && tsc-alias",
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "lint": "eslint . --ext .js,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.ts,.tsx --fix",
     "format": "prettier --write .",
     "test": "jest --runInBand",
     "postinstall": "sh ./scripts/postinstall.sh",

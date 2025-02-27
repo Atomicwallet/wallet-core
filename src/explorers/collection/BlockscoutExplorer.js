@@ -2,9 +2,8 @@ import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
 import TOKENS_CACHE from 'src/resources/eth/tokens.json';
-import { getTokenId } from 'src/utils';
+import { getTokenId, logger } from 'src/utils';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, UNDEFINED_OPERATION_ERROR } from 'src/utils/const';
-
 const GET_USER_TOKENS_TYPE = 'GetUserTokens';
 
 class BlockscoutExplorer extends Explorer {
@@ -133,7 +132,7 @@ class BlockscoutExplorer extends Explorer {
 
       return txs.concat(tokenTransfers);
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       return [];
     }

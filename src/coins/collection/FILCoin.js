@@ -2,13 +2,12 @@ import BN from 'bn.js';
 import { Coin } from 'src/abstract';
 import { ExternalError } from 'src/errors';
 import Web3Explorer from 'src/explorers/collection/Web3Explorer';
-import { LazyLoadedLib } from 'src/utils';
+import { LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 import { isStartsWith } from 'src/utils/funcs';
 
 import { HasProviders } from '../mixins';
-
 const NAME = 'Filecoin';
 const TICKER = 'FIL';
 const DECIMAL = 18;
@@ -450,7 +449,7 @@ class FILCoin extends HasProviders(Coin) {
 
       this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
     return this.gasPriceConfig;
   }

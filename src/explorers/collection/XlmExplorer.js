@@ -1,5 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
+import { logger } from 'src/utils';
 import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
 import { Server, Networks, Operation, Memo, Keypair, Asset, TransactionBuilder } from 'stellar-sdk';
 
@@ -56,7 +57,7 @@ class XlmExplorer extends Explorer {
         }
       }
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
 
     return transaction;

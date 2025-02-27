@@ -1,3 +1,4 @@
+import { logger } from 'src/utils';
 export const NODE_PROVIDER_OPERATION = 'node';
 export const BALANCE_PROVIDER_OPERATION = 'balance';
 export const HISTORY_PROVIDER_OPERATION = 'history';
@@ -8,7 +9,6 @@ export const NFT_SEND_PROVIDER_OPERATION = 'nft-send';
 export const SOCKET_PROVIDER_OPERATION = 'socket';
 // @TODO Use more standard names for that things - may be load-lib
 export const TONWEB_PROVIDER_OPERATION = 'tonweb';
-
 const HasProviders = (superclass) =>
   class extends superclass {
     processExplorerConfig(config) {
@@ -168,7 +168,7 @@ const HasProviders = (superclass) =>
         return true;
       } catch (error) {
         error.message = `[${this.ticker}] updateCoinParamsFromServer error: ${error.message || 'Unknown error'}`;
-        // @TODO implement logger
+        logger.log({ instance: this, error });
 
         return false;
       }
