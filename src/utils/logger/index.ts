@@ -12,11 +12,11 @@ export interface ILogger {
 
 export class BaseLogger implements ILogger {
   log<T extends Construct, C extends Error>(error: ErrorObject<T, C>): void {
-    console.log(error);
+    console.log(`[BaseLogger]\n`, error);
   }
 
   error<T extends Construct, C extends Error>(error: ErrorObject<T, C>): void {
-    console.error(error);
+    console.error(`[BaseLogger]\n`, error);
   }
 }
 
