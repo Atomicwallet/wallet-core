@@ -8,7 +8,7 @@ import PolyscanExplorer from '../../explorers/collection/PolyscanExplorer.js';
 import Web3Explorer from '../../explorers/collection/Web3Explorer.js';
 import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer.js';
 import { MATICToken } from '../../tokens/index.js';
-import { LazyLoadedLib } from '../../utils/index.js';
+import { LazyLoadedLib, logger } from '../../utils/index.js';
 import applyCoefficient from '../../utils/applyCoefficient.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import { EXTERNAL_ERROR } from '../../utils/const/index.js';
@@ -126,7 +126,7 @@ class MATICCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) 
             return [...txs.value, ...(tokenTxs.value || [])];
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return [];
         }
     }

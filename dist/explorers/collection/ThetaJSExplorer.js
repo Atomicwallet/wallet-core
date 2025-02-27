@@ -1,5 +1,6 @@
 import { providers, networks } from '@thetalabs/theta-js';
 import Explorer from '../../explorers/explorer.js';
+import { logger } from '../../utils/index.js';
 const INIT_PROVIDER_TIMEOUT = 10000;
 const TICKER_FROM_PROVIDER = /(theta|tfuel)wei/i;
 const ACCOUNT_NOT_FOUND_ERROR = -32000;
@@ -24,7 +25,7 @@ export default class ThetaJSExplorer extends Explorer {
             this.provider = new providers.HttpProvider(chainId || networks.Mainnet.chainId, baseUrl || networks.Mainnet.rpcUrl);
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             setTimeout(() => this.initProvider({
                 chainId,
                 baseUrl,
@@ -67,7 +68,7 @@ export default class ThetaJSExplorer extends Explorer {
                     emptyAddress: true,
                 };
             }
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return {
                 sequence: 0,
                 coins: {},

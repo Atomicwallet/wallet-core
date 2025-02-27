@@ -5,7 +5,7 @@ import EtherscanExplorer from '../../explorers/collection/EtherscanExplorer.js';
 import Web3Explorer from '../../explorers/collection/Web3Explorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import { EVMToken } from '../../tokens/index.js';
-import { Amount, LazyLoadedLib } from '../../utils/index.js';
+import { Amount, LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import { EXTERNAL_ERROR } from '../../utils/const/index.js';
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
@@ -95,7 +95,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
      * @param {boolean} [config.isTestnet=false]
      * @param {boolean} [config.isCustom=false]
      */
-    constructor(config, db, configManager, logger) {
+    constructor(config, db, configManager) {
         const { id, isL2, isUseModeratedGasPrice = false, isUseEIP1559 = false, feeData, explorers } = config;
         super({
             ...config,
@@ -106,7 +106,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
                 [WEB3_SDK]: new LazyLoadedLib(() => import('web3')),
                 [ETHEREUM_JS_WALLET_SDK]: new LazyLoadedLib(() => import('ethereumjs-wallet')),
             },
-        }, db, configManager, logger);
+        }, db, configManager);
         /** @type {import('web3').default|null} */
         this.coreLibrary = null;
         this.setExplorersModules([Web3Explorer, EtherscanExplorer]);
@@ -444,7 +444,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
             // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
             if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-                // @TODO implement logger
+                logger.log({ instance: this, error });
             }
             // Fallback value
             return this.maxGasLimit;
@@ -549,7 +549,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
             return this.nonce;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return undefined;
         }
     }
@@ -702,7 +702,7 @@ class EVMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
             // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
             if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-                // @TODO implement logger
+                logger.log({ instance: this, error });
             }
             // Fallback value
             return contractAddress ? this.maxGasLimit : this.gasLimit;

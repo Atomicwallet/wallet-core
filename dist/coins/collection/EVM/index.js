@@ -32,7 +32,7 @@ export function isRpcBaseUrlValid(rpcBaseUrl) {
         throw new TypeError('CreateEVMCoin: Invalid RPC Url');
     }
 }
-export function createEVMCoin({ ticker, name, chainId, rpcBaseUrl, explorerWebUrl = 'https://etherscan.io', features }, db, configManager, logger) {
+export function createEVMCoin({ ticker, name, chainId, rpcBaseUrl, explorerWebUrl = 'https://etherscan.io', features }, db, configManager) {
     if (!ticker || !name || !chainId || !rpcBaseUrl) {
         throw new TypeError('CreateEVMCoin: Missing arguments.\n Every of [ticker, name, chainId, rpcBaseUrl] must be provided!');
     }
@@ -55,6 +55,6 @@ export function createEVMCoin({ ticker, name, chainId, rpcBaseUrl, explorerWebUr
         txWebUrl: `${explorerWebUrl.replace(/\/+$/, '')}/tx/`,
         socket: false,
         isCustom: true,
-    }, db, configManager, logger);
+    }, db, configManager);
 }
 //# sourceMappingURL=index.js.map

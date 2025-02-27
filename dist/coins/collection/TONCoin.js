@@ -2,7 +2,7 @@ import { Coin } from '../../abstract/index.js';
 import { ExternalError, UnknownConfigKeyError } from '../../errors/index.js';
 import TonwebExplorer from '../../explorers/collection/TonwebExplorer.js';
 import { TONToken } from '../../tokens/index.js';
-import { LazyLoadedLib } from '../../utils/index.js';
+import { LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import { EXTERNAL_ERROR } from '../../utils/const/index.js';
 import { HasProviders, HasTokensMixin } from '../mixins/index.js';
@@ -110,7 +110,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
                 await this.wallet.deploy(TonWeb.utils.hexToBytes(this.#privateKey)).send();
             }
             catch (error) {
-                // @TODO implement logger
+                logger.log({ instance: this, error });
             }
         }
         let seqno = await this.getSeqno();
@@ -340,7 +340,7 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
             });
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return this.transactions || [];
         }
     }

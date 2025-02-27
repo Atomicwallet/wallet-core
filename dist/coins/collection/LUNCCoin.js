@@ -4,7 +4,7 @@ import TerraClassicFCDExplorer from '../../explorers/collection/TerraClassicFCDE
 import TerraClassicLCDExplorer from '../../explorers/collection/TerraClassicLCDExplorer.js';
 import TerraMantleExplorer from '../../explorers/collection/TerraMantleExplorer.js';
 import LUNCToken from '../../tokens/LUNCToken.js';
-import { Amount, LazyLoadedLib } from '../../utils/index.js';
+import { Amount, LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins/index.js';
@@ -259,7 +259,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
             return fee.amount[0].amount;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             const gasLimit = Number(this.gasLimit?.[sendType]) || FALLBACK_GASLIMIT[sendType] || FALLBACK_GASLIMIT.max;
             const gasPrice = Number(this.gasPrices?.uluna) || Number(FALLBACK_GASPRICE.uluna);
             return (gasLimit * gasPrice).toFixed(0);
@@ -381,7 +381,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
         }
         catch (error) {
             error.message = `[${this.ticker}] getUserTokenList error: ${error.message || 'Unknown error'}.`;
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return [];
         }
     }
@@ -486,7 +486,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
                     });
                 }
                 catch (error) {
-                    // @TODO implement logger
+                    logger.log({ instance: this, error });
                 }
             }));
         }
@@ -498,14 +498,14 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
             this.balance = balance;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         try {
             await this.getStakingInfo();
         }
         catch (error) {
             console.warn('Could not get staking info');
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         return { balance: this.balance };
     }
@@ -523,7 +523,7 @@ class LUNCCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
             this.gasPrices = await this.getGasPricesList();
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         const { uluna } = this.gasPrices;
         return new this.BN(uluna.split('.')[0]);

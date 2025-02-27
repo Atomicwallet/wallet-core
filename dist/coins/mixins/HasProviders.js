@@ -1,3 +1,4 @@
+import { logger } from '../../utils/index.js';
 export const NODE_PROVIDER_OPERATION = 'node';
 export const BALANCE_PROVIDER_OPERATION = 'balance';
 export const HISTORY_PROVIDER_OPERATION = 'history';
@@ -137,7 +138,7 @@ const HasProviders = (superclass) => class extends superclass {
         }
         catch (error) {
             error.message = `[${this.ticker}] updateCoinParamsFromServer error: ${error.message || 'Unknown error'}`;
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return false;
         }
     }

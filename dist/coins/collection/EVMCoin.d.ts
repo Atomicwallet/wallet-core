@@ -101,7 +101,7 @@ declare class EVMCoin extends EVMCoin_base {
         notify?: boolean | undefined;
         isTestnet?: boolean | undefined;
         isCustom?: boolean | undefined;
-    }, db: any, configManager: any, logger: any);
+    }, db: any, configManager: any);
     /** @type {string} */
     web3BaseUrl: string;
     /** @type {import('web3').default|null} */

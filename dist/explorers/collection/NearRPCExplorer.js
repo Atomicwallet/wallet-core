@@ -4,7 +4,7 @@ import lodash from 'lodash';
 import * as nearAPI from 'near-api-js';
 import { ExternalError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { Amount } from '../../utils/index.js';
+import { Amount, logger } from '../../utils/index.js';
 import { EXTERNAL_ERROR } from '../../utils/const/index.js';
 const THROTTLE_INTERVAL = 800;
 const ACCOUNT_DOES_NOT_EXIST_ERROR = 'AccountDoesNotExist';
@@ -24,7 +24,7 @@ class NearRPCExplorer extends Explorer {
             return this.provider.experimental_protocolConfig({ finality: 'final' });
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return null;
         }
     }
@@ -41,7 +41,7 @@ class NearRPCExplorer extends Explorer {
             return gasPrice;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return null;
         }
     }

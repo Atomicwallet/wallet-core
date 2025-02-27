@@ -5,7 +5,7 @@ import { NftMixin } from '../../coins/nfts/mixins/index.js';
 import SolanaNodeExplorer from '../../explorers/collection/SolanaNodeExplorer.js';
 import SolanaTritonExplorer from '../../explorers/collection/SolanaTritonExplorer.js';
 import { SOLToken } from '../../tokens/index.js';
-import { LazyLoadedLib } from '../../utils/index.js';
+import { LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import { STAKE_ADDR_TYPE } from '../../utils/const/index.js';
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
@@ -439,7 +439,7 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
             });
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return this.transactions || [];
         }
     }

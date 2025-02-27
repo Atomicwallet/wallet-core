@@ -10,7 +10,7 @@ import Web3Explorer from '../../explorers/collection/Web3Explorer.js';
 import BlockbookV2WithBlockscannerExplorer from '../../explorers/extended/BlockbookV2WithBlockscannerExplorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import { ARBToken } from '../../tokens/index.js';
-import { LazyLoadedLib } from '../../utils/index.js';
+import { logger, LazyLoadedLib } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import { EXTERNAL_ERROR } from '../../utils/const/index.js';
 import { toCurrency } from '../../utils/convert.js';
@@ -303,7 +303,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
             await db.put(newTx);
             this.eventEmitter.emit('socket::newtx::outgoing', {
                 id: this.id,
-                ticker: coin.ticker,
+                ticker: wallet.ticker,
             });
             setTimeout(async () => {
                 await this.getBalance();
@@ -365,7 +365,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
             // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
             if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-                // @TODO implement logger
+                logger.log({ instance: this, error });
             }
             // Fallback value
             return this.maxGasLimit;
@@ -522,7 +522,7 @@ class ARBCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
         const estimatedGas = await coreLibrary.eth.estimateGas(transactionObject).catch((error) => {
             // Error code -32000 means insufficient funds, which is not an error in the initial gas evaluation
             if (!error.message.includes(ESTIMATE_GAS_ERROR_MESSAGE_SUBSTRING)) {
-                // @TODO implement logger
+                logger.log({ instance: this, error });
             }
             // Fallback value
             return contractAddress ? this.maxGasLimit : this.gasLimit;

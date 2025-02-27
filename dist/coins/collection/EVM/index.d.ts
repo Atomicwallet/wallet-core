@@ -1,4 +1,3 @@
-import { ILogger } from '../../../abstract/index.js';
 import { IConfigManager } from '../../../utils/configManager/index.js';
 import { IDataBase } from '../../../utils/db/index.js';
 import EVMCoin from '../EVMCoin.js';
@@ -7,4 +6,4 @@ export { default as EVMCoin } from '../EVMCoin.js';
 export declare const generateExplorerConfig: ({ chainId, rpcBaseUrl }: EVMSpecific) => EVMExplorerConfig;
 export declare const generateDefaultFeeConfig: () => EVMFeeConfig;
 export declare function isRpcBaseUrlValid(rpcBaseUrl: string): boolean;
-export declare function createEVMCoin({ ticker, name, chainId, rpcBaseUrl, explorerWebUrl, features }: EVMUserConfig, db?: IDataBase, configManager?: IConfigManager, logger?: ILogger): EVMCoin;
+export declare function createEVMCoin({ ticker, name, chainId, rpcBaseUrl, explorerWebUrl, features }: EVMUserConfig, db?: IDataBase, configManager?: IConfigManager): EVMCoin;

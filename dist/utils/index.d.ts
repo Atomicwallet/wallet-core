@@ -1,9 +1,9 @@
+export { default as logger } from './logger/index.js';
 export { default as hashCode } from '../utils/hashCode.js';
 export { default as hex2a } from '../utils/hex2a.js';
 export { default as chunkArray } from '../utils/chunkArray.js';
 export { default as chunkString } from '../utils/chunkString.js';
 export { default as defaultConfigManager } from '../utils/configManager/index.js';
-export { default as defaultLogger } from '../utils/defaultLogger.js';
 export { default as randomElementFromArray } from '../utils/randomElementFromArray.js';
 export { default as Amount } from './amount.js';
 export { default as preventConcurrent } from '../utils/preventConcurrent.js';
@@ -12,6 +12,7 @@ export { REQUEST_TYPE, requestQueueState } from '../utils/requestQueueState.js';
 export { sleepFor } from './sleepFor.js';
 export { getTokenId } from './token.js';
 export { PROMISE_STATE, getPromiseState } from '../utils/promiseState.js';
+export * from './logger/index.js';
 export * from './db/index.js';
 export * from './walletConfig.js';
 export * from './mnemonic.js';

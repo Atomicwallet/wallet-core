@@ -7,7 +7,7 @@ import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
 import ETHToken from '../../tokens/ETHToken.js';
 import StakableMaticETHToken from '../../tokens/StakableMaticETHToken.js';
-import { Amount } from '../../utils/index.js';
+import { Amount, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import { EXTERNAL_ERROR } from '../../utils/const/index.js';
 import LazyLoadedLib from '../../utils/lazyLoadedLib.js';
@@ -205,7 +205,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
             this.#privateKey = coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         return this.#privateKey;
     }
@@ -713,7 +713,7 @@ class ETHCoin extends StakingMixin(Web3Mixin(NftMixin(HasProviders(HasTokensMixi
             this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         return this.gasPriceConfig;
     }
