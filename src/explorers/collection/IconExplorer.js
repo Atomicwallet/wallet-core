@@ -1,5 +1,5 @@
 import Explorer from 'src/explorers/explorer';
-import { IcxTxTypes } from 'src/utils/const';
+import { IcxTxTypes } from 'src/utils';
 
 class IconExplorer extends Explorer {
   getAllowedTickers() {

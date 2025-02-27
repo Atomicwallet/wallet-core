@@ -2,7 +2,7 @@ import { Coin } from 'src/abstract';
 import { ExternalError } from 'src/errors';
 import AptExplorer from 'src/explorers/collection/AptExplorer';
 import { LazyLoadedLib } from 'src/utils';
-import { EXTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR } from 'src/utils';
 
 import HasProviders from '../mixins/HasProviders';
 

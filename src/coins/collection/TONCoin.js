@@ -4,7 +4,7 @@ import TonwebExplorer from 'src/explorers/collection/TonwebExplorer';
 import { TONToken } from 'src/tokens';
 import { LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { EXTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR } from 'src/utils';
 
 import { HasProviders, HasTokensMixin } from '../mixins';
 import {

@@ -12,7 +12,7 @@ import { ExternalError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
 import { chunkArray, getTokenId } from 'src/utils';
-import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils/const';
+import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils';
 import { convertSecondsToDateTime, getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
 
 const STAKE_DATA_LENGTH = 200;

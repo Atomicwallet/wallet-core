@@ -3,7 +3,7 @@ import { DEFAULT_ADALITE_SUBMIT_URL, IS_IOS } from 'src/env';
 import { WalletError } from 'src/errors';
 import { AdaAtomicExplorer, YoroExplorer } from 'src/explorers/collection';
 import { LazyLoadedLib, logger, preventConcurrent } from 'src/utils';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils';
 
 import { HasProviders } from '../mixins';
 

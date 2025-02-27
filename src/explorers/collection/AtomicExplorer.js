@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
-import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE } from 'src/utils';
 
 class AtomicExplorer extends Explorer {
   getAllowedTickers() {

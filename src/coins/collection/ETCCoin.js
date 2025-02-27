@@ -3,7 +3,7 @@ import { ExplorerRequestError } from 'src/errors';
 import BlockscoutExplorer from 'src/explorers/collection/BlockscoutExplorer';
 import Web3Explorer from 'src/explorers/collection/Web3Explorer';
 import { LazyLoadedLib } from 'src/utils';
-import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE } from 'src/utils';
 
 const Web3LazyLoaded = new LazyLoadedLib(() => import('web3'));
 const hdkeyLazyLoaded = new LazyLoadedLib(() => import('ethereumjs-wallet'));

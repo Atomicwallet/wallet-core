@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
-import { GET_BALANCE_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { GET_BALANCE_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils';
 
 class DogeChainExplorer extends Explorer {
   getAllowedTickers() {

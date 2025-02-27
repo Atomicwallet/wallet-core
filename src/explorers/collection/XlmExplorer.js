@@ -1,7 +1,7 @@
 import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import { logger } from 'src/utils';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils';
 import { Server, Networks, Operation, Memo, Keypair, Asset, TransactionBuilder } from 'stellar-sdk';
 
 const TX_SEND_TIMEOUT = 30;

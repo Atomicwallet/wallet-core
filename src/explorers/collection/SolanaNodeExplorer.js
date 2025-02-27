@@ -10,7 +10,7 @@ import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz';
 import { SOLNftToken } from 'src/coins/nfts';
 import { ExternalError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
-import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils/const';
+import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from 'src/utils';
 import { getStringWithEnsuredEndChar, toCurrency } from 'src/utils/convert';
 
 const STAKE_DATA_LENGTH = 200;

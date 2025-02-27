@@ -2,7 +2,7 @@ import { ExplorerRequestError } from 'src/errors';
 import { TxTypes } from 'src/explorers/enum';
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
-import { GET_TRANSACTIONS_TYPE } from 'src/utils/const';
+import { GET_TRANSACTIONS_TYPE } from 'src/utils';
 
 /**
  * Binance Explorer

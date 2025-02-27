@@ -265,4 +265,4 @@ const cnBase58 = (function () {
   return b58;
 })();
 
-module.exports = cnBase58;
+export default cnBase58;

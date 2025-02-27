@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
-import { SEND_TRANSACTION_TYPE, GET_TRANSACTION_TYPE, UNDEFINED_OPERATION_ERROR } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE, GET_TRANSACTION_TYPE, UNDEFINED_OPERATION_ERROR } from 'src/utils';
 
 const RIPPLE_START_DATE = 946684800;
 

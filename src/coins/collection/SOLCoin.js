@@ -7,7 +7,7 @@ import SolanaTritonExplorer from 'src/explorers/collection/SolanaTritonExplorer'
 import { SOLToken } from 'src/tokens';
 import { LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { STAKE_ADDR_TYPE } from 'src/utils/const';
+import { STAKE_ADDR_TYPE } from 'src/utils';
 
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';

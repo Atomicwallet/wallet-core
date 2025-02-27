@@ -4,7 +4,7 @@ import { ExplorerRequestError, WalletError } from 'src/errors';
 import TzktIoV1Explorer from 'src/explorers/collection/TzktIoV1Explorer';
 import TezosNodeWithBlockscannerExplorer from 'src/explorers/extended/TezosNodeWithBlockscannerExplorer';
 import { LazyLoadedLib } from 'src/utils';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils';
 
 import { HasProviders } from '../mixins';
 

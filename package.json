@@ -197,7 +197,8 @@
     "waves-transactions": "https://github.com/Atomicwallet/waves-transactions.git#feature/AWC-1554",
     "web3": "1.6.0",
     "wif": "2.0.6",
-    "ws": "7.2.0"
+    "ws": "7.2.0",
+    "rpc-websockets": "7.5.1"
   },
   "devDependencies": {
     "@babel/core": "7.26.0",

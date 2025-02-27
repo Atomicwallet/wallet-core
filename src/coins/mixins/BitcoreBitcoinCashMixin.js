@@ -1,5 +1,5 @@
 import bitcoinCashAddressTools from 'bchaddrjs';
-import { LIB_NAME_INDEX } from 'src/utils/const';
+import { LIB_NAME_INDEX } from 'src/utils';
 
 const { BITCORE } = LIB_NAME_INDEX;
 

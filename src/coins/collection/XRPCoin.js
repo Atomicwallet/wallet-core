@@ -2,7 +2,7 @@ import { Coin } from 'src/abstract';
 import { WalletError } from 'src/errors';
 import RippleExplorer from 'src/explorers/collection/RippleExplorer';
 import { LazyLoadedLib } from 'src/utils';
-import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE } from 'src/utils';
 
 const racodecLazyLoaded = new LazyLoadedLib(() => import('ripple-address-codec'));
 const KeypairsLazyLoaded = new LazyLoadedLib(() => import('ripple-keypairs'));

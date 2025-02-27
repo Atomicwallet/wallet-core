@@ -1,5 +1,5 @@
 import { ExternalError, InternalError } from 'src/errors';
-import { EXTERNAL_ERROR, INTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR, INTERNAL_ERROR } from 'src/utils';
 
 const NftMixin = (superclass) =>
   class extends superclass {

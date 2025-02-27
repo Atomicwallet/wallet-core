@@ -8,7 +8,7 @@ import SnowTraceExplorer from 'src/explorers/collection/SnowTraceExplorer';
 import Web3Explorer from 'src/explorers/collection/Web3Explorer';
 import { LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { EXTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR } from 'src/utils';
 
 import HasBlockScanner from '../mixins/HasBlockScanner';
 import HasProviders from '../mixins/HasProviders';

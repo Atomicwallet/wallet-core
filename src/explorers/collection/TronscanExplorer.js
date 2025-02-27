@@ -3,7 +3,7 @@ import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
 import { getTokenId } from 'src/utils';
-import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE } from 'src/utils';
 
 const TRON_CONTRACT_TYPES = {
   AccountCreateContract: 0,

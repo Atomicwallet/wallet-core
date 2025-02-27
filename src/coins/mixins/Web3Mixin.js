@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import ABICollection from 'src/tokens/ABI';
+import * as ABICollection from 'src/tokens/ABI';
 import ERC20Default from 'src/tokens/ABI/ERC-20/standard';
 
 const DEFAULT_MAX_GAS = '250000';
@@ -37,7 +37,7 @@ const Web3Mixin = (superclass) =>
 
       if (!name) {
         throw new Error(
-          `Smart-contract action '${action}' is not supported, supported actions: 
+          `Smart-contract action '${action}' is not supported, supported actions:
           [${Object.keys(supportedSmartContract.methods).toString()}]`,
         );
       }

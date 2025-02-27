@@ -10,7 +10,7 @@ import HederaMirrorNodeExplorer from 'src/explorers/collection//HederaMirrorNode
 import HederaStakingExplorer from 'src/explorers/collection//HederaStakingExplorer';
 import KabutoExplorer from 'src/explorers/collection/KabutoExplorer';
 import { Amount, LazyLoadedLib, logger } from 'src/utils';
-import { WALLET_ERROR } from 'src/utils/const';
+import { WALLET_ERROR } from 'src/utils';
 
 import { HasProviders, StakingMixin } from '../mixins';
 

@@ -1,7 +1,7 @@
 import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
-import { GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { GET_TRANSACTIONS_TYPE, SEND_TRANSACTION_TYPE } from 'src/utils';
 
 class OntExplorer extends Explorer {
   getAllowedTickers() {

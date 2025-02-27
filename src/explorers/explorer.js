@@ -12,7 +12,7 @@ import {
   GET_TRANSACTION_TYPE,
   SEND_TRANSACTION_TYPE,
   UNDEFINED_OPERATION_ERROR,
-} from 'src/utils/const';
+} from 'src/utils';
 import { toCurrency } from 'src/utils/convert';
 
 import { TxTypes } from './enum';

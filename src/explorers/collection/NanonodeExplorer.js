@@ -2,7 +2,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
-import { SEND_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE } from 'src/utils';
 
 const WEBSOCKET_CONFIG = {
   WebSocket: global.WebSocket,

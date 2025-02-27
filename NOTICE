@@ -1070,7 +1070,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/abi)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/abstract-provider)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/abstract-provider)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/abstract-signer)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -1088,7 +1106,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/address)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/base64)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/base64)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/basex)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -1106,7 +1142,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/bignumber)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/bytes)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/bytes)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/constants)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -1124,7 +1178,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/contracts)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/hash)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/hash)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/hdnode)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -1142,7 +1214,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/json-wallets)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/keccak256)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/keccak256)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/logger)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -1160,7 +1250,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/networks)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/pbkdf2)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/pbkdf2)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/properties)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -1178,7 +1286,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/providers)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/random)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/random)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/rlp)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -1196,7 +1322,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/sha2)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/signing-key)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/signing-key)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/solidity)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -1214,7 +1358,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/strings)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/transactions)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/transactions)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/units)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -1232,7 +1394,25 @@ This project includes software developed by third parties.
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ (vethersproject/wallet)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
  (vethersproject/web)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/web)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
+ (vethersproject/wordlists)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
    - Publisher: Richard Moore
@@ -2516,6 +2696,18 @@ This project includes software developed by third parties.
    - Publisher: Parity Team
    - Email: admin@parity.io
 
+ (vsubstrate/connect-extension-protocol)
+   - License: GPL-3.0-only
+   - Repository: N/A
+   - Publisher: Parity Team
+   - Email: admin@parity.io
+
+ (vsubstrate/connect-known-chains)
+   - License: GPL-3.0-only
+   - Repository: https://github.com/paritytech/substrate-connect
+   - Publisher: Parity Team
+   - Email: admin@parity.io
+
  (vsubstrate/connect-known-chains)
    - License: GPL-3.0-only
    - Repository: https://github.com/paritytech/substrate-connect
@@ -3759,6 +3951,12 @@ ansi-regex (v6.1.0)
    - Email: sindresorhus@gmail.com
 
 ansi-styles (v2.2.1)
+   - License: MIT
+   - Repository: https://github.com/chalk/ansi-styles
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
+ansi-styles (v3.2.1)
    - License: MIT
    - Repository: https://github.com/chalk/ansi-styles
    - Publisher: Sindre Sorhus
@@ -5408,7 +5606,7 @@ caniuse-lite (v1.0.30001697)
    - Publisher: Ben Briggs
    - Email: beneb.info@gmail.com
 
-caniuse-lite (v1.0.30001700)
+caniuse-lite (v1.0.30001701)
    - License: CC-BY-4.0
    - Repository: https://github.com/browserslist/caniuse-lite
    - Publisher: Ben Briggs
@@ -5457,6 +5655,12 @@ cbor (v4.1.5)
    - Email: joe-github@cursive.net
 
 chalk (v1.1.3)
+   - License: MIT
+   - Repository: https://github.com/chalk/chalk
+   - Publisher: N/A
+   - Email: N/A
+
+chalk (v2.4.2)
    - License: MIT
    - Repository: https://github.com/chalk/chalk
    - Publisher: N/A
@@ -5642,11 +5846,23 @@ collection-visit (v1.0.0)
    - Publisher: Jon Schlinkert
    - Email: N/A
 
+color-convert (v1.9.3)
+   - License: MIT
+   - Repository: https://github.com/Qix-/color-convert
+   - Publisher: Heather Arthur
+   - Email: fayearthur@gmail.com
+
 color-convert (v2.0.1)
    - License: MIT
    - Repository: https://github.com/Qix-/color-convert
    - Publisher: Heather Arthur
    - Email: fayearthur@gmail.com
+
+color-name (v1.1.3)
+   - License: MIT
+   - Repository: https://github.com/dfcreative/color-name
+   - Publisher: DY
+   - Email: dfcreative@gmail.com
 
 color-name (v1.1.4)
    - License: MIT
@@ -6410,6 +6626,12 @@ duplexify (v4.1.3)
    - Publisher: Mathias Buus
    - Email: N/A
 
+duplicate-package-checker-webpack-plugin (v3.0.0)
+   - License: MIT
+   - Repository: https://github.com/darrenscerri/duplicate-package-checker-webpack-plugin
+   - Publisher: Darren Scerri
+   - Email: darrenscerri@gmail.com
+
 eastasianwidth (v0.2.0)
    - License: MIT
    - Repository: https://github.com/komagata/eastasianwidth
@@ -6470,7 +6692,7 @@ ejs (v3.1.10)
    - Publisher: Matthew Eernisse
    - Email: mde@fleegix.org
 
-electron-to-chromium (v1.5.102)
+electron-to-chromium (v1.5.107)
    - License: ISC
    - Repository: https://github.com/kilian/electron-to-chromium
    - Publisher: Kilian Valkhof
@@ -7094,6 +7316,12 @@ ethers (v5.7.2)
    - Publisher: Richard Moore
    - Email: me@ricmoo.com
 
+ethers (v5.8.0)
+   - License: MIT
+   - Repository: https://github.com/ethers-io/ethers.js
+   - Publisher: Richard Moore
+   - Email: me@ricmoo.com
+
 ethers (v6.13.5)
    - License: MIT
    - Repository: https://github.com/ethers-io/ethers.js
@@ -7424,6 +7652,12 @@ fastq (v1.19.0)
    - Publisher: Matteo Collina
    - Email: hello@matteocollina.com
 
+fastq (v1.19.1)
+   - License: ISC
+   - Repository: https://github.com/mcollina/fastq
+   - Publisher: Matteo Collina
+   - Email: hello@matteocollina.com
+
 faye-websocket (v0.11.4)
    - License: Apache-2.0
    - Repository: https://github.com/faye/faye-websocket-node
@@ -7495,6 +7729,12 @@ find-cache-dir (v4.0.0)
    - Repository: https://github.com/sindresorhus/find-cache-dir
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
+
+find-root (v1.1.0)
+   - License: MIT
+   - Repository: https://github.com/js-n/find-root
+   - Publisher: jsdnxx
+   - Email: N/A
 
 find-up (v4.1.0)
    - License: MIT
@@ -7743,6 +7983,12 @@ get-caller-file (v2.0.5)
    - Email: N/A
 
 get-intrinsic (v1.2.7)
+   - License: MIT
+   - Repository: https://github.com/ljharb/get-intrinsic
+   - Publisher: Jordan Harband
+   - Email: ljharb@gmail.com
+
+get-intrinsic (v1.3.0)
    - License: MIT
    - Repository: https://github.com/ljharb/get-intrinsic
    - Publisher: Jordan Harband
@@ -10142,6 +10388,12 @@ nan (v2.22.0)
    - Publisher: N/A
    - Email: N/A
 
+nan (v2.22.2)
+   - License: MIT
+   - Repository: https://github.com/nodejs/nan
+   - Publisher: N/A
+   - Email: N/A
+
 nano-address-validator (v3.0.0)
    - License: MIT
    - Repository: https://github.com/alecrios/nano-address-validator
@@ -11564,6 +11816,12 @@ reusify (v1.0.4)
    - Publisher: Matteo Collina
    - Email: hello@matteocollina.com
 
+reusify (v1.1.0)
+   - License: MIT
+   - Repository: https://github.com/mcollina/reusify
+   - Publisher: Matteo Collina
+   - Email: hello@matteocollina.com
+
 rfdc (v1.4.1)
    - License: MIT
    - Repository: https://github.com/davidmarkclements/rfdc
@@ -11642,6 +11900,12 @@ rpc-websockets (v7.11.2)
    - Publisher: Elpheria
    - Email: N/A
 
+rpc-websockets (v7.5.1)
+   - License: LGPL-3.0-only
+   - Repository: https://github.com/elpheria/rpc-websockets
+   - Publisher: Elpheria
+   - Email: N/A
+
 run-parallel (v1.2.0)
    - License: MIT
    - Repository: https://github.com/feross/run-parallel
@@ -11655,6 +11919,12 @@ rxjs (v6.6.7)
    - Email: ben@benlesh.com
 
 rxjs (v7.8.1)
+   - License: Apache-2.0
+   - Repository: https://github.com/reactivex/rxjs
+   - Publisher: Ben Lesh
+   - Email: ben@benlesh.com
+
+rxjs (v7.8.2)
    - License: Apache-2.0
    - Repository: https://github.com/reactivex/rxjs
    - Publisher: Ben Lesh
@@ -12464,6 +12734,12 @@ supports-color (v5.4.0)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
+supports-color (v5.5.0)
+   - License: MIT
+   - Repository: https://github.com/chalk/supports-color
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
+
 supports-color (v7.2.0)
    - License: MIT
    - Repository: https://github.com/chalk/supports-color
@@ -13047,6 +13323,12 @@ unset-value (v1.0.0)
    - Email: N/A
 
 update-browserslist-db (v1.1.2)
+   - License: MIT
+   - Repository: https://github.com/browserslist/update-db
+   - Publisher: Andrey Sitnik
+   - Email: andrey@sitnik.ru
+
+update-browserslist-db (v1.1.3)
    - License: MIT
    - Repository: https://github.com/browserslist/update-db
    - Publisher: Andrey Sitnik

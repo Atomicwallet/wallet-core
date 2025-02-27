@@ -9,7 +9,7 @@ import ETHToken from 'src/tokens/ETHToken';
 import StakableMaticETHToken from 'src/tokens/StakableMaticETHToken';
 import { Amount, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { EXTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR } from 'src/utils';
 import LazyLoadedLib from 'src/utils/lazyLoadedLib';
 
 import { StakingMixin, NftMixin } from '../mixins';

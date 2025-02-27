@@ -12,7 +12,7 @@ import { MORALIS_API_KEY, MORALIS_NATIVE_API } from 'src/env';
 import { ExternalError, InternalError } from 'src/errors';
 import { TxTypes } from 'src/explorers/enum';
 import Explorer from 'src/explorers/explorer';
-import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR, INTERNAL_ERROR } from 'src/utils/const';
+import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR, INTERNAL_ERROR } from 'src/utils';
 import { getStringWithEnsuredEndChar } from 'src/utils/convert';
 
 const convertPairs = [

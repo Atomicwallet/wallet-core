@@ -12,7 +12,7 @@ import Transaction from 'src/explorers/Transaction';
 import { ARBToken } from 'src/tokens';
 import { logger, LazyLoadedLib } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { EXTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR } from 'src/utils';
 import { toCurrency } from 'src/utils/convert';
 
 import HasProviders from '../mixins/HasProviders';

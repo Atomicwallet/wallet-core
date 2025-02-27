@@ -17,7 +17,7 @@ import Transaction, { TransactionInfoFields } from 'src/explorers/Transaction';
 import { ExplorerConfig } from 'src/explorers/types';
 import { GetFeeArgs, IKeysObject, type LazyLoadedLib, TxNotifier, logger, Construct } from 'src/utils';
 import { IConfigManager } from 'src/utils/configManager';
-import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils/const';
+import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils';
 import { IDataBase } from 'src/utils/db';
 
 const WALLETS_WITH_CUSTOM_TOKENS = ['ETH'];

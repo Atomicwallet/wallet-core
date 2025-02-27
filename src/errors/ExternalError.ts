@@ -1,5 +1,5 @@
 import AtomicError from 'src/errors/AtomicError';
-import { EXTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR } from 'src/utils';
 
 class ExternalError extends AtomicError {
   defaultType = EXTERNAL_ERROR;

@@ -11,7 +11,7 @@ import TOKENS_CACHE from 'src/resources/trx/tokens.json';
 import { TRXToken } from 'src/tokens';
 import { LazyLoadedLib, Amount, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from 'src/utils';
 
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 

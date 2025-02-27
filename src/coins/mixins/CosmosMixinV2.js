@@ -1,6 +1,6 @@
 import { ExplorerRequestError, WalletError } from 'src/errors';
 import { LazyLoadedLib, Amount } from 'src/utils';
-import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from 'src/utils/const';
+import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from 'src/utils';
 
 import StakingMixin from './StakingMixin';
 import { CosmosTxTypes } from '../libs';

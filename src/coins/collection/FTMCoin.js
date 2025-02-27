@@ -11,7 +11,7 @@ import TOKENS_CACHE from 'src/resources/ftm/tokens.json';
 import { FTMToken } from 'src/tokens';
 import { getTokenId, Amount, LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { EXTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR } from 'src/utils';
 import { toCurrency } from 'src/utils/convert';
 
 import HasProviders from '../mixins/HasProviders';

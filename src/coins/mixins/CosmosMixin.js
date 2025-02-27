@@ -2,7 +2,7 @@ import bech32 from 'bech32';
 import * as BitcoinJS from 'bitcoinjs-lib';
 import { createSignedTx, sign } from 'js-cosmos-wallet';
 import { ExplorerRequestError, WalletError } from 'src/errors';
-import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from 'src/utils/const';
+import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from 'src/utils';
 import wif from 'wif';
 
 import { CosmosTxTypes } from '../libs';

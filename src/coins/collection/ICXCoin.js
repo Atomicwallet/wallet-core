@@ -4,7 +4,7 @@ import { WalletError } from 'src/errors';
 import IconExplorer from 'src/explorers/collection/IconExplorer';
 import IconNodeExplorer from 'src/explorers/collection/IconNodeExplorer';
 import { Amount, LazyLoadedLib } from 'src/utils';
-import { WALLET_ERROR } from 'src/utils/const';
+import { WALLET_ERROR } from 'src/utils';
 import { delayedRepeatUntilSuccess } from 'src/utils/funcs';
 
 import { HasProviders, StakingMixin } from '../mixins';

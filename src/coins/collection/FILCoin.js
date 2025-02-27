@@ -4,7 +4,7 @@ import { ExternalError } from 'src/errors';
 import Web3Explorer from 'src/explorers/collection/Web3Explorer';
 import { LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { EXTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR } from 'src/utils';
 import { isStartsWith } from 'src/utils/funcs';
 
 import { HasProviders } from '../mixins';

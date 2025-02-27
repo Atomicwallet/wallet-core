@@ -3,7 +3,7 @@ import { RPCMethod } from '@zilliqa-js/core';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
 import RewardCalculator from 'src/coins/libs/ZilliqaRewardCalculator';
 import { ExplorerRequestError } from 'src/errors';
-import { SEND_TRANSACTION_TYPE, GET_BALANCE_TYPE } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE, GET_BALANCE_TYPE } from 'src/utils';
 
 import ZilliqaAbstractExplorer from './ZilliqaAbstractExplorer.js';
 

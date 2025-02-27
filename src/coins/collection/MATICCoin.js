@@ -11,7 +11,7 @@ import { MATICToken } from 'src/tokens';
 import { LazyLoadedLib, logger } from 'src/utils';
 import applyCoefficient from 'src/utils/applyCoefficient';
 import { ConfigKey } from 'src/utils/configManager';
-import { EXTERNAL_ERROR } from 'src/utils/const';
+import { EXTERNAL_ERROR } from 'src/utils';
 
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import HasProviders from '../mixins/HasProviders';

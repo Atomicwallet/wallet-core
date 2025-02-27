@@ -3,7 +3,7 @@ import bitcoinCashAddressTools from 'bchaddrjs';
 import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
-import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE } from 'src/utils';
 
 class InsightExplorer extends Explorer {
   constructor(...args) {

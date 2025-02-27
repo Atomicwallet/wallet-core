@@ -3,7 +3,7 @@
 import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import { Amount } from 'src/utils';
-import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR } from 'src/utils/const';
+import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR } from 'src/utils';
 
 const DEFAULT_REQ_OFFSET = 0;
 const MAX_REQ_LIMIT = 100;

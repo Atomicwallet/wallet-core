@@ -7,7 +7,7 @@ import ZilliqaAtomicExplorer from 'src/explorers/collection//ZilliqaAtomicExplor
 import ZilliqaNodeExplorer from 'src/explorers/collection//ZilliqaNodeExplorer';
 import { ZILToken } from 'src/tokens';
 import { LazyLoadedLib } from 'src/utils';
-import { LOAD_WALLET_ERROR, WALLET_ERROR } from 'src/utils/const';
+import { LOAD_WALLET_ERROR, WALLET_ERROR } from 'src/utils';
 
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
 

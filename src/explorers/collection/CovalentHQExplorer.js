@@ -2,7 +2,7 @@ import { ExplorerRequestError } from 'src/errors';
 import { TxTypes } from 'src/explorers/enum';
 import Explorer from 'src/explorers/explorer';
 import { logger, getTokenId } from 'src/utils';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from 'src/utils/const';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from 'src/utils';
 import { toCurrency } from 'src/utils/convert';
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';

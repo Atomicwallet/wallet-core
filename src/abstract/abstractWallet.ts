@@ -17,7 +17,7 @@ import type {
 import type Explorer from 'src/explorers/explorer';
 import { Emitter, defaultConfigManager } from 'src/utils';
 import { IConfigManager } from 'src/utils/configManager';
-import { WALLETS } from 'src/utils/const';
+import { WALLETS } from 'src/utils';
 import { toMinimal, toCurrency } from 'src/utils/convert';
 import { BaseDatabase, IDataBase, ITable, TableNames, TableTypes } from 'src/utils/db';
 

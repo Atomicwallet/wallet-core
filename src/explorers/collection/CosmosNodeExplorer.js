@@ -2,7 +2,7 @@ import { ExplorerRequestError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
 import { CosmosNodeTransactionTypeMixin } from 'src/explorers/mixins';
 import validators from 'src/resources/staking/validators.json';
-import { SEND_TRANSACTION_TYPE, EXTERNAL_ERROR } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE, EXTERNAL_ERROR } from 'src/utils';
 
 const DEFAULT_TX_LIMIT = 50;
 

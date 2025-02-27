@@ -8,7 +8,7 @@ import { Coin } from 'src/abstract';
 import { ExplorerRequestError, WalletError } from 'src/errors';
 import CosmosNodeExplorerV2 from 'src/explorers/collection/CosmosNodeExplorerV2';
 import { Amount } from 'src/utils';
-import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from 'src/utils/const';
+import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from 'src/utils';
 import wif from 'wif';
 
 import { CosmosTxTypes } from '../libs';

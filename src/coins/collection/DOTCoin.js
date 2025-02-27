@@ -4,7 +4,7 @@ import PolkadotNodeExplorer from 'src/explorers/collection/PolkadotNodeExplorer'
 import PolkadotSidecarExplorer from 'src/explorers/collection/PolkadotSidecarExplorer';
 import PolkaScanExplorer from 'src/explorers/collection/PolkaScanExplorer';
 import { LazyLoadedLib } from 'src/utils';
-import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE } from 'src/utils';
 
 import { HasBlockScanner, HasProviders } from '../mixins';
 

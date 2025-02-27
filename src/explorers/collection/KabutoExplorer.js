@@ -1,6 +1,6 @@
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
-import { GET_BALANCE_TYPE } from 'src/utils/const';
+import { GET_BALANCE_TYPE } from 'src/utils';
 import { toCurrency } from 'src/utils/convert';
 
 class KabutoExplorer extends Explorer {

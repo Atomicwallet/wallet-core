@@ -18,3 +18,4 @@ export * from './walletConfig';
 export * from './mnemonic';
 export * from './emitter';
 export * from './types';
+export * from './const';

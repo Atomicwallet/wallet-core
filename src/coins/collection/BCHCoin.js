@@ -1,7 +1,7 @@
 import { Coin } from 'src/abstract';
 import BlockbookV2Explorer from 'src/explorers/collection/BlockbookV2Explorer';
 import { LazyLoadedLib } from 'src/utils';
-import { LIB_NAME_INDEX } from 'src/utils/const';
+import { LIB_NAME_INDEX } from 'src/utils';
 
 import { BitcoinLikeFeeMixin, BitcoreBitcoinCashMixin, BitcoreMixin, HasProviders } from '../mixins';
 

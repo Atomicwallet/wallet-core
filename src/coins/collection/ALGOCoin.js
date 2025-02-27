@@ -2,7 +2,7 @@ import Coin from 'src/abstract/coin';
 import { WalletError } from 'src/errors';
 import { AlgoExplorer, AlgoNodeExplorer } from 'src/explorers/collection';
 import { LazyLoadedLib } from 'src/utils';
-import { WALLET_ERROR } from 'src/utils/const';
+import { WALLET_ERROR } from 'src/utils';
 
 import { HasProviders } from '../mixins';
 

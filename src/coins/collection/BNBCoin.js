@@ -7,7 +7,7 @@ import BinanceExplorer from 'src/explorers/collection/BinanceExplorer';
 import { BNBToken } from 'src/tokens';
 import { Amount, LazyLoadedLib } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { SEND_TRANSACTION_TYPE } from 'src/utils/const';
+import { SEND_TRANSACTION_TYPE } from 'src/utils';
 
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 

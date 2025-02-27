@@ -3,7 +3,7 @@ import { WalletError } from 'src/errors';
 import AtomicExplorer from 'src/explorers/collection/AtomicExplorer';
 import BlockbookV2Explorer from 'src/explorers/collection/BlockbookV2Explorer';
 import { LazyLoadedLib } from 'src/utils';
-import { LIB_NAME_INDEX } from 'src/utils/const';
+import { LIB_NAME_INDEX } from 'src/utils';
 
 import KomodoRewardCalculator from '../libs/KomodoRewardCalculator';
 import { BitcoinLikeFeeMixin, BitgoMixin, HasProviders } from '../mixins';

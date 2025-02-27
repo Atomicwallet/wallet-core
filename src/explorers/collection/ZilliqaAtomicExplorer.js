@@ -1,5 +1,5 @@
 import { TxTypes } from 'src/explorers/enum';
-import { GET_TRANSACTIONS_TYPE } from 'src/utils/const';
+import { GET_TRANSACTIONS_TYPE } from 'src/utils';
 
 import ZilliqaAbstractExplorer from './ZilliqaAbstractExplorer.js';
 
