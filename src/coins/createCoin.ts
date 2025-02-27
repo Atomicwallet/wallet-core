@@ -1,4 +1,4 @@
-import type { Coin, CoinConfigType, ILogger } from 'src/abstract';
+import type { Coin, CoinConfigType } from 'src/abstract';
 import { createEVMCoin } from 'src/coins/collection/EVM';
 import type { EVMConfig, EVMUserConfig } from 'src/coins/collection/EVM/types';
 import { IConfigManager } from 'src/utils/configManager';
