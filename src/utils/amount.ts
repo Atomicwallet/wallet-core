@@ -78,4 +78,28 @@ export default class Amount {
 
     return bn.toFormat(2);
   }
+
+  toFiat(
+    fiatTicker: string,
+    Rates: { getRate: (args: Record<string, string | boolean>, fiatTicker: string) => Record<string, string | number> },
+    withTicker = false,
+  ): string {
+    if (!fiatTicker) {
+      throw new Error(`${this.ticker}: Fiat ticker should be defined`);
+    }
+
+    if (!Rates) {
+      throw new Error(`'Rates && Rates.getRate' should be passed`);
+    }
+
+    const { rate } = Rates.getRate({ id: this.id, confirmed: this.confirmed }, fiatTicker) || {};
+
+    if (!rate) {
+      throw new Error(`${this.ticker}: Fiat rate for ${fiatTicker} is not exist yet`);
+    }
+
+    const fiatAmount: string = new BigNumber(toCurrency(this.amount, this.decimal)).multipliedBy(rate).toFormat();
+
+    return `${this.#formatFiat(fiatAmount)} ${withTicker ? fiatTicker : ''}`.trim();
+  }
 }

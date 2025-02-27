@@ -2,7 +2,6 @@ export { default as hashCode } from '../utils/hashCode.js';
 export { default as hex2a } from '../utils/hex2a.js';
 export { default as chunkArray } from '../utils/chunkArray.js';
 export { default as chunkString } from '../utils/chunkString.js';
-export { default as arrayToObject } from '../utils/arrayToObject.js';
 export { default as defaultConfigManager } from '../utils/configManager/index.js';
 export { default as defaultLogger } from '../utils/defaultLogger.js';
 export { default as randomElementFromArray } from '../utils/randomElementFromArray.js';

@@ -3,8 +3,9 @@ import type { CoinConfigType, FeeDataType, Numeric, RawTxBinary, RawTxHex, RawTx
 import { AbstractWallet } from '../abstract/index.js';
 import { CoinFeature } from '../coins/constants.js';
 import type Explorer from '../explorers/explorer.js';
-import type Transaction from '../explorers/Transaction.js';
-import { IKeysObject, type LazyLoadedLib, TxNotifier } from '../utils/index.js';
+import Transaction, { TransactionInfoFields } from '../explorers/Transaction.js';
+import { ExplorerConfig } from '../explorers/types/index.js';
+import { GetFeeArgs, IKeysObject, type LazyLoadedLib, TxNotifier } from '../utils/index.js';
 import { IConfigManager } from '../utils/configManager/index.js';
 import { IDataBase } from '../utils/db/index.js';
 type ExplorersModules = {
@@ -35,7 +36,7 @@ export default abstract class Coin extends AbstractWallet {
     txWebUrl: string;
     confirmed: boolean;
     nonce?: Numeric;
-    balances?: unknown;
+    balances?: Record<string, string | number | BN>;
     socket?: boolean;
     fee?: Numeric;
     tokens?: TokensObject;
@@ -111,7 +112,7 @@ export default abstract class Coin extends AbstractWallet {
         toMinimalUnit: (value: string) => string;
         getClient: () => unknown;
         tokens: () => TokensObject | undefined;
-        getFee: (feeObject: unknown) => Promise<BN>;
+        getFee: (getFeeArgs: Partial<GetFeeArgs>) => Promise<BN>;
         getTokens: () => TokensObject | undefined;
         getProvider: (usedFor: string) => Explorer;
         getTRC20Fee: (feeTRC20Object: unknown) => string;
@@ -152,7 +153,7 @@ export default abstract class Coin extends AbstractWallet {
      *
      * @return {BN} The fee big number
      */
-    getFee(args?: unknown): Promise<BN>;
+    getFee(args?: Partial<GetFeeArgs>): Promise<BN>;
     /**
      * Gets the address.
      */
@@ -173,7 +174,7 @@ export default abstract class Coin extends AbstractWallet {
      * Gets the wallet.
      */
     loadWallet(seed?: Buffer, mnemonic?: string): Promise<IKeysObject>;
-    checkTransaction(txInfo: any): Promise<void>;
+    checkTransaction(txInfo: TransactionInfoFields): Promise<void>;
     /**
      * Gets the information about a wallet.
      */
@@ -192,13 +193,13 @@ export default abstract class Coin extends AbstractWallet {
     /**
      * Return available balance for send
      */
-    availableBalance(fees: any): Promise<string>;
+    availableBalance(fees?: string | BN): Promise<string>;
     /**
      * Check amount + fee < balance
      */
-    isAvailableForSend(amount: string, fee: string): Promise<boolean>;
-    createExplorer(config: any): any;
-    processExplorerConfig(config: any): any;
+    isAvailableForSend(amount: string, fee?: string): Promise<boolean>;
+    createExplorer(config: ExplorerConfig): any;
+    processExplorerConfig(config: ExplorerConfig): any;
     /**
      * Process config feeData.
      */
@@ -218,21 +219,6 @@ export default abstract class Coin extends AbstractWallet {
      */
     getUnspentOutputs(): Promise<any>;
     createTokenTransactionOnce(params: any): {};
-    /**
-     * isActivated getter
-     * Allows to determine if a coin is activated.
-     */
-    get isActivated(): undefined;
-    /**
-     * Activates coin
-     * Also activates all associated tokens.
-     */
-    activate(): Promise<void>;
-    /**
-     * Deactivates coin
-     * Also deactivates all associated tokens.
-     */
-    deactivate(): void;
     /**
      * Is feature supported by this coin network.
      */

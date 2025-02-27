@@ -74,7 +74,7 @@ declare class ETCCoin extends Coin {
     getInfo(): Promise<{
         balance: any;
     }>;
-    getTransactions(...args: any[]): Promise<import("../../explorers/Transaction.js").default[]>;
+    getTransactions(...args: any[]): Promise<import("../../index.js").Transaction[]>;
     getGasPrice(): Promise<import("bn.js")>;
     sendTransaction(rawtx: any): Promise<any>;
     setPrivateKey(privateKey: any): void;

@@ -26,7 +26,7 @@ export default abstract class AbstractWallet {
     abstract get deprecatedParent(): string;
     abstract get contract(): string;
     abstract get feeWallet(): Coin | Token;
-    abstract availableBalance(fees?: string): Promise<string>;
+    abstract availableBalance(fees?: string | BN): Promise<string>;
     abstract createTransaction(args: CreateTxParams): Promise<RawTxHex | RawTxBinary | RawTxObject>;
     abstract sendRawTransaction(args: RawTxHex | RawTxBinary | RawTxObject): Promise<RawTxHash>;
     abstract getGasPrice(withoutCoeff: boolean, isToken?: boolean): Promise<BN | number | string>;

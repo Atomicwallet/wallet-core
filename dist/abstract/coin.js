@@ -169,7 +169,7 @@ export default class Coin extends AbstractWallet {
             toMinimalUnit: (value) => this.toMinimalUnit(value),
             getClient: () => this.getClient?.(),
             tokens: () => this.tokens,
-            getFee: (feeObject) => this.getFee(feeObject),
+            getFee: (getFeeArgs) => this.getFee(getFeeArgs),
             getTokens: () => this.tokens,
             getProvider: (usedFor) => this.getProvider(usedFor),
             getTRC20Fee: (feeTRC20Object) => this.getTRC20Fee(feeTRC20Object),
@@ -338,17 +338,20 @@ export default class Coin extends AbstractWallet {
     async loadWallet(seed, mnemonic) {
         throw new UndeclaredAbstractMethodError('async loadWallet', this);
     }
-    // @TODO txInfo type set to `any` until explorer types is not defined
     async checkTransaction(txInfo) {
         try {
-            await this.explorer?.checkTransaction(this.address, txInfo);
+            const tx = await this.explorer?.checkTransaction(this.address, txInfo);
+            if (tx) {
+                const db = this.getDbTable('transactions');
+                db.put(tx);
+            }
         }
         catch (error) {
             console.warn(this.ticker, 'Unable to check transaction');
         }
         this.eventEmitter.emit('socket::newtx::outgoing', {
             id: this.id,
-            ticker: txInfo.coin.ticker,
+            ticker: txInfo.ticker,
         });
         setTimeout(async () => {
             await this.getBalance();
@@ -386,7 +389,6 @@ export default class Coin extends AbstractWallet {
     /**
      * Gets the transactions.
      */
-    // @TODO `any` until explorer types is not defined
     async getTransactions(args) {
         if (this.explorer) {
             if (!this.address) {
@@ -411,9 +413,7 @@ export default class Coin extends AbstractWallet {
      * Return available balance for send
      */
     async availableBalance(fees) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const balance = (this.balances?.available && this.toMinimalUnit(this.balances?.available)) || this.balance;
+        const balance = (this.balances?.available && this.toMinimalUnit(this.balances?.available)) ?? this.balance;
         if (!balance) {
             return '';
         }
@@ -444,7 +444,6 @@ export default class Coin extends AbstractWallet {
         }
         return amountToSpend.lte(availableBalance);
     }
-    // @TODO define Explorer types
     createExplorer(config) {
         /**
          * @TODO Remove after fixing moralis class name
@@ -457,9 +456,8 @@ export default class Coin extends AbstractWallet {
                 instance: this,
             });
         }
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const explorer = new ExplorerModule({ wallet: this.instance, config });
+        // @ts-expect-error def
+        const explorer = new ExplorerModule({ wallet: this, config });
         this.explorers.push(explorer);
         return explorer;
     }
@@ -537,28 +535,6 @@ export default class Coin extends AbstractWallet {
     }
     createTokenTransactionOnce(params) {
         return this.canRun('createTokenTransaction') ? this.createTokenTransaction(params) : {};
-    }
-    /**
-     * isActivated getter
-     * Allows to determine if a coin is activated.
-     */
-    get isActivated() {
-        return undefined;
-        // return activeWalletsList.isActive(this);
-    }
-    /**
-     * Activates coin
-     * Also activates all associated tokens.
-     */
-    async activate() {
-        // activeWalletsList.activate(this);
-    }
-    /**
-     * Deactivates coin
-     * Also deactivates all associated tokens.
-     */
-    deactivate() {
-        // activeWalletsList.deactivate(this);
     }
     /**
      * Is feature supported by this coin network.

@@ -149,6 +149,7 @@
     "dexie": "2.0.4",
     "dotenv": "16.4.7",
     "ed25519-hd-key": "1.2.0",
+    "elliptic": "6.4.0",
     "eosjs": "20.0.3",
     "eosjs-ecc": "4.0.7",
     "es6-promise-plugin": "4.2.2",

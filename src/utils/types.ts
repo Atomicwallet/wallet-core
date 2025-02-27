@@ -1,3 +1,6 @@
+import { Numeric } from 'src/abstract';
+import { ExplorerConfig } from 'src/explorers/types';
+
 export interface IKeys {
   seed: Buffer;
   phrase: string;
@@ -11,11 +14,6 @@ export interface IKeysObject {
   balance?: string;
 }
 
-export interface IConfigExplorer {
-  baseUrl: string;
-  className: string;
-}
-
 export interface IConfigFeeData {
   coefficient: number;
   feePerByte: string;
@@ -23,7 +21,7 @@ export interface IConfigFeeData {
 
 export interface IConfig {
   className: string;
-  explorers: IConfigExplorer[];
+  explorers: ExplorerConfig[];
   feeData: IConfigFeeData;
   feesEstimateUrl: string;
   id: string;
@@ -38,3 +36,16 @@ export interface IAddrCacheElement {
   type: string;
   address: string;
 }
+
+export type GetFeeArgs = {
+  feePerByte: Numeric;
+  userGasPrice: Numeric;
+  utxos: Array<Record<string, number>>;
+  gasLimit: Numeric;
+  address: string;
+  sendAmount: Numeric;
+  isToken: boolean;
+  contract: string;
+  denom: string | Numeric;
+  custom: unknown;
+};

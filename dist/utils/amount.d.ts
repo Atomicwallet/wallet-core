@@ -23,4 +23,7 @@ export default class Amount {
      * for correct `JSON.stringify(<Amount>)` results
      */
     toJSON(): string;
+    toFiat(fiatTicker: string, Rates: {
+        getRate: (args: Record<string, string | boolean>, fiatTicker: string) => Record<string, string | number>;
+    }, withTicker?: boolean): string;
 }

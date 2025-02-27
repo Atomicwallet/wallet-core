@@ -4,7 +4,7 @@ class SOLToken extends Token {
     #parent;
     #address;
     constructor(config, db, configManager) {
-        super(config);
+        super(config, db, configManager);
         this.mint = config.mint;
         this.#parent = config.parent;
         this.loadAddress();

@@ -5,7 +5,7 @@ declare class MATICToken extends Token {
     coefficient: number;
     getInfo(): Promise<{
         balance: string;
-        transactions: import("../explorers/Transaction.js").default[];
+        transactions: import("../index.js").Transaction[];
     }>;
     getFee({ gasPrice, gasLimit }: {
         gasPrice: any;

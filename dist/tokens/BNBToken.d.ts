@@ -3,7 +3,7 @@ export default class BNBToken extends Token {
     balances: {};
     getInfo(): Promise<{
         balance: string;
-        transactions: import("../explorers/Transaction.js").default[];
+        transactions: import("../index.js").Transaction[];
     }>;
     createTransaction({ address, amount, memo }: {
         address: any;

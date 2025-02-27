@@ -5,7 +5,7 @@ declare class VETToken extends Token {
     get feeWallet(): this;
     getInfo(): Promise<{
         balance: string;
-        transactions: import("../explorers/Transaction.js").default[];
+        transactions: import("../index.js").Transaction[];
     }>;
     getFee(): Promise<import("bn.js")>;
     createTransaction({ address, amount }: {

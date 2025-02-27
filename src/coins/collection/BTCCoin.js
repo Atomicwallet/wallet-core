@@ -5,6 +5,7 @@ import { BlockbookV2Explorer } from 'src/explorers/collection';
 import fees from 'src/resources/wallets_fee.json';
 import { LazyLoadedLib } from 'src/utils';
 import { LIB_NAME_INDEX } from 'src/utils/const';
+import { sanitizeString } from 'src/utils/sanitize';
 
 const { BITCORE } = LIB_NAME_INDEX;
 const NAME = 'Bitcoin';
@@ -126,8 +127,18 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
         const { feesEstimateUrl } = fees?.find(({ className }) => className === 'BTCCoin') || {};
         const { data } = await axios.get(feesEstimateUrl);
 
-        this.feePerByte = data.fastestFee;
-        this.feeRecommended = typeof data !== 'object' ? null : data;
+        if (typeof data === 'object') {
+          let sanitized;
+
+          Object.entries(data).forEach(([key, value]) => {
+            sanitized[key] = sanitizeString(value);
+          });
+
+          if (sanitized && sanitized.fastestFee) {
+            this.feePerByte = sanitized.fastestFee;
+            this.feeRecommended = sanitized;
+          }
+        }
       }
     } catch {
       // @TODO implement logger

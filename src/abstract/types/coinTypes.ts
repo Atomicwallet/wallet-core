@@ -1,4 +1,5 @@
 import { type Token } from 'src/abstract';
+import { ExplorerConfig } from 'src/explorers/types';
 import type { LazyLoadedLib } from 'src/utils';
 
 export type TokensObject = {
@@ -28,7 +29,7 @@ export type CoinConfigType = {
   coinData?: { [key: string]: unknown };
   unspendableBalance: string;
   feeData: { [key: string]: unknown };
-  explorers: object[];
+  explorers: ExplorerConfig[];
   txWebUrl: string;
   submitUrl: string;
   coreLibrary?: unknown;

@@ -362,18 +362,18 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
    *
    */
   async checkTransaction(txInfo) {
-    const { coin, address, amount, memo, txid, nonce, fee } = txInfo;
+    const { wallet, address, amount, memo, txid, nonce, fee } = txInfo;
 
     try {
       const newTx = new Transaction({
-        ticker: coin.ticker,
-        walletid: coin.id,
-        name: coin.name,
-        alias: coin.alias,
+        ticker: wallet.ticker,
+        walletid: wallet.id,
+        name: wallet.name,
+        alias: wallet.alias,
         txid,
         direction: this.address === address,
         otherSideAddress: address,
-        amount: toCurrency(amount, coin.decimal),
+        amount: toCurrency(amount, wallet.decimal),
         datetime: new Date(),
         memo,
         nonce,
