@@ -1,3 +1,4 @@
+export { default as logger } from './logger';
 export { default as hashCode } from 'src/utils/hashCode';
 export { default as hex2a } from 'src/utils/hex2a';
 export { default as chunkArray } from 'src/utils/chunkArray';
@@ -12,6 +13,7 @@ export { REQUEST_TYPE, requestQueueState } from 'src/utils/requestQueueState';
 export { sleepFor } from './sleepFor';
 export { getTokenId } from './token';
 export { PROMISE_STATE, getPromiseState } from 'src/utils/promiseState';
+export * from './logger';
 export * from './db';
 export * from './walletConfig';
 export * from './mnemonic';
