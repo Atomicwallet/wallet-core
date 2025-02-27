@@ -4,7 +4,7 @@ import lodash from 'lodash';
 import * as nearAPI from 'near-api-js';
 import { ExternalError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
-import { Amount } from 'src/utils';
+import { Amount, logger } from 'src/utils';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
 const THROTTLE_INTERVAL = 800;
@@ -26,7 +26,7 @@ class NearRPCExplorer extends Explorer {
     try {
       return this.provider.experimental_protocolConfig({ finality: 'final' });
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       return null;
     }
@@ -50,7 +50,7 @@ class NearRPCExplorer extends Explorer {
 
       return gasPrice;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       return null;
     }

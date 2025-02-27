@@ -1,4 +1,5 @@
 import Explorer from 'src/explorers/explorer';
+import { logger } from 'src/utils';
 
 const COSMOS_MSG_TYPES = {
   MsgWithdrawDelegationReward: 'reward',
@@ -176,7 +177,7 @@ export default class TerraClassicFCDExplorer extends Explorer {
     try {
       latestBlock = await this.getLatestBlock();
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
       console.warn('[TerraClassicFCDExplorer] modifyTransactionsResponse error: Could not get latest block');
       return null;
     }
@@ -217,7 +218,7 @@ export default class TerraClassicFCDExplorer extends Explorer {
 
           return convertedTx;
         } catch (error) {
-          // @TODO implement logger
+          logger.log({ instance: this, error });
           console.warn('[TerraClassicFCDExplorer] modifyTransactionsResponse error: Could not parse tx:', tx);
           return null;
         }

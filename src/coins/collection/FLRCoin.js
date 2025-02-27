@@ -9,13 +9,12 @@ import { FLRToken } from 'src/tokens';
 import FlareClaimContractABI from 'src/tokens/ABI/ERC-20/FlareClaimContract';
 import FTSORewardsABI from 'src/tokens/ABI/ERC-20/FlareRewardsManagerContract';
 import WFLRAbi from 'src/tokens/ABI/ERC-20/WFLR';
-import { Amount, LazyLoadedLib } from 'src/utils';
+import { Amount, LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import { HasProviders, HasTokensMixin, StakingMixin, Web3Mixin } from '../mixins';
-
 const web3LazyLoaded = new LazyLoadedLib(() => import('web3'));
 const hdkeyLazyLoaded = new LazyLoadedLib(() => import('ethereumjs-wallet'));
 
@@ -190,7 +189,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
     try {
       this.#privateKey = this.coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
     return this.#privateKey;
   }
@@ -550,7 +549,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
     try {
       await this.getStakingInfo();
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
 
     return { balance: info.balance, balances: this.balances };
@@ -642,7 +641,7 @@ class FLRCoin extends StakingMixin(Web3Mixin(HasProviders(HasTokensMixin(Coin)))
 
       this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
     return this.gasPriceConfig;
   }

@@ -1,5 +1,6 @@
 import Explorer from 'src/explorers/explorer';
 import Transaction from 'src/explorers/Transaction';
+import { logger } from 'src/utils';
 import { getNumberWithoutENotation as getNumberStringWithoutENotation } from 'src/utils/convert';
 
 const TX_TYPE_UNSTAKE = 'UNSTAKE';
@@ -83,7 +84,7 @@ class NearblocksExplorer extends Explorer {
         confirmations: this.getTxConfirmations(),
       });
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
       return undefined;
     }
   }
@@ -107,7 +108,7 @@ class NearblocksExplorer extends Explorer {
     try {
       return new Date(Number(String(tx.block_timestamp).substr(0, 13)));
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
       return new Date();
     }
   }
@@ -133,7 +134,7 @@ class NearblocksExplorer extends Explorer {
     try {
       return this.wallet.toCurrencyUnit(getNumberStringWithoutENotation(tx.actions_agg.deposit));
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
       return '0';
     }
   }
@@ -156,7 +157,7 @@ class NearblocksExplorer extends Explorer {
     try {
       return this.wallet.toCurrencyUnit(getNumberStringWithoutENotation(tx.outcomes_agg.transaction_fee));
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
       return '0';
     }
   }

@@ -1,3 +1,5 @@
+import { logger } from 'src/utils';
+
 class AtomicError extends Error {
   defaultType = 'Unknown';
 
@@ -29,8 +31,10 @@ class AtomicError extends Error {
     super(args.error?.toString());
 
     const errorObject = {
+      name: args.error.name,
       type: args.type ?? this.defaultType,
       error: errorMessage,
+      message: errorMessage,
       currency,
       instance: args.instance,
       stack: this.stack,
@@ -40,7 +44,7 @@ class AtomicError extends Error {
     if (args.url) {
       errorObject.url = args.url;
     }
-    // @TODO implement logger
+    logger.log({ instance: this, error: errorObject });
 
     this.name = this.constructor.name;
   }

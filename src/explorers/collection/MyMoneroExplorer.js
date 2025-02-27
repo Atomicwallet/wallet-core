@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ExternalError } from 'src/errors';
 import Explorer from 'src/explorers/explorer';
-import { LazyLoadedLib, Emitter as emitter } from 'src/utils';
+import { LazyLoadedLib, Emitter as emitter, logger } from 'src/utils';
 import { WALLETS } from 'src/utils/const';
 import { getStringWithEnsuredEndChar } from 'src/utils/convert';
 
@@ -114,7 +114,7 @@ class MyMoneroExplorer extends Explorer {
         this.#ensureInitialization(walletManager, resolve);
       });
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
 
     this.#myMoneroLocalAccount.wallet = await walletManager.importWalletKeys(

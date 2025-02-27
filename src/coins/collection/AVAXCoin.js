@@ -6,7 +6,7 @@ import ETHNftExplorer from 'src/explorers/collection/ETHNftExplorer';
 import MoralisExplorer from 'src/explorers/collection/MoralisExplorer';
 import SnowTraceExplorer from 'src/explorers/collection/SnowTraceExplorer';
 import Web3Explorer from 'src/explorers/collection/Web3Explorer';
-import { LazyLoadedLib } from 'src/utils';
+import { LazyLoadedLib, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
 import { EXTERNAL_ERROR } from 'src/utils/const';
 
@@ -247,7 +247,7 @@ class AVAXCoin extends Web3Mixin(NftMixin(HasProviders(HasBlockScanner(Coin)))) 
 
       return new this.BN(fastest).mul(new this.BN(nAVAX));
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       const gasPrice = new this.BN(new this.BN(this.defaultGasPrice));
 
@@ -285,7 +285,7 @@ class AVAXCoin extends Web3Mixin(NftMixin(HasProviders(HasBlockScanner(Coin)))) 
 
       this.balance = balance;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
   }
 

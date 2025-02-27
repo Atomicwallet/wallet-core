@@ -9,7 +9,7 @@ import TronNodeWithBlockscannerExplorer from 'src/explorers/extended/TronNodeWit
 import BANNED_TOKENS_CACHE from 'src/resources/trx/tokens-banned.json';
 import TOKENS_CACHE from 'src/resources/trx/tokens.json';
 import { TRXToken } from 'src/tokens';
-import { LazyLoadedLib, Amount } from 'src/utils';
+import { LazyLoadedLib, Amount, logger } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
 import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from 'src/utils/const';
 
@@ -391,8 +391,8 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
 
     const estimatedEnergy = await this.getProvider('dynamicEnergy')
       .getEstimatedEnergy(args)
-      .catch(() => {
-        // @TODO implement logger
+      .catch((error) => {
+        logger.log({ instance: this, error });
       });
 
     return estimatedEnergy || defaultEnergy;
@@ -447,7 +447,7 @@ class TRXCoin extends StakingMixin(HasProviders(HasTokensMixin(Coin))) {
         return this.toMinimalUnit(burnedForEnergyTrx + burnedForNetTrx);
       }
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       return this.feeData?.feeTRC20;
     }

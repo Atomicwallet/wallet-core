@@ -15,7 +15,7 @@ import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } fr
 import type Explorer from 'src/explorers/explorer';
 import Transaction, { TransactionInfoFields } from 'src/explorers/Transaction';
 import { ExplorerConfig } from 'src/explorers/types';
-import { GetFeeArgs, IKeysObject, type LazyLoadedLib, TxNotifier } from 'src/utils';
+import { GetFeeArgs, IKeysObject, type LazyLoadedLib, TxNotifier, logger, Construct } from 'src/utils';
 import { IConfigManager } from 'src/utils/configManager';
 import { GET_TRANSACTIONS_TYPE, TxEventTypes } from 'src/utils/const';
 import { IDataBase } from 'src/utils/db';
@@ -699,8 +699,8 @@ export default abstract class Coin extends AbstractWallet {
           submitUrl,
           webUrl: txWebUrl,
         });
-      } catch (error) {
-        // @TODO implement logger
+      } catch (error: any) {
+        logger.log({ instance: this, error });
       }
     });
   }

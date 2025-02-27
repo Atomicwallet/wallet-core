@@ -1,5 +1,5 @@
 import Explorer from 'src/explorers/explorer';
-
+import { logger } from 'src/utils';
 class StackFundExplorer extends Explorer {
   constructor(...args) {
     super(...args);
@@ -72,7 +72,7 @@ class StackFundExplorer extends Explorer {
 
       return this.getTxDirection(selfAddress, tx) ? txParams.value.from_address : txParams.value.to_address;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       return 'Parse Error';
     }

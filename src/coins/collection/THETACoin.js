@@ -2,10 +2,9 @@ import { Coin } from 'src/abstract';
 import ThetaExplorer from 'src/explorers/collection/ThetaExplorer';
 import ThetaJSExplorer from 'src/explorers/collection/ThetaJSExplorer';
 import { THETAToken } from 'src/tokens';
-import { LazyLoadedLib } from 'src/utils';
+import { LazyLoadedLib, logger } from 'src/utils';
 
 import { HasProviders, HasTokensMixin } from '../mixins';
-
 const thetaJsLib = new LazyLoadedLib(() => import('@thetalabs/theta-js'));
 
 /**
@@ -122,7 +121,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
       this.address = address;
       this.#privateKey = privateKey;
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
     }
 
     return { id: this.id, privateKey: this.#privateKey, address: this.address };
@@ -194,7 +193,7 @@ class THETACoin extends HasProviders(HasTokensMixin(Coin)) {
         ...payload,
       });
     } catch (error) {
-      // @TODO implement logger
+      logger.log({ instance: this, error });
 
       return [];
     }
