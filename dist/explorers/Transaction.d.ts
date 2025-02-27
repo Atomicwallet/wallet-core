@@ -2,7 +2,7 @@ import { Coin, Token } from '../abstract/index.js';
 import type Explorer from '../explorers/explorer.js';
 export interface TransactionFields {
     id?: string;
-    wallet: Coin | Token;
+    wallet?: Coin | Token;
     walletid?: string;
     explorer: Explorer | string;
     txid: string;
@@ -17,9 +17,20 @@ export interface TransactionFields {
     timestamp?: number;
     recepient?: string;
     fee?: string;
+    feeTicker?: string;
 }
-export default class Transaction implements TransactionFields {
+export type TransactionInfoFields = TransactionFields & {
+    address: string;
+    nonce: string | number;
+    amount: string;
+    memo: string | number;
+    fee: string;
+    feeTicker: string;
+} & {
     wallet: Coin | Token;
+};
+export default class Transaction implements TransactionFields {
+    wallet?: Coin | Token;
     walletid?: string;
     explorer: Explorer | string;
     txid: string;
@@ -35,6 +46,7 @@ export default class Transaction implements TransactionFields {
     date: string;
     time: string;
     fee?: string;
+    feeTicker?: string;
     constructor(fields: TransactionFields);
     getDateTime(): Date;
     getDate(): string;

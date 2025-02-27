@@ -311,14 +311,14 @@ class TONCoin extends HasProviders(HasTokensMixin(Coin)) {
         }
     }
     async checkTransaction(txInfo) {
-        const { coin } = txInfo;
-        if (coin instanceof TONToken) {
+        const { wallet } = txInfo;
+        if (wallet instanceof TONToken) {
             setTimeout(async () => {
                 try {
-                    await coin.getInfo();
+                    await wallet.getInfo();
                     this.eventEmitter.emit('socket::newtx::outgoing', {
-                        id: coin.id,
-                        ticker: txInfo.coin.ticker,
+                        id: wallet.id,
+                        ticker: txInfo.wallet.ticker,
                     });
                 }
                 catch (error) {

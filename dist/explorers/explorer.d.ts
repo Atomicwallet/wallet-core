@@ -68,8 +68,8 @@ export default class Explorer {
      */
     getInitParams(): Object;
     getApiPrefix(): string;
-    checkTransaction(selfAddress: any, { coin, address, amount, memo, txid, nonce, fee, feeTicker }: {
-        coin: any;
+    checkTransaction(selfAddress: any, { wallet, address, amount, memo, txid, nonce, fee, feeTicker }: {
+        wallet: any;
         address: any;
         amount: any;
         memo: any;

@@ -5,6 +5,7 @@ import { BlockbookV2Explorer } from '../../explorers/collection/index.js';
 import fees from '../../resources/wallets_fee.json';
 import { LazyLoadedLib } from '../../utils/index.js';
 import { LIB_NAME_INDEX } from '../../utils/const/index.js';
+import { sanitizeString } from '../../utils/sanitize/index.js';
 const { BITCORE } = LIB_NAME_INDEX;
 const NAME = 'Bitcoin';
 const TICKER = 'BTC';
@@ -103,8 +104,16 @@ class BTCCoin extends BitcoreMixin(BitcoinLikeFeeMixin(Coin)) {
             if (this.feeRecommended === null || force) {
                 const { feesEstimateUrl } = fees?.find(({ className }) => className === 'BTCCoin') || {};
                 const { data } = await axios.get(feesEstimateUrl);
-                this.feePerByte = data.fastestFee;
-                this.feeRecommended = typeof data !== 'object' ? null : data;
+                if (typeof data === 'object') {
+                    let sanitized;
+                    Object.entries(data).forEach(([key, value]) => {
+                        sanitized[key] = sanitizeString(value);
+                    });
+                    if (sanitized && sanitized.fastestFee) {
+                        this.feePerByte = sanitized.fastestFee;
+                        this.feeRecommended = sanitized;
+                    }
+                }
             }
         }
         catch {

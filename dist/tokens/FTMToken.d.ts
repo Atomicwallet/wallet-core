@@ -5,7 +5,7 @@ declare class FTMToken extends Token {
     coefficient: number;
     getInfo(): Promise<{
         balance: string;
-        transactions: import("../explorers/Transaction.js").default[];
+        transactions: import("../index.js").Transaction[];
     }>;
     getFee({ amount, isSendAll, gasPrice, gasLimit }: {
         amount?: number | undefined;

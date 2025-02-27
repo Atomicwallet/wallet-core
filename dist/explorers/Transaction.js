@@ -17,7 +17,7 @@ export default class Transaction {
         this.datetime = fields.datetime;
         this.timestamp = fields.timestamp || this.datetime.getTime();
         this.wallet = fields.wallet;
-        this.walletid = fields.wallet.id;
+        this.walletid = fields.walletid;
         this.explorer = fields.explorer;
         this.txid = fields.txid;
         this.direction = fields.direction;
@@ -26,6 +26,7 @@ export default class Transaction {
         this.memo = fields.memo;
         this.confirmations = fields.confirmations;
         this.fee = fields.fee;
+        this.feeTicker = fields.feeTicker;
         this.date = this.getDate();
         this.time = this.getTime();
     }

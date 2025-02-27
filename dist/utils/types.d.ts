@@ -1,3 +1,5 @@
+import { Numeric } from '../abstract/index.js';
+import { ExplorerConfig } from '../explorers/types/index.js';
 export interface IKeys {
     seed: Buffer;
     phrase: string;
@@ -9,17 +11,13 @@ export interface IKeysObject {
     privateKey: string;
     balance?: string;
 }
-export interface IConfigExplorer {
-    baseUrl: string;
-    className: string;
-}
 export interface IConfigFeeData {
     coefficient: number;
     feePerByte: string;
 }
 export interface IConfig {
     className: string;
-    explorers: IConfigExplorer[];
+    explorers: ExplorerConfig[];
     feeData: IConfigFeeData;
     feesEstimateUrl: string;
     id: string;
@@ -33,3 +31,15 @@ export interface IAddrCacheElement {
     type: string;
     address: string;
 }
+export type GetFeeArgs = {
+    feePerByte: Numeric;
+    userGasPrice: Numeric;
+    utxos: Array<Record<string, number>>;
+    gasLimit: Numeric;
+    address: string;
+    sendAmount: Numeric;
+    isToken: boolean;
+    contract: string;
+    denom: string | Numeric;
+    custom: unknown;
+};

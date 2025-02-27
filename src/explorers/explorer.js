@@ -140,26 +140,24 @@ export default class Explorer {
     return 'api';
   }
 
-  async checkTransaction(selfAddress, { coin, address, amount, memo, txid, nonce, fee, feeTicker }) {
+  async checkTransaction(selfAddress, { wallet, address, amount, memo, txid, nonce, fee, feeTicker }) {
     const newTx = new Transaction({
-      ticker: coin.ticker,
-      walletid: coin.id,
-      name: coin.name,
-      alias: coin.alias,
+      ticker: wallet.ticker,
+      walletid: wallet.id,
+      name: wallet.name,
+      alias: wallet.alias,
       explorer: this.constructor.name,
       txid,
       direction: selfAddress === address,
       otherSideAddress: address,
-      amount: toCurrency(amount, coin.decimal),
+      amount: toCurrency(amount, wallet.decimal),
       datetime: new Date(),
       memo,
       nonce,
       confirmations: 0,
       fee,
-      feeTicker: feeTicker ?? coin.feeTicker ?? this.getTxFeeTicker(),
+      feeTicker: feeTicker ?? wallet.feeTicker ?? this.getTxFeeTicker(),
     });
-
-    // TODO implement history data storage
 
     return newTx;
   }
