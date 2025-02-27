@@ -1,5 +1,5 @@
 import { TxTypes } from '../../explorers/enum/index.js';
-import { GET_TRANSACTIONS_TYPE } from '../../utils/const/index.js';
+import { GET_TRANSACTIONS_TYPE } from '../../utils/index.js';
 import ZilliqaAbstractExplorer from './ZilliqaAbstractExplorer.js';
 const TXS_NOT_FOUND_ERROR = 'Transactions not found';
 class ZilliqaAtomicExplorer extends ZilliqaAbstractExplorer {

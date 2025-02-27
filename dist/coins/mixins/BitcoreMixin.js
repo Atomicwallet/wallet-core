@@ -1,6 +1,6 @@
 import coinSelect from 'coinselect';
 import { WalletError } from '../../errors/index.js';
-import { LOAD_WALLET_ERROR, LIB_NAME_INDEX } from '../../utils/const/index.js';
+import { LOAD_WALLET_ERROR, LIB_NAME_INDEX } from '../../utils/index.js';
 const { BITCORE } = LIB_NAME_INDEX;
 const BitcoreMixin = (superclass) => class extends superclass {
     #privateKey;

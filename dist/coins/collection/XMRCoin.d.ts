@@ -71,7 +71,7 @@ declare class XMRCoin extends XMRCoin_base {
      * @returns {Promise<void>}
      */
     setPrivateKey(privateKey: string, mnemonicString?: string): Promise<void>;
-    address: any;
+    address: string | undefined;
     /**
      * Validates wallet address
      *

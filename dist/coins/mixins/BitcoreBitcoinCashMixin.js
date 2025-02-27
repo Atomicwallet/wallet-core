@@ -1,5 +1,5 @@
 import bitcoinCashAddressTools from 'bchaddrjs';
-import { LIB_NAME_INDEX } from '../../utils/const/index.js';
+import { LIB_NAME_INDEX } from '../../utils/index.js';
 const { BITCORE } = LIB_NAME_INDEX;
 const BitcoreBitcoinCashMixin = (superclass) => class extends superclass {
     #privateKey;

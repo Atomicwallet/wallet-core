@@ -1,7 +1,7 @@
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import { getTokenId } from '../../utils/index.js';
-import { GET_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from '../../utils/const/index.js';
+import { GET_TRANSACTION_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE } from '../../utils/index.js';
 import { toCurrency } from '../../utils/convert.js';
 const EXPLORER_VERSION = 2;
 class BlockbookV2Explorer extends Explorer {

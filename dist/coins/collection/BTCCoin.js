@@ -4,7 +4,7 @@ import { BitcoinLikeFeeMixin, BitcoreMixin } from '../../coins/mixins/index.js';
 import { BlockbookV2Explorer } from '../../explorers/collection/index.js';
 import fees from '../../resources/wallets_fee.json';
 import { LazyLoadedLib, logger } from '../../utils/index.js';
-import { LIB_NAME_INDEX } from '../../utils/const/index.js';
+import { LIB_NAME_INDEX } from '../../utils/index.js';
 import { sanitizeString } from '../../utils/sanitize/index.js';
 const { BITCORE } = LIB_NAME_INDEX;
 const NAME = 'Bitcoin';

@@ -10,7 +10,7 @@ import TOKENS_CACHE from '../../resources/trx/tokens.json';
 import { TRXToken } from '../../tokens/index.js';
 import { LazyLoadedLib, Amount, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils/index.js';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins/index.js';
 const hdkeyLib = new LazyLoadedLib(() => import('hdkey'));
 const tronwebLib = new LazyLoadedLib(() => import('tronweb'));

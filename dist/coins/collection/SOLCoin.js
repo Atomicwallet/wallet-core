@@ -7,7 +7,7 @@ import SolanaTritonExplorer from '../../explorers/collection/SolanaTritonExplore
 import { SOLToken } from '../../tokens/index.js';
 import { LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { STAKE_ADDR_TYPE } from '../../utils/const/index.js';
+import { STAKE_ADDR_TYPE } from '../../utils/index.js';
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
 const NAME = 'Solana';

@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND, SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND, SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 class ArkExplorer extends Explorer {
     handleRequestError(error, reqArgs) {
         if (error.response?.status === HTTP_STATUS_NOT_FOUND) {

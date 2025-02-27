@@ -3,6 +3,6 @@ export function getAccount(seedHex: any): {
     privView: string;
     pubSpend: any;
     pubView: any;
-    address: any;
+    address: string;
 };
 export function validateAddress(address: any): boolean;

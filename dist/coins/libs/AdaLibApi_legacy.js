@@ -3,7 +3,7 @@ import core from 'cardano-crypto-js';
 import cbor from 'cbor';
 import { pbkdf2Sync } from 'pbkdf2';
 import { WalletError } from '../../errors/index.js';
-import { WALLET_ERROR } from '../../utils/const/index.js';
+import { WALLET_ERROR } from '../../utils/index.js';
 const HARDENED_THRESHOLD = 0x80000000;
 const derivationPath = [HARDENED_THRESHOLD, HARDENED_THRESHOLD];
 const TX_WITNESS_SIZE_BYTES = 142;

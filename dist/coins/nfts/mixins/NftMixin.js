@@ -1,5 +1,5 @@
 import { ExternalError, InternalError } from '../../../errors/index.js';
-import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../../utils/const/index.js';
+import { EXTERNAL_ERROR, INTERNAL_ERROR } from '../../../utils/index.js';
 const NftMixin = (superclass) => class extends superclass {
     /**
      * Constructs the object

@@ -2,7 +2,7 @@ import { Coin } from '../../abstract/index.js';
 import { WalletError } from '../../errors/index.js';
 import NanonodeExplorer from '../../explorers/collection/NanonodeExplorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { WALLET_ERROR } from '../../utils/const/index.js';
+import { WALLET_ERROR } from '../../utils/index.js';
 import { HasProviders } from '../mixins/index.js';
 const blakeLazyLoaded = new LazyLoadedLib(() => import('blakejs'));
 const bip39LazyLoaded = new LazyLoadedLib(() => import('bip39'));

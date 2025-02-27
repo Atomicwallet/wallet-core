@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { EXPLORER_API_ERROR } from '../../utils/const/index.js';
+import { EXPLORER_API_ERROR } from '../../utils/index.js';
 class EOSApiExplorer extends Explorer {
     constructor(...args) {
         super(...args);

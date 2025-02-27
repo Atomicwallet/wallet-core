@@ -1,6 +1,6 @@
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
-import { GET_BALANCE_TYPE } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE } from '../../utils/index.js';
 import { toCurrency } from '../../utils/convert.js';
 const HEDERA_ACCOUNT = '0.0.98';
 /**

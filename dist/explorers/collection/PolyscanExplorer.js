@@ -3,7 +3,7 @@ import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import { getTokenId } from '../../utils/index.js';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE } from '../../utils/index.js';
 import { toCurrency } from '../../utils/convert.js';
 const SECONDS_TO_MILLISECONDS = 1000;
 const MODULE_FOR_REQUESTS = 'account';

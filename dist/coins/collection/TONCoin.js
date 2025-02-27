@@ -4,7 +4,7 @@ import TonwebExplorer from '../../explorers/collection/TonwebExplorer.js';
 import { TONToken } from '../../tokens/index.js';
 import { LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import { HasProviders, HasTokensMixin } from '../mixins/index.js';
 import { BALANCE_PROVIDER_OPERATION, SEND_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION, TONWEB_PROVIDER_OPERATION, } from '../mixins/HasProviders.js';
 const tonwebLib = new LazyLoadedLib(() => import('tonweb'));

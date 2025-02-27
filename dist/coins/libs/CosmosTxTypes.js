@@ -1,4 +1,4 @@
-import { ATOM_MSG_TYPES } from '../../utils/const/index.js';
+import { ATOM_MSG_TYPES } from '../../utils/index.js';
 export const msgSend = ({ fromAddress, toAddress, amount, fee, gas, memo, denom = 'uatom' }) => ({
     msg: [
         {

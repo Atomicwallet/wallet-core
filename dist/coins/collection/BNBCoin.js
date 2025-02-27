@@ -7,7 +7,7 @@ import BinanceExplorer from '../../explorers/collection/BinanceExplorer.js';
 import { BNBToken } from '../../tokens/index.js';
 import { Amount, LazyLoadedLib } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 import { HasProviders, HasTokensMixin, StakingMixin } from '../mixins/index.js';
 const NAME = 'BNB Coin';
 const TICKER = 'BNB';

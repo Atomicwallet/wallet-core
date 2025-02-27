@@ -1,5 +1,5 @@
 import AtomicError from '../errors/AtomicError.js';
-import { EXTERNAL_ERROR } from '../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../utils/index.js';
 class ExternalError extends AtomicError {
     constructor(args) {
         super(args);

@@ -3,7 +3,7 @@ import { ExplorerRequestError } from '../../errors/index.js';
 import BlockscoutExplorer from '../../explorers/collection/BlockscoutExplorer.js';
 import Web3Explorer from '../../explorers/collection/Web3Explorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 const Web3LazyLoaded = new LazyLoadedLib(() => import('web3'));
 const hdkeyLazyLoaded = new LazyLoadedLib(() => import('ethereumjs-wallet'));
 const DECIMAL = 18;

@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 import { Emitter, defaultConfigManager } from '../utils/index.js';
-import { WALLETS } from '../utils/const/index.js';
+import { WALLETS } from '../utils/index.js';
 import { toMinimal, toCurrency } from '../utils/convert.js';
 import { BaseDatabase } from '../utils/db/index.js';
 const SEND_TIMEOUT = 5000;

@@ -5,7 +5,7 @@ import * as nearAPI from 'near-api-js';
 import { ExternalError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import { Amount, logger } from '../../utils/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 const THROTTLE_INTERVAL = 800;
 const ACCOUNT_DOES_NOT_EXIST_ERROR = 'AccountDoesNotExist';
 const MIN_DISPLAY_YOCTO = new BN('100');

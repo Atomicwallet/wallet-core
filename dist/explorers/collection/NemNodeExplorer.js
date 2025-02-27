@@ -2,7 +2,7 @@ import nem from 'nem-sdk';
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import { hex2a } from '../../utils/index.js';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 /**
  * NemNodeExplorer
  */

@@ -4,7 +4,7 @@ import { AbstractWallet } from '../abstract/index.js';
 import { CoinFeature } from '../coins/constants.js';
 import { ExplorerRequestError, ExternalError, UndeclaredAbstractMethodError } from '../errors/index.js';
 import { TxNotifier, logger } from '../utils/index.js';
-import { GET_TRANSACTIONS_TYPE, TxEventTypes } from '../utils/const/index.js';
+import { GET_TRANSACTIONS_TYPE, TxEventTypes } from '../utils/index.js';
 const WALLETS_WITH_CUSTOM_TOKENS = ['ETH'];
 const CHECK_TX_UPDATE_TIMEOUT = 3000;
 /**

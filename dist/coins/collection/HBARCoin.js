@@ -9,7 +9,7 @@ import HederaMirrorNodeExplorer from '../../explorers/collection/HederaMirrorNod
 import HederaStakingExplorer from '../../explorers/collection/HederaStakingExplorer.js';
 import KabutoExplorer from '../../explorers/collection/KabutoExplorer.js';
 import { Amount, LazyLoadedLib, logger } from '../../utils/index.js';
-import { WALLET_ERROR } from '../../utils/const/index.js';
+import { WALLET_ERROR } from '../../utils/index.js';
 import { HasProviders, StakingMixin } from '../mixins/index.js';
 const NAME = 'Hedera';
 const TICKER = 'HBAR';

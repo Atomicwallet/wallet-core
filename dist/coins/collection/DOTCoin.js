@@ -4,7 +4,7 @@ import PolkadotNodeExplorer from '../../explorers/collection/PolkadotNodeExplore
 import PolkadotSidecarExplorer from '../../explorers/collection/PolkadotSidecarExplorer.js';
 import PolkaScanExplorer from '../../explorers/collection/PolkaScanExplorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 import { HasBlockScanner, HasProviders } from '../mixins/index.js';
 const NAME = 'Polkadot';
 const TICKER = 'DOT';

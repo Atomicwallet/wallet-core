@@ -2,7 +2,7 @@ import BN from 'bn.js';
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import { getTokenId } from '../../utils/index.js';
-import { GET_BALANCE_TYPE, ONE_MINUTE } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE, ONE_MINUTE } from '../../utils/index.js';
 import { toCurrency } from '../../utils/convert.js';
 import TronWeb from 'tronweb';
 /**

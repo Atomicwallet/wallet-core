@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { SEND_TRANSACTION_TYPE, GET_TRANSACTION_TYPE, UNDEFINED_OPERATION_ERROR } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE, GET_TRANSACTION_TYPE, UNDEFINED_OPERATION_ERROR } from '../../utils/index.js';
 const RIPPLE_START_DATE = 946684800;
 /**
  * Class for explorer.

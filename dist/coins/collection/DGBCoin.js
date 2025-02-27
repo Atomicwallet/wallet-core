@@ -2,7 +2,7 @@ import { Coin } from '../../abstract/index.js';
 import { WalletError } from '../../errors/index.js';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { LIB_NAME_INDEX } from '../../utils/const/index.js';
+import { LIB_NAME_INDEX } from '../../utils/index.js';
 import { BitcoinLikeFeeMixin, BitcoreMixin } from '../mixins/index.js';
 const { BITCORE } = LIB_NAME_INDEX;
 const NAME = 'DigiByte';

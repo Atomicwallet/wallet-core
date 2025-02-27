@@ -9,7 +9,7 @@ import ETHToken from '../../tokens/ETHToken.js';
 import StakableMaticETHToken from '../../tokens/StakableMaticETHToken.js';
 import { Amount, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import LazyLoadedLib from '../../utils/lazyLoadedLib.js';
 import { StakingMixin, NftMixin } from '../mixins/index.js';
 import HasProviders from '../mixins/HasProviders.js';

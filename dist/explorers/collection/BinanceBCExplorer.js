@@ -2,7 +2,7 @@
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import { Amount } from '../../utils/index.js';
-import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR } from '../../utils/index.js';
 const DEFAULT_REQ_OFFSET = 0;
 const MAX_REQ_LIMIT = 100;
 class BinanceBCExplorer extends Explorer {

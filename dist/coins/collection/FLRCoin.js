@@ -11,7 +11,7 @@ import FTSORewardsABI from '../../tokens/ABI/ERC-20/FlareRewardsManagerContract.
 import WFLRAbi from '../../tokens/ABI/ERC-20/WFLR.js';
 import { Amount, LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import { HasProviders, HasTokensMixin, StakingMixin, Web3Mixin } from '../mixins/index.js';
 const web3LazyLoaded = new LazyLoadedLib(() => import('web3'));

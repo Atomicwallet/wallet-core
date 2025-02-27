@@ -2,7 +2,7 @@ import { ExplorerRequestError } from '../../errors/index.js';
 import { TxTypes } from '../../explorers/enum/index.js';
 import Explorer from '../../explorers/explorer.js';
 import { logger, getTokenId } from '../../utils/index.js';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/index.js';
 import { toCurrency } from '../../utils/convert.js';
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 /**

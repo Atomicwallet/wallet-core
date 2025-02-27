@@ -1,7 +1,7 @@
 import IconService from 'icon-sdk-js';
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 class IconNodeExplorer extends Explorer {
     constructor(...args) {
         super(...args);

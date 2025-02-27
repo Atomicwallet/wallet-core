@@ -1,7 +1,7 @@
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, HTTP_STATUS_NOT_FOUND } from '../../utils/index.js';
 import { convertSecondsToDateTime } from '../../utils/convert.js';
 /**
  * Explorer for Algorand indexers

@@ -4,7 +4,7 @@ import { WalletError } from '../../errors/index.js';
 import IconExplorer from '../../explorers/collection/IconExplorer.js';
 import IconNodeExplorer from '../../explorers/collection/IconNodeExplorer.js';
 import { Amount, LazyLoadedLib } from '../../utils/index.js';
-import { WALLET_ERROR } from '../../utils/const/index.js';
+import { WALLET_ERROR } from '../../utils/index.js';
 import { delayedRepeatUntilSuccess } from '../../utils/funcs.js';
 import { HasProviders, StakingMixin } from '../mixins/index.js';
 const bitcoinjsLib = new LazyLoadedLib(() => import('bitcoinjs-lib'));

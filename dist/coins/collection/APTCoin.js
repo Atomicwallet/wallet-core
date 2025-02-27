@@ -2,7 +2,7 @@ import { Coin } from '../../abstract/index.js';
 import { ExternalError } from '../../errors/index.js';
 import AptExplorer from '../../explorers/collection/AptExplorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import HasProviders from '../mixins/HasProviders.js';
 const NAME = 'Aptos';
 const TICKER = 'APT';

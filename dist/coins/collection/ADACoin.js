@@ -3,7 +3,7 @@ import { DEFAULT_ADALITE_SUBMIT_URL, IS_IOS } from '../../env.js';
 import { WalletError } from '../../errors/index.js';
 import { AdaAtomicExplorer, YoroExplorer } from '../../explorers/collection/index.js';
 import { LazyLoadedLib, logger, preventConcurrent } from '../../utils/index.js';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 import { HasProviders } from '../mixins/index.js';
 const NAME = 'Cardano';
 const TICKER = 'ADA';

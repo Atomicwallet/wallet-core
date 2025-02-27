@@ -9,7 +9,7 @@ import TOKENS_CACHE from '../../resources/op/tokens.json';
 import { OPToken } from '../../tokens/index.js';
 import { LazyLoadedLib } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import { toCurrency } from '../../utils/convert.js';
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 import HasProviders from '../mixins/HasProviders.js';

@@ -6,7 +6,7 @@ import { getParsedNftAccountsByOwner, resolveToWalletAddress } from 'sol-rayz';
 import { SOLNftToken } from '../../coins/nfts/index.js';
 import { ExternalError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/index.js';
 import { getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert.js';
 const STAKE_DATA_LENGTH = 200;
 /**

@@ -11,7 +11,7 @@ import TOKENS_CACHE from '../../resources/binance/bsc-tokens.json';
 import { BSCToken } from '../../tokens/index.js';
 import { LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import Web3 from 'web3';
 import HasBlockScanner from '../mixins/HasBlockScanner.js';
 import HasProviders from '../mixins/HasProviders.js';

@@ -8,7 +8,7 @@ import { Coin } from '../../abstract/index.js';
 import { ExplorerRequestError, WalletError } from '../../errors/index.js';
 import CosmosNodeExplorerV2 from '../../explorers/collection/CosmosNodeExplorerV2.js';
 import { Amount } from '../../utils/index.js';
-import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from '../../utils/const/index.js';
+import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from '../../utils/index.js';
 import wif from 'wif';
 import { CosmosTxTypes } from '../libs/index.js';
 import { HasBlockScanner, HasProviders, StakingMixin } from '../mixins/index.js';

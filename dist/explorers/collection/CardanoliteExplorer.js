@@ -1,6 +1,6 @@
 import { ExplorerRequestError, WalletError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { GET_UTXO_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { GET_UTXO_TYPE, SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 class CardanoliteExplorer extends Explorer {
     /**
      * Constructs the object.

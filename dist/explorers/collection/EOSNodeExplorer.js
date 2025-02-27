@@ -2,7 +2,7 @@ import { Api, JsonRpc } from 'eosjs';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 import { ExplorerRequestError, WalletError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { SEND_TRANSACTION_TYPE, LOAD_WALLET_ERROR, PUBLIC_KEY_TO_ADDRESS_ERROR } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE, LOAD_WALLET_ERROR, PUBLIC_KEY_TO_ADDRESS_ERROR } from '../../utils/index.js';
 const TX_CONFIRMATIONS = 10;
 class EOSNodeExplorer extends Explorer {
     getAllowedTickers() {

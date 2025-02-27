@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 import Explorer from '../../explorers/explorer.js';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 class AdaAtomicExplorer extends Explorer {
     getAllowedTickers() {
         return ['ADA'];

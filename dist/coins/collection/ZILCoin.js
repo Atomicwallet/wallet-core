@@ -7,7 +7,7 @@ import ZilliqaAtomicExplorer from '../../explorers/collection/ZilliqaAtomicExplo
 import ZilliqaNodeExplorer from '../../explorers/collection/ZilliqaNodeExplorer.js';
 import { ZILToken } from '../../tokens/index.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { LOAD_WALLET_ERROR, WALLET_ERROR } from '../../utils/const/index.js';
+import { LOAD_WALLET_ERROR, WALLET_ERROR } from '../../utils/index.js';
 import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins/index.js';
 const bitcoinJsLib = new LazyLoadedLib(() => import('bitcoinjs-lib'));
 const zilliqaCryptoLib = new LazyLoadedLib(() => import('@zilliqa-js/crypto'));

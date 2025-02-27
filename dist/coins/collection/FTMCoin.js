@@ -11,7 +11,7 @@ import TOKENS_CACHE from '../../resources/ftm/tokens.json';
 import { FTMToken } from '../../tokens/index.js';
 import { getTokenId, Amount, LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import { toCurrency } from '../../utils/convert.js';
 import HasProviders from '../mixins/HasProviders.js';
 import HasTokensMixin from '../mixins/HasTokensMixin.js';

@@ -8,7 +8,7 @@ import { ExternalError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import { chunkArray, getTokenId } from '../../utils/index.js';
-import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR, STAKE_ADDR_TYPE } from '../../utils/index.js';
 import { convertSecondsToDateTime, getStringWithEnsuredEndChar, toCurrency } from '../../utils/convert.js';
 const STAKE_DATA_LENGTH = 200;
 const ATOMIC_HISTORY_SIGNATURES_CHUNK_SIZE = 500;

@@ -2,7 +2,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import { UndeclaredAbstractMethodError, ExplorerRequestError } from '../errors/index.js';
 import { Emitter, TxNotifier } from '../utils/index.js';
-import { ONE_MINUTE, GET_BLOCK_TYPE, GET_TRANSACTIONS_TYPE, GET_LATEST_BLOCK_TYPE, GET_BALANCE_TYPE, GET_UTXO_TYPE, GET_TRANSACTION_TYPE, SEND_TRANSACTION_TYPE, UNDEFINED_OPERATION_ERROR, } from '../utils/const/index.js';
+import { ONE_MINUTE, GET_BLOCK_TYPE, GET_TRANSACTIONS_TYPE, GET_LATEST_BLOCK_TYPE, GET_BALANCE_TYPE, GET_UTXO_TYPE, GET_TRANSACTION_TYPE, SEND_TRANSACTION_TYPE, UNDEFINED_OPERATION_ERROR, } from '../utils/index.js';
 import { toCurrency } from '../utils/convert.js';
 import { TxTypes } from './enum/index.js';
 import Transaction from './Transaction.js';

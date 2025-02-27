@@ -11,7 +11,7 @@ import { MATICToken } from '../../tokens/index.js';
 import { LazyLoadedLib, logger } from '../../utils/index.js';
 import applyCoefficient from '../../utils/applyCoefficient.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import HasProviders from '../mixins/HasProviders.js';
 import HasTokensMixin from '../mixins/HasTokensMixin.js';

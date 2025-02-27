@@ -1,7 +1,7 @@
 import { ExplorerRequestError, InternalError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
-import { GET_BALANCE_TYPE, INTERNAL_ERROR } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE, INTERNAL_ERROR } from '../../utils/index.js';
 const balanceABItoken = [
     {
         constant: true,

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ExternalError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import { LazyLoadedLib, Emitter as emitter, logger } from '../../utils/index.js';
-import { WALLETS } from '../../utils/const/index.js';
+import { WALLETS } from '../../utils/index.js';
 import { getStringWithEnsuredEndChar } from '../../utils/convert.js';
 const MymoneroWalletManagerLazyLoaded = new LazyLoadedLib(() => import('@mymonero/mymonero-wallet-manager'));
 const ATOMIC_ALIAS = 'atomic';

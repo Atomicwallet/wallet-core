@@ -3,7 +3,7 @@ import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
 import { getTokenId, logger } from '../../utils/index.js';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, UNDEFINED_OPERATION_ERROR } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, UNDEFINED_OPERATION_ERROR } from '../../utils/index.js';
 const GET_USER_TOKENS_TYPE = 'GetUserTokens';
 class BlockscoutExplorer extends Explorer {
     getAllowedTickers() {

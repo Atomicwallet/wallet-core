@@ -208,5 +208,5 @@ const cnBase58 = (function () {
     };
     return b58;
 })();
-module.exports = cnBase58;
+export default cnBase58;
 //# sourceMappingURL=cnBase58.js.map

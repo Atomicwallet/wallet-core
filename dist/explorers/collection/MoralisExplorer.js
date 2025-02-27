@@ -6,7 +6,7 @@ import { MORALIS_API_KEY, MORALIS_NATIVE_API } from '../../env.js';
 import { ExternalError, InternalError } from '../../errors/index.js';
 import { TxTypes } from '../../explorers/enum/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/const/index.js';
+import { GET_TRANSACTIONS_TYPE, EXTERNAL_ERROR, INTERNAL_ERROR } from '../../utils/index.js';
 import { getStringWithEnsuredEndChar } from '../../utils/convert.js';
 const convertPairs = [
     [erc721StandardTest, ERC721_TOKEN_STANDARD],

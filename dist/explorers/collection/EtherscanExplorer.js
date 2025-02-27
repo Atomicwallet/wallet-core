@@ -2,7 +2,7 @@ import { ETHERSCAN_API_KEY } from '../../env.js';
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import { getTokenId } from '../../utils/index.js';
-import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE, SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE, GET_TRANSACTIONS_TYPE, ONE_MINUTE, SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 const getApiKey = (walletId) => (walletId === 'ETH' ? ETHERSCAN_API_KEY : null);
 /**
  * Class for explorer.

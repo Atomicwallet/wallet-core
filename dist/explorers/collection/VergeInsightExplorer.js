@@ -1,6 +1,6 @@
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
-import { GET_TRANSACTIONS_TYPE } from '../../utils/const/index.js';
+import { GET_TRANSACTIONS_TYPE } from '../../utils/index.js';
 class VergeInsightExplorer extends Explorer {
     constructor(...args) {
         super(...args);

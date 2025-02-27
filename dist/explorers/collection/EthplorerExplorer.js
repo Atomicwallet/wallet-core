@@ -2,7 +2,7 @@ import { ETHPLORER_API_KEY } from '../../env.js';
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
-import { GET_BALANCE_TYPE } from '../../utils/const/index.js';
+import { GET_BALANCE_TYPE } from '../../utils/index.js';
 const USER_TOKEN_LIST = 'https://api.ethplorer.io/getAddressInfo/{address}';
 const MAX_CONFIRMATIONS = 10;
 /**

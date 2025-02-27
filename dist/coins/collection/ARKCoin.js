@@ -2,7 +2,7 @@ import { Coin } from '../../abstract/index.js';
 import { WalletError } from '../../errors/index.js';
 import ArkExplorer from '../../explorers/collection/ArkExplorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { WALLET_ERROR } from '../../utils/const/index.js';
+import { WALLET_ERROR } from '../../utils/index.js';
 const arkecosystemCryptoLazyLoaded = new LazyLoadedLib(() => import('@arkecosystem/crypto'));
 const NAME = 'Ark';
 const TICKER = 'ARK';

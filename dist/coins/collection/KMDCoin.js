@@ -3,7 +3,7 @@ import { WalletError } from '../../errors/index.js';
 import AtomicExplorer from '../../explorers/collection/AtomicExplorer.js';
 import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { LIB_NAME_INDEX } from '../../utils/const/index.js';
+import { LIB_NAME_INDEX } from '../../utils/index.js';
 import KomodoRewardCalculator from '../libs/KomodoRewardCalculator.js';
 import { BitcoinLikeFeeMixin, BitgoMixin, HasProviders } from '../mixins/index.js';
 const NAME = 'Komodo';

@@ -4,7 +4,7 @@ import { ExplorerRequestError, WalletError } from '../../errors/index.js';
 import TzktIoV1Explorer from '../../explorers/collection/TzktIoV1Explorer.js';
 import TezosNodeWithBlockscannerExplorer from '../../explorers/extended/TezosNodeWithBlockscannerExplorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 import { HasProviders } from '../mixins/index.js';
 const bs58checkLazyLoaded = new LazyLoadedLib(() => import('bs58check'));
 const libsodiumWrappersLazyLoaded = new LazyLoadedLib(() => import('libsodium-wrappers'));

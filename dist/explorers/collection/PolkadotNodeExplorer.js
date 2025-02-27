@@ -1,7 +1,7 @@
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE } from '../../utils/index.js';
 const polkaDotApi = new LazyLoadedLib(() => import('@polkadot/api'));
 class PolkadotNodeExplorer extends Explorer {
     constructor(...args) {

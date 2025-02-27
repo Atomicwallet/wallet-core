@@ -2,7 +2,7 @@ import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
 import { CosmosNodeTransactionTypeMixin } from '../../explorers/mixins/index.js';
 import validators from '../../resources/staking/validators.json';
-import { SEND_TRANSACTION_TYPE, EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE, EXTERNAL_ERROR } from '../../utils/index.js';
 const DEFAULT_TX_LIMIT = 50;
 class CosmosNodeExplorer extends CosmosNodeTransactionTypeMixin(Explorer) {
     /**

@@ -8,7 +8,7 @@ import SnowTraceExplorer from '../../explorers/collection/SnowTraceExplorer.js';
 import Web3Explorer from '../../explorers/collection/Web3Explorer.js';
 import { LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import HasBlockScanner from '../mixins/HasBlockScanner.js';
 import HasProviders from '../mixins/HasProviders.js';
 import Web3Mixin from '../mixins/Web3Mixin.js';

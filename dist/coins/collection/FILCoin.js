@@ -4,7 +4,7 @@ import { ExternalError } from '../../errors/index.js';
 import Web3Explorer from '../../explorers/collection/Web3Explorer.js';
 import { LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import { isStartsWith } from '../../utils/funcs.js';
 import { HasProviders } from '../mixins/index.js';
 const NAME = 'Filecoin';

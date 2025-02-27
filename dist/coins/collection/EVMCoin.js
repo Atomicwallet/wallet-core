@@ -7,7 +7,7 @@ import Transaction from '../../explorers/Transaction.js';
 import { EVMToken } from '../../tokens/index.js';
 import { Amount, LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
-import { EXTERNAL_ERROR } from '../../utils/const/index.js';
+import { EXTERNAL_ERROR } from '../../utils/index.js';
 import ovmGasPriceOracleAbi from '../abi/ovm-gas-price-oracle-abi.json';
 import HasProviders from '../mixins/HasProviders.js';
 import HasTokensMixin from '../mixins/HasTokensMixin.js';

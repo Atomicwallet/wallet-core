@@ -1,5 +1,5 @@
 import { InsufficientFundsError, WalletError } from '../../errors/index.js';
-import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE, WALLET_ERROR } from '../../utils/index.js';
 const BitcoinJSMixin = (superclass) => class extends superclass {
     #privateKey;
     /**

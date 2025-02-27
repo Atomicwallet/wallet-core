@@ -1,5 +1,5 @@
 import coinselect from 'coinselect';
-import { BTC_MOCK_ADDR } from '../../utils/const/index.js';
+import { BTC_MOCK_ADDR } from '../../utils/index.js';
 const BitcoinLikeFeeMixin = (superclass) => class extends superclass {
     /**
      * @param {Number} amount In satoshis

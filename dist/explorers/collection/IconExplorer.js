@@ -1,5 +1,5 @@
 import Explorer from '../../explorers/explorer.js';
-import { IcxTxTypes } from '../../utils/const/index.js';
+import { IcxTxTypes } from '../../utils/index.js';
 class IconExplorer extends Explorer {
     getAllowedTickers() {
         return ['ICX'];

@@ -3,7 +3,7 @@ import BlockbookV2Explorer from '../../explorers/collection/BlockbookV2Explorer.
 import DcrDataExplorer from '../../explorers/collection/DcrDataExplorer.js';
 import InsightExplorer from '../../explorers/collection/InsightExplorer.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { LIB_NAME_INDEX } from '../../utils/const/index.js';
+import { LIB_NAME_INDEX } from '../../utils/index.js';
 import { BitcoinLikeFeeMixin, BitcoreMixin } from '../mixins/index.js';
 const NAME = 'Decred';
 const TICKER = 'DCR';

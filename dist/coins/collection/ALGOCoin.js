@@ -2,7 +2,7 @@ import Coin from '../../abstract/coin.js';
 import { WalletError } from '../../errors/index.js';
 import { AlgoExplorer, AlgoNodeExplorer } from '../../explorers/collection/index.js';
 import { LazyLoadedLib } from '../../utils/index.js';
-import { WALLET_ERROR } from '../../utils/const/index.js';
+import { WALLET_ERROR } from '../../utils/index.js';
 import { HasProviders } from '../mixins/index.js';
 const algosdkLazyLoaded = new LazyLoadedLib(() => import('algosdk'));
 const NAME = 'Algorand';

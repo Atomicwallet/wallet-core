@@ -1,6 +1,6 @@
 import { ExplorerRequestError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { SEND_TRANSACTION_TYPE, GET_UTXO_TYPE, GET_BALANCE_TYPE } from '../../utils/const/index.js';
+import { SEND_TRANSACTION_TYPE, GET_UTXO_TYPE, GET_BALANCE_TYPE } from '../../utils/index.js';
 class YoroExplorer extends Explorer {
     constructor(...args) {
         super(...args);
