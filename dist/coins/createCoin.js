@@ -2,10 +2,10 @@ import { createEVMCoin } from '../coins/collection/EVM/index.js';
 /**
  * Creates new coin instance
  */
-export default function createCoin(CoinClass, coinData, db, configManager, logger) {
+export default function createCoin(CoinClass, coinData, db, configManager) {
     if (coinData.walletType === 'EVM') {
         // @todo define proper return type
-        return createEVMCoin(coinData, db, configManager, logger);
+        return createEVMCoin(coinData, db, configManager);
     }
     // @ts-expect-error define generic type
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -34,6 +34,6 @@ export default function createCoin(CoinClass, coinData, db, configManager, logge
         denom: coinData.denom,
         derivation: coinData.derivation,
         decimal: coinData.decimal,
-    }, db, configManager, logger);
+    }, db, configManager);
 }
 //# sourceMappingURL=createCoin.js.map

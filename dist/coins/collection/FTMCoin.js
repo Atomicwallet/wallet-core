@@ -9,7 +9,7 @@ import Transaction from '../../explorers/Transaction.js';
 import BANNED_TOKENS_CACHE from '../../resources/ftm/tokens-banned.json';
 import TOKENS_CACHE from '../../resources/ftm/tokens.json';
 import { FTMToken } from '../../tokens/index.js';
-import { getTokenId, Amount, LazyLoadedLib } from '../../utils/index.js';
+import { getTokenId, Amount, LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import { EXTERNAL_ERROR } from '../../utils/const/index.js';
 import { toCurrency } from '../../utils/convert.js';
@@ -305,7 +305,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
             await db.put(newTx);
             this.eventEmitter.emit('socket::newtx::outgoing', {
                 id: this.id,
-                ticker: coin.ticker,
+                ticker: wallet.ticker,
             });
             setTimeout(async () => {
                 await this.getBalance();
@@ -746,7 +746,7 @@ class FTMCoin extends Web3Mixin(NftMixin(HasProviders(HasTokensMixin(Coin)))) {
             this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         return this.gasPriceConfig;
     }

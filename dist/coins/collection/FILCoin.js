@@ -2,7 +2,7 @@ import BN from 'bn.js';
 import { Coin } from '../../abstract/index.js';
 import { ExternalError } from '../../errors/index.js';
 import Web3Explorer from '../../explorers/collection/Web3Explorer.js';
-import { LazyLoadedLib } from '../../utils/index.js';
+import { LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import { EXTERNAL_ERROR } from '../../utils/const/index.js';
 import { isStartsWith } from '../../utils/funcs.js';
@@ -360,7 +360,7 @@ class FILCoin extends HasProviders(Coin) {
             this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         return this.gasPriceConfig;
     }

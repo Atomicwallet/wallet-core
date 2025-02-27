@@ -1,5 +1,10 @@
 import { Numeric } from '../abstract/index.js';
 import { ExplorerConfig } from '../explorers/types/index.js';
+export type Construct = {
+    constructor: {
+        name: string;
+    };
+};
 export interface IKeys {
     seed: Buffer;
     phrase: string;

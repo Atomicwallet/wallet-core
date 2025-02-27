@@ -1,6 +1,6 @@
 import Explorer from '../../explorers/explorer.js';
 import Transaction from '../../explorers/Transaction.js';
-import { getTokenId } from '../../utils/index.js';
+import { getTokenId, logger } from '../../utils/index.js';
 import TronWeb from 'tronweb';
 const DYNAMIC_PARAMETERS = ['getDynamicEnergyThreshold', 'getDynamicEnergyIncreaseFactor', 'getDynamicEnergyMaxFactor'];
 /**
@@ -145,7 +145,7 @@ class TrongridExplorer extends Explorer {
     modifyEstimagedEnergyResponse(response) {
         const failed = response?.transaction?.ret[0]?.ret === 'FAILED';
         if (failed) {
-            // @TODO implement logger
+            logger.log({ instance: this, error: new Error('Failed to estimate energy') });
             // Failed to call estimate energy, node rejects tx with REVERT opcode, probably invalid tx was passed') })
             return undefined;
         }

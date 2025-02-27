@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import type { Coin, Token, WalletDecimal, CreateTxParams, RawTxHash, TxHash, RawTxHex, RawTxBinary, RawTxObject, WalletIdentifierType, WalletTicker, TokenCreationArgs, CoinConfigType, ILogger } from '../abstract/index.js';
+import type { Coin, Token, WalletDecimal, CreateTxParams, RawTxHash, TxHash, RawTxHex, RawTxBinary, RawTxObject, WalletIdentifierType, WalletTicker, TokenCreationArgs, CoinConfigType } from '../abstract/index.js';
 import type Explorer from '../explorers/explorer.js';
 import { IConfigManager } from '../utils/configManager/index.js';
 import { IDataBase, ITable, TableNames, TableTypes } from '../utils/db/index.js';
@@ -17,7 +17,6 @@ export default abstract class AbstractWallet {
     divisibleBalance: null | string;
     configManager: IConfigManager;
     db: IDataBase;
-    logger: ILogger;
     abstract gasPriceConfig?: IGasPriceConfig;
     abstract gasLimit?: string | number | BN;
     abstract denom?: string;
@@ -33,7 +32,7 @@ export default abstract class AbstractWallet {
     abstract estimateGas(amount: BN | string, address: string, contract: string, defaultGas?: BN | string | number): Promise<BN | number | string>;
     abstract getFeePerByte(): BN;
     abstract getUnspentOutputs(): Promise<any>;
-    constructor({ name, ticker, decimal, memoRegexp }: CoinConfigType | TokenCreationArgs, db?: IDataBase, configManager?: IConfigManager, logger?: ILogger);
+    constructor({ name, ticker, decimal, memoRegexp }: CoinConfigType | TokenCreationArgs, db?: IDataBase, configManager?: IConfigManager);
     protected set ticker(ticker: string);
     get ticker(): string;
     protected set decimal(decimal: number);

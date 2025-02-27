@@ -9,7 +9,7 @@ import Web3Explorer from '../../explorers/collection/Web3Explorer.js';
 import BANNED_TOKENS_CACHE from '../../resources/binance/bsc-tokens-banned.json';
 import TOKENS_CACHE from '../../resources/binance/bsc-tokens.json';
 import { BSCToken } from '../../tokens/index.js';
-import { LazyLoadedLib } from '../../utils/index.js';
+import { LazyLoadedLib, logger } from '../../utils/index.js';
 import { ConfigKey } from '../../utils/configManager/index.js';
 import { EXTERNAL_ERROR } from '../../utils/const/index.js';
 import Web3 from 'web3';
@@ -99,7 +99,7 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
             this.coreLibrary = new Web3(provider);
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             setTimeout(() => this.initProvider(provider), INIT_PROVIDER_TIMEOUT);
         }
     }
@@ -140,7 +140,7 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
             this.#privateKey = this.coreLibrary.eth.accounts.privateKeyToAccount(this.#privateKey).address;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         return this.#privateKey;
     }
@@ -467,7 +467,7 @@ class BSCCoin extends Web3Mixin(NftMixin(HasBlockScanner(HasProviders(HasTokensM
             this.gasPriceConfig = isUpdateNeeded ? await this.web3.getGasPriceConfig() : this.gasPriceConfig;
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         return this.gasPriceConfig;
     }

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ExternalError } from '../../errors/index.js';
 import Explorer from '../../explorers/explorer.js';
-import { LazyLoadedLib, Emitter as emitter } from '../../utils/index.js';
+import { LazyLoadedLib, Emitter as emitter, logger } from '../../utils/index.js';
 import { WALLETS } from '../../utils/const/index.js';
 import { getStringWithEnsuredEndChar } from '../../utils/convert.js';
 const MymoneroWalletManagerLazyLoaded = new LazyLoadedLib(() => import('@mymonero/mymonero-wallet-manager'));
@@ -88,7 +88,7 @@ class MyMoneroExplorer extends Explorer {
             });
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
         }
         this.#myMoneroLocalAccount.wallet = await walletManager.importWalletKeys(ATOMIC_ALIAS, this.wallet.address, this.#myMoneroLocalAccount.keys.privateKeyView, this.#myMoneroLocalAccount.keys.privateKeySpend);
         this.#myMoneroLocalAccount.walletManager = walletManager;

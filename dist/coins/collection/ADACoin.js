@@ -2,7 +2,7 @@ import Coin from '../../abstract/coin.js';
 import { DEFAULT_ADALITE_SUBMIT_URL, IS_IOS } from '../../env.js';
 import { WalletError } from '../../errors/index.js';
 import { AdaAtomicExplorer, YoroExplorer } from '../../explorers/collection/index.js';
-import { LazyLoadedLib, preventConcurrent } from '../../utils/index.js';
+import { LazyLoadedLib, logger, preventConcurrent } from '../../utils/index.js';
 import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/const/index.js';
 import { HasProviders } from '../mixins/index.js';
 const NAME = 'Cardano';
@@ -147,7 +147,7 @@ class ADACoin extends HasProviders(Coin) {
             this.address = await coreLibrary.getAddressByPrivateKey();
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             console.error('ADA load walled failed, core library is not initialized');
         }
         return { id: this.id, privateKey: this.#privateKey, address: this.address };

@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import { TxTypes } from '../../explorers/enum/index.js';
 import Explorer from '../../explorers/explorer.js';
+import { logger } from '../../utils/index.js';
 import { erc721Abi } from './ETHNftExplorer.js';
 const GAS_PRICE_INTERVAL = 1000;
 const GAS_PRICES_URL = 'https://gavax.blockscan.com/gasapi.ashx';
@@ -19,7 +20,7 @@ class SnowTraceExplorer extends Explorer {
             return super.getTransactions(...args);
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return [];
         }
     }
@@ -133,7 +134,7 @@ class SnowTraceExplorer extends Explorer {
             };
         }
         catch (error) {
-            // @TODO implement logger
+            logger.log({ instance: this, error });
             return {};
         }
     }

@@ -312,7 +312,7 @@ class OPCoin extends Web3Mixin(HasProviders(HasTokensMixin(Coin))) {
             await db.batchPut(newTx);
             this.eventEmitter.emit('socket::newtx::outgoing', {
                 id: this.id,
-                ticker: coin.ticker,
+                ticker: wallet.ticker,
             });
             setTimeout(async () => {
                 await this.getBalance();

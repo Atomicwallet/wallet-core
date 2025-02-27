@@ -1,4 +1,4 @@
-import { COSMOS_MSG_TO_TYPE } from '../../explorers/enum/index.js';
+import { COSMOS_MSG_TO_TYPE, TxTypes } from '../../explorers/enum/index.js';
 import Explorer from '../../explorers/explorer.js';
 export default class TerraFCDExplorer extends Explorer {
     constructor(...args) {

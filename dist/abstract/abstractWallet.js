@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { Emitter, defaultConfigManager, defaultLogger } from '../utils/index.js';
+import { Emitter, defaultConfigManager } from '../utils/index.js';
 import { WALLETS } from '../utils/const/index.js';
 import { toMinimal, toCurrency } from '../utils/convert.js';
 import { BaseDatabase } from '../utils/db/index.js';
@@ -12,14 +12,13 @@ export default class AbstractWallet {
     #name;
     #ticker;
     #decimal;
-    constructor({ name, ticker, decimal, memoRegexp }, db, configManager, logger) {
+    constructor({ name, ticker, decimal, memoRegexp }, db, configManager) {
         this.indivisibleBalance = null;
         this.divisibleBalance = null;
         this.#name = name;
         this.#ticker = ticker;
         this.#decimal = decimal;
         this.configManager = configManager ?? defaultConfigManager;
-        this.logger = logger ?? defaultLogger;
         this.db = db ?? new BaseDatabase();
         this.alias = 'atomic';
         this.memoRegexp = memoRegexp;
