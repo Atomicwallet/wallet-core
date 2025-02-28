@@ -86,7 +86,7 @@ module.exports = {
     concatenateModules: true,
     // usedExports: true,
     // sideEffects: false,
-    minimize: false,
+    minimize: true,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
