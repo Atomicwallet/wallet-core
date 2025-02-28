@@ -10,6 +10,8 @@ class BaseLogger implements ILogger {
   error<T extends Construct, C extends Error>(error: ErrorObject<T, C>): void {
     console.error(`[BaseLogger]\n`, error);
   }
+
+  setUserId(userId: string): void {}
 }
 
 class Logger {
@@ -21,6 +23,10 @@ class Logger {
 
   setLogger(logger: ILogger): void {
     this.logger = logger;
+  }
+
+  setUserId(userId: string): void {
+    this.logger.setUserId(userId);
   }
 
   log<T extends Construct, C extends Error>(error: ErrorObject<T, C>): void {
