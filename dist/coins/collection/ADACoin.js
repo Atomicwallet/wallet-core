@@ -2,9 +2,8 @@ import Coin from '../../abstract/coin.js';
 import { DEFAULT_ADALITE_SUBMIT_URL, IS_IOS } from '../../env.js';
 import { WalletError } from '../../errors/index.js';
 import { AdaAtomicExplorer, YoroExplorer } from '../../explorers/collection/index.js';
-import { LazyLoadedLib, logger, preventConcurrent } from '../../utils/index.js';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from '../../utils/index.js';
-import { HasProviders } from '../mixins/index.js';
+import { LazyLoadedLib, logger, preventConcurrent, LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE, Amount } from '../../utils/index.js';
+import { HasProviders, StakingMixin } from '../mixins/index.js';
 const NAME = 'Cardano';
 const TICKER = 'ADA';
 const DECIMAL = 6;
@@ -22,7 +21,7 @@ const POOL_ADDRESS_REGEXP = /(pool[0-9a-zA-Z]{2,50}|[0-9a-fA-F]{6,})/;
  * @typedef {ADACoin}
  * @extends {HasProviders(Coin)}
  */
-class ADACoin extends HasProviders(Coin) {
+class ADACoin extends StakingMixin(HasProviders(Coin)) {
     #privateKey;
     #legacyAccount;
     #cip1852Account;
@@ -281,21 +280,34 @@ class ADACoin extends HasProviders(Coin) {
         return new this.BN(fee);
     }
     async getInfo() {
-        const [balance, coreLibrary] = await Promise.all([this.getBalance(), this.getCoreLibrary()]);
-        const stakeAddress = coreLibrary.getRewardAddress(this.address).to_address().to_bech32();
-        const accountState = await this.getProvider('balance').getAccountState(stakeAddress);
+        const balance = await this.getBalance();
         this.balance = balance;
-        this.balances = {
-            available: this.toCurrencyUnit(balance),
-            rewards: accountState && accountState.reward,
-            staking: {
-                total: accountState && accountState.poolId ? this.balance : '0',
-                validator: accountState && accountState.poolId,
-            },
-        };
         return {
             balance: this.balance,
-            balances: this.balances,
+        };
+    }
+    async fetchStakingInfo() {
+        const coreLibrary = await this.getCoreLibrary();
+        const stakeAddress = coreLibrary.getRewardAddress(this.address).to_address().to_bech32();
+        const accountState = await this.getProvider('balance').getAccountState(stakeAddress);
+        // return {
+        //   available: this.toCurrencyUnit(balance),
+        //   rewards: accountState && accountState.reward,
+        //   staking: {
+        //     total: accountState && accountState.poolId ? this.balance : '0',
+        //     validator: accountState && accountState.poolId,
+        //   },
+        // }
+        const poolId = accountState && accountState.poolId;
+        return {
+            rewards: this.calculateRewards(accountState && accountState.reward),
+            staked: poolId && new Amount(this.balance, this),
+            validators: {
+                [poolId]: {
+                    address: poolId,
+                    staked: new Amount(new this.BN(this.balance), this),
+                },
+            },
         };
     }
     async createDelegationTransaction(poolId, stakeAddressRegistered) {

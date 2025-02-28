@@ -541,27 +541,22 @@ declare class ADACoin {
     }): Promise<any>;
     getInfo(): Promise<{
         balance: any;
-        balances: {
-            available: any;
-            rewards: any;
-            staking: {
-                total: any;
-                validator: any;
+    }>;
+    balance: any;
+    fetchStakingInfo(): Promise<{
+        rewards: any;
+        staked: any;
+        validators: {
+            [x: number]: {
+                address: any;
+                staked: Amount;
             };
         };
     }>;
-    balance: any;
-    balances: {
-        available: any;
-        rewards: any;
-        staking: {
-            total: any;
-            validator: any;
-        };
-    } | undefined;
     createDelegationTransaction(poolId: any, stakeAddressRegistered: any): Promise<any>;
     stake(poolId: any): Promise<any>;
     claim(): Promise<any>;
     getDelegatedPoolKey(): any;
     #private;
 }
+import { Amount } from '../../utils/index.js';
