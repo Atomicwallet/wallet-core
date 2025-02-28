@@ -2,10 +2,9 @@ import Coin from 'src/abstract/coin';
 import { DEFAULT_ADALITE_SUBMIT_URL, IS_IOS } from 'src/env';
 import { WalletError } from 'src/errors';
 import { AdaAtomicExplorer, YoroExplorer } from 'src/explorers/collection';
-import { LazyLoadedLib, logger, preventConcurrent } from 'src/utils';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils';
+import { LazyLoadedLib, logger, preventConcurrent, LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE, Amount } from 'src/utils';
 
-import { HasProviders } from '../mixins';
+import { HasProviders, StakingMixin } from '../mixins';
 
 const NAME = 'Cardano';
 const TICKER = 'ADA';
@@ -25,7 +24,7 @@ const POOL_ADDRESS_REGEXP = /(pool[0-9a-zA-Z]{2,50}|[0-9a-fA-F]{6,})/;
  * @typedef {ADACoin}
  * @extends {HasProviders(Coin)}
  */
-class ADACoin extends HasProviders(Coin) {
+class ADACoin extends StakingMixin(HasProviders(Coin)) {
   #privateKey;
   #legacyAccount;
   #cip1852Account;
@@ -349,24 +348,41 @@ class ADACoin extends HasProviders(Coin) {
   }
 
   async getInfo() {
-    const [balance, coreLibrary] = await Promise.all([this.getBalance(), this.getCoreLibrary()]);
+    const balance = await this.getBalance();
+
+    this.balance = balance;
+
+    return {
+      balance: this.balance,
+    };
+  }
+
+  async fetchStakingInfo() {
+    const coreLibrary = await this.getCoreLibrary();
 
     const stakeAddress = coreLibrary.getRewardAddress(this.address).to_address().to_bech32();
     const accountState = await this.getProvider('balance').getAccountState(stakeAddress);
 
-    this.balance = balance;
-    this.balances = {
-      available: this.toCurrencyUnit(balance),
-      rewards: accountState && accountState.reward,
-      staking: {
-        total: accountState && accountState.poolId ? this.balance : '0',
-        validator: accountState && accountState.poolId,
-      },
-    };
+    // return {
+    //   available: this.toCurrencyUnit(balance),
+    //   rewards: accountState && accountState.reward,
+    //   staking: {
+    //     total: accountState && accountState.poolId ? this.balance : '0',
+    //     validator: accountState && accountState.poolId,
+    //   },
+    // }
+
+    const poolId = accountState && accountState.poolId;
 
     return {
-      balance: this.balance,
-      balances: this.balances,
+      rewards: this.calculateRewards(accountState && accountState.reward),
+      staked: poolId && new Amount(this.balance, this),
+      validators: {
+        [poolId]: {
+          address: poolId,
+          staked: new Amount(new this.BN(this.balance), this),
+        },
+      },
     };
   }
 
