@@ -4,6 +4,7 @@ declare class Logger {
     logger: ILogger;
     constructor();
     setLogger(logger: ILogger): void;
+    setUserId(userId: string): void;
     log<T extends Construct, C extends Error>(error: ErrorObject<T, C>): void;
     error<T extends Construct, C extends Error>(error: ErrorObject<T, C>): void;
 }

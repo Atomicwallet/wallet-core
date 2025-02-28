@@ -5,6 +5,7 @@ class BaseLogger {
     error(error) {
         console.error(`[BaseLogger]\n`, error);
     }
+    setUserId(userId) { }
 }
 class Logger {
     constructor() {
@@ -12,6 +13,9 @@ class Logger {
     }
     setLogger(logger) {
         this.logger = logger;
+    }
+    setUserId(userId) {
+        this.logger.setUserId(userId);
     }
     log(error) {
         this.logger.log(error);

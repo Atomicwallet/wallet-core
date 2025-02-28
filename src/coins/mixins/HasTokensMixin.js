@@ -1,8 +1,7 @@
 import { Token } from 'src/abstract';
 import { UndeclaredAbstractMethodError } from 'src/errors';
 import InternalError from 'src/errors/InternalError';
-import { getTokenId } from 'src/utils';
-import { INTERNAL_ERROR } from 'src/utils';
+import { getTokenId, INTERNAL_ERROR } from 'src/utils';
 
 const MAX_TICKER_LENGTH = 9;
 const MAX_NAME_LENGTH = 30;

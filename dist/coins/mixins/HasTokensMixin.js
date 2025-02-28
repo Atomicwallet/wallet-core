@@ -1,8 +1,7 @@
 import { Token } from '../../abstract/index.js';
 import { UndeclaredAbstractMethodError } from '../../errors/index.js';
 import InternalError from '../../errors/InternalError.js';
-import { getTokenId } from '../../utils/index.js';
-import { INTERNAL_ERROR } from '../../utils/index.js';
+import { getTokenId, INTERNAL_ERROR } from '../../utils/index.js';
 const MAX_TICKER_LENGTH = 9;
 const MAX_NAME_LENGTH = 30;
 const TOKEN_SOURCE_USER = 'user';
