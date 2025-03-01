@@ -222,8 +222,10 @@ class ZILCoin extends StakingMixin(HasBlockScanner(HasProviders(HasTokensMixin(C
     const { balance, nonce } = await this.getProvider('balance').getBalance(this.address, this.stakingContract);
 
     if (balance) {
-      this.balance = balance;
+      this.balance = new this.BN(balance);
     }
+
+    await this.getStakingInfo();
 
     const contracts = Object.keys(this.tokens || {}).filter(Boolean);
 
@@ -314,7 +316,10 @@ class ZILCoin extends StakingMixin(HasBlockScanner(HasProviders(HasTokensMixin(C
     const gasLimit = this.getGasLimit('stake');
     const fee = await this.getFee({ gasLimit: gasLimit || 1 });
 
-    return new Amount(balance.toBN().sub(new this.BN(fee)).sub(new this.BN(this.reserveForStake)));
+    const zero = new this.BN('0');
+    const available = balance.toBN().sub(new this.BN(fee)).sub(new this.BN(this.reserveForStake));
+
+    return new Amount(available.lte(zero) ? zero : available, this);
   }
 
   calculateRewards(rewards = new Amount('0', this)) {
