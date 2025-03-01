@@ -1,8 +1,75 @@
 export default ZILCoin;
 declare const ZILCoin_base: {
-    new (): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
-        onConfirmSocketTx(tx: Object): void;
+        "__#11@#balances": {};
+        "__#11@#predefinedValidators": any[];
+        readonly balances: {};
+        readonly predefinedValidators: any[];
+        defaultAmount(): Amount;
+        "__#11@#restoreCachedBalances"(): Promise<void>;
+        "__#11@#updateCachedBalances"(balances: any): void;
+        "__#11@#transformBalanceFieldFromJSON"(value: any): Amount;
+        "__#11@#transformValidatorsObjectFromJSON"(validatorsJSONObject: any): {};
+        "__#11@#transformCachedBalancesFromJSON"(balances?: any): {};
+        setBalances(balances: any): void;
+        isStakingSupported(): boolean;
+        isRedelegationSupported(): boolean;
+        makeStakingInfoStruct({ staked, unstaking, delegatedVotes, availableVotes, pendingWithdrawals, availableWithdrawals, availableForUnstake, rewards, frozenVotes, frozenEnergy, validators, additional, }?: Amount): Promise<{
+            unstaking: Amount;
+            total: Amount;
+            availableForStake: Amount;
+        }>;
+        fetchStakingInfo(): any;
+        getStakingInfo(): Promise<any | {
+            unstaking: string;
+            total: string;
+            availableForStake: string;
+            pendingWithdrawals: string;
+            validators: {};
+            staked: string;
+            availableWithdrawals: string;
+            rewards: string;
+        } | {}>;
+        calculateTotal({ balance, staked, unstaking, availableWithdrawals, pendingWithdrawals, rewards }: {
+            balance: any;
+            staked: any;
+            unstaking: any;
+            availableWithdrawals: any;
+            pendingWithdrawals: any;
+            rewards: any;
+        }): void;
+        calculateAvailableForStake({ balance, staked, unstaking }: {
+            balance: any;
+            staked: any;
+            unstaking: any;
+        }): Promise<void>;
+        calculateAvailableForUnstake(): void;
+        calculateStakedAmount(): any;
+        calculateUnstakingAmount(): void;
+        calculateAvailableWithdrawalsAmount(): void;
+        calculatePendingWithdrawalsAmount(): void;
+        calculateRewards(): void;
+        getValidators(): {};
+        getTotalBalance(): string;
+        getAvailableBalance(): string;
+        getAvailableForUnstakeBalance(): any;
+        "__#11@#getBalanceByType"(balanceType: string, validatorAddress: string): string;
+        getStakedBalance(validator: any): string;
+        getUnstakingBalance(validator: any): string;
+        getRewards(validator: any): string;
+        getDelegatedVotes(): Amount;
+        getAvailableVotes(): Amount;
+        getFrozenVotes(): any;
+        getFrozenEnergy(): any;
+        getPendingWithdrawals(validator: any): string;
+        getAvailableWithdrawals(validator: any): string;
+        getUserValidators(address: string): Promise<any>;
+        getAdditionalInfo(): string;
+        getPredefinedValidators(): Promise<[]>;
+        getDefaultValidators(): any | any[];
+        getPredefineValidatorsConfigIdentifier(): string;
+        getPredefineValidatorsConfigName(): string;
     };
     [x: string]: any;
 };
@@ -77,10 +144,29 @@ declare class ZILCoin extends ZILCoin_base {
     sendTransaction(rawtx: any): Promise<any>;
     getInfo(): Promise<{
         balance: any;
-        balances: {};
     }>;
     balance: any;
     setPrivateKey(privateKey: any): Promise<void>;
+    fetchStakingInfo(): Promise<{
+        staked: Amount;
+        availableForUnstake: any;
+        availableWithdrawals: Amount;
+        pendingWithdrawals: Amount;
+        rewards: Amount;
+        validators: any;
+    } | undefined>;
+    calculateTotal({ balance, staked, rewards, availableWithdrawals, pendingWithdrawals }: {
+        balance: any;
+        staked: any;
+        rewards: any;
+        availableWithdrawals: any;
+        pendingWithdrawals: any;
+    }): Amount;
+    calculateAvailableForUnstake(validators: any): any;
+    calculateAvailableForStake({ balance }: {
+        balance: any;
+    }): Promise<Amount>;
+    calculateRewards(rewards?: Amount): Amount;
     changeProviders(explorers: any): void;
     balanceProvider: any;
     updateCoinParamsFromServer(data: any): void;
@@ -165,6 +251,7 @@ declare class ZILCoin extends ZILCoin_base {
     getGasRange(sendType?: string): any;
     #private;
 }
+import { Amount } from '../../utils/index.js';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
 import { WalletError } from '../../errors/index.js';
 import { Long } from '@zilliqa-js/util';

@@ -544,7 +544,7 @@ declare class ADACoin {
     }>;
     balance: any;
     fetchStakingInfo(): Promise<{
-        rewards: any;
+        rewards: Amount;
         staked: any;
         validators: {
             [x: number]: {
@@ -553,6 +553,14 @@ declare class ADACoin {
             };
         };
     }>;
+    calculateTotal({ balance, rewards }: {
+        balance: any;
+        rewards: any;
+    }): Amount;
+    calculateAvailableForStake({ balance }: {
+        balance: any;
+    }): Promise<Amount>;
+    calculateRewards(rewards?: string): Amount;
     createDelegationTransaction(poolId: any, stakeAddressRegistered: any): Promise<any>;
     stake(poolId: any): Promise<any>;
     claim(): Promise<any>;

@@ -290,14 +290,6 @@ class ADACoin extends StakingMixin(HasProviders(Coin)) {
         const coreLibrary = await this.getCoreLibrary();
         const stakeAddress = coreLibrary.getRewardAddress(this.address).to_address().to_bech32();
         const accountState = await this.getProvider('balance').getAccountState(stakeAddress);
-        // return {
-        //   available: this.toCurrencyUnit(balance),
-        //   rewards: accountState && accountState.reward,
-        //   staking: {
-        //     total: accountState && accountState.poolId ? this.balance : '0',
-        //     validator: accountState && accountState.poolId,
-        //   },
-        // }
         const poolId = accountState && accountState.poolId;
         return {
             rewards: this.calculateRewards(accountState && accountState.reward),
@@ -309,6 +301,15 @@ class ADACoin extends StakingMixin(HasProviders(Coin)) {
                 },
             },
         };
+    }
+    calculateTotal({ balance, rewards }) {
+        return new Amount(balance.toBN().add(rewards.toBN()), this);
+    }
+    async calculateAvailableForStake({ balance }) {
+        return new Amount(balance, this);
+    }
+    calculateRewards(rewards = '0') {
+        return new Amount(new this.BN(rewards), this);
     }
     async createDelegationTransaction(poolId, stakeAddressRegistered) {
         if (!this.#privateKey.shelleyKey) {
