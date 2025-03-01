@@ -155,6 +155,7 @@ const StakingMixin = (superclass) => class extends superclass {
                 unstaking,
                 rewards,
                 availableWithdrawals,
+                pendingWithdrawals,
                 frozenVotes,
                 frozenEnergy,
             }),
