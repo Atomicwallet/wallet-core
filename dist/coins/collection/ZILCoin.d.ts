@@ -85,7 +85,6 @@ declare class ZILCoin extends ZILCoin_base {
     constructor({ alias, notify, feeData, explorers, txWebUrl, socket, stakingContract, stakingProxyContract, id }: string, db: any, configManager: any);
     derivation: string;
     zilliqa: Zilliqa;
-    balances: {};
     transactions: any[];
     tokens: {};
     nonce: number;

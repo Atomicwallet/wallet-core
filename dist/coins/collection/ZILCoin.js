@@ -61,7 +61,6 @@ class ZILCoin extends StakingMixin(HasBlockScanner(HasProviders(HasTokensMixin(C
         this.loadExplorers(config);
         this.setFeeData(feeData);
         this.zilliqa = new Zilliqa();
-        this.balances = {};
         this.transactions = [];
         this.tokens = {};
         this.nonce = 0;
