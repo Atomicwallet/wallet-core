@@ -260,8 +260,6 @@ class ZILCoin extends StakingMixin(HasBlockScanner(HasProviders(HasTokensMixin(C
         this.stakingContract,
       );
 
-      const balanceBN = new this.BN(this.balance ?? 0);
-
       const rewards = await this.getProvider('rewards').getRewards(this.address, this.stakingContract, staking);
 
       const validators = Object.values(staking.validators).reduce((acc, next) => {
@@ -303,7 +301,7 @@ class ZILCoin extends StakingMixin(HasBlockScanner(HasProviders(HasTokensMixin(C
     return Object.values(validators).reduce(
       (acc, validator) => {
         if (!validator.buffered) {
-          acc.toBN().add(validator.amount.toBN());
+          acc.toBN().add(validator.staked.toBN());
         }
 
         return acc;
