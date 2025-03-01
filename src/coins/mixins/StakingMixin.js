@@ -190,6 +190,7 @@ const StakingMixin = (superclass) =>
           unstaking,
           rewards,
           availableWithdrawals,
+          pendingWithdrawals,
           frozenVotes,
           frozenEnergy,
         }),
