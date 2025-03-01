@@ -6,10 +6,9 @@ import ViewblockExplorer from 'src/explorers/collection//ViewblockExplorer';
 import ZilliqaAtomicExplorer from 'src/explorers/collection//ZilliqaAtomicExplorer';
 import ZilliqaNodeExplorer from 'src/explorers/collection//ZilliqaNodeExplorer';
 import { ZILToken } from 'src/tokens';
-import { LazyLoadedLib } from 'src/utils';
-import { LOAD_WALLET_ERROR, WALLET_ERROR } from 'src/utils';
+import { Amount, LazyLoadedLib, LOAD_WALLET_ERROR, WALLET_ERROR } from 'src/utils';
 
-import { HasBlockScanner, HasProviders, HasTokensMixin } from '../mixins';
+import { HasBlockScanner, HasProviders, HasTokensMixin, StakingMixin } from '../mixins';
 
 const bitcoinJsLib = new LazyLoadedLib(() => import('bitcoinjs-lib'));
 const zilliqaCryptoLib = new LazyLoadedLib(() => import('@zilliqa-js/crypto'));
@@ -36,7 +35,7 @@ const GZIL = {
   contract: 'zil14pzuzq6v6pmmmrfjhczywguu0e97djepxt8g3e',
 };
 
-class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
+class ZILCoin extends StakingMixin(HasBlockScanner(HasProviders(HasTokensMixin(Coin)))) {
   #privateKey;
 
   /**
@@ -223,39 +222,8 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
   async getInfo() {
     const { balance, nonce } = await this.getProvider('balance').getBalance(this.address, this.stakingContract);
 
-    try {
-      const { staking, withdrawals } = await this.getProvider('staking').getStakingBalance(
-        this.address,
-        this.stakingContract,
-      );
-
-      this.balances.staking = staking;
-      this.balances.withdrawals = withdrawals;
-
-      const reward = await this.getProvider('rewards').getRewards(this.address, this.stakingContract, staking);
-
-      this.balances.rewards = reward;
-
-      const balanceBN = new this.BN(balance || 0);
-
-      const total = new this.BN(balanceBN)
-        .add(new this.BN(staking.total))
-        .add(new this.BN(withdrawals.total))
-        .add(new this.BN(reward.total))
-        .toString();
-      const available = units.fromQa(balanceBN, 'zil');
-
-      const gasLimit = this.getGasLimit('stake');
-      const fee = await this.getFee({ gasLimit: gasLimit || 1 });
-      const availableForStake = new this.BN(balanceBN).sub(new this.BN(fee)).sub(new this.BN(this.reserveForStake));
-
-      this.balance = total;
-      this.balances.available = available;
-      this.balances.availableForStake = Number(availableForStake) > 0 ? units.fromQa(availableForStake, 'zil') : '0';
-      this.balances.total = total;
-    } catch (error) {
+    if (balance) {
       this.balance = balance;
-      console.error(error);
     }
 
     const contracts = Object.keys(this.tokens || {}).filter(Boolean);
@@ -273,8 +241,7 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
     }
 
     return {
-      balance,
-      balances: this.balances,
+      balance: this.balance,
     };
   }
 
@@ -285,6 +252,76 @@ class ZILCoin extends HasBlockScanner(HasProviders(HasTokensMixin(Coin))) {
     const { getAddressFromPrivateKey } = await zilliqaCryptoLib.get();
 
     this.oldFormatAddressForBalance = getAddressFromPrivateKey(this.#privateKey).replace(/^0x/, '');
+  }
+
+  async fetchStakingInfo() {
+    try {
+      const { staking, withdrawals } = await this.getProvider('staking').getStakingBalance(
+        this.address,
+        this.stakingContract,
+      );
+
+      const balanceBN = new this.BN(this.balance ?? 0);
+
+      const rewards = await this.getProvider('rewards').getRewards(this.address, this.stakingContract, staking);
+
+      const validators = Object.values(staking.validators).reduce((acc, next) => {
+        acc[next.address] = {
+          address: next.address,
+          staked: new Amount(next.amount, this),
+          buffered: next.buffered,
+        };
+
+        return acc;
+      }, {});
+
+      return {
+        staked: new Amount(staking.total, this),
+        availableForUnstake: this.calculateAvailableForUnstake(validators),
+        availableWithdrawals: new Amount(withdrawals?.availableWithdrawal?.total ?? '0', this),
+        pendingWithdrawals: new Amount(withdrawals?.pendingWithdrawal?.total ?? '0', this),
+        rewards: new Amount(rewards.total, this),
+        validators,
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  calculateTotal({ balance, staked, rewards, availableWithdrawals, pendingWithdrawals }) {
+    return new Amount(
+      balance
+        .toBN()
+        .add(staked.toBN())
+        .add(rewards.toBN())
+        .add(availableWithdrawals.toBN())
+        .add(pendingWithdrawals.toBN()),
+      this,
+    );
+  }
+
+  calculateAvailableForUnstake(validators) {
+    return Object.values(validators).reduce(
+      (acc, validator) => {
+        if (!validator.buffered) {
+          acc.toBN().add(validator.amount.toBN());
+        }
+
+        return acc;
+      },
+      new Amount('0', this),
+    );
+  }
+
+  async calculateAvailableForStake({ balance }) {
+    const gasLimit = this.getGasLimit('stake');
+    const fee = await this.getFee({ gasLimit: gasLimit || 1 });
+
+    return new Amount(balance.toBN().sub(new this.BN(fee)).sub(new this.BN(this.reserveForStake)));
+  }
+
+  calculateRewards(rewards = new Amount('0', this)) {
+    return new Amount(new this.BN(rewards), this);
   }
 
   changeProviders(explorers) {
