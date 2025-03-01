@@ -1,6 +1,5 @@
 import { ExplorerRequestError, WalletError } from '../../errors/index.js';
-import { LazyLoadedLib, Amount } from '../../utils/index.js';
-import { ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from '../../utils/index.js';
+import { LazyLoadedLib, Amount, ATOM_MSG_TYPES, GET_TRANSACTIONS_TYPE, WALLET_ERROR } from '../../utils/index.js';
 import StakingMixin from './StakingMixin.js';
 import { CosmosTxTypes } from '../libs/index.js';
 const GAS_PRICE = '0.025';
