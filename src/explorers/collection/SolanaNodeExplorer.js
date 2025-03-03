@@ -154,27 +154,22 @@ class SolanaNodeExplorer extends Explorer {
     return { account: response.value, pubkey: new PublicKey(address) };
   }
 
-  async getStakingBalance(props) {
+  async getStakingBalance({ address, ignoreCache }) {
+    const db = this.wallet.getDbTable('addrCache');
+
     // fetch cached stake addresses from db
-    const cachedAddrRows = []; // @TODO implement cache db for staking addresses
-
-    let addresses = [];
-
-    // map addresses if cache exists
-    if (cachedAddrRows) {
-      addresses = cachedAddrRows.map(({ address }) => address);
-    }
+    const stakingAddresses = await db.getAll();
 
     // If cached addresses exists then get account info for each cached address
     // else fetch huge `getStakeProgramInfo` request to get all existing stake account for specified address
     const stakeAccounts =
-      addresses.length > 0
-        ? await Promise.all(addresses.map((address) => this.getStakeAccountInfo(address)))
-        : await this.getStakeProgramInfo(props.address);
+      stakingAddresses.length > 0
+        ? await Promise.all(stakingAddresses.map((address) => this.getStakeAccountInfo(address)))
+        : await this.getStakeProgramInfo(address);
 
     // re-map addresses from `getStakeProgramInfo` if no cache exists
-    if ((addresses.length === 0 && stakeAccounts) || props.ignoreCache) {
-      addresses = stakeAccounts.map(({ pubkey }) => {
+    if ((stakingAddresses.length === 0 && stakeAccounts) || ignoreCache) {
+      const addresses = stakeAccounts.map(({ pubkey }) => {
         try {
           return pubkey.toBase58();
         } catch {
@@ -182,8 +177,14 @@ class SolanaNodeExplorer extends Explorer {
         }
       });
 
-      // Insert addresses to DB, adding only new addresses
-      // e.g. db.setAddr()
+      await db.batchPut(
+        addresses.map(async (address) => ({
+          id: address,
+          address,
+          type: STAKE_ADDR_TYPE,
+          ticker: this.wallet.ticker,
+        })),
+      );
     }
 
     const { epoch } = await this.getEpochInfo();
@@ -193,7 +194,7 @@ class SolanaNodeExplorer extends Explorer {
         // for empty addresses
         // rm saved address if not exists on B/C
         if (!info.account) {
-          // db.removeAddr()
+          db.delete(info.pubkey.toBase58());
           return undefined;
         }
 
