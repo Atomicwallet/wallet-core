@@ -1,13 +1,12 @@
 import { Coin } from 'src/abstract';
-import { HasBlockScanner, HasProviders, HasTokensMixin } from 'src/coins/mixins';
+import { HasBlockScanner, HasProviders, HasTokensMixin, StakingMixin } from 'src/coins/mixins';
 import { NODE_PROVIDER_OPERATION, TOKEN_PROVIDER_OPERATION } from 'src/coins/mixins/HasProviders';
 import { NftMixin } from 'src/coins/nfts/mixins';
 import SolanaNodeExplorer from 'src/explorers/collection/SolanaNodeExplorer';
 import SolanaTritonExplorer from 'src/explorers/collection/SolanaTritonExplorer';
 import { SOLToken } from 'src/tokens';
-import { LazyLoadedLib, logger } from 'src/utils';
+import { Amount, LazyLoadedLib, logger, STAKE_ADDR_TYPE } from 'src/utils';
 import { ConfigKey } from 'src/utils/configManager';
-import { STAKE_ADDR_TYPE } from 'src/utils';
 
 import BANNED_TOKENS_CACHE from '../../resources/eth/tokens-banned.json';
 import TOKENS_CACHE from '../../resources/eth/tokens.json';
@@ -26,7 +25,7 @@ const solanaWeb3Lib = 'solanaWeb3Lib';
 const hdKeyLib = 'hdKeyLib';
 const tweetnaclLib = 'tweetnaclLib';
 
-class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)))) {
+class SOLCoin extends StakingMixin(NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin))))) {
   #privateKey;
 
   /**
@@ -65,7 +64,6 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
     this.feePerByte = 0;
     this.coefficient = 0;
     this.reserveForStake = feeData.reserveForStake || DEFAULT_RESERVE_FOR_STAKE;
-    this.balances = {};
 
     /** @type {{ [id: string]: SOLToken }} */
     this.tokens = {};
@@ -336,22 +334,94 @@ class SOLCoin extends NftMixin(HasProviders(HasBlockScanner(HasTokensMixin(Coin)
       this.balance = balance;
     }
 
-    const getStakingBalanceProps = {
-      address: this.address,
-      ignoreCache: props?.ignoreCache || false,
+    await this.getStakingInfo();
+
+    return { balance };
+  }
+
+  async fetchStakingInfo() {
+    const db = this.getDbTable('addrCache');
+    const stakingAddresses = await db.getAll();
+
+    const stakingInfo = await this.getProvider('stake').getStakingBalance({ address: this.address, stakingAddresses });
+
+    const staked = new Amount(stakingInfo?.staked ?? new this.BN('0'), this);
+    const validators = stakingInfo?.staking.reduce((acc, account) => {
+      if (!account) {
+        return acc;
+      }
+
+      acc[account.validator] = {
+        address: account.validator,
+        staked: new Amount(account.staked, this),
+        accountAddress: account.accountAddress,
+        isDeactivated: account.isDeactivated,
+        isAvailableForWithdraw: account.isAvailableForWithdraw,
+      };
+
+      return acc;
+    }, {});
+
+    return {
+      staked,
+      availableForUnstake: this.calculateAvailableForUnstake(validators),
+      availableWithdrawals: this.calculateAvailableWithdrawalsAmount(validators),
+      pendingWithdrawals: this.calculatePendingWithdrawalsAmount(validators),
+      validators,
     };
-    const balances = await this.getProvider('stake').getStakingBalance(getStakingBalanceProps);
+  }
+
+  calculateTotal({ balance, staked }) {
+    return new Amount(balance.toBN().add(staked.toBN()), this);
+  }
+
+  async calculateAvailableForStake({ balance }) {
     const fee = await this.getFee();
     const feeForStake = fee.mul(new this.BN(STAKE_MULTIPLIER));
-    const availableForStake = new this.BN(balance).sub(new this.BN(feeForStake)).sub(new this.BN(this.reserveForStake));
+    const zero = new this.BN('0');
 
-    if (balances) {
-      balances.availableForStake = Number(availableForStake) > 0 ? this.toCurrencyUnit(availableForStake) : '0';
+    const availableForStake = balance.toBN().sub(new this.BN(feeForStake)).sub(new this.BN(this.reserveForStake));
 
-      this.balances = balances;
-    }
+    return new Amount(availableForStake.lte(zero) ? zero : availableForStake, this);
+  }
 
-    return { balance, balances: this.balances };
+  calculateAvailableForUnstake(validators = {}) {
+    return Object.values(validators).reduce(
+      (acc, validator) => {
+        if (validator && !validator.isDeactivated && !validator.isAvailableForWithdraw) {
+          acc = new Amount(acc.toBN().add(validator.staked.toBN()), this);
+        }
+
+        return acc;
+      },
+      new Amount('0', this),
+    );
+  }
+
+  calculateAvailableWithdrawalsAmount(validators = {}) {
+    return Object.values(validators).reduce(
+      (acc, validator) => {
+        if (validator && validator.isAvailableForWithdraw) {
+          acc = new Amount(acc.toBN().add(validator.staked.toBN()), this);
+        }
+
+        return acc;
+      },
+      new Amount('0', this),
+    );
+  }
+
+  calculatePendingWithdrawalsAmount(validators = {}) {
+    return Object.values(validators).reduce(
+      (acc, validator) => {
+        if (validator && validator.isDeactivated && !validator.isAvailableForWithdraw) {
+          acc = new Amount(acc.toBN().add(validator.staked.toBN()), this);
+        }
+
+        return acc;
+      },
+      new Amount('0', this),
+    );
   }
 
   async getAccountInfo(address) {
