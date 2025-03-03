@@ -3,10 +3,9 @@ import { Coin } from 'src/abstract';
 import { ExplorerRequestError, WalletError } from 'src/errors';
 import TzktIoV1Explorer from 'src/explorers/collection/TzktIoV1Explorer';
 import TezosNodeWithBlockscannerExplorer from 'src/explorers/extended/TezosNodeWithBlockscannerExplorer';
-import { LazyLoadedLib } from 'src/utils';
-import { LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils';
+import { Amount, LazyLoadedLib, LOAD_WALLET_ERROR, SEND_TRANSACTION_TYPE } from 'src/utils';
 
-import { HasProviders } from '../mixins';
+import { HasProviders, StakingMixin } from '../mixins';
 
 const bs58checkLazyLoaded = new LazyLoadedLib(() => import('bs58check'));
 const libsodiumWrappersLazyLoaded = new LazyLoadedLib(() => import('libsodium-wrappers'));
@@ -24,7 +23,7 @@ const HASH_LENGTH = 20;
  *
  * @class XTZCoin
  */
-class XTZCoin extends HasProviders(Coin) {
+class XTZCoin extends StakingMixin(HasProviders(Coin)) {
   #privateKey;
   libsodiumWrappers;
 
@@ -419,29 +418,52 @@ class XTZCoin extends HasProviders(Coin) {
    * @return {Promise<BN>} The balance.
    */
   async getInfo() {
-    await this.getBalance();
+    const balance = await this.getBalance();
+    await this.getStakingInfo();
+
+    if (balance) {
+      this.balance = balance;
+    }
 
     return {
-      balance: this.balance,
-      balances: this.balances,
-      transactions: [],
+      balance,
     };
   }
 
   async getBalance() {
-    this.balance = this.toMinimalUnit(await this.getProvider('balance').getBalance(this.address));
+    const balance = await this.getProvider('balance').getBalance(this.address);
 
+    return balance && this.toMinimalUnit(balance);
+  }
+
+  async fetchStakingInfo() {
     const delegate = await this.getProvider('balance')
       .getDelegate(this.address)
       .catch((error) => console.error(error)); // eslint-disable-line no-console
 
-    this.balances = {
-      available: this.toCurrencyUnit(this.balance),
-      staking: {
-        total: delegate ? this.toCurrencyUnit(this.balance) : '0',
-        validator: delegate || '',
-      },
+    const delegationAmount = new Amount(this.balance ?? '0', this);
+
+    const validators = [delegate].reduce((acc, validator) => {
+      acc[validator] = {
+        address: validator,
+        amount: delegationAmount,
+      };
+
+      return acc;
+    }, {});
+
+    return {
+      staked: delegationAmount,
+      validators,
     };
+  }
+
+  calculateTotal({ balance }) {
+    return balance;
+  }
+
+  calculateAvailableForStake({ balance }) {
+    return balance;
   }
 
   getTransactions({ pageNum = 0 } = {}) {
