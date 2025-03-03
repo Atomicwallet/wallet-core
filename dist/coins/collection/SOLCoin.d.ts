@@ -1,12 +1,75 @@
 export default SOLCoin;
 declare const SOLCoin_base: {
-    new (args: any, db: any, configManager: any): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
-        getNftInfoUrl(contractAddress: string | null, tokenId: string): string;
-        getNftList(isSpamNftsEnabled: boolean): Promise<Object<NftToken>[]>;
-        transferNft(contractAddress: string | null, tokenId: string, toAddress: string, options?: Object): Promise<{
-            tx: string;
+        "__#11@#balances": {};
+        "__#11@#predefinedValidators": any[];
+        readonly balances: {};
+        readonly predefinedValidators: any[];
+        defaultAmount(): Amount;
+        "__#11@#restoreCachedBalances"(): Promise<void>;
+        "__#11@#updateCachedBalances"(balances: any): void;
+        "__#11@#transformBalanceFieldFromJSON"(value: any): Amount;
+        "__#11@#transformValidatorsObjectFromJSON"(validatorsJSONObject: any): {};
+        "__#11@#transformCachedBalancesFromJSON"(balances?: any): {};
+        setBalances(balances: any): void;
+        isStakingSupported(): boolean;
+        isRedelegationSupported(): boolean;
+        makeStakingInfoStruct({ staked, unstaking, delegatedVotes, availableVotes, pendingWithdrawals, availableWithdrawals, availableForUnstake, rewards, frozenVotes, frozenEnergy, validators, additional, }?: Amount): Promise<{
+            unstaking: Amount;
+            total: Amount;
+            availableForStake: Amount;
         }>;
+        fetchStakingInfo(): any;
+        getStakingInfo(): Promise<any | {
+            unstaking: string;
+            total: string;
+            availableForStake: string;
+            pendingWithdrawals: string;
+            validators: {};
+            staked: string;
+            availableWithdrawals: string;
+            rewards: string;
+        } | {}>;
+        calculateTotal({ balance, staked, unstaking, availableWithdrawals, pendingWithdrawals, rewards }: {
+            balance: any;
+            staked: any;
+            unstaking: any;
+            availableWithdrawals: any;
+            pendingWithdrawals: any;
+            rewards: any;
+        }): void;
+        calculateAvailableForStake({ balance, staked, unstaking }: {
+            balance: any;
+            staked: any;
+            unstaking: any;
+        }): Promise<void>;
+        calculateAvailableForUnstake(): void;
+        calculateStakedAmount(): any;
+        calculateUnstakingAmount(): void;
+        calculateAvailableWithdrawalsAmount(): void;
+        calculatePendingWithdrawalsAmount(): void;
+        calculateRewards(): void;
+        getValidators(): {};
+        getTotalBalance(): string;
+        getAvailableBalance(): string;
+        getAvailableForUnstakeBalance(): any;
+        "__#11@#getBalanceByType"(balanceType: string, validatorAddress: string): string;
+        getStakedBalance(validator: any): string;
+        getUnstakingBalance(validator: any): string;
+        getRewards(validator: any): string;
+        getDelegatedVotes(): Amount;
+        getAvailableVotes(): Amount;
+        getFrozenVotes(): any;
+        getFrozenEnergy(): any;
+        getPendingWithdrawals(validator: any): string;
+        getAvailableWithdrawals(validator: any): string;
+        getUserValidators(address: string): Promise<any>;
+        getAdditionalInfo(): string;
+        getPredefinedValidators(): Promise<[]>;
+        getDefaultValidators(): any | any[];
+        getPredefineValidatorsConfigIdentifier(): string;
+        getPredefineValidatorsConfigName(): string;
     };
     [x: string]: any;
 };
@@ -23,7 +86,6 @@ declare class SOLCoin extends SOLCoin_base {
     feePerByte: number;
     coefficient: number;
     reserveForStake: any;
-    balances: {};
     /** @type {{ [id: string]: SOLToken }} */
     tokens: {
         [id: string]: SOLToken;
@@ -118,9 +180,25 @@ declare class SOLCoin extends SOLCoin_base {
     }): Promise<Buffer>;
     getInfo(props: any): Promise<{
         balance: any;
-        balances: {};
     }>;
     balance: any;
+    fetchStakingInfo(): Promise<{
+        staked: Amount;
+        availableForUnstake: any;
+        availableWithdrawals: any;
+        pendingWithdrawals: any;
+        validators: any;
+    }>;
+    calculateTotal({ balance, staked }: {
+        balance: any;
+        staked: any;
+    }): Amount;
+    calculateAvailableForStake({ balance }: {
+        balance: any;
+    }): Promise<Amount>;
+    calculateAvailableForUnstake(validators?: {}): any;
+    calculateAvailableWithdrawalsAmount(validators?: {}): any;
+    calculatePendingWithdrawalsAmount(validators?: {}): any;
     getAccountInfo(address: any): Promise<any>;
     /**
      * Fetch minimal amount for stake
@@ -228,4 +306,5 @@ declare class SOLCoin extends SOLCoin_base {
     getTransactions(args: any): Promise<any>;
     #private;
 }
+import { Amount } from '../../utils/index.js';
 import { SOLToken } from '../../tokens/index.js';

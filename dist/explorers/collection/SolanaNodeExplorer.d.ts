@@ -61,7 +61,10 @@ declare class SolanaNodeExplorer extends Explorer {
         account: any;
         pubkey: PublicKey;
     };
-    getStakingBalance(props: any): Promise<{
+    getStakingBalance({ address, ignoreCache }: {
+        address: any;
+        ignoreCache: any;
+    }): Promise<{
         staking: ({
             accountAddress: any;
             staked: any;
