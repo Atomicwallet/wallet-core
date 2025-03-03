@@ -1,30 +1,75 @@
 export default XTZCoin;
 declare const XTZCoin_base: {
-    new (): {
+    new (config: any, db: any, configManager: any): {
         [x: string]: any;
-        processExplorerConfig(config: any): any;
-        defaultProvider: any;
-        providersMap: {} | undefined;
-        getProvider(name: any): any;
-        getBalance(): Promise<any>;
-        getTransactions(args: any): Promise<any>;
-        getInfo(): Promise<Object>;
-        balance: any;
-        getUnspentOutputs(address: any, scriptPubKey: any): Promise<any>;
-        getUTXO(): any;
-        sendTransaction(rawtx: any): any;
-        getTransaction(txid: any): any;
-        updateCoinParamsFromServer(config: Object): boolean;
-        chainId: any;
-        fee: any;
-        stakingContract: any;
-        stakingProxyContract: any;
-        stakingFeeGas: any;
-        reStakingFeeGas: any;
-        unstakingFeeGas: any;
-        claimFeeGas: any;
-        tokenFeeGas: any;
-        sendFeeGas: any;
+        "__#11@#balances": {};
+        "__#11@#predefinedValidators": any[];
+        readonly balances: {};
+        readonly predefinedValidators: any[];
+        defaultAmount(): Amount;
+        "__#11@#restoreCachedBalances"(): Promise<void>;
+        "__#11@#updateCachedBalances"(balances: any): void;
+        "__#11@#transformBalanceFieldFromJSON"(value: any): Amount;
+        "__#11@#transformValidatorsObjectFromJSON"(validatorsJSONObject: any): {};
+        "__#11@#transformCachedBalancesFromJSON"(balances?: any): {};
+        setBalances(balances: any): void;
+        isStakingSupported(): boolean;
+        isRedelegationSupported(): boolean;
+        makeStakingInfoStruct({ staked, unstaking, delegatedVotes, availableVotes, pendingWithdrawals, availableWithdrawals, availableForUnstake, rewards, frozenVotes, frozenEnergy, validators, additional, }?: Amount): Promise<{
+            unstaking: Amount;
+            total: Amount;
+            availableForStake: Amount;
+        }>;
+        fetchStakingInfo(): any;
+        getStakingInfo(): Promise<any | {
+            unstaking: string;
+            total: string;
+            availableForStake: string;
+            pendingWithdrawals: string;
+            validators: {};
+            staked: string;
+            availableWithdrawals: string;
+            rewards: string;
+        } | {}>;
+        calculateTotal({ balance, staked, unstaking, availableWithdrawals, pendingWithdrawals, rewards }: {
+            balance: any;
+            staked: any;
+            unstaking: any;
+            availableWithdrawals: any;
+            pendingWithdrawals: any;
+            rewards: any;
+        }): void;
+        calculateAvailableForStake({ balance, staked, unstaking }: {
+            balance: any;
+            staked: any;
+            unstaking: any;
+        }): Promise<void>;
+        calculateAvailableForUnstake(): void;
+        calculateStakedAmount(): any;
+        calculateUnstakingAmount(): void;
+        calculateAvailableWithdrawalsAmount(): void;
+        calculatePendingWithdrawalsAmount(): void;
+        calculateRewards(): void;
+        getValidators(): {};
+        getTotalBalance(): string;
+        getAvailableBalance(): string;
+        getAvailableForUnstakeBalance(): any;
+        "__#11@#getBalanceByType"(balanceType: string, validatorAddress: string): string;
+        getStakedBalance(validator: any): string;
+        getUnstakingBalance(validator: any): string;
+        getRewards(validator: any): string;
+        getDelegatedVotes(): Amount;
+        getAvailableVotes(): Amount;
+        getFrozenVotes(): any;
+        getFrozenEnergy(): any;
+        getPendingWithdrawals(validator: any): string;
+        getAvailableWithdrawals(validator: any): string;
+        getUserValidators(address: string): Promise<any>;
+        getAdditionalInfo(): string;
+        getPredefinedValidators(): Promise<[]>;
+        getDefaultValidators(): any | any[];
+        getPredefineValidatorsConfigIdentifier(): string;
+        getPredefineValidatorsConfigName(): string;
     };
     [x: string]: any;
 };
@@ -111,17 +156,23 @@ declare class XTZCoin extends XTZCoin_base {
      * @return {Promise<BN>} The balance.
      */
     getInfo(): Promise<BN>;
-    getBalance(): Promise<void>;
-    balances: {
-        available: any;
-        staking: {
-            total: any;
-            validator: any;
-        };
-    } | undefined;
+    balance: any;
+    getBalance(): Promise<any>;
+    fetchStakingInfo(): Promise<{
+        staked: Amount;
+        validators: any;
+    }>;
+    calculateTotal({ balance }: {
+        balance: any;
+    }): any;
+    calculateAvailableForStake({ balance }: {
+        balance: any;
+    }): any;
     getTransactions({ pageNum }?: {
         pageNum?: number | undefined;
     }): any;
+    getTransaction(txid: any): any;
     setPrivateKey(privateKey: any): void;
     #private;
 }
+import { Amount } from '../../utils/index.js';
