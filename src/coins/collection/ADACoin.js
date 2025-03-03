@@ -352,6 +352,8 @@ class ADACoin extends StakingMixin(HasProviders(Coin)) {
 
     this.balance = balance;
 
+    await this.getStakingInfo();
+
     return {
       balance: this.balance,
     };
