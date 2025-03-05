@@ -559,7 +559,7 @@ declare class ADACoin {
     }): Amount;
     calculateAvailableForStake({ balance }: {
         balance: any;
-    }): Promise<Amount>;
+    }): Promise<any>;
     calculateRewards(rewards?: string): Amount;
     createDelegationTransaction(poolId: any, stakeAddressRegistered: any): Promise<any>;
     stake(poolId: any): Promise<any>;

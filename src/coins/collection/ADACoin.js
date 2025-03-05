@@ -384,7 +384,7 @@ class ADACoin extends StakingMixin(HasProviders(Coin)) {
   }
 
   async calculateAvailableForStake({ balance }) {
-    return new Amount(balance, this);
+    return balance;
   }
 
   calculateRewards(rewards = '0') {
