@@ -1,3 +1,4 @@
+import { fromBech32Address } from '@zilliqa-js/crypto';
 import { bytes, Long, units } from '@zilliqa-js/util';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
 import { Coin } from 'src/abstract';
@@ -264,11 +265,20 @@ class ZILCoin extends StakingMixin(HasBlockScanner(HasProviders(HasTokensMixin(C
 
       const rewards = await this.getProvider('rewards').getRewards(this.address, this.stakingContract, staking);
 
+      const { fromBech32Address } = await zilliqaCryptoLib.get();
+
       const validators = Object.values(staking.validators).reduce((acc, next) => {
-        acc[next.address] = {
-          address: next.address,
+        const validatorAddress = next && next.address && fromBech32Address(next.address).toLowerCase();
+
+        if (!validatorAddress) {
+          return acc;
+        }
+
+        acc[validatorAddress] = {
+          address: validatorAddress,
           staked: new Amount(next.amount, this),
           buffered: next.buffered,
+          rewards: new Amount(new this.BN(rewards.validators[validatorAddress]), this),
         };
 
         return acc;
