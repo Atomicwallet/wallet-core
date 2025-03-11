@@ -23,19 +23,14 @@ declare class WAVESCoin extends Coin {
     /**
      * @returns {Promise<Uint8Array>}
      */
-    getPublicKeyArray(): Promise<Uint8Array>;
+    getRawPublicKey(): Promise<Uint8Array>;
+    getPublicKey(publicKey: any): Promise<string>;
     /**
      * The address getter
      *
      * @return {String}
      */
     getAddress(): string;
-    /**
-     * Return public address
-     *
-     * @returns {Promise<string>}
-     */
-    getPublicAddress(): Promise<string>;
     /**
      * Validates wallet address
      *

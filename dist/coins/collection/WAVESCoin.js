@@ -68,10 +68,14 @@ class WAVESCoin extends Coin {
     /**
      * @returns {Promise<Uint8Array>}
      */
-    async getPublicKeyArray() {
+    async getRawPublicKey() {
         const { libs } = await wavesSignatureGeneratorLib.get();
         const privateKeyArray = libs.base58.decode(this.#privateKey);
-        return axlsign.getPublicKeyFromPrivate(privateKeyArray);
+        return axlsign.derivePublicKey(privateKeyArray);
+    }
+    async getPublicKey(publicKey) {
+        const { libs } = await wavesSignatureGeneratorLib.get();
+        return libs.base58.encode(publicKey);
     }
     /**
      * The address getter
@@ -81,19 +85,7 @@ class WAVESCoin extends Coin {
     async getAddress() {
         if (this.#privateKey) {
             const { utils } = await wavesSignatureGeneratorLib.get();
-            return utils.crypto.buildRawAddress(await this.getPublicKeyArray());
-        }
-        return new Error(`${this.ticker} privateKey is empty`);
-    }
-    /**
-     * Return public address
-     *
-     * @returns {Promise<string>}
-     */
-    async getPublicAddress() {
-        if (this.#privateKey) {
-            const { libs } = await wavesSignatureGeneratorLib.get();
-            return libs.base58.encode(await this.getPublicKeyArray());
+            return utils.crypto.buildRawAddress(await this.getRawPublicKey());
         }
         return new Error(`${this.ticker} privateKey is empty`);
     }
@@ -126,7 +118,7 @@ class WAVESCoin extends Coin {
             amount: Number(amount),
             recipient: address,
             fee,
-            senderPublicKey: await this.getPublicAddress(),
+            senderPublicKey: await this.getPublicKey(await this.getRawPublicKey()),
         });
         return this.signTransaction(unsignedTransaction);
     }
