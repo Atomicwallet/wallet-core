@@ -48,11 +48,13 @@ const wallet = new BTCCoin({
 
 await wallet.loadWallet(mnemonic);
 
-// Send payment
+// Create raw tx
 const rawTx = await wallet.createTransaction({
   address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
   amount: '0.015'
 });
+
+// Submit
 const txId = await wallet.sendTransaction(rawTx);
 ```
 
@@ -63,15 +65,21 @@ The Token class extends AbstractWallet and represents a token on a blockchain. I
 ```typescript
 import { ETHCoin } from 'atomic-core-adapters';
 
+// Initialize parent wallet
 const ethWallet = new ETHCoin({ ...params })
 
+await ethWallet.loadWallet(mnemonic);
+
+// create Token instance
 const dai = ethWallet.createToken({ ...tokenParams});
 
+// create raw tx
 const tx = await dai.createTransaction({
   address: '0x89205...',
   amount: '50.0'
 });
 
+// submit
 const txid = await ethWallet.sendTransaction(tx)
 ```
 
@@ -82,15 +90,17 @@ The Explorer class is used to interact with blockchain explorers. It provides me
 ```typescript
 import { InsigthExplorer } from 'atomic-core-adapters'
 
+// Initialize explorer 
 const explorer = new InsigthExplorer({
 baseUrl: 'https://api.blockchain.info',
 txWebUrl: 'https://blockchain.info/tx/'
 });
 
-// Fetch balance
-const balance = await explorer.getBalance(address);
+// Fetch tx
+const tx = await explorer.getTransaction(txid);
 ```
 
+---
 ## CLI
 
 The CLI supports several commands for interacting with atomic-core-adapters.
