@@ -511,7 +511,7 @@ const HasTokensMixin = (superclass) => class extends superclass {
         try {
             const [, duplicates] = await this.getUniquesAndDuplicates(tokens);
             await Promise.all(duplicates.map((duplicate) => {
-                return db.delete(duplicate.id);
+                return db.delete(duplicate);
             }));
         }
         catch (error) {
