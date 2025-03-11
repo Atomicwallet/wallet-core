@@ -64,6 +64,7 @@ declare class APTCoin extends APTCoin_base {
      * @property {import('aptos').HexString} HexString
      * @property {import('aptos').TxnBuilderTypes} TxnBuilderTypes
      */
+    getLocalAccount(): LocalAccount;
     /**
      * @async
      * @returns {Promise<AptosSdk>}
@@ -194,11 +195,5 @@ declare class APTCoin extends APTCoin_base {
     sendTransaction(bcsTxn: Uint8Array): Promise<{
         txid: string;
     }>;
-    /**
-     * Don't use it! Use the wallet itself, you don't need `instance`.
-     * @private
-     * @deprecated
-     */
-    private get instance();
     #private;
 }

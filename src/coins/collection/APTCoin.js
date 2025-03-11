@@ -1,8 +1,7 @@
 import { Coin } from 'src/abstract';
 import { ExternalError } from 'src/errors';
 import AptExplorer from 'src/explorers/collection/AptExplorer';
-import { LazyLoadedLib } from 'src/utils';
-import { EXTERNAL_ERROR } from 'src/utils';
+import { LazyLoadedLib, EXTERNAL_ERROR } from 'src/utils';
 
 import HasProviders from '../mixins/HasProviders';
 
@@ -87,6 +86,10 @@ class APTCoin extends HasProviders(Coin) {
    * @property {import('aptos').HexString} HexString
    * @property {import('aptos').TxnBuilderTypes} TxnBuilderTypes
    */
+
+  getLocalAccount() {
+    return this.#localAccount;
+  }
 
   /**
    * @async
@@ -319,17 +322,6 @@ class APTCoin extends HasProviders(Coin) {
    */
   sendTransaction(bcsTxn) {
     return this.getProvider('send').sendTransaction(bcsTxn);
-  }
-
-  /**
-   * Don't use it! Use the wallet itself, you don't need `instance`.
-   * @private
-   * @deprecated
-   */
-  get instance() {
-    return Object.assign(super.instance, {
-      getLocalAccount: () => this.#localAccount,
-    });
   }
 }
 
