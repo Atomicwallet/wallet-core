@@ -3,7 +3,7 @@ import { RawTxHex, RawTxObject, RawTxBinary } from 'src/abstract';
 import { createWallets, generateKeys } from 'src/coins';
 import { initializeMnemonic, type IKeysObject } from 'src/utils';
 
-program.name('atomic-core-cli').description('atomic-core CLI').version('1.0.0');
+program.name('atomic-core-adapters-cli').description('atomic-core-adapters CLI').version('1.0.0');
 
 program
   .command('mnemonic')
