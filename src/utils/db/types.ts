@@ -23,7 +23,7 @@ export interface ITable<T> {
   getAll(conditions: Partial<T>): Promise<Partial<T>[]>;
   put(item: T): Promise<TableElementKey>;
   update(id: TableElementKey, changes: Partial<T>): Promise<TableElementKey>;
-  delete(id: string): Promise<void>;
+  delete(id: string | string[]): Promise<void>;
   batchPut(items: T[]): Promise<TableElementKey | TableElementKey[]>;
   batchDelete(ids: TableElementKey[]): Promise<void>;
   batchUpdate(ids: TableElementKey[], changes: Partial<T>): Promise<T[]>;

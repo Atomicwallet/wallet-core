@@ -38,7 +38,7 @@ export class BaseTable<T> implements ITable<T> {
     return Promise.reject(new Error('Not implemented.'));
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string | string[]): Promise<void> {
     console.log('Base DB used, `delete` not implemented.');
 
     return Promise.resolve();
