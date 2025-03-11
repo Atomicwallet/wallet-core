@@ -5473,9 +5473,10 @@ axios@^0.26.1:
   dependencies:
     follow-redirects "^1.14.8"
 
-"axlsign@https://github.com/Atomicwallet/curve25519-js.git":
+axlsign@1.0.0:
   version "1.0.0"
-  resolved "https://github.com/Atomicwallet/curve25519-js.git#b40d430f271a47d0b153046c12908b4bb25c3e6e"
+  resolved "https://registry.yarnpkg.com/axlsign/-/axlsign-1.0.0.tgz#fd0fa31cbf2835c9572ead5d372f1c41b7fcbd20"
+  integrity sha512-cz/kO+HbGwDBfksKTJGexuLmQ/peOdOkTw3rC+F3oIjkCUlV0ShA7HQ8pHzVt+uxW8FiMCYLLx36sv91ysQJXg==
 
 axobject-query@^4.1.0:
   version "4.1.0"
