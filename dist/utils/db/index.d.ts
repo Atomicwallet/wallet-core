@@ -8,7 +8,7 @@ export declare class BaseTable<T> implements ITable<T> {
     getAll(conditions: Partial<T>): Promise<Partial<T>[]>;
     put(item: T): Promise<TableElementKey>;
     update(id: TableElementKey, changes: Partial<T>): Promise<TableElementKey>;
-    delete(id: string | string[]): Promise<void>;
+    delete(id: TableElementKey): Promise<void>;
     batchDelete(ids: TableElementKey[]): Promise<void>;
     batchPut(items: T[]): Promise<TableElementKey | TableElementKey[]>;
     batchUpdate(ids: TableElementKey[], changes: Partial<T>): Promise<T[]>;
