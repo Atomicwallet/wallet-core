@@ -100,7 +100,6 @@ txWebUrl: 'https://blockchain.info/tx/'
 const tx = await explorer.getTransaction(txid);
 ```
 
----
 ## CLI
 
 The CLI supports several commands for interacting with atomic-core-adapters.
@@ -119,7 +118,6 @@ ts-node ./src/cli --help
 
 ## Commands
 
----
 `mnemonic` -
 Generates a new mnemonic phrase or restores an existing one.
 
