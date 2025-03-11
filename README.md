@@ -97,7 +97,6 @@ The CLI supports several commands for interacting with atomic-core-adapters.
 Below is a breakdown of available commands:
 
 To use CLI run:
-
 ```bash
 ts-node ./src/cli <command> [options]
 ```
@@ -157,13 +156,13 @@ ts-node ./src/cli keys --phrase "middle derive ... original dawn"
 
 **Example:**
 ```bash
-atomic-core-adapters-cli tx --wallet BTC --amount 1.35 --recipient 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+ts-node ./src/cli tx --wallet BTC --amount 1.35 --recipient 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
 ```
 
 To include a memo:
 
 ```bash
-atomic-core-adapters-cli tx --wallet BTC --amount 1.35 --recipient 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa --memo "Test transaction"
+ts-node ./src/cli tx --wallet BTC --amount 1.35 --recipient 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa --memo "Test transaction"
 ```
 ---
 `submitTx` - Submits a signed transaction to the blockchain.
@@ -174,7 +173,7 @@ atomic-core-adapters-cli tx --wallet BTC --amount 1.35 --recipient 1A1zP1eP5QGef
 * `-w, --wallet <wallet>` The wallet/ticker to use, e.g., BTC.
 * `-t, --tx <tx>` The signed transaction hex, binary, or object.
 Example:
-
+ 
 ```bash
-atomic-core-adapters-cli submitTx --wallet BTC --phrase "middle derive ... original dawn" --tx "<signed_transaction_hex>"
+ts-node ./src/cli submitTx --wallet BTC --phrase "middle derive ... original dawn" --tx "<signed_transaction_hex>"
 ```
