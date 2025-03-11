@@ -636,7 +636,7 @@ const HasTokensMixin = (superclass) =>
 
         await Promise.all(
           duplicates.map((duplicate) => {
-            return db.delete(duplicate.id);
+            return db.delete(duplicate);
           }),
         );
       } catch (error) {
