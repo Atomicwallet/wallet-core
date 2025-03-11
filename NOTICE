@@ -14,7 +14,31 @@ This project includes software developed by third parties.
    - Publisher: Justin Ridgewell
    - Email: jridgewell@google.com
 
+ (varkecosystem/crypto-identities)
+   - License: MIT
+   - Repository: N/A
+   - Publisher: N/A
+   - Email: N/A
+
+ (varkecosystem/crypto-networks)
+   - License: MIT
+   - Repository: N/A
+   - Publisher: N/A
+   - Email: N/A
+
  (varkecosystem/crypto)
+   - License: MIT
+   - Repository: N/A
+   - Publisher: N/A
+   - Email: N/A
+
+ (varkecosystem/crypto)
+   - License: MIT
+   - Repository: N/A
+   - Publisher: N/A
+   - Email: N/A
+
+ (varkecosystem/utils)
    - License: MIT
    - Repository: N/A
    - Publisher: N/A
@@ -1452,6 +1476,12 @@ This project includes software developed by third parties.
    - License: Apache-2.0
    - Repository: https://github.com/grpc/grpc-node
    - Publisher: Google Inc.
+   - Email: N/A
+
+ (vhapi/bourne)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/hapijs/bourne
+   - Publisher: N/A
    - Email: N/A
 
  (vhapi/bourne)
@@ -3890,6 +3920,12 @@ ajv-formats (v2.1.1)
    - Publisher: Evgeny Poberezkin
    - Email: N/A
 
+ajv-keywords (v3.4.1)
+   - License: MIT
+   - Repository: https://github.com/epoberezkin/ajv-keywords
+   - Publisher: Evgeny Poberezkin
+   - Email: N/A
+
 ajv-keywords (v3.5.2)
    - License: MIT
    - Repository: https://github.com/epoberezkin/ajv-keywords
@@ -4868,6 +4904,12 @@ bcrypto (v4.1.0)
    - Publisher: Christopher Jeffrey
    - Email: chjjeffrey@gmail.com
 
+bcrypto (v5.5.2)
+   - License: MIT
+   - Repository: https://github.com/bcoin-org/bcrypto
+   - Publisher: Christopher Jeffrey
+   - Email: chjjeffrey@gmail.com
+
 bech32 (v0.0.3)
    - License: MIT
    - Repository: https://github.com/bitcoinjs/bech32
@@ -5049,6 +5091,12 @@ bip39 (v2.6.0)
    - Email: N/A
 
 bip39 (v3.0.2)
+   - License: ISC
+   - Repository: https://github.com/bitcoinjs/bip39
+   - Publisher: Wei Lu
+   - Email: N/A
+
+bip39 (v3.0.4)
    - License: ISC
    - Repository: https://github.com/bitcoinjs/bip39
    - Publisher: Wei Lu
@@ -5503,6 +5551,12 @@ bufio (v1.0.7)
    - Repository: https://github.com/bcoin-org/bufio
    - Publisher: Christopher Jeffrey
    - Email: chjjeffrey@gmail.com
+
+builtin-modules (v3.3.0)
+   - License: MIT
+   - Repository: https://github.com/sindresorhus/builtin-modules
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
 
 bytebuffer (v5.0.1)
    - License: Apache-2.0
@@ -6246,6 +6300,12 @@ dateformat (v4.6.3)
    - License: MIT
    - Repository: https://github.com/felixge/node-dateformat
    - Publisher: Steven Levithan
+   - Email: N/A
+
+dayjs (v1.11.10)
+   - License: MIT
+   - Repository: https://github.com/iamkun/dayjs
+   - Publisher: iamkun
    - Email: N/A
 
 dayjs (v1.8.15)
@@ -7550,6 +7610,12 @@ fast-copy (v2.0.3)
    - Publisher: tony_quetano@planttheidea.com
    - Email: N/A
 
+fast-copy (v2.1.7)
+   - License: MIT
+   - Repository: https://github.com/planttheidea/fast-copy
+   - Publisher: tony_quetano@planttheidea.com
+   - Email: N/A
+
 fast-copy (v3.0.2)
    - License: MIT
    - Repository: https://github.com/planttheidea/fast-copy
@@ -7599,6 +7665,12 @@ fast-levenshtein (v2.0.6)
    - Email: ram@hiddentao.com
 
 fast-memoize (v2.5.1)
+   - License: MIT
+   - Repository: https://github.com/caiogondim/fast-memoize
+   - Publisher: Caio Gondim
+   - Email: me@caiogondim.com
+
+fast-memoize (v2.5.2)
    - License: MIT
    - Repository: https://github.com/caiogondim/fast-memoize
    - Publisher: Caio Gondim
@@ -8631,6 +8703,12 @@ ipaddr.js (v1.9.0)
    - Email: whitequark@whitequark.org
 
 ipaddr.js (v1.9.1)
+   - License: MIT
+   - Repository: https://github.com/whitequark/ipaddr.js
+   - Publisher: whitequark
+   - Email: whitequark@whitequark.org
+
+ipaddr.js (v2.1.0)
    - License: MIT
    - Repository: https://github.com/whitequark/ipaddr.js
    - Publisher: whitequark
@@ -9951,6 +10029,12 @@ long (v4.0.0)
    - Email: dcode@dcode.io
 
 long (v5.2.4)
+   - License: Apache-2.0
+   - Repository: https://github.com/dcodeIO/long.js
+   - Publisher: Daniel Wirtz
+   - Email: dcode@dcode.io
+
+long (v5.3.1)
    - License: Apache-2.0
    - Repository: https://github.com/dcodeIO/long.js
    - Publisher: Daniel Wirtz
@@ -13123,6 +13207,12 @@ type-detect (v4.0.8)
    - Repository: https://github.com/chaijs/type-detect
    - Publisher: Jake Luer
    - Email: jake@alogicalparadox.com
+
+type-fest (v0.17.0)
+   - License: (MIT OR CC0-1.0)
+   - Repository: https://github.com/sindresorhus/type-fest
+   - Publisher: Sindre Sorhus
+   - Email: sindresorhus@gmail.com
 
 type-fest (v0.20.2)
    - License: (MIT OR CC0-1.0)
