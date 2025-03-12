@@ -157,7 +157,6 @@
     "ethers": "5.7.2",
     "fast-sort": "2.2.0",
     "got": "11.8.2",
-    "groestlcoinjs-lib": "https://github.com/Atomicwallet/groestlcoinjs-lib.git",
     "hdkey": "1.1.2",
     "hedera-sdk-v2": "npm:@hashgraph/sdk@2.38.0",
     "icon-sdk-js": "0.0.18",
