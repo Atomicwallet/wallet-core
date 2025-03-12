@@ -2,8 +2,7 @@ import { Coin } from 'src/abstract';
 import BlockbookV2Explorer from 'src/explorers/collection/BlockbookV2Explorer';
 import DcrDataExplorer from 'src/explorers/collection/DcrDataExplorer';
 import InsightExplorer from 'src/explorers/collection/InsightExplorer';
-import { LazyLoadedLib } from 'src/utils';
-import { LIB_NAME_INDEX } from 'src/utils';
+import { LazyLoadedLib, LIB_NAME_INDEX } from 'src/utils';
 
 import { BitcoinLikeFeeMixin, BitcoreMixin } from '../mixins';
 
