@@ -1,5 +1,5 @@
 import bs58 from 'bs58check';
-import core from 'cardano-crypto-js';
+import core from 'cardano-crypto.js';
 import cbor from 'cbor';
 import { pbkdf2Sync } from 'pbkdf2';
 import { WalletError } from 'src/errors';

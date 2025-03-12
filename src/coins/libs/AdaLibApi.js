@@ -1,8 +1,9 @@
+import base58 from 'base-58';
 import bech32 from 'bech32';
 import BigNumber from 'bignumber.js';
 import bip39 from 'bip39';
 import bs58 from 'bs58check';
-import cardanoCrypto from 'cardano-crypto-js';
+import cardanoCrypto from 'cardano-crypto.js';
 import { pbkdf2Sync } from 'pbkdf2';
 
 const DUST_AMOUNT = '1000000';
@@ -244,7 +245,7 @@ export default class AdaLibApi {
     const xpub = legacyDerivationPath.reduce(deriveChildHdNode, masterHDNode).extendedPublicKey;
     const hdPassphrase = this.getHDPassphrase(legacyPrivateKey);
 
-    return cardanoCrypto.packAddress(legacyDerivationPath, xpub, hdPassphrase, 1);
+    return base58.encode(cardanoCrypto.packBootstrapAddress(legacyDerivationPath, xpub, hdPassphrase, 1, 764824073));
   }
 
   getHDPassphrase(privateKey) {
