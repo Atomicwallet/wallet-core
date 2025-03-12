@@ -170,7 +170,7 @@
     "nano-node": "0.0.9",
     "near-api-js": "0.44.2",
     "near-seed-phrase": "0.2.0",
-    "nem-sdk": "https://github.com/Atomicwallet/NEM-sdk.git#atomic-build",
+    "nem-sdk": "1.6.11",
     "neo2": "npm:@cityofzion/neon-js@4.9.0",
     "neo3": "npm:@cityofzion/neon-js@5.0.0-next.16",
     "object-hash": "^3.0.0",

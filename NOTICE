@@ -9476,6 +9476,12 @@ jquery (v3.0.0)
    - Publisher: jQuery Foundation and other contributors
    - Email: N/A
 
+jquery (v3.6.0)
+   - License: MIT
+   - Repository: https://github.com/jquery/jquery
+   - Publisher: OpenJS Foundation and other contributors
+   - Email: N/A
+
 js-base64 (v3.7.7)
    - License: BSD-3-Clause
    - Repository: https://github.com/dankogai/js-base64
@@ -10577,6 +10583,12 @@ near-seed-phrase (v0.2.0)
 negotiator (v0.6.3)
    - License: MIT
    - Repository: https://github.com/jshttp/negotiator
+   - Publisher: N/A
+   - Email: N/A
+
+nem-sdk (v1.6.11)
+   - License: MIT
+   - Repository: https://github.com/QuantumMechanics/NEM-sdk
    - Publisher: N/A
    - Email: N/A
 
