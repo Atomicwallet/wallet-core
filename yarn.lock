@@ -6317,7 +6317,7 @@ bignumber.js@^4.0.0:
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.1.0.tgz#db6f14067c140bd46624815a7916c92d9b6c24b1"
   integrity sha512-eJzYkFYy9L4JzXsbymsFn3p54D+llV27oTQ+ziJG7WFRheJcNZilgVXMG0LoZtlQSKBsJdWtLFqOD0u+U0jZKA==
 
-bignumber.js@^8.0.1, bignumber.js@^8.0.2, bignumber.js@^8.1.1:
+bignumber.js@^8.0.2, bignumber.js@^8.1.1:
   version "8.1.1"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-8.1.1.tgz#4b072ae5aea9c20f6730e4e5d529df1271c4d885"
   integrity sha512-QD46ppGintwPGuL1KqmwhR0O+N2cZUg8JG/VzwI2e28sM9TqHjQB10lI4QAaMHVbLzwVLLAwEglpKPViWX+5NQ==
@@ -6717,17 +6717,6 @@ boom@7.x.x:
   dependencies:
     hoek "6.x.x"
 
-borc@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/borc/-/borc-2.1.0.tgz#2def2fc69868633b965a9750e7f210d778190303"
-  integrity sha512-hKTxeYt3AIzIG45epJHv8xJYSF0ktp7nZgFsqi5cPzoL3T8qKMPeUlqydORy6j3NWZvRDANx30PjpTmGho69Gw==
-  dependencies:
-    bignumber.js "^8.0.1"
-    commander "^2.15.0"
-    ieee754 "^1.1.8"
-    iso-url "~0.4.4"
-    json-text-sequence "~0.1.0"
-
 borc@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/borc/-/borc-3.0.0.tgz#49ada1be84de86f57bb1bb89789f34c186dfa4fe"
@@ -6739,6 +6728,19 @@ borc@3.0.0:
     ieee754 "^1.1.13"
     iso-url "^1.1.5"
     json-text-sequence "~0.3.0"
+    readable-stream "^3.6.0"
+
+borc@^2.1.1:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/borc/-/borc-2.1.2.tgz#6ce75e7da5ce711b963755117dd1b187f6f8cf19"
+  integrity sha512-Sy9eoUi4OiKzq7VovMn246iTo17kzuyHJKomCfpWMlI6RpfN1gk95w7d7gH264nApVLg0HZfcpz62/g4VH1Y4w==
+  dependencies:
+    bignumber.js "^9.0.0"
+    buffer "^5.5.0"
+    commander "^2.15.0"
+    ieee754 "^1.1.13"
+    iso-url "~0.4.7"
+    json-text-sequence "~0.1.0"
     readable-stream "^3.6.0"
 
 borsh@0.6.0, borsh@^0.6.0:
@@ -7219,12 +7221,14 @@ capability@^0.2.5:
   resolved "https://registry.yarnpkg.com/capability/-/capability-0.2.5.tgz#51ad87353f1936ffd77f2f21c74633a4dea88801"
   integrity sha512-rsJZYVCgXd08sPqwmaIqjAd5SUTfonV0z/gDJ8D6cN8wQphky1kkAYEqQ+hmDxTw7UihvBfjUVUSY+DBEe44jg==
 
-"cardano-crypto-js@https://github.com/Atomicwallet/cardano-crypto.js.git":
-  version "5.3.0"
-  resolved "https://github.com/Atomicwallet/cardano-crypto.js.git#87cbc4ec49a66faf6d1857ebb13445b018a48d38"
+cardano-crypto.js@6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/cardano-crypto.js/-/cardano-crypto.js-6.1.2.tgz#e499ff337c01a3444a7535419de399630095e83e"
+  integrity sha512-iFyAh/AkMJ87B8bOVYwBtxJVxV75R/331ftqV0kxwNu9oO9vg5vYUmiqsFJgMFf/jco5AMiN8LY6SivlEbTKfQ==
   dependencies:
-    bip39-light "^1.0.7"
-    borc "2.1.0"
+    bech32 "^1.1.4"
+    bip39 "^3.0.2"
+    borc "^2.1.1"
     pbkdf2 "^3.0.17"
 
 "cardano-wallet-asm@https://github.com/Atomicwallet/cardano-wallet-asm.git":
@@ -10607,7 +10611,7 @@ idna-uts46-hx@^2.3.1:
   dependencies:
     punycode "2.1.0"
 
-ieee754@^1.1.13, ieee754@^1.1.8, ieee754@^1.2.1:
+ieee754@^1.1.13, ieee754@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
   integrity sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==
@@ -11165,7 +11169,7 @@ iso-url@^1.1.5:
   resolved "https://registry.yarnpkg.com/iso-url/-/iso-url-1.2.1.tgz#db96a49d8d9a64a1c889fc07cc525d093afb1811"
   integrity sha512-9JPDgCN4B7QPkLtYAAOrEuAWvP9rWvR5offAr0/SeF046wIkglqH3VXgYYP6NcsKslH80UIVgmPqNe3j7tG2ng==
 
-iso-url@~0.4.4:
+iso-url@~0.4.7:
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/iso-url/-/iso-url-0.4.7.tgz#de7e48120dae46921079fe78f325ac9e9217a385"
   integrity sha512-27fFRDnPAMnHGLq36bWTpKET+eiXct3ENlCcdcMdk+mjXrb2kw3mhBUg1B7ewAC0kVzlOPhADzQgz1SE6Tglog==

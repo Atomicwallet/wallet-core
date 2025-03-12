@@ -5276,6 +5276,12 @@ borc (v2.1.0)
    - Publisher: Friedel Ziegelmayer
    - Email: dignifiedquire@gmail.com
 
+borc (v2.1.2)
+   - License: MIT
+   - Repository: https://github.com/dignifiedquire/borc
+   - Publisher: Friedel Ziegelmayer
+   - Email: dignifiedquire@gmail.com
+
 borc (v3.0.0)
    - License: MIT
    - Repository: https://github.com/dignifiedquire/borc
@@ -5673,6 +5679,12 @@ capability (v0.2.5)
    - Email: N/A
 
 cardano-crypto-js (v5.3.0)
+   - License: ISC
+   - Repository: https://github.com/vacuumlabs/cardano-crypto.js
+   - Publisher: refi93
+   - Email: N/A
+
+cardano-crypto.js (v6.1.2)
    - License: ISC
    - Repository: https://github.com/vacuumlabs/cardano-crypto.js
    - Publisher: refi93
