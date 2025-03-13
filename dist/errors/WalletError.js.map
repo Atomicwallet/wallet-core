@@ -1,1 +1,0 @@
-{"version":3,"file":"WalletError.js","sourceRoot":"","sources":["../../src/errors/WalletError.ts"],"names":[],"mappings":"AAAA,OAAO,WAAW,MAAM,wBAAwB,CAAC;AAEjD,MAAM,WAAW,GAAG,aAAa,CAAC;AAElC,MAAM,WAAY,SAAQ,WAAW;IACnC,YAAY,IAAa;QACvB,KAAK,CAAC,IAAI,CAAC,CAAC;QACZ,IAAI,CAAC,IAAI,GAAG,WAAW,CAAC;IAC1B,CAAC;CACF;AAED,eAAe,WAAW,CAAC"}

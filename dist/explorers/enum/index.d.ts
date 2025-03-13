@@ -1,2 +1,0 @@
-export { default as TxTypes, COSMOS_MSG_TO_TYPE } from '../../explorers/enum/txTypes.js';
-export { SOL_TOKEN_REQUEST_TYPE } from '../../explorers/enum/solTokenRequestTypes.js';
