@@ -11,4 +11,5 @@ export default {
     '^.+\\.js$': 'babel-jest',
   },
   transformIgnorePatterns: ['/node_modules/(?!ontology-ts-sdk|nem-sdk)'],
+  testPathIgnorePatterns: ['/dist/'],
 };
