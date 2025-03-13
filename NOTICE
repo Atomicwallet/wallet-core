@@ -3938,6 +3938,12 @@ ajv-keywords (v5.1.0)
    - Publisher: Evgeny Poberezkin
    - Email: N/A
 
+ajv (v4.11.8)
+   - License: MIT
+   - Repository: https://github.com/epoberezkin/ajv
+   - Publisher: Evgeny Poberezkin
+   - Email: N/A
+
 ajv (v6.12.6)
    - License: MIT
    - Repository: https://github.com/ajv-validator/ajv
@@ -4202,6 +4208,12 @@ asn1js (v3.0.5)
    - Publisher: Yury Strozhevsky
    - Email: yury@strozhevsky.com
 
+assert-plus (v0.2.0)
+   - License: MIT
+   - Repository: https://github.com/mcavage/node-assert-plus
+   - Publisher: Mark Cavage
+   - Email: mcavage@gmail.com
+
 assert-plus (v1.0.0)
    - License: MIT
    - Repository: https://github.com/mcavage/node-assert-plus
@@ -4303,6 +4315,12 @@ available-typed-arrays (v1.0.7)
    - Repository: https://github.com/inspect-js/available-typed-arrays
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
+
+aws-sign2 (v0.6.0)
+   - License: Apache-2.0
+   - Repository: https://github.com/mikeal/aws-sign
+   - Publisher: Mikeal Rogers
+   - Email: mikeal.rogers@gmail.com
 
 aws-sign2 (v0.7.0)
    - License: Apache-2.0
@@ -5267,6 +5285,18 @@ bn.js (v5.2.1)
 body-parser (v1.20.3)
    - License: MIT
    - Repository: https://github.com/expressjs/body-parser
+   - Publisher: N/A
+   - Email: N/A
+
+boom (v2.10.1)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/hapijs/boom
+   - Publisher: N/A
+   - Email: N/A
+
+boom (v7.3.0)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/hapijs/boom
    - Publisher: N/A
    - Email: N/A
 
@@ -6247,6 +6277,12 @@ cross-spawn (v7.0.6)
    - Repository: https://github.com/moxystudio/node-cross-spawn
    - Publisher: André Cruz
    - Email: andre@moxy.studio
+
+cryptiles (v4.1.2)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/hapijs/cryptiles
+   - Publisher: N/A
+   - Email: N/A
 
 crypto-browserify (v3.12.0)
    - License: MIT
@@ -7910,6 +7946,12 @@ forever-agent (v0.6.1)
    - Publisher: Mikeal Rogers
    - Email: mikeal.rogers@gmail.com
 
+form-data (v2.1.4)
+   - License: MIT
+   - Repository: https://github.com/form-data/form-data
+   - Publisher: Felix Geisendörfer
+   - Email: felix@debuggable.com
+
 form-data (v2.3.3)
    - License: MIT
    - Repository: https://github.com/form-data/form-data
@@ -8312,9 +8354,21 @@ gzip-size (v6.0.0)
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
 
+har-schema (v1.0.5)
+   - License: ISC
+   - Repository: https://github.com/ahmadnassri/har-schema
+   - Publisher: Ahmad Nassri
+   - Email: ahmad@ahmadnassri.com
+
 har-schema (v2.0.0)
    - License: ISC
    - Repository: https://github.com/ahmadnassri/har-schema
+   - Publisher: Ahmad Nassri
+   - Email: ahmad@ahmadnassri.com
+
+har-validator (v4.2.1)
+   - License: ISC
+   - Repository: https://github.com/ahmadnassri/har-validator
    - Publisher: Ahmad Nassri
    - Email: ahmad@ahmadnassri.com
 
@@ -8456,6 +8510,12 @@ hasown (v2.0.2)
    - Publisher: Jordan Harband
    - Email: ljharb@gmail.com
 
+hawk (v3.1.3)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/hueniverse/hawk
+   - Publisher: Eran Hammer
+   - Email: eran@hammer.io
+
 hdkey (v1.1.2)
    - License: MIT
    - Repository: https://github.com/cryptocoinjs/hdkey
@@ -8485,6 +8545,18 @@ hmac-drbg (v1.0.1)
    - Repository: https://github.com/indutny/hmac-drbg
    - Publisher: Fedor Indutny
    - Email: fedor@indutny.com
+
+hoek (v2.16.3)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/hapijs/hoek
+   - Publisher: N/A
+   - Email: N/A
+
+hoek (v6.1.3)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/hapijs/hoek
+   - Publisher: N/A
+   - Email: N/A
 
 home-or-tmp (v2.0.0)
    - License: MIT
@@ -8526,6 +8598,12 @@ http-parser-js (v0.5.9)
    - License: MIT
    - Repository: https://github.com/creationix/http-parser-js
    - Publisher: Tim Caswell
+   - Email: N/A
+
+http-signature (v1.1.1)
+   - License: MIT
+   - Repository: https://github.com/joyent/node-http-signature
+   - Publisher: Joyent, Inc
    - Email: N/A
 
 http-signature (v1.2.0)
@@ -9476,12 +9554,6 @@ jquery (v3.0.0)
    - Publisher: jQuery Foundation and other contributors
    - Email: N/A
 
-jquery (v3.6.0)
-   - License: MIT
-   - Repository: https://github.com/jquery/jquery
-   - Publisher: OpenJS Foundation and other contributors
-   - Email: N/A
-
 js-base64 (v3.7.7)
    - License: BSD-3-Clause
    - Repository: https://github.com/dankogai/js-base64
@@ -9644,6 +9716,12 @@ json-stable-stringify-without-jsonify (v1.0.1)
    - Publisher: James Halliday
    - Email: mail@substack.net
 
+json-stable-stringify (v1.2.1)
+   - License: MIT
+   - Repository: https://github.com/ljharb/json-stable-stringify
+   - Publisher: James Halliday
+   - Email: mail@substack.net
+
 json-stringify-safe (v5.0.1)
    - License: ISC
    - Repository: https://github.com/isaacs/json-stringify-safe
@@ -9691,6 +9769,12 @@ jsonfile (v6.1.0)
    - Repository: https://github.com/jprichardson/node-jsonfile
    - Publisher: JP Richardson
    - Email: jprichardson@gmail.com
+
+jsonify (v0.0.1)
+   - License: Public Domain
+   - Repository: https://github.com/ljharb/jsonify
+   - Publisher: Douglas Crockford
+   - Email: N/A
 
 jsonparse (v1.3.1)
    - License: MIT
@@ -10586,12 +10670,6 @@ negotiator (v0.6.3)
    - Publisher: N/A
    - Email: N/A
 
-nem-sdk (v1.6.11)
-   - License: MIT
-   - Repository: https://github.com/QuantumMechanics/NEM-sdk
-   - Publisher: N/A
-   - Email: N/A
-
 nem-sdk (v1.6.7)
    - License: MIT
    - Repository: https://github.com/QuantumMechanics/NEM-sdk
@@ -10777,6 +10855,12 @@ o3 (v1.0.3)
    - Repository: https://github.com/inf3rno/o3
    - Publisher: László Lajos Jánszky
    - Email: N/A
+
+oauth-sign (v0.8.2)
+   - License: Apache-2.0
+   - Repository: https://github.com/mikeal/oauth-sign
+   - Publisher: Mikeal Rogers
+   - Email: mikeal.rogers@gmail.com
 
 oauth-sign (v0.9.0)
    - License: Apache-2.0
@@ -11156,6 +11240,12 @@ perf_hooks (v0.0.1)
    - Publisher: Matteo Collina
    - Email: hello@matteocollina.com
 
+performance-now (v0.2.0)
+   - License: MIT
+   - Repository: https://github.com/meryn/performance-now
+   - Publisher: Meryn Stol
+   - Email: merynstol@gmail.com
+
 performance-now (v2.1.0)
    - License: MIT
    - Repository: https://github.com/braveg1rl/performance-now
@@ -11481,6 +11571,12 @@ qs (v6.13.0)
    - Email: N/A
 
 qs (v6.14.0)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/ljharb/qs
+   - Publisher: N/A
+   - Email: N/A
+
+qs (v6.4.1)
    - License: BSD-3-Clause
    - Repository: https://github.com/ljharb/qs
    - Publisher: N/A
@@ -11815,6 +11911,12 @@ repeating (v2.0.1)
    - Repository: https://github.com/sindresorhus/repeating
    - Publisher: Sindre Sorhus
    - Email: sindresorhus@gmail.com
+
+request (v2.81.0)
+   - License: Apache-2.0
+   - Repository: https://github.com/request/request
+   - Publisher: Mikeal Rogers
+   - Email: mikeal.rogers@gmail.com
 
 request (v2.88.2)
    - License: Apache-2.0
@@ -12428,6 +12530,12 @@ snapdragon (v0.8.2)
    - Publisher: Jon Schlinkert
    - Email: N/A
 
+sntp (v1.0.9)
+   - License: BSD
+   - Repository: https://github.com/hueniverse/sntp
+   - Publisher: Eran Hammer
+   - Email: eran@hammer.io
+
 socket.io-client (v2.2.0)
    - License: MIT
    - Repository: https://github.com/Automattic/socket.io-client
@@ -12751,6 +12859,12 @@ string_decoder (v1.3.0)
    - Repository: https://github.com/nodejs/string_decoder
    - Publisher: N/A
    - Email: N/A
+
+stringstream (v0.0.6)
+   - License: MIT
+   - Repository: https://github.com/mhart/StringStream
+   - Publisher: Michael Hart
+   - Email: michael.hart.au@gmail.com
 
 strip-ansi (v3.0.1)
    - License: MIT
@@ -13081,6 +13195,12 @@ totalist (v3.0.1)
    - Repository: https://github.com/lukeed/totalist
    - Publisher: Luke Edwards
    - Email: luke.edwards05@gmail.com
+
+tough-cookie (v2.3.4)
+   - License: BSD-3-Clause
+   - Repository: https://github.com/salesforce/tough-cookie
+   - Publisher: Jeremy Stashewsky
+   - Email: jstashewsky@salesforce.com
 
 tough-cookie (v2.5.0)
    - License: BSD-3-Clause
