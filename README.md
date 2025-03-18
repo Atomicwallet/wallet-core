@@ -185,3 +185,8 @@ Example:
 ```bash
 ts-node ./src/cli submitTx --wallet BTC --phrase "middle derive ... original dawn" --tx "<signed_transaction_hex>"
 ```
+
+# Contribution
+
+ **Contribution guides:**                                                                                   
+* [Adapter](https://github.com/Atomicwallet/atomic-core-adapters/blob/main/docs/adapter_contrib.md) 
