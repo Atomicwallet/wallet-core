@@ -1,0 +1,1 @@
+{"version":3,"file":"UndeclaredAbstractMethodError.js","sourceRoot":"","sources":["../../src/errors/UndeclaredAbstractMethodError.ts"],"names":[],"mappings":"AAAA,MAAM,6BAA8B,SAAQ,KAAK;IAC/C,YAAY,MAAc,EAAE,QAAiB;QAC3C,KAAK,CAAC,2BAA2B,MAAM,4BAA4B,QAAQ,EAAE,WAAW,CAAC,IAAI,SAAS,CAAC,CAAC;IAC1G,CAAC;CACF;AAED,eAAe,6BAA6B,CAAC"}
