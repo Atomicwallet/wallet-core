@@ -21,7 +21,7 @@
     "lint:fix": "eslint . --ext .js,.ts,.tsx --fix",
     "format": "prettier --write .",
     "test": "jest --runInBand",
-    "postinstall": "yarn build && sh ./scripts/postinstall.sh",
+    "postinstall": "sh ./scripts/postinstall.sh",
     "webpack": "node --max-old-space-size=16192 node_modules/webpack/bin/webpack.js --mode production --progress"
   },
   "author": "Atomic Protocol Systems OÜ",
