@@ -1,0 +1,114 @@
+// See the following links to understand the variables.
+// * https://www.typescriptlang.org/tsconfig
+// * https://www.typescriptlang.org/ja/tsconfig
+
+{
+  "include": ["./src/**/*.ts", "./src/@types/**/*.ts"],
+  "exclude": [
+    "./node_modules",
+    "./src/cli/**/*",
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "allowJs": true,
+      "target": "esnext",
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "resolveJsonModule": true,
+      "noImplicitAny": false,
+    },
+    "require": ["tsconfig-paths/register"]
+  },
+  "compilerOptions": {
+   "paths": {
+      "src/*": ["./src/*"]
+    },
+    "allowJs": true,
+    "declaration": true,
+    "declarationMap": false,
+    "downlevelIteration": false,
+    "importHelpers": true,
+    "incremental": false,
+    "isolatedModules": false,
+    "jsx": "preserve",
+    "lib": ["esnext"],
+    "module": "esnext",
+    "noEmit": false,
+    "plugins": [],
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "esnext",
+
+    // Stric Checks
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+
+    // Module Resolution
+    "allowSyntheticDefaultImports": true,
+    "allowUmdGlobalAccess": false,
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "preserveSymlinks": false,
+    "rootDir": "src",
+    "types": ["jest", "node"],
+
+    // Source Maps
+    "inlineSourceMap": false, // use 'sourceMap'
+    "inlineSources": false, // ignore with 'inlineSourceMap: false'
+
+    // Linter Checks
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+
+    // Experimental
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": false,
+
+    // Advanced
+    "allowUnreachableCode": true,
+    "allowUnusedLabels": false,
+    "diagnostics": false,
+    "disableReferencedProjectLoad": false,
+    "disableSizeLimit": false,
+    "emitBOM": false,
+    "explainFiles": false,
+    "extendedDiagnostics": false,
+    "forceConsistentCasingInFileNames": true,
+    "keyofStringsOnly": false,
+    "listEmittedFiles": false,
+    "listFiles": true,
+    "maxNodeModuleJsDepth": 0,
+    "newLine": "LF",
+    "noEmitHelpers": true,
+    "noEmitOnError": true,
+    "noErrorTruncation": false,
+    "noImplicitUseStrict": false,
+    "noLib": false,
+    "noResolve": false,
+    "noStrictGenericChecks": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "suppressExcessPropertyErrors": false,
+    "suppressImplicitAnyIndexErrors": false,
+    "traceResolution": false,
+    "useDefineForClassFields": false,
+    "outDir": "./dist"
+  },
+  "tsc-alias": {
+    "verbose": false,
+    "resolveFullPaths": true
+  }
+}

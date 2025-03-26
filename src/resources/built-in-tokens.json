@@ -1,0 +1,24 @@
+{
+ "THETA": [
+   {
+     "ticker": "TFUEL",
+     "name": "THETA Fuel Coin",
+     "id": "TFUEL"
+   }
+ ],
+  "VET": [
+    {
+      "name": "VeThor",
+      "ticker": "VTHO",
+      "contract": "0x0000000000000000000000000000456e65726779"
+    }
+  ],
+  "ZIL": [
+    {
+      "name": "Governance ZIL",
+      "ticker": "gZIL",
+      "contract": "zil14pzuzq6v6pmmmrfjhczywguu0e97djepxt8g3e"
+    }
+  ]
+
+}
