@@ -2589,5 +2589,32 @@
         ]
       }
     ]
+  },
+  {
+    "walletType": "EVM",
+    "ticker": "XDC",
+    "id": "XDC",
+    "name": "XDC Network",
+    "txWebUrl": "https://xdcscan.com/tx/",
+    "socket": true,
+    "features": [
+      "tokens",
+      "nft",
+      "customTokens"
+    ],
+    "chainId": 50,
+    "isUseEIP1559": false,
+    "explorers": [
+      {
+        "className": "Web3Explorer",
+        "baseUrl": "https://rpc.xinfin.network",
+        "usedFor": [
+          "node",
+          "tx",
+          "send",
+          "balance"
+        ]
+      }
+    ]
   }
 ]
